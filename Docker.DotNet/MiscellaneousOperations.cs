@@ -54,16 +54,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (parameters.Since.HasValue) {
-				queryParameters ["since"] = parameters.Since.Value;
-			}
-
-			if (parameters.Until.HasValue) {
-				queryParameters ["until"] = parameters.Until.Value;
-			}
-
 			string path = "events";
+			IQueryString queryParameters = new QueryString<MonitorDockerEventsParameters> (parameters);
 			return this.Client.MakeRequestForStreamAsync (HttpMethod.Get, path, queryParameters, null, cancellationToken);
 		}
 
@@ -73,38 +65,9 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			// extra check for container id since we know it's required (otherwise returns container not found error)
-			if (string.IsNullOrEmpty (parameters.ContainerId)) {
-				throw new ArgumentNullException ("parameters.ContainerId");
-			}
-
-			var queryParameters = new Dictionary<string, object> ();
-			if (!string.IsNullOrEmpty (parameters.ContainerId)) {
-				queryParameters ["container"] = parameters.ContainerId;
-			}
-
-			if (!string.IsNullOrEmpty (parameters.Repo)) {
-				queryParameters ["repo"] = parameters.Repo;
-			}
-
-			if (!string.IsNullOrEmpty (parameters.Message)) {
-				queryParameters ["m"] = parameters.Message;
-			}
-
-			if (!string.IsNullOrEmpty (parameters.Tag)) {
-				queryParameters ["tag"] = parameters.Tag;
-			}
-
-			if (!string.IsNullOrEmpty (parameters.Author)) {
-				queryParameters ["author"] = parameters.Author;
-			}
-
-			JsonRequestContent<Config> data = null;
-			if (parameters.Config != null) {
-				data = new JsonRequestContent<Config> (parameters.Config, this.Client.JsonConverter);
-			}
-
+			JsonRequestContent<Config> data = parameters.Config == null ? null : new JsonRequestContent<Config> (parameters.Config, this.Client.JsonConverter);
 			string path = "commit";
+			IQueryString queryParameters = new QueryString<CommitContainerChangesParameters> (parameters);
 			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Post, path, queryParameters, data);
 			return this.Client.JsonConverter.DeserializeObject<CommitContainerChangesResponse> (response.Body);
 		}
@@ -140,29 +103,9 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (parameters.Quiet.HasValue) {
-				queryParameters ["q"] = parameters.Quiet.Value;
-			}
-
-			if (parameters.NoCache.HasValue) {
-				queryParameters ["nocache"] = parameters.NoCache.Value;
-			}
-
-			if (parameters.RemoveIntermediateContainers.HasValue) {
-				queryParameters ["rm"] = parameters.RemoveIntermediateContainers.Value;
-			}
-
-			if (parameters.ForceRemoveIntermediateContainers.HasValue) {
-				queryParameters ["forcerm"] = parameters.ForceRemoveIntermediateContainers.Value;
-			}
-
-			if (!string.IsNullOrEmpty(parameters.RepositoryTagName)) {
-				queryParameters ["t"] = parameters.RepositoryTagName;
-			}
-
 			BinaryRequestContent data = new BinaryRequestContent (contents, "application/tar");
 			string path = "build";
+			IQueryString queryParameters = new QueryString<BuildImageFromDockerfileParameters> (parameters);
 			return this.Client.MakeRequestForStreamAsync (HttpMethod.Post, path, queryParameters, data, cancellationToken);
 		}
 	}

@@ -6,10 +6,10 @@ namespace Docker.DotNet.Models
 	[DataContract]
 	public class KeyValuePair
 	{
-		[DataMember(Name="Key")]
+		[DataMember (Name = "Key")]
 		public string Key { get; set; }
 
-		[DataMember(Name="Value")]
+		[DataMember (Name = "Value")]
 		public string Value { get; set; }
 
 		public KeyValuePair ()

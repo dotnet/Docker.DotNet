@@ -7,79 +7,79 @@ namespace Docker.DotNet.Models
 	[DataContract]
 	public class Config
 	{
-		[DataMember(Name="Hostname")]
+		[DataMember (Name = "Hostname")]
 		public string Hostname { get; set; }
 
-		[DataMember(Name="Domainname")]
+		[DataMember (Name = "Domainname")]
 		public string DomainName { get; set; }
 
-		[DataMember(Name="Image")]
+		[DataMember (Name = "Image")]
 		public string Image { get; set; }
 
-		[DataMember(Name="User")]
+		[DataMember (Name = "User")]
 		public string User { get; set; }
 
-		[DataMember(Name="Memory")]
+		[DataMember (Name = "Memory")]
 		public long Memory { get; set; }
 
-		[DataMember(Name="MemorySwap")]
+		[DataMember (Name = "MemorySwap")]
 		public long MemorySwap { get; set; }
 
-		[DataMember(Name="CpuShares")]
+		[DataMember (Name = "CpuShares")]
 		public long CpuShares { get; set; }
 
-		[DataMember(Name="CpuSet")]
+		[DataMember (Name = "CpuSet")]
 		public string CpuSet { get; set; }
 
-		[DataMember(Name="AttachStdin")]
+		[DataMember (Name = "AttachStdin")]
 		public bool AttachStdin { get; set; }
 
-		[DataMember(Name="AttachStdout")]
+		[DataMember (Name = "AttachStdout")]
 		public bool AttachStdout { get; set; }
 
-		[DataMember(Name="AttachStderr")]
+		[DataMember (Name = "AttachStderr")]
 		public bool AttachStderr { get; set; }
 
-		[DataMember(Name="PortSpecs")]
+		[DataMember (Name = "PortSpecs")]
 		public IList<string> PortSpecs { get; set; }
 
-		[DataMember(Name="Tty")]
+		[DataMember (Name = "Tty")]
 		public bool Tty { get; set; }
 
-		[DataMember(Name="OpenStdin")]
+		[DataMember (Name = "OpenStdin")]
 		public bool OpenStdin { get; set; }
 
-		[DataMember(Name="StdinOnce")]
+		[DataMember (Name = "StdinOnce")]
 		public bool StdinOnce { get; set; }
 
-		[DataMember(Name="Env")]
+		[DataMember (Name = "Env")]
 		public IList<string> Env { get; set; }
 
-		[DataMember(Name="Cmd")]
+		[DataMember (Name = "Cmd")]
 		public IList<string> Cmd { get; set; }
 
-		[DataMember(Name="Entrypoint")]
+		[DataMember (Name = "Entrypoint")]
 		public IList<string> Entrypoint { get; set; }
 
-		[DataMember(Name="OnBuild")]
+		[DataMember (Name = "OnBuild")]
 		public IList<string> OnBuild { get; set; }
 
-		[DataMember(Name="Dns")]
+		[DataMember (Name = "Dns")]
 		public IList<string> Dns { get; set; }
 
-		[DataMember(Name="WorkingDir")]
+		[DataMember (Name = "WorkingDir")]
 		public string WorkingDir { get; set; }
 
-		[DataMember(Name="NetworkDisabled")]
+		[DataMember (Name = "NetworkDisabled")]
 		public bool NetworkDisabled { get; set; }
 
-		[DataMember(Name="VolumesFrom")]
+		[DataMember (Name = "VolumesFrom")]
 		public string VolumesFrom { get; set; }
 
-		[DataMember(Name="Volumes")]
+		[DataMember (Name = "Volumes")]
 		public IDictionary<string, object> Volumes { get; set; }
 
-		[DataMember(Name="ExposedPorts")]
+		[DataMember (Name = "ExposedPorts")]
 		public IDictionary<string, object> ExposedPorts { get; set; }
 
 		public Config ()

@@ -7,22 +7,22 @@ namespace Docker.DotNet.Models
 	[DataContract]
 	public class NetworkSettings
 	{
-		[DataMember(Name="IPAddress")]
+		[DataMember (Name = "IPAddress")]
 		public string IPAddress { get; set; }
 
-		[DataMember(Name="Gateway")]
+		[DataMember (Name = "Gateway")]
 		public string Gateway { get; set; }
 
-		[DataMember(Name="Bridge")]
+		[DataMember (Name = "Bridge")]
 		public string Bridge { get; set; }
 
-		[DataMember(Name="IPPrefixLen")]
+		[DataMember (Name = "IPPrefixLen")]
 		public int IPPrefixLen { get; set; }
 
-		[DataMember(Name="PortMapping")]
+		[DataMember (Name = "PortMapping")]
 		public IDictionary<string, IDictionary<string, string>> PortMapping { get; set; }
 
-		[DataMember(Name="Ports")]
+		[DataMember (Name = "Ports")]
 		public IDictionary<string, IList<PortBinding>> Ports;
 
 		public NetworkSettings ()

@@ -15,8 +15,9 @@ namespace Docker.DotNet
 			this.EndpointBaseUri = endpoint;
 		}
 
-		public DockerClient CreateClient() {
-			return new DockerClient(this);
+		public DockerClient CreateClient ()
+		{
+			return new DockerClient (this);
 		}
 	}
 }

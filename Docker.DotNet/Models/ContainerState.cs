@@ -7,22 +7,22 @@ namespace Docker.DotNet.Models
 	[DataContract]
 	public class ContainerState
 	{
-		[DataMember(Name="StartedAt")]
+		[DataMember (Name = "StartedAt")]
 		public string StartedAt { get; set; }
 
-		[DataMember(Name="FinishedAt")]
+		[DataMember (Name = "FinishedAt")]
 		public string FinishedAt { get; set; }
 
-		[DataMember(Name="Running")]
+		[DataMember (Name = "Running")]
 		public bool? Running { get; set; }
 
-		[DataMember(Name="Paused")]
+		[DataMember (Name = "Paused")]
 		public bool? Paused { get; set; }
 
-		[DataMember(Name="Pid")]
+		[DataMember (Name = "Pid")]
 		public int? Pid { get; set; }
 
-		[DataMember(Name="ExitCode")]
+		[DataMember (Name = "ExitCode")]
 		public int? ExitCode { get; set; }
 
 		public ContainerState ()

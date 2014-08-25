@@ -31,18 +31,9 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var query = new Dictionary<string, object> ();
-			if (parameters.All.HasValue) {
-				query ["all"] = parameters.All.Value;
-			}
-
-			if (parameters.Filters != null) {
-				string filtersJsonEncoded = this.Client.JsonConverter.SerializeObject (parameters.Filters);
-				query ["filters"] = filtersJsonEncoded;
-			}
-
 			string path = "images/json";
-			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Get, path, query);
+			IQueryString queryParameters = new QueryString<ListImagesParameters> (parameters);
+			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Get, path, queryParameters);
 			return this.Client.JsonConverter.DeserializeObject<ImageListResponse[]> (response.Body);
 		}
 
@@ -79,19 +70,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			// extra check since it's required
-			if (string.IsNullOrEmpty (parameters.Repo)) {
-				throw new ArgumentNullException ("parameters.Repo");
-			}
-
-			var queryParameters = new Dictionary<string,object> () {
-				{ "repo", parameters.Repo }
-			};
-			if (parameters.Force.HasValue) {
-				queryParameters ["force"] = parameters.Force.Value;
-			}
-
 			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}/tag", name);
+			IQueryString queryParameters = new QueryString<TagImageParameters> (parameters);
 			return this.Client.MakeRequestAsync (HttpMethod.Post, path, queryParameters);
 		}
 
@@ -105,16 +85,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string,object> ();
-			if (parameters.Force.HasValue) {
-				queryParameters ["force"] = parameters.Force.Value;
-			}
-
-			if (parameters.NoPrune.HasValue) {
-				queryParameters ["noprune"] = parameters.NoPrune.Value;
-			}
-
 			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}", name);
+			IQueryString queryParameters = new QueryString<DeleteImageParameters> (parameters);
 			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Delete, path, queryParameters);
 			return this.Client.JsonConverter.DeserializeObject<Dictionary<string,string>[]> (response.Body);
 		}
@@ -130,11 +102,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters.Term");
 			}
 
-			var queryParameters = new Dictionary<string,object> () {
-				{ "term", parameters.Term }
-			};
-
 			string path = "images/search";
+			IQueryString queryParameters = new QueryString<SearchImagesParameters> (parameters);
 			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Get, path, queryParameters);
 			return this.Client.JsonConverter.DeserializeObject<ImageSearchResponse[]> (response.Body);
 		}
@@ -145,29 +114,10 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string,object> ();
-			if (!string.IsNullOrEmpty (parameters.FromImage)) {
-				queryParameters ["fromImage"] = parameters.FromImage;
-			}
-
-			if (!string.IsNullOrEmpty (parameters.Tag)) {
-				queryParameters ["tag"] = parameters.Tag;
-			}
-
-			if (!string.IsNullOrEmpty (parameters.Repo)) {
-				queryParameters ["repo"] = parameters.Repo;
-			}
-
-			if (!string.IsNullOrEmpty (parameters.Registry)) {
-				queryParameters ["registry"] = parameters.Registry;
-			}
-
-			Dictionary<string, string> headers = null;
-			if (authConfig != null) {
-				headers = RegistryAuthHeaders (authConfig);
-			}
+			Dictionary<string, string> headers = authConfig == null ? null : RegistryAuthHeaders (authConfig);
 
 			string path = "images/create";
+			IQueryString queryParameters = new QueryString<CreateImageParameters> (parameters);
 			return this.Client.MakeRequestForStreamAsync (HttpMethod.Post, path, queryParameters, headers, null, CancellationToken.None);
 		}
 
@@ -181,12 +131,12 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string,object> ();
-			if (!string.IsNullOrEmpty (parameters.Tag)) {
-				queryParameters ["tag"] = parameters.Tag;
+			if (authConfig == null) {
+				throw new ArgumentNullException ("authConfig");
 			}
 
 			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}/push", name);
+			IQueryString queryParameters = new QueryString<PushImageParameters> (parameters);
 			return this.Client.MakeRequestForStreamAsync (HttpMethod.Post, path, queryParameters, RegistryAuthHeaders (authConfig), null, CancellationToken.None);
 		}
 

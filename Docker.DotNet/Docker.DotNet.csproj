@@ -63,7 +63,6 @@
     <Compile Include="ImageOperations.cs" />
     <Compile Include="DockerAPIException.cs" />
     <Compile Include="DockerAPIResponse.cs" />
-    <Compile Include="JsonUnixDateConverter.cs" />
     <Compile Include="JsonConverter.cs" />
     <Compile Include="DockerClientConfiguration.cs" />
     <Compile Include="HttpUtility.cs" />
@@ -114,6 +113,14 @@
     <Compile Include="IRequestContent.cs" />
     <Compile Include="JsonRequestContent.cs" />
     <Compile Include="Models\BuildImageFromDockerfileParameters.cs" />
+    <Compile Include="QueryStringParameterAttribute.cs" />
+    <Compile Include="QueryString.cs" />
+    <Compile Include="Models\IQueryStringConverter.cs" />
+    <Compile Include="Models\ContainerLogsTailModeQueryStringConverter.cs" />
+    <Compile Include="Models\BoolQueryStringConverter.cs" />
+    <Compile Include="IQueryString.cs" />
+    <Compile Include="Models\JsonQueryStringConverter.cs" />
+    <Compile Include="Models\TimeSpanSecondsQueryStringConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -4,13 +4,16 @@ namespace Docker.DotNet.Models
 {
 	public partial class ListContainersParameters
 	{
-		public class TimeConstraint {
+		public class TimeConstraint
+		{
 			public TimeConstraintMode Mode { get; private set; }
+
 			public string ContainerId { get; private set; }
 
-			public TimeConstraint(TimeConstraintMode mode, string containerId){
-				if (string.IsNullOrEmpty(containerId)){
-					throw new ArgumentNullException("containerId");
+			public TimeConstraint (TimeConstraintMode mode, string containerId)
+			{
+				if (string.IsNullOrEmpty (containerId)) {
+					throw new ArgumentNullException ("containerId");
 				}
 
 				this.Mode = mode;
@@ -18,9 +21,42 @@ namespace Docker.DotNet.Models
 			}
 		}
 
-		public enum TimeConstraintMode {
+		public enum TimeConstraintMode
+		{
 			Before,
 			Since
+		}
+
+		internal class TimeConstraintQueryStringConverter : IQueryStringConverter
+		{
+			public bool CanConvert (Type t)
+			{
+				return t == typeof(TimeConstraint);
+			}
+
+			public string Convert (object o)
+			{
+				TimeConstraint val = o as TimeConstraint;
+				return val.ContainerId;
+			}
+
+			public bool ChangesKey ()
+			{
+				return true;
+			}
+
+			public string GetKey (object o)
+			{
+				TimeConstraint val = o as TimeConstraint;
+				switch (val.Mode) {
+				case ListContainersParameters.TimeConstraintMode.Before:
+					return "before";
+				case ListContainersParameters.TimeConstraintMode.Since:
+					return "since";
+				default:
+					throw new InvalidOperationException ("Unhandled time constraint mode");
+				}
+			}
 		}
 	}
 
@@ -33,7 +69,7 @@ namespace Docker.DotNet.Models
 		private readonly InvalidOperationException AllAndLimitExclusiveException = new InvalidOperationException ("'all' and 'limit' parameters cannot be used mutually");
 		private readonly InvalidOperationException AllAndTimeConstraintExclusiveException = new InvalidOperationException ("'all' and 'before'/'since' parameters cannot be used mutually");
 
-
+		[QueryStringParameterAttribute ("all", false, typeof(BoolQueryStringConverter))]
 		public bool? All { 
 			get { 
 				return allBackingField;
@@ -52,6 +88,7 @@ namespace Docker.DotNet.Models
 			}
 		}
 
+		[QueryStringParameterAttribute ("limit", false, typeof(BoolQueryStringConverter))]
 		public long? Limit {
 			get {
 				return limitBackingField;
@@ -64,6 +101,7 @@ namespace Docker.DotNet.Models
 			}
 		}
 
+		[QueryStringParameterAttribute ("$ignore", false, typeof(TimeConstraintQueryStringConverter))]
 		public TimeConstraint TimeFilter {
 			get {
 				return timeFilterBackingField;
@@ -76,6 +114,7 @@ namespace Docker.DotNet.Models
 			}
 		}
 
+		[QueryStringParameterAttribute ("size", false, typeof(BoolQueryStringConverter))]
 		public bool? Sizes { get; set; }
 
 		public ListContainersParameters ()

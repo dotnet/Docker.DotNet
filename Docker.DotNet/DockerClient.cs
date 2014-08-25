@@ -38,24 +38,24 @@ namespace Docker.DotNet
 			return new HttpClient (); //TODO extract into factory?
 		}
 
-		internal Task<DockerAPIResponse> MakeRequestAsync (HttpMethod method, string path, IDictionary<string, object> queryParameters)
+		internal Task<DockerAPIResponse> MakeRequestAsync (HttpMethod method, string path, IQueryString queryString)
 		{
-			return MakeRequestAsync (method, path, queryParameters, null, null, CancellationToken.None);
+			return MakeRequestAsync (method, path, queryString, null, null, CancellationToken.None);
 		}
 
-		internal Task<DockerAPIResponse> MakeRequestAsync (HttpMethod method, string path, IDictionary<string, object> queryParameters, IRequestContent data)
+		internal Task<DockerAPIResponse> MakeRequestAsync (HttpMethod method, string path, IQueryString queryString, IRequestContent data)
 		{
-			return MakeRequestAsync (method, path, queryParameters, data, null, CancellationToken.None);
+			return MakeRequestAsync (method, path, queryString, data, null, CancellationToken.None);
 		}
 
-		internal async Task<DockerAPIResponse> MakeRequestAsync (HttpMethod method, string path, IDictionary<string, object> queryParameters, IRequestContent data, TimeSpan? timeout, CancellationToken cancellationToken)
+		internal async Task<DockerAPIResponse> MakeRequestAsync (HttpMethod method, string path, IQueryString queryString, IRequestContent data, TimeSpan? timeout, CancellationToken cancellationToken)
 		{
 			HttpClient client = this.GetHttpClient ();
 			if (timeout.HasValue) {
 				client.Timeout = timeout.Value;
 			}
 
-			HttpRequestMessage request = PrepareRequest (method, path, queryParameters, null, data);
+			HttpRequestMessage request = PrepareRequest (method, path, queryString, null, data);
 			HttpResponseMessage response = await client.SendAsync (request, cancellationToken);
 
 			string body = await response.Content.ReadAsStringAsync ();
@@ -68,17 +68,17 @@ namespace Docker.DotNet
 			return new DockerAPIResponse (statusCode, body);
 		}
 
-		internal Task<Stream> MakeRequestForStreamAsync (HttpMethod method, string path, IDictionary<string, object> queryParameters, IRequestContent data, CancellationToken cancellationToken)
+		internal Task<Stream> MakeRequestForStreamAsync (HttpMethod method, string path, IQueryString queryString, IRequestContent data, CancellationToken cancellationToken)
 		{
-			return MakeRequestForStreamAsync (method, path, queryParameters, null, data, cancellationToken);
+			return MakeRequestForStreamAsync (method, path, queryString, null, data, cancellationToken);
 		}
 
-		internal async Task<Stream> MakeRequestForStreamAsync (HttpMethod method, string path, IDictionary<string, object> queryParameters, IDictionary<string,string> headers, IRequestContent data, CancellationToken cancellationToken)
+		internal async Task<Stream> MakeRequestForStreamAsync (HttpMethod method, string path, IQueryString queryString, IDictionary<string,string> headers, IRequestContent data, CancellationToken cancellationToken)
 		{
 			HttpClient client = this.GetHttpClient ();
 			client.Timeout = Timeout.InfiniteTimeSpan; // stream indefinitely (termination via EOF or cancellation)
 
-			HttpRequestMessage request = PrepareRequest (method, path, queryParameters, headers, data);
+			HttpRequestMessage request = PrepareRequest (method, path, queryString, headers, data);
 			HttpResponseMessage response = await client.SendAsync (request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
 			HttpStatusCode statusCode = response.StatusCode;
@@ -89,13 +89,13 @@ namespace Docker.DotNet
 			return await response.Content.ReadAsStreamAsync ();
 		}
 
-		internal HttpRequestMessage PrepareRequest (HttpMethod method, string path, IDictionary<string, object> queryParameters, IDictionary<string,string> headers, IRequestContent data)
+		internal HttpRequestMessage PrepareRequest (HttpMethod method, string path, IQueryString queryString, IDictionary<string,string> headers, IRequestContent data)
 		{
 			if (string.IsNullOrEmpty ("path")) {
 				throw new ArgumentNullException ("path");
 			}
 
-			HttpRequestMessage request = new HttpRequestMessage (method, HttpUtility.BuildUri (this.Configuration.EndpointBaseUri, path, queryParameters));
+			HttpRequestMessage request = new HttpRequestMessage (method, HttpUtility.BuildUri (this.Configuration.EndpointBaseUri, path, queryString));
 			request.Headers.Add ("User-Agent", UserAgent);
 			if (headers != null) {
 				foreach (var header in headers) {

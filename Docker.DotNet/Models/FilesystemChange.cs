@@ -6,7 +6,8 @@ namespace Docker.DotNet.Models
 	[DataContract]
 	public class FilesystemChange
 	{
-		public enum FilesystemChangeKind {
+		public enum FilesystemChangeKind
+		{
 			Modify = 0,
 			Add,
 			Delete

@@ -25,36 +25,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (parameters.All.HasValue) {
-				queryParameters ["all"] = parameters.All;
-			}
-
-			if (parameters.Limit.HasValue) {
-				queryParameters ["limit"] = parameters.Limit;
-			}
-
-			if (parameters.Sizes.HasValue) {
-				queryParameters ["size"] = parameters.Sizes;
-			}
-
-			if (parameters.TimeFilter != null) {
-				var constraint = parameters.TimeFilter;
-				string key;
-				switch (constraint.Mode) {
-				case ListContainersParameters.TimeConstraintMode.Before:
-					key = "before";
-					break;
-				case ListContainersParameters.TimeConstraintMode.Since:
-					key = "since";
-					break;
-				default:
-					throw new InvalidOperationException ("Unhandled time constraint mode");
-				}
-				queryParameters [key] = constraint.ContainerId;
-			}
-
 			string path = "containers/json";
+			IQueryString queryParameters = new QueryString<ListContainersParameters> (parameters);
 			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Get, path, queryParameters);
 			return this.Client.JsonConverter.DeserializeObject<ContainerListResponse[]> (response.Body);
 		}
@@ -90,11 +62,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (!string.IsNullOrEmpty (parameters.PsArgs)) {
-				queryParameters ["ps_args"] = parameters.PsArgs;
-			}
 			string path = string.Format (CultureInfo.InvariantCulture, "containers/{0}/top", id);
+			IQueryString queryParameters = new QueryString<ListProcessesParameters> (parameters);
 			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Get, path, queryParameters);
 			return this.Client.JsonConverter.DeserializeObject<ContainerProcessesResponse> (response.Body);
 		}
@@ -135,12 +104,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (parameters.Wait.HasValue) {
-				queryParameters ["t"] = parameters.Wait.Value.TotalSeconds;
-			}
-
 			string path = string.Format (CultureInfo.InvariantCulture, "containers/{0}/stop", id);
+			IQueryString queryParameters = new QueryString<StopContainerParameters> (parameters);
 			// since specified wait timespan can be greater than HttpClient's default, we set the
 			// client timeout to infinite and provide a cancellation token.
 			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Post, path, queryParameters, null, Timeout.InfiniteTimeSpan, cancellationToken);
@@ -157,12 +122,9 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (parameters.Wait.HasValue) {
-				queryParameters ["t"] = parameters.Wait.Value.TotalSeconds;
-			}
 
 			string path = string.Format (CultureInfo.InvariantCulture, "containers/{0}/restart", id);
+			IQueryString queryParameters = new QueryString<RestartContainerParameters> (parameters);
 			// since specified wait timespan can be greater than HttpClient's default, we set the
 			// client timeout to infinite and provide a cancellation token.
 			return this.Client.MakeRequestAsync (HttpMethod.Post, path, queryParameters, null, Timeout.InfiniteTimeSpan, cancellationToken);
@@ -178,12 +140,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (!string.IsNullOrEmpty (parameters.Signal)) {
-				queryParameters ["signal"] = parameters.Signal; 
-			}
-
 			string path = string.Format (CultureInfo.InvariantCulture, "containers/{0}/kill", id);
+			IQueryString queryParameters = new QueryString<KillContainerParameters> (parameters);
 			return this.Client.MakeRequestAsync (HttpMethod.Post, path, queryParameters);
 		}
 
@@ -228,16 +186,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 
-			var queryParameters = new Dictionary<string, object> ();
-			if (parameters.RemoveVolumes.HasValue) {
-				queryParameters ["v"] = parameters.RemoveVolumes.Value;
-			} 
-
-			if (parameters.Force.HasValue) {
-				queryParameters ["force"] = parameters.Force.Value;
-			}
-
 			string path = string.Format (CultureInfo.InvariantCulture, "containers/{0}", id);
+			IQueryString queryParameters = new QueryString<RemoveContainerParameters> (parameters);
 			return this.Client.MakeRequestAsync (HttpMethod.Delete, path, queryParameters);
 		}
 
@@ -251,28 +201,8 @@ namespace Docker.DotNet
 				throw new ArgumentNullException ("parameters");
 			}
 			
-			var queryParameters = new Dictionary<string, object> ();
-			if (parameters.Stdout.HasValue) {
-				queryParameters ["stdout"] = parameters.Stdout.Value;
-			}
-
-			if (parameters.Stderr.HasValue) {
-				queryParameters ["stderr"] = parameters.Stderr.Value;
-			}
-
-			if (parameters.Timestamps.HasValue) {
-				queryParameters ["timestamps"] = parameters.Timestamps.Value;
-			}
-
-			if (parameters.Tail != null) {
-				queryParameters ["tail"] = parameters.Tail.Value;
-			}
-
-			if (parameters.Follow.HasValue) {
-				queryParameters ["follow"] = parameters.Follow.Value;
-			}
-
 			string path = string.Format (CultureInfo.InvariantCulture, "containers/{0}/logs", id);
+			IQueryString queryParameters = new QueryString<GetContainerLogsParameters> (parameters);
 			return this.Client.MakeRequestForStreamAsync (HttpMethod.Get, path, queryParameters, null, cancellationToken);
 		}
 

@@ -17,13 +17,14 @@ namespace Docker.DotNet
 			this.Converters = new[] { new IsoDateTimeConverter () };
 		}
 
-		public T DeserializeObject<T>(string json){
+		public T DeserializeObject<T> (string json)
+		{
 			return JsonConvert.DeserializeObject<T> (json, this.Converters);
 		}
 
-		public string SerializeObject<T>(T value){
-			return JsonConvert.SerializeObject(value, this.Converters);
+		public string SerializeObject<T> (T value)
+		{
+			return JsonConvert.SerializeObject (value, this.Converters);
 		}
 	}
 }
-

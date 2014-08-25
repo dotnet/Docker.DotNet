@@ -5,9 +5,9 @@ namespace Docker.DotNet
 {
 	internal class DockerAPIResponse
 	{
-		public HttpStatusCode StatusCode { get; private set;}
+		public HttpStatusCode StatusCode { get; private set; }
 
-		public string Body { get; private set;}
+		public string Body { get; private set; }
 
 		public DockerAPIResponse (HttpStatusCode statusCode, string body)
 		{
