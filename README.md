@@ -2,7 +2,7 @@
 
 This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications. 
 
-It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically. At the time of writing, it supports [Docker Remote API v1.14][v1.14]
+It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically. At the time of writing, it supports [Docker Remote API v1.14][v1.14].
 
 ## Installation
 
@@ -138,7 +138,7 @@ Backwards compatibility is not tested and therefore not guaranteed.
 
 This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet Alp Balkan.
 
-> **DISCLAIMER:** This project is not affiliated with Docker, Inc or Microsoft Corporation. By using this you accep
+> **DISCLAIMER:** This project is not affiliated with Docker, Inc or Microsoft Corporation.
 
 ## Authors
 
