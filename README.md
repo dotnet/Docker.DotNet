@@ -14,15 +14,111 @@ Or right click to your project in Visual Studio, choose “Manage NuGet Packages
 
 ## Usage
 
-`<<TODO>>`
+You can initialize the client like the following:
 
-#### Dealing with Stream responses
+```csharp
 
-`<<TODO>>`
+using Docker.DotNet;
+...
 
-#### Authentication
+DockerClient client = new DockerClientConfiguration("http://ubuntu-docker.cloudapp.net:4243")
+     .CreateClient();
+```
 
-`<<TODO>>`
+#### Example: List containers
+
+```csharp
+
+IList<ContainerResponse> containers = await client.Containers.ListContainersAsync(
+	new ListContainersParameters(){
+		Limit = 10,
+    });
+
+```
+
+### Example: Create container
+
+The code below pulls `fedora/memcached` image to your Docker instance using your Docker Hub account. You can anonymously download the image as well by passing `null` instead of AuthConfig object:
+
+```csharp
+Stream stream  = await client.Images.CreateImageAsync (new CreateImageParameters () {
+	FromImage = "fedora/memcached",
+	Tag = "alpha",
+}, new AuthConfig(){
+	Email = "ahmetb@microsoft.com",
+	Username = "ahmetalpbalkan",
+	Password = "pa$$w0rd"
+});
+```
+
+### Example: Start a container
+
+The following code will start the created container with specified host configuration object. This object is optional, therefore you can pass a null.
+
+There is no usage of optional values in the method signatures, mostly because these behavior is undefined in Docker API as well.
+
+```csharp
+await client.Containers.StartContainerAsync ("39e3317fd258", new HostConfig(){
+	Dns = new[]{"8.8.8.8", "8.8.4.4"}
+});
+```
+
+### Example: Stop a container
+
+```csharp
+var stopped = await client.Containers.StopContainerAsync ("39e3317fd258",
+    new StopContainerParameters(){
+        Wait = TimeSpan.FromSeconds(30)
+    },
+    CancellationToken.None);
+```
+
+Above, the `Wait` field is of type `TimeSpan?` which means optional. This code will wait 30 seconds before killing it. If you like to cancel the waiting, you can use the CancellationToken parameter.
+
+### Example: Dealing with Stream responses
+
+Some Docker API endpoints are designed to return stream responses. For example [Monitoring Docker events](https://docs.docker.com/reference/api/docker_remote_api_v1.13/#monitor-dockers-events) continuously streams the status in a format like :
+
+```json
+{"status":"create","id":"dfdf82bd3881","from":"base:latest","time":1374067924}
+{"status":"start","id":"dfdf82bd3881","from":"base:latest","time":1374067924}
+{"status":"stop","id":"dfdf82bd3881","from":"base:latest","time":1374067966}
+{"status":"destroy","id":"dfdf82bd3881","from":"base:latest","time":1374067970}
+...
+```
+
+To obtain this stream you can use:
+
+```csharp
+CancellationTokenSource cancellation = new CancellationTokenSource();
+Stream stream = await client.Miscellaneous.MonitorEventsAsync(new MonitorDockerEventsParameters(), cancellation.Token);
+// Initialize a StreamReader...
+```
+
+You can cancel streaming using the CancellationToken. On the other hand, if you wish to continuously stream, you can simply pass `CancellationToken.None`.
+
+### Example: HTTPS Authentication to Docker
+
+If you are [running Docker with TLS (HTTPS)][docker-tls], you can authenticate to the Docker instance using `CertificateCredentials`:
+
+```csharp
+var credentials = new CertificateCredentials (new X509Certificate2 ("CertFile", "Password"));
+var config = new DockerClientConfiguration("http://ubuntu-docker.cloudapp.net:4243", credentials);
+DockerClient client = config.CreateClient();
+```
+
+If you don't want to authenticate you can omit the `credentials` parameter, which defaults to an `AnonymousCredentials` instance.
+
+### Error Handling
+	
+Here are typical errors from the client library:
+
+* **`DockerAPIException`** is thrown when Docker API responds with non-success result. You can use `StatusCode` and `ResponseBody` properties of the exception for further logging.
+* **`TaskCanceledException`** is thrown from `System.Net.Http` library by design. It is not a friendly exception but usually means your request has timed out. (HttpClient has 100 seconds of default timeout per request.) 
+> Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have infinite timeout configured by the library.
+* **`ArgumentNullException`** is thrown when one of the required parameters are missing/empty.
+
+> Consider reading Docker API reference and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
 
 ## Versioning
 
@@ -51,3 +147,4 @@ This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet 
 
 [docker-remote-api]: https://docs.docker.com/reference/api/docker_remote_api/
 [v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
+[docker-tls]: https://docs.docker.com/articles/https/
