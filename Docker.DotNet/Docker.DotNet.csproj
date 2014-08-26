@@ -44,9 +44,7 @@
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.27-beta\lib\net40\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http.WebRequest">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.27-beta\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Net.Http.Extensions">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.27-beta\lib\net40\System.Net.Http.Extensions.dll</HintPath>
     </Reference>
@@ -121,6 +119,11 @@
     <Compile Include="IQueryString.cs" />
     <Compile Include="Models\JsonQueryStringConverter.cs" />
     <Compile Include="Models\TimeSpanSecondsQueryStringConverter.cs" />
+    <Compile Include="Models\CreateContainerResponse.cs" />
+    <Compile Include="Models\CreateContainerParameters.cs" />
+    <Compile Include="Credentials.cs" />
+    <Compile Include="AnonymousCredentials.cs" />
+    <Compile Include="CertificateCredentials.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

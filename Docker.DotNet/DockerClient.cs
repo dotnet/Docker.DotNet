@@ -35,7 +35,7 @@ namespace Docker.DotNet
 
 		private HttpClient GetHttpClient ()
 		{
-			return new HttpClient (); //TODO extract into factory?
+			return this.Configuration.Credentials.BuildHttpClient ();
 		}
 
 		internal Task<DockerAPIResponse> MakeRequestAsync (HttpMethod method, string path, IQueryString queryString)

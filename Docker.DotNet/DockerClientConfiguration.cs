@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 
 namespace Docker.DotNet
 {
@@ -6,16 +7,27 @@ namespace Docker.DotNet
 	{
 		public Uri EndpointBaseUri { get; private set; }
 
-		public DockerClientConfiguration (Uri endpoint)
+		public Credentials Credentials { get; private set; }
+
+		public DockerClientConfiguration (Uri endpoint) : this(endpoint, new AnonymousCredentials())
+		{
+		}
+
+		public DockerClientConfiguration (Uri endpoint, Credentials credentials)
 		{
 			if (endpoint == null) {
 				throw new ArgumentNullException ("endpoint");
 			}
 
+			if (credentials == null) {
+				throw new ArgumentNullException ("credentials");
+			}
+
 			this.EndpointBaseUri = endpoint;
+			this.Credentials = credentials;
 		}
 
-		public DockerClient CreateClient ()
+		public DockerClient CreateClient()
 		{
 			return new DockerClient (this);
 		}

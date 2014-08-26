@@ -13,6 +13,8 @@ namespace Docker.DotNet
 
 		Task<ContainerResponse> InspectContainerAsync (string id);
 
+		Task<CreateContainerResponse> CreateContainerAsync (CreateContainerParameters parameters);
+
 		Task<ContainerProcessesResponse> ListProcessesAsync (string id, ListProcessesParameters parameters);
 
 		Task<IList<FilesystemChange>> InspectChangesAsync (string id);

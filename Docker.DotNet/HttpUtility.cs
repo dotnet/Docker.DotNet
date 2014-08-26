@@ -10,9 +10,20 @@ namespace Docker.DotNet
 	{
 		public static Uri BuildUri (Uri baseUri, string path, IQueryString queryString)
 		{
+			if (baseUri == null) {
+				throw new ArgumentNullException ("baseUri");
+			}
+
 			UriBuilder builder = new UriBuilder (baseUri);
-			builder.Path += path;
-			builder.Query = queryString.GetQueryString ();
+
+			if (!string.IsNullOrEmpty (path)) {
+				builder.Path += path;
+			}
+
+			if (queryString != null) {
+				builder.Query = queryString.GetQueryString ();
+			}
+
 			return builder.Uri;
 		}
 	}

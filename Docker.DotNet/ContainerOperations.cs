@@ -42,6 +42,17 @@ namespace Docker.DotNet
 			return this.Client.JsonConverter.DeserializeObject<ContainerResponse> (response.Body);
 		}
 
+		public async Task<CreateContainerResponse> CreateContainerAsync (CreateContainerParameters parameters) {
+			if (parameters == null) {
+				throw new ArgumentNullException ("parameters");
+			}
+				
+			string path = "containers/create";
+			JsonRequestContent<Config> data = parameters.Config == null ? null : new JsonRequestContent<Config> (parameters.Config, this.Client.JsonConverter);
+			DockerAPIResponse response = await this.Client.MakeRequestAsync (HttpMethod.Post, path, null, data);
+			return this.Client.JsonConverter.DeserializeObject<CreateContainerResponse> (response.Body);
+		}
+
 		public Task<Stream> ExportContainerAsync (string id, CancellationToken cancellationToken)
 		{
 			if (string.IsNullOrEmpty (id)) {
