@@ -36,7 +36,7 @@ IList<ContainerResponse> containers = await client.Containers.ListContainersAsyn
 
 ```
 
-### Example: Create container
+#### Example: Create container
 
 The code below pulls `fedora/memcached` image to your Docker instance using your Docker Hub account. You can anonymously download the image as well by passing `null` instead of AuthConfig object:
 
@@ -51,7 +51,7 @@ Stream stream  = await client.Images.CreateImageAsync (new CreateImageParameters
 });
 ```
 
-### Example: Start a container
+#### Example: Start a container
 
 The following code will start the created container with specified host configuration object. This object is optional, therefore you can pass a null.
 
@@ -63,7 +63,7 @@ await client.Containers.StartContainerAsync ("39e3317fd258", new HostConfig(){
 });
 ```
 
-### Example: Stop a container
+#### Example: Stop a container
 
 ```csharp
 var stopped = await client.Containers.StopContainerAsync ("39e3317fd258",
@@ -75,7 +75,7 @@ var stopped = await client.Containers.StopContainerAsync ("39e3317fd258",
 
 Above, the `Wait` field is of type `TimeSpan?` which means optional. This code will wait 30 seconds before killing it. If you like to cancel the waiting, you can use the CancellationToken parameter.
 
-### Example: Dealing with Stream responses
+#### Example: Dealing with Stream responses
 
 Some Docker API endpoints are designed to return stream responses. For example [Monitoring Docker events](https://docs.docker.com/reference/api/docker_remote_api_v1.13/#monitor-dockers-events) continuously streams the status in a format like :
 
@@ -97,7 +97,7 @@ Stream stream = await client.Miscellaneous.MonitorEventsAsync(new MonitorDockerE
 
 You can cancel streaming using the CancellationToken. On the other hand, if you wish to continuously stream, you can simply pass `CancellationToken.None`.
 
-### Example: HTTPS Authentication to Docker
+#### Example: HTTPS Authentication to Docker
 
 If you are [running Docker with TLS (HTTPS)][docker-tls], you can authenticate to the Docker instance using `CertificateCredentials`:
 
@@ -111,7 +111,7 @@ If you don't want to authenticate you can omit the `credentials` parameter, whic
 
 ### Error Handling
 	
-Here are typical errors from the client library:
+Here are typical exceptions thrown from the client library:
 
 * **`DockerAPIException`** is thrown when Docker API responds with non-success result. You can use `StatusCode` and `ResponseBody` properties of the exception for further logging.
 * **`TaskCanceledException`** is thrown from `System.Net.Http` library by design. It is not a friendly exception but usually means your request has timed out. (HttpClient has 100 seconds of default timeout per request.) 
