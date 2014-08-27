@@ -6,7 +6,7 @@ It is fully asynchronous, designed to be non-blocking and object-oriented way to
 
 ## Installation
 
-You can add this library to your project using [NuGet](http://www.nuget.org). This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
+You can add this library to your project using [NuGet](nuget). This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
 
     PM> Install-Package Docker.DotNet
     
@@ -113,12 +113,12 @@ If you don't want to authenticate you can omit the `credentials` parameter, whic
 	
 Here are typical exceptions thrown from the client library:
 
-* **`DockerAPIException`** is thrown when Docker API responds with non-success result. You can use `StatusCode` and `ResponseBody` properties of the exception for further logging.
+* **`DockerAPIException`** is thrown when Docker API responds with non-success result.
+    * You can use `StatusCode` and `ResponseBody` properties of the exception for further logging.
 * **`TaskCanceledException`** is thrown from `System.Net.Http` library by design. It is not a friendly exception but usually means your request has timed out. (HttpClient has 100 seconds of default timeout per request.) 
-> Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have infinite timeout configured by the library.
+    * Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have infinite timeout configured by the library.
 * **`ArgumentNullException`** is thrown when one of the required parameters are missing/empty.
-
-> Consider reading Docker API reference and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
+    * Consider reading the [Docker Remote API reference](docker-remote-api) and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
 
 ## Versioning
 
@@ -148,3 +148,4 @@ This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet 
 [docker-remote-api]: https://docs.docker.com/reference/api/docker_remote_api/
 [v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
 [docker-tls]: https://docs.docker.com/articles/https/
+[nuget]: http://www.nuget.org
