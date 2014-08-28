@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -22,6 +23,14 @@ namespace Docker.DotNet
 
         public IMiscellaneousOperations Miscellaneous { get; private set; }
 
+        private static readonly ApiResponseErrorHandlingDelegate DefaultErrorHandlingDelegate = (statusCode, body) =>
+        {
+            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
+            {
+                throw new DockerApiException(statusCode, body);
+            }
+        };
+
         internal DockerClient(DockerClientConfiguration configuration)
         {
             this.Configuration = configuration;
@@ -37,6 +46,7 @@ namespace Docker.DotNet
             return this.Configuration.Credentials.BuildHttpClient();
         }
 
+        #region Convenience methods
         internal Task<DockerApiResponse> MakeRequestAsync(HttpMethod method, string path, IQueryString queryString)
         {
             return MakeRequestAsync(method, path, queryString, null, null, CancellationToken.None);
@@ -47,49 +57,43 @@ namespace Docker.DotNet
             return MakeRequestAsync(method, path, queryString, data, null, CancellationToken.None);
         }
 
-        internal async Task<DockerApiResponse> MakeRequestAsync(HttpMethod method, string path, IQueryString queryString, IRequestContent data, TimeSpan? timeout, CancellationToken cancellationToken)
-        {
-            HttpClient client = this.GetHttpClient();
-            if (timeout.HasValue)
-            {
-                client.Timeout = timeout.Value;
-            }
-
-            HttpRequestMessage request = PrepareRequest(method, path, queryString, null, data);
-            HttpResponseMessage response = await client.SendAsync(request, cancellationToken);
-
-            string body = await response.Content.ReadAsStringAsync();
-            HttpStatusCode statusCode = response.StatusCode;
-
-            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
-            {
-                throw new DockerApiException(statusCode, body);
-            }
-
-            return new DockerApiResponse(statusCode, body);
-        }
-
         internal Task<Stream> MakeRequestForStreamAsync(HttpMethod method, string path, IQueryString queryString, IRequestContent data, CancellationToken cancellationToken)
         {
             return MakeRequestForStreamAsync(method, path, queryString, null, data, cancellationToken);
         }
+        #endregion
+
+
+        #region HTTP Calls
+        internal async Task<DockerApiResponse> MakeRequestAsync(HttpMethod method, string path, IQueryString queryString, IRequestContent data, TimeSpan? timeout, CancellationToken cancellationToken)
+        {
+            HttpResponseMessage response = await this.MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, null, data, cancellationToken);
+            string body = await response.Content.ReadAsStringAsync();
+            HttpStatusCode statusCode = response.StatusCode;
+            DefaultErrorHandlingDelegate(statusCode, body);
+            return new DockerApiResponse(statusCode, body);
+        }
 
         internal async Task<Stream> MakeRequestForStreamAsync(HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpClient client = this.GetHttpClient();
-            client.Timeout = Timeout.InfiniteTimeSpan; // stream indefinitely (termination via EOF or cancellation)
-
-            HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);
-            HttpResponseMessage response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-
-            HttpStatusCode statusCode = response.StatusCode;
-            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
-            {
-                throw new DockerApiException(statusCode, null);
-            }
-
+            HttpResponseMessage response = await MakeRequestInnerAsync(Timeout.InfiniteTimeSpan, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken);
+            DefaultErrorHandlingDelegate(response.StatusCode, null);
             return await response.Content.ReadAsStreamAsync();
         }
+
+
+        private async Task<HttpResponseMessage> MakeRequestInnerAsync(TimeSpan? requestTimeout, HttpCompletionOption completionOption, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
+        {
+            HttpClient client = this.GetHttpClient();
+            if (requestTimeout.HasValue)
+            {
+                client.Timeout = requestTimeout.Value;
+            }
+
+            HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);
+            return await client.SendAsync(request, completionOption, cancellationToken);
+        }
+        #endregion
 
         internal HttpRequestMessage PrepareRequest(HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data)
         {
@@ -110,11 +114,13 @@ namespace Docker.DotNet
 
             if (data != null)
             {
-                var requestContent = data.GetContent(); // get once.
+                HttpContent requestContent = data.GetContent(); // make the call only once.
                 request.Content = requestContent;
             }
 
             return request;
         }
     }
+
+    internal delegate void ApiResponseErrorHandlingDelegate(HttpStatusCode statusCode, string responseBody);
 }
