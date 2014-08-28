@@ -1,18 +1,15 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class MonitorDockerEventsParameters
-	{
-		[QueryStringParameterAttribute ("since", false)]
-		public long? Since { get; set; }
+    public class MonitorDockerEventsParameters
+    {
+        [QueryStringParameter("since", false)]
+        public long? Since { get; set; }
 
-		[QueryStringParameterAttribute ("until", false)]
-		public long? Until { get; set; }
+        [QueryStringParameter("until", false)]
+        public long? Until { get; set; }
 
-		public MonitorDockerEventsParameters ()
-		{
-		}
-	}
+        public MonitorDockerEventsParameters()
+        {
+        }
+    }
 }
-

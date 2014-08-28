@@ -1,18 +1,15 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class RemoveContainerParameters
-	{
-		[QueryStringParameterAttribute ("v", false)]
-		public bool? RemoveVolumes { get; set; }
+    public class RemoveContainerParameters
+    {
+        [QueryStringParameter("v", false)]
+        public bool? RemoveVolumes { get; set; }
 
-		[QueryStringParameterAttribute ("force", false)]
-		public bool? Force { get; set; }
+        [QueryStringParameter("force", false)]
+        public bool? Force { get; set; }
 
-		public RemoveContainerParameters ()
-		{
-		}
-	}
+        public RemoveContainerParameters()
+        {
+        }
+    }
 }
-

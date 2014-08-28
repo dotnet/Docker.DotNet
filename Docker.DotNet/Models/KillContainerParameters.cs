@@ -1,15 +1,12 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class KillContainerParameters
-	{
-		[QueryStringParameterAttribute ("signal", false)]
-		public string Signal { get; set; }
+    public class KillContainerParameters
+    {
+        [QueryStringParameter("signal", false)]
+        public string Signal { get; set; }
 
-		public KillContainerParameters ()
-		{
-		}
-	}
+        public KillContainerParameters()
+        {
+        }
+    }
 }
-

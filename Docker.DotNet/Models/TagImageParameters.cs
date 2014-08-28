@@ -1,18 +1,15 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class TagImageParameters
-	{
-		[QueryStringParameterAttribute ("repo", true)]
-		public string Repo { get; set; }
+    public class TagImageParameters
+    {
+        [QueryStringParameter("repo", true)]
+        public string Repo { get; set; }
 
-		[QueryStringParameterAttribute ("force", false, typeof(BoolQueryStringConverter))]
-		public bool? Force { get; set; }
+        [QueryStringParameter("force", false, typeof (BoolQueryStringConverter))]
+        public bool? Force { get; set; }
 
-		public TagImageParameters ()
-		{
-		}
-	}
+        public TagImageParameters()
+        {
+        }
+    }
 }
-

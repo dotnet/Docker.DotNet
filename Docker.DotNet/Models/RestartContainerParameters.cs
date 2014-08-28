@@ -2,14 +2,13 @@
 
 namespace Docker.DotNet.Models
 {
-	public class RestartContainerParameters
-	{
-		[QueryStringParameterAttribute ("t", false, typeof(TimeSpanSecondsQueryStringConverter))]
-		public TimeSpan? Wait { get; set; }
+    public class RestartContainerParameters
+    {
+        [QueryStringParameter("t", false, typeof (TimeSpanSecondsQueryStringConverter))]
+        public TimeSpan? Wait { get; set; }
 
-		public RestartContainerParameters ()
-		{
-		}
-	}
+        public RestartContainerParameters()
+        {
+        }
+    }
 }
-

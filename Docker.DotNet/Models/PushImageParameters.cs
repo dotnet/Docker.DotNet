@@ -1,15 +1,12 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class PushImageParameters
-	{
-		[QueryStringParameterAttribute ("tag", false)]
-		public string Tag { get; set; }
+    public class PushImageParameters
+    {
+        [QueryStringParameter("tag", false)]
+        public string Tag { get; set; }
 
-		public PushImageParameters ()
-		{
-		}
-	}
+        public PushImageParameters()
+        {
+        }
+    }
 }
-

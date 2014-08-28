@@ -1,27 +1,24 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class BuildImageFromDockerfileParameters
-	{
-		[QueryStringParameterAttribute ("t", false)]
-		public string RepositoryTagName { get; set; }
+    public class BuildImageFromDockerfileParameters
+    {
+        [QueryStringParameter("t", false)]
+        public string RepositoryTagName { get; set; }
 
-		[QueryStringParameterAttribute ("q", false, typeof(BoolQueryStringConverter))]
-		public bool? Quiet { get; set; }
+        [QueryStringParameter("q", false, typeof (BoolQueryStringConverter))]
+        public bool? Quiet { get; set; }
 
-		[QueryStringParameterAttribute ("nocache", false, typeof(BoolQueryStringConverter))]
-		public bool? NoCache { get; set; }
+        [QueryStringParameter("nocache", false, typeof (BoolQueryStringConverter))]
+        public bool? NoCache { get; set; }
 
-		[QueryStringParameterAttribute ("rm", false, typeof(BoolQueryStringConverter))]
-		public bool? RemoveIntermediateContainers { get; set; }
+        [QueryStringParameter("rm", false, typeof (BoolQueryStringConverter))]
+        public bool? RemoveIntermediateContainers { get; set; }
 
-		[QueryStringParameterAttribute ("forcerm", false, typeof(BoolQueryStringConverter))]
-		public bool? ForceRemoveIntermediateContainers { get; set; }
+        [QueryStringParameter("forcerm", false, typeof (BoolQueryStringConverter))]
+        public bool? ForceRemoveIntermediateContainers { get; set; }
 
-		public BuildImageFromDockerfileParameters ()
-		{
-		}
-	}
+        public BuildImageFromDockerfileParameters()
+        {
+        }
+    }
 }
-

@@ -1,18 +1,14 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class ContainerLogsTailAll : IContainerLogsTailMode
-	{
-		public ContainerLogsTailAll ()
-		{
-		}
+    public class ContainerLogsTailAll : IContainerLogsTailMode
+    {
+        public string Value
+        {
+            get { return "all"; }
+        }
 
-		public string Value {
-			get {
-				return "all";
-			}
-		}
-	}
+        public ContainerLogsTailAll()
+        {
+        }
+    }
 }
-

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -55,12 +55,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IQueryStringConverterInstanceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DockerClient.cs" />
     <Compile Include="IImageOperations.cs" />
     <Compile Include="ImageOperations.cs" />
-    <Compile Include="DockerAPIException.cs" />
-    <Compile Include="DockerAPIResponse.cs" />
+    <Compile Include="DockerApiException.cs" />
+    <Compile Include="DockerApiResponse.cs" />
     <Compile Include="JsonConverter.cs" />
     <Compile Include="DockerClientConfiguration.cs" />
     <Compile Include="HttpUtility.cs" />
@@ -111,9 +112,10 @@
     <Compile Include="IRequestContent.cs" />
     <Compile Include="JsonRequestContent.cs" />
     <Compile Include="Models\BuildImageFromDockerfileParameters.cs" />
+    <Compile Include="QueryStringConverterInstanceFactory.cs" />
     <Compile Include="QueryStringParameterAttribute.cs" />
     <Compile Include="QueryString.cs" />
-    <Compile Include="Models\IQueryStringConverter.cs" />
+    <Compile Include="IQueryStringConverter.cs" />
     <Compile Include="Models\ContainerLogsTailModeQueryStringConverter.cs" />
     <Compile Include="Models\BoolQueryStringConverter.cs" />
     <Compile Include="IQueryString.cs" />
@@ -129,7 +131,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

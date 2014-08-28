@@ -3,31 +3,30 @@ using Newtonsoft.Json;
 
 namespace Docker.DotNet.Models
 {
-	internal class JsonQueryStringConverter : IQueryStringConverter
-	{
-		public JsonQueryStringConverter ()
-		{
-		}
+    internal class JsonQueryStringConverter : IQueryStringConverter
+    {
+        public JsonQueryStringConverter()
+        {
+        }
 
-		public bool CanConvert (Type t)
-		{
-			return true;
-		}
+        public bool CanConvert(Type t)
+        {
+            return true;
+        }
 
-		public string Convert (object o)
-		{
-			return JsonConvert.SerializeObject (o, Formatting.None);
-		}
+        public string Convert(object o)
+        {
+            return JsonConvert.SerializeObject(o, Formatting.None);
+        }
 
-		public bool ChangesKey ()
-		{
-			return false;
-		}
+        public bool ChangesKey()
+        {
+            return false;
+        }
 
-		public string GetKey (object o)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        public string GetKey(object o)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
-

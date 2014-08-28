@@ -1,44 +1,43 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Docker.DotNet.Models;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
-	public interface IContainerOperations
-	{
-		Task<IList<ContainerListResponse>> ListContainersAsync (ListContainersParameters parameters);
+    public interface IContainerOperations
+    {
+        Task<IList<ContainerListResponse>> ListContainersAsync(ListContainersParameters parameters);
 
-		Task<ContainerResponse> InspectContainerAsync (string id);
+        Task<ContainerResponse> InspectContainerAsync(string id);
 
-		Task<CreateContainerResponse> CreateContainerAsync (CreateContainerParameters parameters);
+        Task<CreateContainerResponse> CreateContainerAsync(CreateContainerParameters parameters);
 
-		Task<ContainerProcessesResponse> ListProcessesAsync (string id, ListProcessesParameters parameters);
+        Task<ContainerProcessesResponse> ListProcessesAsync(string id, ListProcessesParameters parameters);
 
-		Task<IList<FilesystemChange>> InspectChangesAsync (string id);
+        Task<IList<FilesystemChange>> InspectChangesAsync(string id);
 
-		Task<Stream> ExportContainerAsync (string id, CancellationToken cancellationToken);
+        Task<Stream> ExportContainerAsync(string id, CancellationToken cancellationToken);
 
-		Task<bool> StartContainerAsync (string id, HostConfig hostConfig);
+        Task<bool> StartContainerAsync(string id, HostConfig hostConfig);
 
-		Task<bool> StopContainerAsync (string id, StopContainerParameters parameters, CancellationToken cancellationToken);
+        Task<bool> StopContainerAsync(string id, StopContainerParameters parameters, CancellationToken cancellationToken);
 
-		Task RestartContainerAsync (string id, RestartContainerParameters parameters, CancellationToken cancellationToken);
+        Task RestartContainerAsync(string id, RestartContainerParameters parameters, CancellationToken cancellationToken);
 
-		Task KillContainerAsync (string id, KillContainerParameters parameters);
+        Task KillContainerAsync(string id, KillContainerParameters parameters);
 
-		Task PauseContainerAsync (string id);
+        Task PauseContainerAsync(string id);
 
-		Task UnpauseContainerAsync (string id);
+        Task UnpauseContainerAsync(string id);
 
-		Task<WaitContainerResponse> WaitContainerAsync (string id, CancellationToken cancellationToken);
+        Task<WaitContainerResponse> WaitContainerAsync(string id, CancellationToken cancellationToken);
 
-		Task RemoveContainerAsync (string id, RemoveContainerParameters parameters);
+        Task RemoveContainerAsync(string id, RemoveContainerParameters parameters);
 
-		Task<Stream> GetContainerLogsAsync (string id, GetContainerLogsParameters parameters, CancellationToken cancellationToken);
+        Task<Stream> GetContainerLogsAsync(string id, GetContainerLogsParameters parameters, CancellationToken cancellationToken);
 
-		Task<Stream> CopyFromContainerAsync (string id, CopyFromContainerParameters parameters, CancellationToken cancellationToken);
-	}
+        Task<Stream> CopyFromContainerAsync(string id, CopyFromContainerParameters parameters, CancellationToken cancellationToken);
+    }
 }

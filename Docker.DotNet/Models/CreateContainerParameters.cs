@@ -1,14 +1,11 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class CreateContainerParameters
-	{
-		public Config Config { get; set; }
+    public class CreateContainerParameters
+    {
+        public Config Config { get; set; }
 
-		public CreateContainerParameters ()
-		{
-		}
-	}
+        public CreateContainerParameters()
+        {
+        }
+    }
 }
-

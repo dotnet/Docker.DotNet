@@ -1,15 +1,12 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class ListProcessesParameters
-	{
-		[QueryStringParameterAttribute ("ps_args", false)]
-		public string PsArgs { get; set; }
+    public class ListProcessesParameters
+    {
+        [QueryStringParameter("ps_args", false)]
+        public string PsArgs { get; set; }
 
-		public ListProcessesParameters ()
-		{
-		}
-	}
+        public ListProcessesParameters()
+        {
+        }
+    }
 }
-

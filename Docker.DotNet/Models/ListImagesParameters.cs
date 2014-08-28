@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Docker.DotNet.Models
 {
-	public class ListImagesParameters
-	{
-		[QueryStringParameterAttribute ("all", false, typeof(BoolQueryStringConverter))]
-		public bool? All { get; set; }
+    public class ListImagesParameters
+    {
+        [QueryStringParameter("all", false, typeof (BoolQueryStringConverter))]
+        public bool? All { get; set; }
 
-		[QueryStringParameterAttribute ("filters", false, typeof(JsonQueryStringConverter))]
-		public IDictionary<string, IList<string>> Filters { get; set; }
+        [QueryStringParameter("filters", false, typeof (JsonQueryStringConverter))]
+        public IDictionary<string, IList<string>> Filters { get; set; }
 
-		public ListImagesParameters ()
-		{
-		}
-	}
+        public ListImagesParameters()
+        {
+        }
+    }
 }
-

@@ -113,7 +113,7 @@ If you don't want to authenticate you can omit the `credentials` parameter, whic
 	
 Here are typical exceptions thrown from the client library:
 
-* **`DockerAPIException`** is thrown when Docker API responds with non-success result.
+* **`DockerApiException`** is thrown when Docker API responds with non-success result.
     * You can use `StatusCode` and `ResponseBody` properties of the exception for further logging.
 * **`TaskCanceledException`** is thrown from `System.Net.Http` library by design. It is not a friendly exception but usually means your request has timed out. (HttpClient has 100 seconds of default timeout per request.) 
     * Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have infinite timeout configured by the library.

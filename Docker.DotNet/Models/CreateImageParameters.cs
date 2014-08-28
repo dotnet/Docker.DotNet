@@ -1,24 +1,21 @@
-﻿using System;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet.Models
 {
-	public class CreateImageParameters
-	{
-		[QueryStringParameterAttribute ("fromImage", false)]
-		public string FromImage { get; set; }
+    public class CreateImageParameters
+    {
+        [QueryStringParameter("fromImage", false)]
+        public string FromImage { get; set; }
 
-		[QueryStringParameterAttribute ("repo", false)]
-		public string Repo { get; set; }
+        [QueryStringParameter("repo", false)]
+        public string Repo { get; set; }
 
-		[QueryStringParameterAttribute ("tag", false)]
-		public string Tag { get; set; }
+        [QueryStringParameter("tag", false)]
+        public string Tag { get; set; }
 
-		[QueryStringParameterAttribute ("registry", false)]
-		public string Registry { get; set; }
+        [QueryStringParameter("registry", false)]
+        public string Registry { get; set; }
 
-		public CreateImageParameters ()
-		{
-		}
-	}
+        public CreateImageParameters()
+        {
+        }
+    }
 }
-

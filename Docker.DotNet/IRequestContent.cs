@@ -1,10 +1,9 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 
 namespace Docker.DotNet
 {
-	internal interface IRequestContent
-	{
-		HttpContent GetContent ();
-	}
+    internal interface IRequestContent
+    {
+        HttpContent GetContent();
+    }
 }
