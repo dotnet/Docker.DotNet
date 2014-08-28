@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Docker.DotNet
 {
@@ -24,13 +25,25 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("credentials");
             }
 
-            this.EndpointBaseUri = endpoint;
+            this.EndpointBaseUri = SanitizeEndpoint(endpoint);
             this.Credentials = credentials;
         }
 
         public DockerClient CreateClient()
         {
             return new DockerClient(this);
+        }
+
+        private static Uri SanitizeEndpoint(Uri endpoint)
+        {
+            UriBuilder builder = new UriBuilder(endpoint);
+
+            if (builder.Scheme.Equals("tcp", StringComparison.InvariantCultureIgnoreCase))
+            {
+                builder.Scheme = "http";
+            }
+
+            return builder.Uri;
         }
     }
 }
