@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IQueryStringConverterInstanceFactory.cs" />
+    <Compile Include="JsonIso8601AndUnixEpochDateConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DockerClient.cs" />
     <Compile Include="IImageOperations.cs" />
@@ -80,7 +81,6 @@
     <Compile Include="Models\NetworkSettings.cs" />
     <Compile Include="Models\PortBinding.cs" />
     <Compile Include="Models\HostConfig.cs" />
-    <Compile Include="Models\KeyValuePair.cs" />
     <Compile Include="Models\ContainerProcessesResponse.cs" />
     <Compile Include="Models\FilesystemChange.cs" />
     <Compile Include="Models\WaitContainerResponse.cs" />

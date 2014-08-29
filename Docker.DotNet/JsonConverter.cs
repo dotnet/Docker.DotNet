@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Docker.DotNet
 {
@@ -12,7 +11,7 @@ namespace Docker.DotNet
 
         public JsonConverter()
         {
-            this.Converters = new Newtonsoft.Json.JsonConverter[] {new IsoDateTimeConverter()};
+            this.Converters = new Newtonsoft.Json.JsonConverter[] {new JsonIso8601AndUnixEpochDateConverter()};
         }
 
         public T DeserializeObject<T>(string json)

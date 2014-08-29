@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
@@ -6,10 +7,10 @@ namespace Docker.DotNet.Models
     public class ContainerState
     {
         [DataMember(Name = "StartedAt")]
-        public string StartedAt { get; set; }
+        public DateTime? StartedAt { get; set; }
 
         [DataMember(Name = "FinishedAt")]
-        public string FinishedAt { get; set; }
+        public DateTime? FinishedAt { get; set; }
 
         [DataMember(Name = "Running")]
         public bool? Running { get; set; }

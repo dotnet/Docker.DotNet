@@ -32,8 +32,12 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "VolumesFrom")]
         public IList<string> VolumesFrom { get; set; }
 
-        [DataMember(Name = "LxcConf")]
-        public IList<KeyValuePair> LxcConf { get; set; }
+        // Commenting out LxcConf parameter because its type in the request
+        // form and response form are not the same. (one example says it's [], another
+        // example says it's {"key": "value"}, API is totally messed up with such inconsistencies.
+        // In order to make methods using this HostConfig type to work, commenting this out.
+        //[DataMember(Name = "LxcConf")]
+        //public IDictionary<string, string> LxcConf { get; set; }
 
         public HostConfig()
         {

@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
@@ -30,7 +31,7 @@ namespace Docker.DotNet.Models
         public string Architecture { get; set; }
 
         [DataMember(Name = "Created")]
-        public string Created { get; set; }
+        public DateTime Created { get; set; }
 
         [DataMember(Name = "DockerVersion")]
         public string DockerVersion { get; set; }

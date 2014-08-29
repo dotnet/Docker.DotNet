@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -16,7 +17,7 @@ namespace Docker.DotNet.Models
         public string Image { get; set; }
 
         [DataMember(Name = "Created")]
-        public long Created { get; set; }
+        public DateTime Created { get; set; }
 
         [DataMember(Name = "Command")]
         public string Command { get; set; }
