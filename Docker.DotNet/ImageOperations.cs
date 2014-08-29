@@ -2,149 +2,165 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
-using System.Net;
-using System.Linq;
 
 namespace Docker.DotNet
 {
-	internal class ImageOperations : IImageOperations
-	{
-		internal readonly static ApiResponseErrorHandlingDelegate NoSuchImageHandler = (statusCode, responseBody) => {
-			if (statusCode == HttpStatusCode.NotFound) {
-				throw new DockerImageNotFoundException (statusCode, responseBody);
-			}
-		};
+    internal class ImageOperations : IImageOperations
+    {
+        internal static readonly ApiResponseErrorHandlingDelegate NoSuchImageHandler = (statusCode, responseBody) =>
+        {
+            if (statusCode == HttpStatusCode.NotFound)
+            {
+                throw new DockerImageNotFoundException(statusCode, responseBody);
+            }
+        };
 
-		private const string RegistryAuthHeaderKey = "X-Registry-Auth";
+        private const string RegistryAuthHeaderKey = "X-Registry-Auth";
 
-		private DockerClient Client { get; set; }
+        private DockerClient Client { get; set; }
 
-		internal ImageOperations (DockerClient client)
-		{
-			this.Client = client;
-		}
+        internal ImageOperations(DockerClient client)
+        {
+            this.Client = client;
+        }
 
-		public async Task<IList<ImageListResponse>> ListImagesAsync (ListImagesParameters parameters)
-		{
-			if (parameters == null) {
-				throw new ArgumentNullException ("parameters");
-			}
+        public async Task<IList<ImageListResponse>> ListImagesAsync(ListImagesParameters parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
 
-			string path = "images/json";
-			IQueryString queryParameters = new QueryString<ListImagesParameters> (parameters);
-			DockerApiResponse response = await this.Client.MakeRequestAsync (this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
-			return this.Client.JsonConverter.DeserializeObject<ImageListResponse[]> (response.Body);
-		}
+            string path = "images/json";
+            IQueryString queryParameters = new QueryString<ListImagesParameters>(parameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
+            return this.Client.JsonConverter.DeserializeObject<ImageListResponse[]>(response.Body);
+        }
 
-		public async Task<ImageResponse> InspectImageAsync (string name)
-		{
-			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
-			}
+        public async Task<ImageResponse> InspectImageAsync(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("name");
+            }
 
-			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}/json", name);
-			DockerApiResponse response = await this.Client.MakeRequestAsync (new[] { NoSuchImageHandler }, HttpMethod.Get, path, null);
-			return this.Client.JsonConverter.DeserializeObject<ImageResponse> (response.Body);
-		}
+            string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/json", name);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Get, path, null);
+            return this.Client.JsonConverter.DeserializeObject<ImageResponse>(response.Body);
+        }
 
-		public async Task<IList<ImageHistoryResponse>> GetImageHistoryAsync (string name)
-		{
-			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
-			}
+        public async Task<IList<ImageHistoryResponse>> GetImageHistoryAsync(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("name");
+            }
 
-			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}/history", name);
-			DockerApiResponse response = await this.Client.MakeRequestAsync (new[] { NoSuchImageHandler }, HttpMethod.Get, path, null);
-			return this.Client.JsonConverter.DeserializeObject<ImageHistoryResponse[]> (response.Body);
-		}
+            string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/history", name);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Get, path, null);
+            return this.Client.JsonConverter.DeserializeObject<ImageHistoryResponse[]>(response.Body);
+        }
 
 
-		public Task TagImageAsync (string name, TagImageParameters parameters)
-		{
-			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
-			}
+        public Task TagImageAsync(string name, TagImageParameters parameters)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("name");
+            }
 
-			if (parameters == null) {
-				throw new ArgumentNullException ("parameters");
-			}
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
 
-			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}/tag", name);
-			IQueryString queryParameters = new QueryString<TagImageParameters> (parameters);
-			return this.Client.MakeRequestAsync (new[] { NoSuchImageHandler }, HttpMethod.Post, path, queryParameters);
-		}
+            string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/tag", name);
+            IQueryString queryParameters = new QueryString<TagImageParameters>(parameters);
+            return this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Post, path, queryParameters);
+        }
 
-		public async Task<IList<IDictionary<string, string>>> DeleteImageAsync (string name, DeleteImageParameters parameters)
-		{
-			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
-			}
+        public async Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, DeleteImageParameters parameters)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("name");
+            }
 
-			if (parameters == null) {
-				throw new ArgumentNullException ("parameters");
-			}
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
 
-			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}", name);
-			IQueryString queryParameters = new QueryString<DeleteImageParameters> (parameters);
-			DockerApiResponse response = await this.Client.MakeRequestAsync (new[] { NoSuchImageHandler }, HttpMethod.Delete, path, queryParameters);
-			return this.Client.JsonConverter.DeserializeObject<Dictionary<string, string>[]> (response.Body);
-		}
+            string path = string.Format(CultureInfo.InvariantCulture, "images/{0}", name);
+            IQueryString queryParameters = new QueryString<DeleteImageParameters>(parameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Delete, path, queryParameters);
+            return this.Client.JsonConverter.DeserializeObject<Dictionary<string, string>[]>(response.Body);
+        }
 
-		public async Task<IList<ImageSearchResponse>> SearchImagesAsync (SearchImagesParameters parameters)
-		{
-			if (parameters == null) {
-				throw new ArgumentNullException ("parameters");
-			}
+        public async Task<IList<ImageSearchResponse>> SearchImagesAsync(SearchImagesParameters parameters)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
 
-			string path = "images/search";
-			IQueryString queryParameters = new QueryString<SearchImagesParameters> (parameters);
-			DockerApiResponse response = await this.Client.MakeRequestAsync (this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
-			return this.Client.JsonConverter.DeserializeObject<ImageSearchResponse[]> (response.Body);
-		}
+            string path = "images/search";
+            IQueryString queryParameters = new QueryString<SearchImagesParameters>(parameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
+            return this.Client.JsonConverter.DeserializeObject<ImageSearchResponse[]>(response.Body);
+        }
 
-		public Task<Stream> CreateImageAsync (CreateImageParameters parameters, AuthConfig authConfig)
-		{
-			if (parameters == null) {
-				throw new ArgumentNullException ("parameters");
-			}
+        public Task<Stream> CreateImageAsync(CreateImageParameters parameters, AuthConfig authConfig)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
 
-			string path = "images/create";
-			Dictionary<string, string> headers = authConfig == null ? null : RegistryAuthHeaders (authConfig);
-			IQueryString queryParameters = new QueryString<CreateImageParameters> (parameters);
-			return this.Client.MakeRequestForStreamAsync (this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, headers, null, CancellationToken.None);
-		}
+            string path = "images/create";
+            Dictionary<string, string> headers = authConfig == null ? null : RegistryAuthHeaders(authConfig);
+            IQueryString queryParameters = new QueryString<CreateImageParameters>(parameters);
+            return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, headers, null, CancellationToken.None);
+        }
 
-		public Task<Stream> PushImageAsync (string name, PushImageParameters parameters, AuthConfig authConfig)
-		{
-			if (string.IsNullOrEmpty (name)) {
-				throw new ArgumentNullException ("name");
-			}
+        public Task<Stream> PushImageAsync(string name, PushImageParameters parameters, AuthConfig authConfig)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException("name");
+            }
 
-			if (parameters == null) {
-				throw new ArgumentNullException ("parameters");
-			}
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
 
-			if (authConfig == null) {
-				throw new ArgumentNullException ("authConfig");
-			}
+            if (authConfig == null)
+            {
+                throw new ArgumentNullException("authConfig");
+            }
 
-			string path = string.Format (CultureInfo.InvariantCulture, "images/{0}/push", name);
-			IQueryString queryParameters = new QueryString<PushImageParameters> (parameters);
-			return this.Client.MakeRequestForStreamAsync (this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, RegistryAuthHeaders (authConfig), null, CancellationToken.None);
-		}
+            string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/push", name);
+            IQueryString queryParameters = new QueryString<PushImageParameters>(parameters);
+            return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+        }
 
-		private Dictionary<string, string> RegistryAuthHeaders (AuthConfig authConfig)
-		{
-			if (authConfig == null) {
-				throw new ArgumentNullException ("authConfig");
-			}
+        private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)
+        {
+            if (authConfig == null)
+            {
+                throw new ArgumentNullException("authConfig");
+            }
 
-			return new Dictionary<string, string> { {
+            return new Dictionary<string, string>
+            {
+                {
                     RegistryAuthHeaderKey,
                     Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Client.JsonConverter.SerializeObject<AuthConfig>(authConfig)))
                 }
