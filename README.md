@@ -113,15 +113,12 @@ If you don't want to authenticate you can omit the `credentials` parameter, whic
 
 #### Example: Specifying Remote API Version
 
-By default this client does not specify version number to the API for the requests it makes. However if you would like to make use of versioning feature of Docker Remote API You can initialize the client like the following.
+By default this client does not specify version number to the API for the requests it makes. However, if you would like to make use of versioning feature of Docker Remote API You can initialize the client like the following.
 
 ```csharp
-...
-var config = new DockerClientConfiguration("http://ubuntu-docker.cloudapp.net:4243", credentials);s
+var config = new DockerClientConfiguration(...);
 DockerClient client = config.CreateClient(new Version(1, 14));
 ```
-
-If you don't want to authenticate you can omit the `credentials` parameter, which defaults to an `AnonymousCredentials` instance.
 
 ### Error Handling
 	
