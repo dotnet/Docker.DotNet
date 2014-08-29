@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
@@ -6,10 +7,10 @@ namespace Docker.DotNet.Models
     public class VersionResponse
     {
         [DataMember(Name = "ApiVersion")]
-        public string ApiVersion { get; set; }
+        public Version ApiVersion { get; set; }
 
         [DataMember(Name = "Version")]
-        public string Version { get; set; }
+        public Version Version { get; set; }
 
         [DataMember(Name = "GitCommit")]
         public string GitCommit { get; set; }

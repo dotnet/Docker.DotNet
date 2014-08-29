@@ -11,7 +11,11 @@ namespace Docker.DotNet
 
         public JsonConverter()
         {
-            this.Converters = new Newtonsoft.Json.JsonConverter[] {new JsonIso8601AndUnixEpochDateConverter()};
+            this.Converters = new Newtonsoft.Json.JsonConverter[]
+            {
+                new JsonIso8601AndUnixEpochDateConverter(),
+                new JsonVersionConverter()
+            };
         }
 
         public T DeserializeObject<T>(string json)
