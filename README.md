@@ -111,6 +111,18 @@ DockerClient client = config.CreateClient();
 
 If you don't want to authenticate you can omit the `credentials` parameter, which defaults to an `AnonymousCredentials` instance.
 
+#### Example: Specifying Remote API Version
+
+By default this client does not specify version number to the API for the requests it makes. However if you would like to make use of versioning feature of Docker Remote API You can initialize the client like the following.
+
+```csharp
+...
+var config = new DockerClientConfiguration("http://ubuntu-docker.cloudapp.net:4243", credentials);s
+DockerClient client = config.CreateClient(new Version(1, 14));
+```
+
+If you don't want to authenticate you can omit the `credentials` parameter, which defaults to an `AnonymousCredentials` instance.
+
 ### Error Handling
 	
 Here are typical exceptions thrown from the client library:
@@ -135,12 +147,13 @@ Backwards compatibility is not tested and therefore not guaranteed.
 
 ## Known Issues / TODO
 
-* Ability to specify version and using that the request URI is not implemented, that's still a TODO.
 * HTTP Hijacking is not implemented, therefore "Attach to Container" operation does not exist in the API (expecting pull requests!)
 * CertificateCredentials class is never tested, I know, sounds silly but that is the case. You can implement your own HttpClient provider by deriving from Credentials class and make it work in case it doesn't work.
 * Certificate authentication does not work on Mono. [[StackOverflow question](http://stackoverflow.com/questions/25495056/using-custom-ssl-client-certificates-system-net-httpclient-on-mono)]
-* Some response fields that could have been made System.DateTime are not deserialized back from ISO8601 strings or UNIX epoch timestamps because (1) Mono is bad at DateTime parsing ([Mono bug #22417](https://bugzilla.xamarin.com/show_bug.cgi?id=22417)) and (2) Docker API uses inconsistent date formats in the API ([docker issue #7670](https://github.com/docker/docker/issues/7670)).
+* Deserialization of DateTime fields from JSON responses will fail with System.FormatException on Mono due to [Mono bug #22417](https://bugzilla.xamarin.com/show_bug.cgi?id=22417).
 * Test suite does not exist. Functionality is verified manually. (pull requests are welcomed!)
+* ~~Ability to specify version and using that the request URI is not implemented.~~
+* ~~Fields that could have been DateTime are either long or string because Docker API uses inconsistent date formats in the API ([docker issue #7670](https://github.com/docker/docker/issues/7670)).~~
 
 ## License
 

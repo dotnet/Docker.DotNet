@@ -15,6 +15,8 @@ namespace Docker.DotNet
 
         public DockerClientConfiguration Configuration { get; private set; }
 
+        public Version RequestedApiVersion { get; private set; }
+
         internal JsonConverter JsonConverter { get; private set; }
 
         public IImageOperations Images { get; private set; }
@@ -33,9 +35,10 @@ namespace Docker.DotNet
 
         internal readonly IEnumerable<ApiResponseErrorHandlingDelegate> NoErrorHandlers = Enumerable.Empty<ApiResponseErrorHandlingDelegate>();
 
-        internal DockerClient(DockerClientConfiguration configuration)
+        internal DockerClient(DockerClientConfiguration configuration, Version requestedApiVersion)
         {
             this.Configuration = configuration;
+            this.RequestedApiVersion = requestedApiVersion;
             this.JsonConverter = new JsonConverter();
 
             this.Images = new ImageOperations(this);
@@ -123,7 +126,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("path");
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(this.Configuration.EndpointBaseUri, path, queryString));
+            HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(this.Configuration.EndpointBaseUri, this.RequestedApiVersion, path, queryString));
             request.Headers.Add("User-Agent", UserAgent);
             if (headers != null)
             {

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Docker.DotNet
 {
     internal static class HttpUtility
     {
-        public static Uri BuildUri(Uri baseUri, string path, IQueryString queryString)
+        public static Uri BuildUri(Uri baseUri, Version requestedApiVersion, string path, IQueryString queryString)
         {
             if (baseUri == null)
             {
@@ -12,6 +13,11 @@ namespace Docker.DotNet
             }
 
             UriBuilder builder = new UriBuilder(baseUri);
+
+            if (requestedApiVersion != null)
+            {
+                builder.Path += string.Format(CultureInfo.InvariantCulture, "v{0}/", requestedApiVersion);
+            }
 
             if (!string.IsNullOrEmpty(path))
             {

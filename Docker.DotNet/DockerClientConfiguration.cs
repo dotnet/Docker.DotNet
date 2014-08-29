@@ -8,7 +8,8 @@ namespace Docker.DotNet
 
         public Credentials Credentials { get; private set; }
 
-        public DockerClientConfiguration(Uri endpoint) : this(endpoint, new AnonymousCredentials())
+        public DockerClientConfiguration(Uri endpoint)
+            : this(endpoint, new AnonymousCredentials())
         {
         }
 
@@ -30,7 +31,12 @@ namespace Docker.DotNet
 
         public DockerClient CreateClient()
         {
-            return new DockerClient(this);
+            return this.CreateClient(null);
+        }
+
+        public DockerClient CreateClient(Version requestedApiVersion)
+        {
+            return new DockerClient(this, requestedApiVersion);
         }
 
         private static Uri SanitizeEndpoint(Uri endpoint)
