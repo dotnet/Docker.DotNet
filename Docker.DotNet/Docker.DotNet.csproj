@@ -126,6 +126,8 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="AnonymousCredentials.cs" />
     <Compile Include="CertificateCredentials.cs" />
+    <Compile Include="DockerImageNotFoundException.cs" />
+    <Compile Include="DockerContainerNotFoundException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

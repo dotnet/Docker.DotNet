@@ -26,25 +26,25 @@ namespace Docker.DotNet
             var data = new JsonRequestContent<AuthConfig>(authConfig, this.Client.JsonConverter);
 
             const string path = "auth";
-            return this.Client.MakeRequestAsync(HttpMethod.Post, path, null, data);
+			return this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, null, data);
         }
 
         public async Task<VersionResponse> GetVersionAsync()
         {
             const string path = "version";
-            DockerApiResponse response = await this.Client.MakeRequestAsync(HttpMethod.Get, path, null);
+			DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null);
             return this.Client.JsonConverter.DeserializeObject<VersionResponse>(response.Body);
         }
 
         public Task PingAsync()
         {
-            return this.Client.MakeRequestAsync(HttpMethod.Get, "_ping", null);
+			return this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, "_ping", null);
         }
 
         public async Task<SystemInfoResponse> GetSystemInfoAsync()
         {
             const string path = "info";
-            DockerApiResponse response = await this.Client.MakeRequestAsync(HttpMethod.Get, path, null);
+			DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null);
             return this.Client.JsonConverter.DeserializeObject<SystemInfoResponse>(response.Body);
         }
 
@@ -57,7 +57,7 @@ namespace Docker.DotNet
 
             const string path = "events";
             IQueryString queryParameters = new QueryString<MonitorDockerEventsParameters>(parameters);
-            return this.Client.MakeRequestForStreamAsync(HttpMethod.Get, path, queryParameters, null, cancellationToken);
+			return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters, null, cancellationToken);
         }
 
         public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters)
@@ -70,7 +70,7 @@ namespace Docker.DotNet
             JsonRequestContent<Config> data = parameters.Config == null ? null : new JsonRequestContent<Config>(parameters.Config, this.Client.JsonConverter);
             const string path = "commit";
             IQueryString queryParameters = new QueryString<CommitContainerChangesParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(HttpMethod.Post, path, queryParameters, data);
+			DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, data);
             return this.Client.JsonConverter.DeserializeObject<CommitContainerChangesResponse>(response.Body);
         }
 
@@ -82,7 +82,7 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/get", name);
-            return this.Client.MakeRequestForStreamAsync(HttpMethod.Get, path, null, null, cancellationToken);
+			return this.Client.MakeRequestForStreamAsync(new[] { ImageOperations.NoSuchImageHandler }, HttpMethod.Get, path, null, null, cancellationToken);
         }
 
         public Task LoadImageFromTarballAsync(Stream stream, CancellationToken cancellationToken)
@@ -94,7 +94,7 @@ namespace Docker.DotNet
 
             BinaryRequestContent data = new BinaryRequestContent(stream, "application/x-tar");
             const string path = "images/load";
-            return this.Client.MakeRequestAsync(HttpMethod.Post, path, null, data, null, cancellationToken);
+			return this.Client.MakeRequestAsync(new[] { ImageOperations.NoSuchImageHandler }, HttpMethod.Post, path, null, data, null, cancellationToken);
         }
 
         public Task<Stream> BuildImageFromDockerfileAsync(Stream contents, BuildImageFromDockerfileParameters parameters, CancellationToken cancellationToken)
@@ -112,7 +112,7 @@ namespace Docker.DotNet
             BinaryRequestContent data = new BinaryRequestContent(contents, "application/tar");
             const string path = "build";
             IQueryString queryParameters = new QueryString<BuildImageFromDockerfileParameters>(parameters);
-            return this.Client.MakeRequestForStreamAsync(HttpMethod.Post, path, queryParameters, data, cancellationToken);
+			return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, data, cancellationToken);
         }
     }
 }

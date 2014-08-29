@@ -4,6 +4,8 @@ This library allows you to interact with [Docker Remote API][docker-remote-api] 
 
 It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically. At the time of writing, it supports [Docker Remote API v1.14][v1.14].
 
+The library is **still being developed**, please use with caution, report bugs and feel free to submit patches.
+
 ## Installation
 
 You can add this library to your project using [NuGet](nuget). This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
@@ -113,10 +115,11 @@ If you don't want to authenticate you can omit the `credentials` parameter, whic
 	
 Here are typical exceptions thrown from the client library:
 
-* **`DockerApiException`** is thrown when Docker API responds with non-success result.
-    * You can use `StatusCode` and `ResponseBody` properties of the exception for further logging.
-* **`TaskCanceledException`** is thrown from `System.Net.Http` library by design. It is not a friendly exception but usually means your request has timed out. (HttpClient has 100 seconds of default timeout per request.) 
-    * Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have infinite timeout configured by the library.
+* **`DockerApiException`** is thrown when Docker API responds with a non-success result. Subclasses:
+    * **``DockerContainerNotFoundException``**
+    * **``DockerImageNotFoundException``**
+* **`TaskCanceledException`** is thrown from `System.Net.Http.HttpClient` library by design. It is not a friendly exception, but it indicates your request has timed out. (default request timeout is 100 seconds.) 
+    * Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have timeout value overridden with infinite timespan by this library.
 * **`ArgumentNullException`** is thrown when one of the required parameters are missing/empty.
     * Consider reading the [Docker Remote API reference](docker-remote-api) and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
 
@@ -130,9 +133,14 @@ Backwards compatibility is not tested and therefore not guaranteed.
 
 `<<TODO>>`
 
-## Known Issues
+## Known Issues / TODO
 
-`<<TODO>>`
+* Ability to specify version and using that the request URI is not implemented, that's still a TODO.
+* HTTP Hijacking is not implemented, therefore "Attach to Container" operation does not exist in the API (expecting pull requests!)
+* CertificateCredentials class is never tested, I know, sounds silly but that is the case. You can implement your own HttpClient provider by deriving from Credentials class and make it work in case it doesn't work.
+* Certificate authentication does not work on Mono. [[StackOverflow question](http://stackoverflow.com/questions/25495056/using-custom-ssl-client-certificates-system-net-httpclient-on-mono)]
+* Some response fields that could have been made System.DateTime are not deserialized back from ISO8601 strings or UNIX epoch timestamps because (1) Mono is bad at DateTime parsing ([Mono bug #22417](https://bugzilla.xamarin.com/show_bug.cgi?id=22417)) and (2) Docker API uses inconsistent date formats in the API ([docker issue #7670](https://github.com/docker/docker/issues/7670)).
+* Test suite does not exist. Functionality is verified manually. (pull requests are welcomed!)
 
 ## License
 
