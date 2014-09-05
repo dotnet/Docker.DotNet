@@ -11,9 +11,9 @@ namespace Docker.DotNet
 
         private T Value { get; set; }
 
-        private JsonConverter Serializer { get; set; }
+        private JsonSerializer Serializer { get; set; }
 
-        public JsonRequestContent(T val, JsonConverter serializer)
+        public JsonRequestContent(T val, JsonSerializer serializer)
         {
             if (EqualityComparer<T>.Default.Equals(val))
             {

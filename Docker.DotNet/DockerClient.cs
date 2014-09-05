@@ -13,11 +13,11 @@ namespace Docker.DotNet
     {
         private const string UserAgent = "Docker.DotNet";
 
+        private Version RequestedApiVersion { get; set; }
+
         public DockerClientConfiguration Configuration { get; private set; }
 
-        public Version RequestedApiVersion { get; private set; }
-
-        internal JsonConverter JsonConverter { get; private set; }
+        internal JsonSerializer JsonSerializer { get; private set; }
 
         public IImageOperations Images { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Docker.DotNet
         {
             this.Configuration = configuration;
             this.RequestedApiVersion = requestedApiVersion;
-            this.JsonConverter = new JsonConverter();
+            this.JsonSerializer = new JsonSerializer();
 
             this.Images = new ImageOperations(this);
             this.Containers = new ContainerOperations(this);

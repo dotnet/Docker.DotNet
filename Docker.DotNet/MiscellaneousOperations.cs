@@ -23,7 +23,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException("authConfig");
             }
-            var data = new JsonRequestContent<AuthConfig>(authConfig, this.Client.JsonConverter);
+            var data = new JsonRequestContent<AuthConfig>(authConfig, this.Client.JsonSerializer);
 
             const string path = "auth";
             return this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, null, data);
@@ -33,7 +33,7 @@ namespace Docker.DotNet
         {
             const string path = "version";
             DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null);
-            return this.Client.JsonConverter.DeserializeObject<VersionResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<VersionResponse>(response.Body);
         }
 
         public Task PingAsync()
@@ -45,7 +45,7 @@ namespace Docker.DotNet
         {
             const string path = "info";
             DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null);
-            return this.Client.JsonConverter.DeserializeObject<SystemInfoResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
         }
 
         public Task<Stream> MonitorEventsAsync(MonitorDockerEventsParameters parameters, CancellationToken cancellationToken)
@@ -67,11 +67,11 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("parameters");
             }
 
-            JsonRequestContent<Config> data = parameters.Config == null ? null : new JsonRequestContent<Config>(parameters.Config, this.Client.JsonConverter);
+            JsonRequestContent<Config> data = parameters.Config == null ? null : new JsonRequestContent<Config>(parameters.Config, this.Client.JsonSerializer);
             const string path = "commit";
             IQueryString queryParameters = new QueryString<CommitContainerChangesParameters>(parameters);
             DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, data);
-            return this.Client.JsonConverter.DeserializeObject<CommitContainerChangesResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<CommitContainerChangesResponse>(response.Body);
         }
 
         public Task<Stream> GetImageAsTarballAsync(string name, CancellationToken cancellationToken)

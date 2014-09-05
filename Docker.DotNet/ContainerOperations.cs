@@ -37,7 +37,7 @@ namespace Docker.DotNet
             string path = "containers/json";
             IQueryString queryParameters = new QueryString<ListContainersParameters>(parameters);
             DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
-            return this.Client.JsonConverter.DeserializeObject<ContainerListResponse[]>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<ContainerListResponse[]>(response.Body);
         }
 
         public async Task<ContainerResponse> InspectContainerAsync(string id)
@@ -49,7 +49,7 @@ namespace Docker.DotNet
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/json", id);
             DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null);
-            return this.Client.JsonConverter.DeserializeObject<ContainerResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<ContainerResponse>(response.Body);
         }
 
         public async Task<CreateContainerResponse> CreateContainerAsync(CreateContainerParameters parameters)
@@ -63,10 +63,10 @@ namespace Docker.DotNet
             JsonRequestContent<Config> data = null;
             if (parameters.Config != null)
             {
-                data = new JsonRequestContent<Config>(parameters.Config, this.Client.JsonConverter);
+                data = new JsonRequestContent<Config>(parameters.Config, this.Client.JsonSerializer);
             }
             DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data);
-            return this.Client.JsonConverter.DeserializeObject<CreateContainerResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<CreateContainerResponse>(response.Body);
         }
 
         public Task<Stream> ExportContainerAsync(string id, CancellationToken cancellationToken)
@@ -95,7 +95,7 @@ namespace Docker.DotNet
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/top", id);
             IQueryString queryParameters = new QueryString<ListProcessesParameters>(parameters);
             DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, queryParameters);
-            return this.Client.JsonConverter.DeserializeObject<ContainerProcessesResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<ContainerProcessesResponse>(response.Body);
         }
 
         public async Task<IList<FilesystemChange>> InspectChangesAsync(string id)
@@ -107,7 +107,7 @@ namespace Docker.DotNet
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/changes", id);
             DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null);
-            return this.Client.JsonConverter.DeserializeObject<FilesystemChange[]>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<FilesystemChange[]>(response.Body);
         }
 
         public async Task<bool> StartContainerAsync(string id, HostConfig hostConfig)
@@ -121,7 +121,7 @@ namespace Docker.DotNet
             JsonRequestContent<HostConfig> data = null;
             if (hostConfig != null)
             {
-                data = new JsonRequestContent<HostConfig>(hostConfig, this.Client.JsonConverter);
+                data = new JsonRequestContent<HostConfig>(hostConfig, this.Client.JsonSerializer);
             }
             DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data);
             return response.StatusCode != HttpStatusCode.NotModified;
@@ -215,7 +215,7 @@ namespace Docker.DotNet
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/wait", id);
             DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, null, Timeout.InfiniteTimeSpan, cancellationToken);
-            return this.Client.JsonConverter.DeserializeObject<WaitContainerResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<WaitContainerResponse>(response.Body);
         }
 
         public Task RemoveContainerAsync(string id, RemoveContainerParameters parameters)
@@ -271,7 +271,7 @@ namespace Docker.DotNet
                 throw new ArgumentException("ResourcePath is empty", "parameters");
             }
 
-            var data = new JsonRequestContent<CopyFromContainerParameters>(parameters, this.Client.JsonConverter);
+            var data = new JsonRequestContent<CopyFromContainerParameters>(parameters, this.Client.JsonSerializer);
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/copy", id);
             return this.Client.MakeRequestForStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data, cancellationToken);

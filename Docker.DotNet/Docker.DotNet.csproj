@@ -64,7 +64,7 @@
     <Compile Include="ImageOperations.cs" />
     <Compile Include="DockerApiException.cs" />
     <Compile Include="DockerApiResponse.cs" />
-    <Compile Include="JsonConverter.cs" />
+    <Compile Include="JsonSerializer.cs" />
     <Compile Include="DockerClientConfiguration.cs" />
     <Compile Include="HttpUtility.cs" />
     <Compile Include="Models\ImageListResponse.cs" />

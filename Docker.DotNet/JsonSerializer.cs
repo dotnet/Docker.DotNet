@@ -5,11 +5,11 @@ namespace Docker.DotNet
     /// <summary>
     /// Facade for <see cref="Newtonsoft.Json.JsonConvert"/>.
     /// </summary>
-    internal class JsonConverter
+    internal class JsonSerializer
     {
         private Newtonsoft.Json.JsonConverter[] Converters { get; set; }
 
-        public JsonConverter()
+        public JsonSerializer()
         {
             this.Converters = new Newtonsoft.Json.JsonConverter[]
             {

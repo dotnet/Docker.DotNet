@@ -13,12 +13,12 @@ namespace Docker.DotNet
             return objectType == typeof (DateTime) || objectType == typeof (DateTime?);
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
         {
             bool isNullableType = (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof (Nullable<>));
             object value = reader.Value;
