@@ -8,11 +8,11 @@ The library is **still being developed**, please use with caution, report bugs a
 
 ## Installation
 
-You can add this library to your project using [NuGet](nuget). This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
+You can add this library to your project using [NuGet][nuget]. This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
 
-    PM> Install-Package Docker.DotNet
+    PM> Install-Package Docker.DotNet -Pre
     
-Or right click to your project in Visual Studio, choose “Manage NuGet Packages” and search for ‘Docker.DotNet’ and click ‘Install’.
+Or right click to your project in Visual Studio, choose “Manage NuGet Packages” and search for ‘Docker.DotNet’ and click ‘Install’. ([see NuGet Gallery][nuget-gallery].)
 
 ## Usage
 
@@ -168,3 +168,4 @@ This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet 
 [v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
 [docker-tls]: https://docs.docker.com/articles/https/
 [nuget]: http://www.nuget.org
+[nuget-gallery]: https://www.nuget.org/packages/Docker.DotNet/
