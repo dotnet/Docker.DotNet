@@ -19,10 +19,7 @@ Or right click to your project in Visual Studio, choose “Manage NuGet Packages
 You can initialize the client like the following:
 
 ```csharp
-
 using Docker.DotNet;
-...
-
 DockerClient client = new DockerClientConfiguration("http://ubuntu-docker.cloudapp.net:4243")
      .CreateClient();
 ```
@@ -30,12 +27,10 @@ DockerClient client = new DockerClientConfiguration("http://ubuntu-docker.clouda
 #### Example: List containers
 
 ```csharp
-
 IList<ContainerResponse> containers = await client.Containers.ListContainersAsync(
 	new ListContainersParameters(){
 		Limit = 10,
     });
-
 ```
 
 #### Example: Create container
@@ -144,11 +139,11 @@ Backwards compatibility is not tested and therefore not guaranteed.
 
 ## Known Issues / TODO
 
-* HTTP Hijacking is not implemented, therefore "Attach to Container" operation does not exist in the API (expecting pull requests!)
-* CertificateCredentials class is never tested, I know, sounds silly but that is the case. You can implement your own HttpClient provider by deriving from Credentials class and make it work in case it doesn't work.
+* HTTP Hijacking is not implemented yet, therefore "Attach to Container" operation does not exist in the library (expecting pull requests!) A workaround might be using WebSockets (/attach/ws).
 * Certificate authentication does not work on Mono. [[StackOverflow question](http://stackoverflow.com/questions/25495056/using-custom-ssl-client-certificates-system-net-httpclient-on-mono)]
-* Deserialization of DateTime fields from JSON responses will fail with System.FormatException on Mono due to [Mono bug #22417](https://bugzilla.xamarin.com/show_bug.cgi?id=22417).
-* Test suite does not exist. Functionality is verified manually. (pull requests are welcomed!)
+* Deserialization of DateTime fields from JSON responses will fail with System.FormatException on Mono due to [Mono bug #22417](https://bugzilla.xamarin.com/show_bug.cgi?id=22417). Any responses contain DateTime fields will fail on Mono.
+* Test suite does not exist. Functionality is verified manually. (pull requests are welcomed, I can provide a private test instance on cloud!)
+* ~~CertificateCredentials class is not tested.~~
 * ~~Ability to specify version and using that the request URI is not implemented.~~
 * ~~Fields that could have been DateTime are either long or string because Docker API uses inconsistent date formats in the API ([docker issue #7670](https://github.com/docker/docker/issues/7670)).~~
 
@@ -156,9 +151,9 @@ Backwards compatibility is not tested and therefore not guaranteed.
 
 This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet Alp Balkan.
 
-> **DISCLAIMER:** This project is not affiliated with Docker, Inc or Microsoft Corporation.
+> **DISCLAIMER:** This project is neither affiliated with Docker, Inc. nor Microsoft Corporation.
 
-## Authors
+## Authors/Contributors
 
 * [Ahmet Alp Balkan](http://ahmetalpbalkan.com)
 
