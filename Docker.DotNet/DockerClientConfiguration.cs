@@ -25,7 +25,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("credentials");
             }
 
-            this.EndpointBaseUri = SanitizeEndpoint(endpoint);
+            bool isTls = credentials is CertificateCredentials;
+            this.EndpointBaseUri = SanitizeEndpoint(endpoint, isTls);
             this.Credentials = credentials;
         }
 
@@ -39,11 +40,15 @@ namespace Docker.DotNet
             return new DockerClient(this, requestedApiVersion);
         }
 
-        private static Uri SanitizeEndpoint(Uri endpoint)
+        private static Uri SanitizeEndpoint(Uri endpoint, bool isTls)
         {
             UriBuilder builder = new UriBuilder(endpoint);
 
-            if (builder.Scheme.Equals("tcp", StringComparison.InvariantCultureIgnoreCase))
+            if (isTls)
+            {
+                builder.Scheme = "https";
+            }
+            else if (builder.Scheme.Equals("tcp", StringComparison.InvariantCultureIgnoreCase))
             {
                 builder.Scheme = "http";
             }
