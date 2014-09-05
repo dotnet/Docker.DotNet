@@ -106,6 +106,12 @@ DockerClient client = config.CreateClient();
 
 If you don't want to authenticate you can omit the `credentials` parameter, which defaults to an `AnonymousCredentials` instance.
 
+The `CertFile` in the example above should be a .pfx file (PKCS12 format), if you have .pem formatted certificates which Docker normally uses you can either convert it programmatically or use `openssl` tool to generate a .pfx:
+
+    openssl pkcs12 -export -inkey key.pem -in cert.pem -out key.pfx
+
+(Here, your private key is key.pem, public key is cert.pem and output file is named key.pfx.) This will prompt a password for PFX file and then you can use this PFX file on Windows. If the certificate is self-signed, your application may reject the server certificate, in this case you might want to disable server certificate validation: `ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;`
+
 #### Example: Specifying Remote API Version
 
 By default this client does not specify version number to the API for the requests it makes. However, if you would like to make use of versioning feature of Docker Remote API You can initialize the client like the following.
