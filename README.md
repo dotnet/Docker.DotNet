@@ -33,7 +33,7 @@ IList<ContainerResponse> containers = await client.Containers.ListContainersAsyn
     });
 ```
 
-#### Example: Create container
+#### Example: Create an image by pulling from Docker Registry
 
 The code below pulls `fedora/memcached` image to your Docker instance using your Docker Hub account. You can anonymously download the image as well by passing `null` instead of AuthConfig object:
 
