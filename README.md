@@ -4,8 +4,6 @@ This library allows you to interact with [Docker Remote API][docker-remote-api] 
 
 It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically. At the time of writing, it supports [Docker Remote API v1.14][v1.14].
 
-The library is **still being developed**, please use with caution, report bugs and feel free to submit patches.
-
 ## Installation
 
 You can add this library to your project using [NuGet][nuget]. This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
