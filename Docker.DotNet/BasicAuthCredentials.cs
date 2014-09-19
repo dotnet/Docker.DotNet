@@ -8,37 +8,37 @@ namespace Docker.DotNet
 {
     public class BasicAuthCredentials : Credentials
     {
-        public SecureString Username { get; private set; }
-        public SecureString Password { get; private set; }
+        private readonly SecureString _username;
+        private readonly SecureString _password;
 
         public BasicAuthCredentials(SecureString username, SecureString password)
         {
-            this.Username = username;
-            this.Password = password;
+            _username = username;
+            _password = password;
         }
 
         public BasicAuthCredentials(string username, SecureString password)
         {
-            this.Username = ConvertToSecureString(username);
-            this.Password = password;
+            _username = ConvertToSecureString(username);
+            _password = password;
         }
 
         public BasicAuthCredentials(SecureString username, string password)
         {
-            this.Username = username;
-            this.Password = ConvertToSecureString(password);
+            _username = username;
+            _password = ConvertToSecureString(password);
         }
 
         public BasicAuthCredentials(string username, string password)
         {
-            this.Username = ConvertToSecureString(username);
-            this.Password = ConvertToSecureString(password);
+            _username = ConvertToSecureString(username);
+            _password = ConvertToSecureString(password);
         }
 
         public override HttpClient BuildHttpClient()
         {
             var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("Authorization", BuildBasicAuth(this.Username, this.Password));
+            httpClient.DefaultRequestHeaders.Add("Authorization", BuildBasicAuth(_username, _password));
 
             return httpClient;
         }
