@@ -8,7 +8,7 @@ It is fully asynchronous, designed to be non-blocking and object-oriented way to
 
 You can add this library to your project using [NuGet][nuget]. This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
 
-    PM> Install-Package Docker.DotNet -Pre
+    PM> Install-Package Docker.DotNet
     
 Or right click to your project in Visual Studio, choose “Manage NuGet Packages” and search for ‘Docker.DotNet’ and click ‘Install’. ([see NuGet Gallery][nuget-gallery].)
 

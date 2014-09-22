@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicAuthCredentials.cs" />
     <Compile Include="IQueryStringConverterInstanceFactory.cs" />
     <Compile Include="JsonIso8601AndUnixEpochDateConverter.cs" />
     <Compile Include="JsonVersionConverter.cs" />
