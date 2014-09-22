@@ -17,20 +17,18 @@ namespace Docker.DotNet
             _password = password;
         }
 
-        public BasicAuthCredentials(string username, SecureString password)
-        {
-            _username = ConvertToSecureString(username);
-            _password = password;
-        }
-
-        public BasicAuthCredentials(SecureString username, string password)
-        {
-            _username = username;
-            _password = ConvertToSecureString(password);
-        }
-
         public BasicAuthCredentials(string username, string password)
         {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentNullException("username");
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException();
+            }
+
             _username = ConvertToSecureString(username);
             _password = ConvertToSecureString(password);
         }
