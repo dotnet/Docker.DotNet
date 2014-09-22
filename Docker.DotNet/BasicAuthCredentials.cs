@@ -13,6 +13,16 @@ namespace Docker.DotNet
 
         public BasicAuthCredentials(SecureString username, SecureString password)
         {
+            if (username == null)
+            {
+                throw new ArgumentException("username");
+            }
+
+            if (password == null)
+            {
+                throw new ArgumentException("password");
+            }
+
             _username = username;
             _password = password;
         }
@@ -21,12 +31,12 @@ namespace Docker.DotNet
         {
             if (string.IsNullOrEmpty(username))
             {
-                throw new ArgumentNullException("username");
+                throw new ArgumentException("username");
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                throw new ArgumentNullException();
+                throw new ArgumentException("password");
             }
 
             _username = ConvertToSecureString(username);
