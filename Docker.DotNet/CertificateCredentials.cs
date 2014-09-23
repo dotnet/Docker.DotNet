@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using Org.BouncyCastle.X509;
+
 namespace Docker.DotNet
 {
     public class CertificateCredentials : Credentials
