@@ -1,24 +1,25 @@
 ﻿using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-
+using Org.BouncyCastle.X509;
 namespace Docker.DotNet
 {
     public class CertificateCredentials : Credentials
     {
-        public X509Certificate2 ClientCertificate { get; private set; }
 
-        public CertificateCredentials(X509Certificate2 clientCertificate)
+        public X509Certificate ClientCertificate { get; private set; }
+
+        public CertificateCredentials(X509Certificate clientCertificate)
         {
             this.ClientCertificate = clientCertificate;
         }
 
         public override HttpClient BuildHttpClient()
         {
-            WebRequestHandler certHandler = new WebRequestHandler()
+            PortableWebRequestHandler certHandler = new PortableWebRequestHandler()
             {
                 ClientCertificateOptions = ClientCertificateOption.Manual,
                 UseDefaultCredentials = false
             };
+            
             certHandler.ClientCertificates.Add(this.ClientCertificate);
 
             return new HttpClient(certHandler);

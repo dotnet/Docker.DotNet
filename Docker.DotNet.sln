@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet", "Docker.DotNet\Docker.DotNet.csproj", "{27C637FF-3EA5-4AD1-81D3-45C28862EF3E}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet.PCL", "Docker.DotNet.PCL\Docker.DotNet.PCL.csproj", "{4E6184DE-D4DA-4E82-9418-CE725EC35092}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet.PCLTester", "Docker.DotNet.PCLTester\Docker.DotNet.PCLTester.csproj", "{DF159849-43FC-44E1-967E-BA91F758E64A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +13,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{27C637FF-3EA5-4AD1-81D3-45C28862EF3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27C637FF-3EA5-4AD1-81D3-45C28862EF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27C637FF-3EA5-4AD1-81D3-45C28862EF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27C637FF-3EA5-4AD1-81D3-45C28862EF3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E6184DE-D4DA-4E82-9418-CE725EC35092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E6184DE-D4DA-4E82-9418-CE725EC35092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E6184DE-D4DA-4E82-9418-CE725EC35092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E6184DE-D4DA-4E82-9418-CE725EC35092}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF159849-43FC-44E1-967E-BA91F758E64A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF159849-43FC-44E1-967E-BA91F758E64A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF159849-43FC-44E1-967E-BA91F758E64A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF159849-43FC-44E1-967E-BA91F758E64A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Docker.DotNet\Docker.DotNet.csproj
