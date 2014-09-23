@@ -143,7 +143,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<StopContainerParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, Timeout.InfiniteTimeSpan, cancellationToken);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, new TimeSpan?(new TimeSpan( Timeout.Infinite)), cancellationToken);
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
@@ -164,7 +164,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<RestartContainerParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
-            return this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, Timeout.InfiniteTimeSpan, cancellationToken);
+            return this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null,new TimeSpan?(new TimeSpan( Timeout.Infinite)), cancellationToken);
         }
 
         public Task KillContainerAsync(string id, KillContainerParameters parameters)
@@ -214,7 +214,7 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/wait", id);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, null, Timeout.InfiniteTimeSpan, cancellationToken);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, null,new TimeSpan?(new TimeSpan(Timeout.Infinite)), cancellationToken);
             return this.Client.JsonSerializer.DeserializeObject<WaitContainerResponse>(response.Body);
         }
 

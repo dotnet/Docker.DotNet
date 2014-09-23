@@ -33,7 +33,7 @@ namespace Docker.DotNet
             {
                 PropertyInfo property = pair.Item1;
                 QueryStringParameterAttribute attribute = pair.Item2;
-                object value = property.GetValue(this.Object);
+                object value = property.GetValue(this.Object, null);
 
                 // 'Required' check
                 if (attribute.IsRequired && value == null)
@@ -74,11 +74,18 @@ namespace Docker.DotNet
 
             return queryParameters;
         }
-
+        /// <summary>
+        /// Returns formatted query string.
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// JMG: Removed the CultureInfo.InvariantCulture from the pair.Value.ToString() call
+        /// as it is not supported in PCL.
+        /// </remarks>
         public string GetQueryString()
         {
             return string.Join("&", GetKeyValuePairs().Select(pair => string.Format(CultureInfo.InvariantCulture, "{0}={1}",
-                Uri.EscapeUriString(pair.Key), Uri.EscapeUriString(pair.Value.ToString(CultureInfo.InvariantCulture)))));
+                Uri.EscapeUriString(pair.Key), Uri.EscapeUriString(pair.Value.ToString()))));
         }
 
         private string ConvertValue(IQueryStringConverter converter, object value)

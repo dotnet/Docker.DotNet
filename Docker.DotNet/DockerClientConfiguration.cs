@@ -4,16 +4,16 @@ namespace Docker.DotNet
 {
     public class DockerClientConfiguration
     {
-        public Uri EndpointBaseUri { get; private set; }
+        public Uri EndpointBaseUri { get; internal set; }
 
-        public Credentials Credentials { get; private set; }
+        public Credentials Credentials { get; internal set; }
 
         public DockerClientConfiguration(Uri endpoint)
             : this(endpoint, new AnonymousCredentials())
         {
         }
 
-        public DockerClientConfiguration(Uri endpoint, Credentials credentials)
+        public DockerClientConfiguration(Uri endpoint, Credentials credentials, bool isTls = false)
         {
             if (endpoint == null)
             {
@@ -25,7 +25,6 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("credentials");
             }
 
-            bool isTls = credentials is CertificateCredentials;
             this.EndpointBaseUri = SanitizeEndpoint(endpoint, isTls);
             this.Credentials = credentials;
         }
@@ -48,7 +47,7 @@ namespace Docker.DotNet
             {
                 builder.Scheme = "https";
             }
-            else if (builder.Scheme.Equals("tcp", StringComparison.InvariantCultureIgnoreCase))
+            else if (builder.Scheme.Equals("tcp", StringComparison.CurrentCultureIgnoreCase))  // JMG: Changed from InvariantCultureIgnoreCase, not supported in PCL
             {
                 builder.Scheme = "http";
             }
