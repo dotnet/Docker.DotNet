@@ -48,9 +48,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Docker.DotNet.PCL\Docker.DotNet.PCL.csproj">
+    <ProjectReference Include="..\Docker.DotNet\Docker.DotNet.csproj">
       <Project>{4e6184de-d4da-4e82-9418-ce725ec35092}</Project>
-      <Name>Docker.DotNet.PCL</Name>
+      <Name>Docker.DotNet</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

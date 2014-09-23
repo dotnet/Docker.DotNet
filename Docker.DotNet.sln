@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet.PCL", "Docker.DotNet.PCL\Docker.DotNet.PCL.csproj", "{4E6184DE-D4DA-4E82-9418-CE725EC35092}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet", "Docker.DotNet\Docker.DotNet.csproj", "{4E6184DE-D4DA-4E82-9418-CE725EC35092}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet.PCLTester", "Docker.DotNet.PCLTester\Docker.DotNet.PCLTester.csproj", "{DF159849-43FC-44E1-967E-BA91F758E64A}"
 EndProject
