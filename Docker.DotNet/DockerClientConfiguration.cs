@@ -4,9 +4,9 @@ namespace Docker.DotNet
 {
     public class DockerClientConfiguration
     {
-        public Uri EndpointBaseUri { get; private set; }
+        public Uri EndpointBaseUri { get; internal set; }
 
-        public Credentials Credentials { get; private set; }
+        public Credentials Credentials { get; internal set; }
 
         public DockerClientConfiguration(Uri endpoint)
             : this(endpoint, new AnonymousCredentials())
@@ -25,8 +25,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("credentials");
             }
 
-            bool isTls = credentials is CertificateCredentials;
-            this.EndpointBaseUri = SanitizeEndpoint(endpoint, isTls);
+            this.EndpointBaseUri = SanitizeEndpoint(endpoint, false);
             this.Credentials = credentials;
         }
 
@@ -40,7 +39,7 @@ namespace Docker.DotNet
             return new DockerClient(this, requestedApiVersion);
         }
 
-        private static Uri SanitizeEndpoint(Uri endpoint, bool isTls)
+        internal static Uri SanitizeEndpoint(Uri endpoint, bool isTls)
         {
             UriBuilder builder = new UriBuilder(endpoint);
 
