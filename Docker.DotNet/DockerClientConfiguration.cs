@@ -13,7 +13,7 @@ namespace Docker.DotNet
         {
         }
 
-        public DockerClientConfiguration(Uri endpoint, Credentials credentials)
+        public DockerClientConfiguration(Uri endpoint, Credentials credentials, bool isTls = false)
         {
             if (endpoint == null)
             {
@@ -25,7 +25,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("credentials");
             }
 
-            this.EndpointBaseUri = SanitizeEndpoint(endpoint, false);
+            this.EndpointBaseUri = SanitizeEndpoint(endpoint, isTls);
             this.Credentials = credentials;
         }
 
@@ -39,7 +39,7 @@ namespace Docker.DotNet
             return new DockerClient(this, requestedApiVersion);
         }
 
-        internal static Uri SanitizeEndpoint(Uri endpoint, bool isTls)
+        private static Uri SanitizeEndpoint(Uri endpoint, bool isTls)
         {
             UriBuilder builder = new UriBuilder(endpoint);
 
