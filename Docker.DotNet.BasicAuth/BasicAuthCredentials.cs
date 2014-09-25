@@ -4,14 +4,15 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 
-namespace Docker.DotNet
+namespace Docker.DotNet.BasicAuth
 {
     public class BasicAuthCredentials : Credentials
     {
         private readonly SecureString _username;
         private readonly SecureString _password;
+        private readonly bool _isTls;
 
-        public BasicAuthCredentials(SecureString username, SecureString password)
+        public BasicAuthCredentials(SecureString username, SecureString password, bool isTls = false)
         {
             if (username == null)
             {
@@ -25,9 +26,10 @@ namespace Docker.DotNet
 
             _username = username;
             _password = password;
+            _isTls = isTls;
         }
 
-        public BasicAuthCredentials(string username, string password)
+        public BasicAuthCredentials(string username, string password, bool isTls = false)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -41,6 +43,7 @@ namespace Docker.DotNet
 
             _username = ConvertToSecureString(username);
             _password = ConvertToSecureString(password);
+            _isTls = isTls;
         }
 
         public override HttpClient BuildHttpClient()
@@ -49,6 +52,11 @@ namespace Docker.DotNet
             httpClient.DefaultRequestHeaders.Add("Authorization", BuildBasicAuth(_username, _password));
 
             return httpClient;
+        }
+
+        public override bool IsTlsCredentials()
+        {
+            return _isTls;
         }
 
         private static string BuildBasicAuth(SecureString username, SecureString password)
