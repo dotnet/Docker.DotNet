@@ -74,6 +74,7 @@ namespace Docker.DotNet
 
             return queryParameters;
         }
+
         /// <summary>
         /// Returns formatted query string.
         /// </summary>

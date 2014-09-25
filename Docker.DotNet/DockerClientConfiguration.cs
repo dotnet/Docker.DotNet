@@ -47,7 +47,7 @@ namespace Docker.DotNet
             {
                 builder.Scheme = "https";
             }
-            else if (builder.Scheme.Equals("tcp", StringComparison.CurrentCultureIgnoreCase))  // JMG: Changed from InvariantCultureIgnoreCase, not supported in PCL
+            else if (builder.Scheme.Equals("tcp", StringComparison.CurrentCultureIgnoreCase)) // JMG: Changed from InvariantCultureIgnoreCase, not supported in PCL
             {
                 builder.Scheme = "http";
             }
