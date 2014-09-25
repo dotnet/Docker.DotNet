@@ -24,5 +24,10 @@ namespace Docker.DotNet.X509
 
             return new HttpClient(certHandler);
         }
+
+        public override bool IsTlsCredentials()
+        {
+            return true;
+        }
     }
 }
