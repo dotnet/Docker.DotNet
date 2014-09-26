@@ -124,7 +124,7 @@ Once you added `Docker.DotNet.BasicAuth` to your project, use `BasicAuthCredenti
 
 ```csharp
 var credentials = new BasicAuthCredentials ("YOUR_USERNAME", "YOUR_PASSWORD");
-var config = new DockerClientConfiguration("http://ubuntu-docker.cloudapp.net:4243", credentials);
+var config = new DockerClientConfiguration("tcp://ubuntu-docker.cloudapp.net:4243", credentials);
 DockerClient client = config.CreateClient();
 ```
 
