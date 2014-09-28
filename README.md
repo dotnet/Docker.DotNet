@@ -94,7 +94,11 @@ You can cancel streaming using the CancellationToken. On the other hand, if you 
 
 #### Example: HTTPS Authentication to Docker
 
-If you are [running Docker with TLS (HTTPS)][docker-tls], you can authenticate to the Docker instance using `CertificateCredentials`:
+If you are [running Docker with TLS (HTTPS)][docker-tls], you can authenticate to the Docker instance using the [**`Docker.DotNet.X509`**][Docker.DotNet.X509] package. You can get this package from NuGet or by running the following command in the “Package Manager Console”:
+
+    PM> Install-Package Docker.DotNet.X509
+
+Once you add `Docker.DotNet.X509` to your project, use `CertificateCredentials` type:
 
 ```csharp
 var credentials = new CertificateCredentials (new X509Certificate2 ("CertFile", "Password"));
@@ -109,6 +113,22 @@ The `CertFile` in the example above should be a .pfx file (PKCS12 format), if yo
     openssl pkcs12 -export -inkey key.pem -in cert.pem -out key.pfx
 
 (Here, your private key is key.pem, public key is cert.pem and output file is named key.pfx.) This will prompt a password for PFX file and then you can use this PFX file on Windows. If the certificate is self-signed, your application may reject the server certificate, in this case you might want to disable server certificate validation: `ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;`
+
+#### Example: Basic HTTP Authentication to Docker
+
+If the Docker instance is secured with Basic HTTP Authentication, you can use the [**`Docker.DotNet.BasicAuth`**][Docker.DotNet.BasicAuth] package. Get this package from NuGet or by running the following command in the “Package Manager Console”:
+
+    PM> Install-Package Docker.DotNet.BasicAuth
+
+Once you added `Docker.DotNet.BasicAuth` to your project, use `BasicAuthCredentials` type:
+
+```csharp
+var credentials = new BasicAuthCredentials ("YOUR_USERNAME", "YOUR_PASSWORD");
+var config = new DockerClientConfiguration("tcp://ubuntu-docker.cloudapp.net:4243", credentials);
+DockerClient client = config.CreateClient();
+```
+
+`BasicAuthCredentials` also accepts `SecureString` for username and password arguments.
 
 #### Example: Specifying Remote API Version
 
@@ -139,7 +159,21 @@ Backwards compatibility is not tested and therefore not guaranteed.
 
 ## Changes
 
-`<<TODO>>`
+```
+v1.1.0
+======
++ PCL support
++ Support for Basic HTTP authentication
++ CertificateCredentials (X509) is now a separate package
+
+Acknowledgements:
+- @jgarverick for helping out extensively on PCL support
+- @Gandalis for implementing basic auth
+
+v1.0.0
+======
++ Initial release
+```
 
 ## Known Issues / TODO
 
@@ -160,10 +194,13 @@ This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet 
 ## Authors/Contributors
 
 * [Ahmet Alp Balkan](http://ahmetalpbalkan.com)
-
+* [Josh Garverick](http://blogs.obliteracy.net/)
+* [Andreas Bieber](https://github.com/Gandalis)
 
 [docker-remote-api]: https://docs.docker.com/reference/api/docker_remote_api/
 [v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
 [docker-tls]: https://docs.docker.com/articles/https/
 [nuget]: http://www.nuget.org
 [nuget-gallery]: https://www.nuget.org/packages/Docker.DotNet/
+[Docker.DotNet.X509]: https://www.nuget.org/packages/Docker.DotNet.X509/
+[Docker.DotNet.BasicAuth]: https://www.nuget.org/packages/Docker.DotNet.BasicAuth/

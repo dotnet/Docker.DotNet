@@ -68,13 +68,13 @@ namespace Docker.DotNet
                         }
                     }
 
-
-                    queryParameters[attribute.Name] = valueStr;
+                    queryParameters[keyStr] = valueStr;
                 }
             }
 
             return queryParameters;
         }
+
         /// <summary>
         /// Returns formatted query string.
         /// </summary>
@@ -86,7 +86,7 @@ namespace Docker.DotNet
         public string GetQueryString()
         {
             return string.Join("&", GetKeyValuePairs().Select(pair => string.Format(CultureInfo.InvariantCulture, "{0}={1}",
-                pair.Key, Uri.EscapeUriString(pair.Value.ToString()))));
+                Uri.EscapeUriString(pair.Key), Uri.EscapeUriString(pair.Value.ToString()))));
         }
 
         private string ConvertValue(IQueryStringConverter converter, object value)

@@ -12,5 +12,10 @@ namespace Docker.DotNet
         {
             return new HttpClient();
         }
+
+        public override bool IsTlsCredentials()
+        {
+            return false;
+        }
     }
 }

@@ -6,13 +6,13 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Docker.DotNet.X509")]
+[assembly: AssemblyTitle("Docker.DotNet.BasicAuth")]
 [assembly: InternalsVisibleTo("Docker.DotNet.UnitTests")]
 [assembly: InternalsVisibleTo("Docker.DotNet.IntegrationTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Docker.DotNet.X509")]
+[assembly: AssemblyProduct("Docker.DotNet.BasicAuth")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("653dce17-3988-48c4-8f87-6e9968931d9a")]
+[assembly: Guid("60650aea-bda0-4a94-a3ed-7d8fc2b139c8")]
 
 // Version information for an assembly consists of the following four values:
 //
