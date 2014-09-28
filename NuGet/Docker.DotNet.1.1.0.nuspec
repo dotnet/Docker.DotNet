@@ -23,6 +23,6 @@ It is portable (PCL), fully asynchronous, non-blocking and object-oriented way t
         </dependencies>
     </metadata>
     <files>
-        <file src="..\Docker.DotNet\bin\Release\Docker.DotNet.dll" target="lib\portable-net45+sl5+wp8+win8+win81+wpa81\Docker.DotNet.dll" />
+        <file src="..\Docker.DotNet\bin\Release\Docker.DotNet.dll" target="lib\portable-net45+sl5+wp8+win8+win81+wpa81+MonoAndroid10+MonoTouch10\Docker.DotNet.dll" />
     </files>
 </package>
