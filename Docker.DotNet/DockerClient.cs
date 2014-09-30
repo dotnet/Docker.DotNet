@@ -82,7 +82,7 @@ namespace Docker.DotNet
 
         internal async Task<Stream> MakeRequestForStreamAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await MakeRequestInnerAsync(new TimeSpan?(new TimeSpan(Timeout.Infinite)), HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken);
+            HttpResponseMessage response = await MakeRequestInnerAsync(TimeSpan.FromMilliseconds(Timeout.Infinite), HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken);
             HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
             return await response.Content.ReadAsStreamAsync();
         }
