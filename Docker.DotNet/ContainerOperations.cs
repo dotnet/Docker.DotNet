@@ -54,10 +54,16 @@ namespace Docker.DotNet
 
         public async Task<CreateContainerResponse> CreateContainerAsync(CreateContainerParameters parameters)
         {
+            IQueryString qs = null;
+            
             if (parameters == null)
             {
                 throw new ArgumentNullException("parameters");
             }
+            if (!string.IsNullOrEmpty(parameters.ContainerName)) {
+                qs = new QueryString<string>(parameters.ContainerName);
+            }
+                
 
             string path = "containers/create";
             JsonRequestContent<Config> data = null;
@@ -65,7 +71,7 @@ namespace Docker.DotNet
             {
                 data = new JsonRequestContent<Config>(parameters.Config, this.Client.JsonSerializer);
             }
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, qs, data);
             return this.Client.JsonSerializer.DeserializeObject<CreateContainerResponse>(response.Body);
         }
 
