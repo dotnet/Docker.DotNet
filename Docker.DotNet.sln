@@ -9,16 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet.X509", "Docke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet.BasicAuth", "Docker.DotNet.BasicAuth\Docker.DotNet.BasicAuth.csproj", "{6D57F11F-B21A-45DB-A1D4-73AFCD68899C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{A7F9B953-A958-4AEC-8817-E1CDFE3A2302}"
-	ProjectSection(SolutionItems) = preProject
-		NuGet\Docker.DotNet.1.0-beta.nuspec = NuGet\Docker.DotNet.1.0-beta.nuspec
-		NuGet\Docker.DotNet.1.0.0.nuspec = NuGet\Docker.DotNet.1.0.0.nuspec
-		NuGet\Docker.DotNet.1.1.0-beta.nuspec = NuGet\Docker.DotNet.1.1.0-beta.nuspec
-		NuGet\Docker.DotNet.1.1.0.nuspec = NuGet\Docker.DotNet.1.1.0.nuspec
-		NuGet\Docker.DotNet.BasicAuth.1.0.nuspec = NuGet\Docker.DotNet.BasicAuth.1.0.nuspec
-		NuGet\Docker.DotNet.X509.1.0.nuspec = NuGet\Docker.DotNet.X509.1.0.nuspec
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
