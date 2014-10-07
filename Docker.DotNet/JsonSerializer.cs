@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Docker.DotNet
 {
@@ -14,7 +15,8 @@ namespace Docker.DotNet
             this.Converters = new Newtonsoft.Json.JsonConverter[]
             {
                 new JsonIso8601AndUnixEpochDateConverter(),
-                new JsonVersionConverter()
+                new JsonVersionConverter(),
+                new StringEnumConverter()
             };
         }
 

@@ -13,11 +13,12 @@ namespace Docker.DotNet.Models
         OnFailure
     }
 
+    [DataContract]
     public class RestartPolicy
     {
-        [JsonConverter(typeof(StringEnumConverter))]
+        [DataMember(Name="Name")]
         public RestartPolicyKind Name { get; set; }
-
+        [DataMember(Name = "MaximumRetryCount")]
         public int MaximumRetryCount { get; set; }
     }
 }
