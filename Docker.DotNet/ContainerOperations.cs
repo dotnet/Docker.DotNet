@@ -60,10 +60,10 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException("parameters");
             }
+
             if (!string.IsNullOrEmpty(parameters.ContainerName)) {
-                qs = new QueryString<string>(parameters.ContainerName);
+                qs = new QueryString<CreateContainerParameters>(parameters);
             }
-                
 
             string path = "containers/create";
             JsonRequestContent<Config> data = null;
