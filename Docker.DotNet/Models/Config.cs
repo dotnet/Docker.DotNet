@@ -81,6 +81,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ExposedPorts")]
         public IDictionary<string, object> ExposedPorts { get; set; }
 
+        [DataMember(Name = "RestartPolicy")]
+        public RestartPolicy RestartPolicy { get; set; }
+
         public Config()
         {
         }

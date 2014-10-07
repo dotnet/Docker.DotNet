@@ -97,6 +97,7 @@
     <Compile Include="Models\PushImageParameters.cs" />
     <Compile Include="Models\RemoveContainerParameters.cs" />
     <Compile Include="Models\RestartContainerParameters.cs" />
+    <Compile Include="Models\RestartPolicy.cs" />
     <Compile Include="Models\SearchImagesParameters.cs" />
     <Compile Include="Models\StopContainerParameters.cs" />
     <Compile Include="Models\SystemInfoResponse.cs" />
