@@ -160,6 +160,16 @@ Backwards compatibility is not tested and therefore not guaranteed.
 ## Changes
 
 ```
+
+v1.1.1
+======
++ Bugfix: infinite timeout for stream requests lost in PCL translation
++ New: support to specify a container name in CreateContainerAsync
+
+Acknowledgemnets
+- @jgarverick for implementing container name support
+- Iouri Simernitski (@pefferie) for bug report
+
 v1.1.0
 ======
 + PCL support
