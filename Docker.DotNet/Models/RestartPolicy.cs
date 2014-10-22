@@ -13,7 +13,7 @@ namespace Docker.DotNet.Models
         OnFailure
     }
 
-    [DataContract]
+    [DataContract] 
     public class RestartPolicy
     {
         [DataMember(Name="Name")]
