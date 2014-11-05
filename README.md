@@ -1,4 +1,4 @@
-# .NET Client for Docker Remote API
+﻿# .NET Client for Docker Remote API
 
 This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications. 
 
@@ -91,6 +91,24 @@ Stream stream = await client.Miscellaneous.MonitorEventsAsync(new MonitorDockerE
 ```
 
 You can cancel streaming using the CancellationToken. On the other hand, if you wish to continuously stream, you can simply pass `CancellationToken.None`.
+
+Additionally, you can attach to a container using the `AttachContainerAsync` method.  Please bear in mind that this method does not employ the use of HTTP hijacking and therefore is a read-only stream.  Functionality to address the use of `stdin` to send data to the container via WebSockets is still being investigated.  An example of how to use the attach method is:
+
+```csharp
+
+Stream stream = await client.Containers.AttachContainerAsync("silly_jones", new Docker.DotNet.Models.AttachContainerParameters() { Streaming = true, IncludeLogs=true, AttachStdOut = true, AttachStdErr = false, AttachStdIn = false }, CancellationToken.None);
+
+using (StreamReader sr = new StreamReader(stream))
+
+{
+
+      while (!sr.EndOfStream)
+
+      Console.WriteLine(await sr.ReadLineAsync());
+
+}
+
+```
 
 #### Example: HTTPS Authentication to Docker
 
