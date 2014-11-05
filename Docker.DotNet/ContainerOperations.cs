@@ -283,5 +283,23 @@ namespace Docker.DotNet
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/copy", id);
             return this.Client.MakeRequestForStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data, cancellationToken);
         }
+
+        public Task<Stream> AttachContainerAsync(string id, AttachContainerParameters parameters, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+            // This method does not need any data to be passed in the body of the request; only querystring
+            IQueryString queryParameters = new QueryString<AttachContainerParameters>(parameters);
+
+            string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/attach", id);
+            return this.Client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters, null, cancellationToken);
+        }
     }
 }

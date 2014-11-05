@@ -38,6 +38,7 @@ namespace Docker.DotNet
 
         Task<Stream> GetContainerLogsAsync(string id, GetContainerLogsParameters parameters, CancellationToken cancellationToken);
 
-        Task<Stream> CopyFromContainerAsync(string id, CopyFromContainerParameters parameters, CancellationToken cancellationToken);
+        Task<Stream> AttachContainerAsync(string id, AttachContainerParameters parameters, CancellationToken cancellationToken);
+
     }
 }
