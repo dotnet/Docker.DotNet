@@ -205,7 +205,7 @@ v1.0.0
 
 ## Known Issues / TODO
 
-* HTTP Hijacking is not implemented yet, therefore "Attach to Container" operation does not exist in the library (expecting pull requests!) A workaround might be using WebSockets (/attach/ws).
+* HTTP Hijacking is not implemented yet, therefore "Attach to Container" operation does not allow for sending data to the client via `stdin`. 
 * Certificate authentication does not work on Mono. [[StackOverflow question](http://stackoverflow.com/questions/25495056/using-custom-ssl-client-certificates-system-net-httpclient-on-mono)]
 * Deserialization of DateTime fields from JSON responses will fail with System.FormatException on Mono due to [Mono bug #22417](https://bugzilla.xamarin.com/show_bug.cgi?id=22417). Any responses contain DateTime fields will fail on Mono.
 * Test suite does not exist. Functionality is verified manually. (pull requests are welcomed, I can provide a private test instance on cloud!)
