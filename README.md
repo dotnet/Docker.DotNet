@@ -1,4 +1,4 @@
-# .NET Client for Docker Remote API
+﻿# .NET Client for Docker Remote API
 
 This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications. 
 
@@ -91,6 +91,24 @@ Stream stream = await client.Miscellaneous.MonitorEventsAsync(new MonitorDockerE
 ```
 
 You can cancel streaming using the CancellationToken. On the other hand, if you wish to continuously stream, you can simply pass `CancellationToken.None`.
+
+Additionally, you can attach to a container using the `AttachContainerAsync` method.  Please bear in mind that this method does not employ the use of HTTP hijacking and therefore is a read-only stream.  Functionality to address the use of `stdin` to send data to the container via WebSockets is still being investigated.  An example of how to use the attach method is:
+
+```csharp
+
+Stream stream = await client.Containers.AttachContainerAsync("silly_jones", new Docker.DotNet.Models.AttachContainerParameters() { Streaming = true, IncludeLogs=true, AttachStdOut = true, AttachStdErr = false, AttachStdIn = false }, CancellationToken.None);
+
+using (StreamReader sr = new StreamReader(stream))
+
+{
+
+      while (!sr.EndOfStream)
+
+      Console.WriteLine(await sr.ReadLineAsync());
+
+}
+
+```
 
 #### Example: HTTPS Authentication to Docker
 
@@ -187,7 +205,7 @@ v1.0.0
 
 ## Known Issues / TODO
 
-* HTTP Hijacking is not implemented yet, therefore "Attach to Container" operation does not exist in the library (expecting pull requests!) A workaround might be using WebSockets (/attach/ws).
+* HTTP Hijacking is not implemented yet, therefore "Attach to Container" operation does not allow for sending data to the client via `stdin`. 
 * Certificate authentication does not work on Mono. [[StackOverflow question](http://stackoverflow.com/questions/25495056/using-custom-ssl-client-certificates-system-net-httpclient-on-mono)]
 * Deserialization of DateTime fields from JSON responses will fail with System.FormatException on Mono due to [Mono bug #22417](https://bugzilla.xamarin.com/show_bug.cgi?id=22417). Any responses contain DateTime fields will fail on Mono.
 * Test suite does not exist. Functionality is verified manually. (pull requests are welcomed, I can provide a private test instance on cloud!)

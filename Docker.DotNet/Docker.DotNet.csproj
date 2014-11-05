@@ -59,6 +59,7 @@
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="JsonVersionConverter.cs" />
     <Compile Include="MiscellaneousOperations.cs" />
+    <Compile Include="Models\AttachContainerParameters.cs" />
     <Compile Include="Models\AuthConfig.cs" />
     <Compile Include="Models\BoolQueryStringConverter.cs" />
     <Compile Include="Models\BuildImageFromDockerfileParameters.cs" />
