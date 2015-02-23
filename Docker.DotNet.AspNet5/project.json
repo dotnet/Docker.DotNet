@@ -1,0 +1,26 @@
+﻿{
+    "version": "1.0.0-*",
+    "dependencies": {
+        "Newtonsoft.Json": "6.0.5",
+        "System.Data.Common": "1.0.0-beta1"
+    },
+
+    "frameworks": {
+        "aspnet50": {
+            "frameworkAssemblies": {
+                "System.Net.Http": "4.0.0.0",
+                "System.Runtime.Serialization": "4.0.0.0",
+                "mscorlib": "4.0.0.0"
+            },
+            "dependencies": {
+            }
+        } 
+        /*,
+        "aspnetcore50": {
+            "dependencies": {
+                "System.Runtime": "4.0.20-beta-22231",
+                "System.Net.Http": "4.0.0-beta-22231"
+            }
+        }*/
+    }
+}
