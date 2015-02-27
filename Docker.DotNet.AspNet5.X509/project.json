@@ -1,0 +1,22 @@
+﻿{
+    "version": "1.0.0-*",
+    "dependencies": {
+        "Docker.DotNet.AspNet5": ""
+    },
+
+    "frameworks": {
+        "aspnet50": {
+            "frameworkAssemblies": {
+                "System.Net.Http": "4.0.0.0",
+                "System.Net.Http.WebRequest": "4.0.0.0"
+            },
+            "dependencies": {
+            }
+        } /*,
+        "aspnetcore50" : { 
+            "dependencies": {
+                "System.Runtime": "4.0.20-beta-22231"
+            }
+        }*/
+    }
+}
