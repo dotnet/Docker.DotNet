@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Docker.DotNet.BasicAuth", "
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Docker.DotNet.AspNet5", "Docker.DotNet.AspNet5\Docker.DotNet.AspNet5.kproj", "{95CAA321-E90C-46C8-94A7-C75293C1F79D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AspNet5", "AspNet5", "{345434BE-AC67-41CD-BDAF-E4B9CBF54D1E}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Docker.DotNet.AspNet5.X509", "Docker.DotNet.AspNet5.X509\Docker.DotNet.AspNet5.X509.kproj", "{DD3F65D4-0B42-4DD0-973E-D414860D6F20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,17 @@ Global
 		{95CAA321-E90C-46C8-94A7-C75293C1F79D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95CAA321-E90C-46C8-94A7-C75293C1F79D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95CAA321-E90C-46C8-94A7-C75293C1F79D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3F65D4-0B42-4DD0-973E-D414860D6F20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3F65D4-0B42-4DD0-973E-D414860D6F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3F65D4-0B42-4DD0-973E-D414860D6F20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3F65D4-0B42-4DD0-973E-D414860D6F20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{95CAA321-E90C-46C8-94A7-C75293C1F79D} = {345434BE-AC67-41CD-BDAF-E4B9CBF54D1E}
+		{DD3F65D4-0B42-4DD0-973E-D414860D6F20} = {345434BE-AC67-41CD-BDAF-E4B9CBF54D1E}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Docker.DotNet\Docker.DotNet.csproj

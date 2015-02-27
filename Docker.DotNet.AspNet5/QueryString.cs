@@ -85,7 +85,8 @@ namespace Docker.DotNet
         /// </remarks>
         public string GetQueryString()
         {
-            return string.Join("&", GetKeyValuePairs().Select(pair => string.Format(CultureInfo.InvariantCulture, "{0}={1}",
+            var keyValuePairs = GetKeyValuePairs();
+            return string.Join("&", keyValuePairs.Select(pair => string.Format(CultureInfo.InvariantCulture, "{0}={1}",
                 Uri.EscapeUriString(pair.Key), Uri.EscapeUriString(pair.Value.ToString()))));
         }
 
