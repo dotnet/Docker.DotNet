@@ -92,8 +92,7 @@ namespace Docker.DotNet.Models
                 _allBackingField = value;
             }
         }
-
-        [QueryStringParameter("limit", false, typeof (BoolQueryStringConverter))]
+		
         public long? Limit
         {
             get { return _limitBackingField; }
