@@ -47,6 +47,7 @@
     <Compile Include="DockerImageNotFoundException.cs" />
     <Compile Include="HttpUtility.cs" />
     <Compile Include="IContainerOperations.cs" />
+    <Compile Include="IDockerClient.cs" />
     <Compile Include="IImageOperations.cs" />
     <Compile Include="ImageOperations.cs" />
     <Compile Include="IMiscellaneousOperations.cs" />
