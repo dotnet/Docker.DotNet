@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Docker.DotNet
 {
-    public sealed class DockerClient
+    public sealed class DockerClient : IDockerClient
     {
         private const string UserAgent = "Docker.DotNet";
 
