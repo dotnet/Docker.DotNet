@@ -55,13 +55,14 @@ namespace Docker.DotNet
         public async Task<CreateContainerResponse> CreateContainerAsync(CreateContainerParameters parameters)
         {
             IQueryString qs = null;
-            
+
             if (parameters == null)
             {
                 throw new ArgumentNullException("parameters");
             }
 
-            if (!string.IsNullOrEmpty(parameters.ContainerName)) {
+            if (!string.IsNullOrEmpty(parameters.ContainerName))
+            {
                 qs = new QueryString<CreateContainerParameters>(parameters);
             }
 

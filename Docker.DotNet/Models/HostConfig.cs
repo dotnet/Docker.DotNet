@@ -32,6 +32,18 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "VolumesFrom")]
         public IList<string> VolumesFrom { get; set; }
 
+        [DataMember(Name = "RestartPolicy")]
+        public RestartPolicy RestartPolicy { get; set; }
+
+        [DataMember(Name = "NetworkMode")]
+        public string NetworkMode { get;set; }
+
+        [DataMember(Name = "CapAdd")]
+        public IList<string> CapAdd { get;set; }
+
+        [DataMember(Name = "CapDrop")]
+        public IList<string> CapDrop { get;set; }
+
         // Commenting out LxcConf parameter because its type in the request
         // form and response form are not the same. (one example says it's [], another
         // example says it's {"key": "value"}, API is totally messed up with such inconsistencies.

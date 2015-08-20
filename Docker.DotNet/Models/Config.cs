@@ -81,6 +81,12 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ExposedPorts")]
         public IDictionary<string, object> ExposedPorts { get; set; }
 
+        [DataMember(Name = "HostConfig")]
+        public HostConfig HostConfig { get; set; }
+
+        [DataMember(Name = "MacAddress")]
+        public string MacAddress { get;set; }
+
         public Config()
         {
         }
