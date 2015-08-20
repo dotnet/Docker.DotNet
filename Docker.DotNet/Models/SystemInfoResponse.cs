@@ -57,6 +57,24 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Debug")]
         public bool? Debug { get; set; }
 
+        [DataMember(Name = "NCPU")]
+        public string NCPU { get;set; }
+
+        [DataMember(Name = "MemTotal")]
+        public string MemTotal { get;set; }
+
+        [DataMember(Name = "ID")]
+        public string ID { get;set; }
+
+        [DataMember(Name = "DockerRootDir")]
+        public string DockerRootDir { get;set; }
+
+        [DataMember(Name = "OperatingSystem")]
+        public string OperatingSystem { get;set; }
+
+        [DataMember(Name = "Labels")]
+        public IList<string> Labels { get;set; }
+
         public SystemInfoResponse()
         {
         }

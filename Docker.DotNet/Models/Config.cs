@@ -84,6 +84,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "HostConfig")]
         public HostConfig HostConfig { get; set; }
 
+        [DataMember(Name = "MacAddress")]
+        public string MacAddress { get;set; }
+
         public Config()
         {
         }
