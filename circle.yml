@@ -1,0 +1,12 @@
+general:
+  build_dir: ./
+dependencies:
+  pre:
+    - sudo apt-get install mono-devel autogen
+checkout:
+  post:
+    - curl --location 'https://nuget.org/nuget.exe' -o ./.nuget/NuGet.exe
+    - xbuild /p:Configuration=Release ./Docker.DotNet.sln
+test:
+  override:
+    - mono ./packages/xunit.runners.1.9.2/tools/xunit.console.exe ./Docker.DotNet.Tests/bin/Release/Docker.DotNet.Tests.dll
