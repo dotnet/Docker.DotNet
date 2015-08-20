@@ -2,7 +2,7 @@
 
 This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications. 
 
-It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically. At the time of writing, it supports [Docker Remote API v1.14][v1.14].
+It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically. Currently, it supports [Docker Remote API v1.16][v1.16].
 
 ## Installation
 
@@ -136,7 +136,7 @@ By default this client does not specify version number to the API for the reques
 
 ```csharp
 var config = new DockerClientConfiguration(...);
-DockerClient client = config.CreateClient(new Version(1, 14));
+DockerClient client = config.CreateClient(new Version(1, 16));
 ```
 
 ### Error Handling
@@ -153,13 +153,23 @@ Here are typical exceptions thrown from the client library:
 
 ## Versioning
 
-Development of this client library is based on [Docker Remote API v1.14][v1.14]. Its forward compatibility is dependent on Docker's policy on forward compatibility. Feel free to send pull requests as the API changes over time.
+Development of this client library was initially based on [Docker Remote API v1.14][v1.14]. Its forward compatibility is dependent on Docker's policy on forward compatibility. Feel free to send pull requests as the API changes over time. Please refer to the Changelog below to see what version of Docker Remote API is currently supported.
 
 Backwards compatibility is not tested and therefore not guaranteed.
 
-## Changes
+## Changelog
 
 ```
+v1.1.2
+======
++ Added support for Docker Remote API v1.16 (#19)
++ Bugfix: add Microsoft.Bcl.Async dependency (#19)
++ Bugfix: parameter conversion error in ListContainersParameters (#16)
++ Added support for RestartPolicy (#9)
+
+Acknowledgements
+- Josh Garverick (@jgarverick)
+- Shakirov Ruslan (@build-your-web)
 
 v1.1.1
 ======
@@ -206,9 +216,11 @@ This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet 
 * [Ahmet Alp Balkan](http://ahmetalpbalkan.com)
 * [Josh Garverick](http://blogs.obliteracy.net/)
 * [Andreas Bieber](https://github.com/Gandalis)
+* [Shakirov Ruslan](https://github.com/build-your-web)
 
 [docker-remote-api]: https://docs.docker.com/reference/api/docker_remote_api/
 [v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
+[v1.16]: https://docs.docker.com/reference/api/docker_remote_api_v1.16/
 [docker-tls]: https://docs.docker.com/articles/https/
 [nuget]: http://www.nuget.org
 [nuget-gallery]: https://www.nuget.org/packages/Docker.DotNet/
