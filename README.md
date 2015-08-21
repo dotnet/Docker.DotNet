@@ -160,7 +160,7 @@ Backwards compatibility is not tested and therefore not guaranteed.
 ## Changelog
 
 ```
-v1.1.2
+v1.1.2.1
 ======
 + Added support for Docker Remote API v1.16 (#19)
 + Bugfix: add Microsoft.Bcl.Async dependency (#19)
