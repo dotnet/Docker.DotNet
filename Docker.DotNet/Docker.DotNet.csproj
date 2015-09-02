@@ -75,6 +75,7 @@
     <Compile Include="Models\ContainerState.cs" />
     <Compile Include="Models\CopyFromContainerParameters.cs" />
     <Compile Include="Models\CreateContainerParameters.cs" />
+    <Compile Include="Models\ExecContainerResponse.cs" />
     <Compile Include="Models\CreateContainerResponse.cs" />
     <Compile Include="Models\CreateImageParameters.cs" />
     <Compile Include="Models\DeleteImageParameters.cs" />

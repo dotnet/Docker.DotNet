@@ -134,6 +134,23 @@ namespace Docker.DotNet
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
+        public async Task<ExecContainerResponse> ExecContainerAsync(string id, Config config)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/exec", id);
+            JsonRequestContent<Config> data = null;
+            if (config != null)
+            {
+                data = new JsonRequestContent<Config>(config, this.Client.JsonSerializer);
+            }
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, data);
+            return this.Client.JsonSerializer.DeserializeObject<ExecContainerResponse>(response.Body);
+        }
+
         public async Task<bool> StopContainerAsync(string id, StopContainerParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
