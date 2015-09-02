@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerExecCreateResponse
+    public class ExecCreateContainerResponse
     {
         [DataMember(Name = "Id")]
         public string Id { get; set; }
@@ -12,7 +12,7 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Warnings")]
         public IList<string> Warnings { get; set; }
 
-        public ContainerExecCreateResponse()
+        public ExecCreateContainerResponse()
         {
         }
     }

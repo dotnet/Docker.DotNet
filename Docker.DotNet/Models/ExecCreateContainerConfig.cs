@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    public class ContainerExecCreateConfig
+    public class ExecCreateContainerConfig
     {
         [DataMember(Name = "AttachStdin")]
         public bool ? AttachStdin { get; set; }
