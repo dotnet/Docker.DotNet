@@ -134,7 +134,7 @@ namespace Docker.DotNet
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
-        public async Task<ExecContainerResponse> ExecContainerAsync(string id, ExecContainerParameters parameters)
+        public async Task<ContainerExecCreateResponse> ExecContainerAsync(string id, ContainerExecCreateParameters parameters)
         {
             if (parameters == null)
             {
@@ -142,13 +142,13 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/exec", id);
-            JsonRequestContent<ExecConfig> data = null;
+            JsonRequestContent<ContainerExecCreateConfig> data = null;
             if (parameters.Config != null)
             {
-                data = new JsonRequestContent<ExecConfig>(parameters.Config, this.Client.JsonSerializer);
+                data = new JsonRequestContent<ContainerExecCreateConfig>(parameters.Config, this.Client.JsonSerializer);
             }
             DockerApiResponse response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, data);
-            return this.Client.JsonSerializer.DeserializeObject<ExecContainerResponse>(response.Body);
+            return this.Client.JsonSerializer.DeserializeObject<ContainerExecCreateResponse>(response.Body);
         }
 
         public async Task<bool> StopContainerAsync(string id, StopContainerParameters parameters, CancellationToken cancellationToken)
