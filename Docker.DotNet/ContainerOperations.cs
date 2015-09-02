@@ -134,7 +134,7 @@ namespace Docker.DotNet
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
-        public async Task<ContainerExecCreateResponse> ExecContainerAsync(string id, ContainerExecCreateParameters parameters)
+        public async Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters)
         {
             if (parameters == null)
             {
