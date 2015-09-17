@@ -160,6 +160,13 @@ Backwards compatibility is not tested and therefore not guaranteed.
 ## Changelog
 
 ```
+v1.2.0
+======
++ Added `docker exec` endpoints support (#35)
+
+Acknowledgements
+- Ricardo Peres (@rjperes)
+
 v1.1.2.1
 ======
 + Added support for Docker Remote API v1.16 (#19)
