@@ -1,6 +1,8 @@
-﻿namespace Docker.DotNet
+﻿using System;
+
+namespace Docker.DotNet
 {
-    public interface IDockerClient
+    public interface IDockerClient : IDisposable
     {
         IImageOperations Images { get; }
 
