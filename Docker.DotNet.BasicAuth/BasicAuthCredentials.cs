@@ -8,6 +8,7 @@ namespace Docker.DotNet.BasicAuth
 {
     public class BasicAuthCredentials : Credentials
     {
+        private readonly HttpMessageHandler _handler;
         private readonly SecureString _username;
         private readonly SecureString _password;
         private readonly bool _isTls;
@@ -24,6 +25,7 @@ namespace Docker.DotNet.BasicAuth
                 throw new ArgumentException("password");
             }
 
+            _handler = new HttpClientHandler();
             _username = username;
             _password = password;
             _isTls = isTls;
@@ -41,6 +43,7 @@ namespace Docker.DotNet.BasicAuth
                 throw new ArgumentException("password");
             }
 
+            _handler = new HttpClientHandler();
             _username = ConvertToSecureString(username);
             _password = ConvertToSecureString(password);
             _isTls = isTls;
@@ -48,7 +51,7 @@ namespace Docker.DotNet.BasicAuth
 
         public override HttpClient BuildHttpClient()
         {
-            var httpClient = new HttpClient();
+            var httpClient = new HttpClient(_handler, false);
             httpClient.DefaultRequestHeaders.Add("Authorization", BuildBasicAuth(_username, _password));
 
             return httpClient;
@@ -93,6 +96,11 @@ namespace Docker.DotNet.BasicAuth
             {
                 Marshal.ZeroFreeGlobalAllocUnicode(unmanagedString);
             }
+        }
+
+        public override void Dispose()
+        {
+            _handler.Dispose();
         }
     }
 }

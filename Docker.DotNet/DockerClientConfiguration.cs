@@ -2,7 +2,7 @@
 
 namespace Docker.DotNet
 {
-    public class DockerClientConfiguration
+    public class DockerClientConfiguration : IDisposable
     {
         public Uri EndpointBaseUri { get; internal set; }
 
@@ -53,6 +53,11 @@ namespace Docker.DotNet
             }
 
             return builder.Uri;
+        }
+
+        public void Dispose()
+        {
+            Credentials.Dispose();
         }
     }
 }

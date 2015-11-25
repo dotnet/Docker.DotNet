@@ -89,14 +89,16 @@ namespace Docker.DotNet
 
         private async Task<HttpResponseMessage> MakeRequestInnerAsync(TimeSpan? requestTimeout, HttpCompletionOption completionOption, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpClient client = this.GetHttpClient();
-            if (requestTimeout.HasValue)
+            using (HttpClient client = this.GetHttpClient())
             {
-                client.Timeout = requestTimeout.Value;
-            }
+                if (requestTimeout.HasValue)
+                {
+                    client.Timeout = requestTimeout.Value;
+                }
 
-            HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);
-            return await client.SendAsync(request, completionOption, cancellationToken);
+                HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);
+                return await client.SendAsync(request, completionOption, cancellationToken);
+            }
         }
 
         #endregion
@@ -143,6 +145,11 @@ namespace Docker.DotNet
             }
 
             return request;
+        }
+
+        public void Dispose()
+        {
+            Configuration.Dispose();
         }
     }
 
