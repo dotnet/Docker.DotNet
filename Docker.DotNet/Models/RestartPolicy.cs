@@ -4,9 +4,17 @@ namespace Docker.DotNet.Models
 {
     public enum RestartPolicyKind
     {
-        [EnumMember(Value = "always")] Always,
+        [EnumMember(Value = "no")]
+        No,
 
-        [EnumMember(Value = "on-failure")] OnFailure
+        [EnumMember(Value = "always")]
+        Always,
+
+        [EnumMember(Value = "on-failure")]
+        OnFailure,
+
+        [EnumMember(Value = "unless-stopped")]
+        UnlessStopped
     }
 
     [DataContract]
