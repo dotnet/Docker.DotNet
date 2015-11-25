@@ -1,4 +1,4 @@
-# .NET Client for Docker Remote API
+﻿# .NET Client for Docker Remote API
 
 This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications. 
 
@@ -160,6 +160,16 @@ Backwards compatibility is not tested and therefore not guaranteed.
 ## Changelog
 
 ```
+v1.2.1
+======
++ Added missing restart policies no/unless-stopped
++ Added undefined restart policy (#36)
++ Use only Http handler per DockerClient instance (#40)
+
+Acknowledgements
+- Tugberk Ugurlu (@tugberkugurlu)
+
+
 v1.2.0
 ======
 + Added `docker exec` endpoints support (#35)
@@ -168,7 +178,7 @@ Acknowledgements
 - Ricardo Peres (@rjperes)
 
 v1.1.2.1
-======
+========
 + Added support for Docker Remote API v1.16 (#19)
 + Bugfix: add Microsoft.Bcl.Async dependency (#19)
 + Bugfix: parameter conversion error in ListContainersParameters (#16)
