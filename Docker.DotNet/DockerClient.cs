@@ -13,6 +13,8 @@ namespace Docker.DotNet
     {
         private const string UserAgent = "Docker.DotNet";
 
+        private static TimeSpan InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+
         private Version RequestedApiVersion { get; set; }
 
         public DockerClientConfiguration Configuration { get; private set; }
@@ -52,7 +54,7 @@ namespace Docker.DotNet
 
             _defaultTimeout = _client.Timeout;
 
-            _client.Timeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+            _client.Timeout = InfiniteTimeout;
         }
 
         #region Convenience methods
@@ -89,7 +91,7 @@ namespace Docker.DotNet
 
         internal async Task<Stream> MakeRequestForStreamAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await MakeRequestInnerAsync(TimeSpan.FromMilliseconds(Timeout.Infinite), HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response = await MakeRequestInnerAsync(InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
 
             HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
 
@@ -102,25 +104,26 @@ namespace Docker.DotNet
 
             if (requestTimeout.HasValue)
             {
-                if (requestTimeout.Value != TimeSpan.FromMilliseconds(Timeout.Infinite))
+                if (requestTimeout.Value != InfiniteTimeout)
                 {
-                    CancellationTokenSource timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-                    timeoutTokenSource.CancelAfter(requestTimeout.Value);
-
-                    cancellationToken = timeoutTokenSource.Token;
+                    cancellationToken = CreateTimeoutToken(cancellationToken, requestTimeout.Value);
                 }
             }
             else
             {
-                CancellationTokenSource timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-                timeoutTokenSource.CancelAfter(_defaultTimeout);
-
-                cancellationToken = timeoutTokenSource.Token;
+                cancellationToken = CreateTimeoutToken(cancellationToken, _defaultTimeout);
             }
 
             return _client.SendAsync(request, completionOption, cancellationToken);
+        }
+
+        private CancellationToken CreateTimeoutToken(CancellationToken token, TimeSpan timeout)
+        {
+            CancellationTokenSource timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+
+            timeoutTokenSource.CancelAfter(timeout);
+
+            return timeoutTokenSource.Token;
         }
 
         #endregion

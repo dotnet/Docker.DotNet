@@ -14,7 +14,7 @@ namespace Docker.DotNet.X509
             _handler = new WebRequestHandler()
             {
                 ClientCertificateOptions = ClientCertificateOption.Manual,
-                UseDefaultCredentials = false,
+                UseDefaultCredentials = false
             };
 
             _handler.ClientCertificates.Add(clientCertificate);
