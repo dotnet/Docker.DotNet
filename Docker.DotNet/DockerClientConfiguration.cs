@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 
 namespace Docker.DotNet
 {
@@ -25,8 +26,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("credentials");
             }
 
-            this.EndpointBaseUri = SanitizeEndpoint(endpoint, credentials.IsTlsCredentials());
-            this.Credentials = credentials;
+            EndpointBaseUri = SanitizeEndpoint(endpoint, credentials.IsTlsCredentials());
+            Credentials = credentials;
         }
 
         public DockerClient CreateClient()

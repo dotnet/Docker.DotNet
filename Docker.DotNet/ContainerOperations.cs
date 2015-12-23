@@ -36,7 +36,7 @@ namespace Docker.DotNet
 
             string path = "containers/json";
             IQueryString queryParameters = new QueryString<ListContainersParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ContainerListResponse[]>(response.Body);
         }
 
@@ -48,7 +48,7 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/json", id);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ContainerResponse>(response.Body);
         }
 
@@ -72,7 +72,7 @@ namespace Docker.DotNet
             {
                 data = new JsonRequestContent<Config>(parameters.Config, this.Client.JsonSerializer);
             }
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, qs, data);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, qs, data).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<CreateContainerResponse>(response.Body);
         }
 
@@ -101,7 +101,7 @@ namespace Docker.DotNet
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/top", id);
             IQueryString queryParameters = new QueryString<ListProcessesParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, queryParameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ContainerProcessesResponse>(response.Body);
         }
 
@@ -113,7 +113,7 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/changes", id);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<FilesystemChange[]>(response.Body);
         }
 
@@ -130,7 +130,7 @@ namespace Docker.DotNet
             {
                 data = new JsonRequestContent<HostConfig>(hostConfig, this.Client.JsonSerializer);
             }
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data).ConfigureAwait(false);
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
@@ -147,7 +147,7 @@ namespace Docker.DotNet
             {
                 data = new JsonRequestContent<ExecCreateContainerConfig>(parameters.Config, this.Client.JsonSerializer);
             }
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, data);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, data).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ExecCreateContainerResponse>(response.Body);
         }
 
@@ -167,7 +167,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<StopContainerParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, new TimeSpan?(new TimeSpan(Timeout.Infinite)), cancellationToken);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
@@ -238,7 +238,7 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/wait", id);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, null, new TimeSpan?(new TimeSpan(Timeout.Infinite)), cancellationToken);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<WaitContainerResponse>(response.Body);
         }
 

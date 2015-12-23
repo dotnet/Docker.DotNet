@@ -5,9 +5,9 @@ namespace Docker.DotNet
 {
     public abstract class Credentials : IDisposable
     {
-        public abstract HttpClient BuildHttpClient();
-
         public abstract bool IsTlsCredentials();
+
+        public abstract HttpMessageHandler Handler { get; }
 
         public virtual void Dispose()
         {
