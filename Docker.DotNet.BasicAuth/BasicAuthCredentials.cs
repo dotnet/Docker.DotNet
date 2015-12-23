@@ -11,6 +11,9 @@ namespace Docker.DotNet.BasicAuth
 {
     public class BasicAuthCredentials : Credentials
     {
+        private readonly BasicAuthHandler _handler;
+        private readonly bool _isTls;
+
         private class BasicAuthHandler : HttpClientHandler
         {
             SecureString _username;
@@ -51,9 +54,6 @@ namespace Docker.DotNet.BasicAuth
                 }
             }
         }
-
-        private readonly BasicAuthHandler _handler;
-        private readonly bool _isTls;
 
         public override HttpMessageHandler Handler
         {
