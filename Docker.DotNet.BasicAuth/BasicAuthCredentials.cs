@@ -16,8 +16,8 @@ namespace Docker.DotNet.BasicAuth
 
         private class BasicAuthHandler : HttpClientHandler
         {
-            SecureString _username;
-            SecureString _password;
+            private readonly SecureString _username;
+            private readonly SecureString _password;
 
             public BasicAuthHandler(SecureString username, SecureString password)
             {
