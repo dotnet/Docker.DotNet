@@ -32,7 +32,7 @@ namespace Docker.DotNet
         public async Task<VersionResponse> GetVersionAsync()
         {
             const string path = "version";
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<VersionResponse>(response.Body);
         }
 
@@ -44,7 +44,7 @@ namespace Docker.DotNet
         public async Task<SystemInfoResponse> GetSystemInfoAsync()
         {
             const string path = "info";
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null).ConfigureAwait(false); ;
             return this.Client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
         }
 
@@ -70,7 +70,7 @@ namespace Docker.DotNet
             JsonRequestContent<Config> data = parameters.Config == null ? null : new JsonRequestContent<Config>(parameters.Config, this.Client.JsonSerializer);
             const string path = "commit";
             IQueryString queryParameters = new QueryString<CommitContainerChangesParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, data);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, data).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<CommitContainerChangesResponse>(response.Body);
         }
 

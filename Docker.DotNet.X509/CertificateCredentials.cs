@@ -1,28 +1,31 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 
 namespace Docker.DotNet.X509
 {
     public class CertificateCredentials : Credentials
     {
-        private readonly HttpMessageHandler _handler;
+        private readonly WebRequestHandler _handler;
 
         public CertificateCredentials(X509Certificate2 clientCertificate)
         {
-            WebRequestHandler certHandler = new WebRequestHandler()
+            _handler = new WebRequestHandler()
             {
                 ClientCertificateOptions = ClientCertificateOption.Manual,
                 UseDefaultCredentials = false
             };
 
-            certHandler.ClientCertificates.Add(clientCertificate);
-
-            _handler = certHandler;
+            _handler.ClientCertificates.Add(clientCertificate);
         }
 
-        public override HttpClient BuildHttpClient()
+        public override HttpMessageHandler Handler
         {
-            return new HttpClient(_handler, false);
+            get
+            {
+                return _handler;
+            }
         }
 
         public override bool IsTlsCredentials()

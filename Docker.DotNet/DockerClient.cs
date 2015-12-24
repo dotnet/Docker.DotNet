@@ -13,6 +13,8 @@ namespace Docker.DotNet
     {
         private const string UserAgent = "Docker.DotNet";
 
+        private static TimeSpan InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+
         private Version RequestedApiVersion { get; set; }
 
         public DockerClientConfiguration Configuration { get; private set; }
@@ -33,22 +35,26 @@ namespace Docker.DotNet
             }
         };
 
+        private readonly HttpClient _client;
+        private readonly TimeSpan _defaultTimeout;
+
         internal readonly IEnumerable<ApiResponseErrorHandlingDelegate> NoErrorHandlers = Enumerable.Empty<ApiResponseErrorHandlingDelegate>();
 
         internal DockerClient(DockerClientConfiguration configuration, Version requestedApiVersion)
         {
-            this.Configuration = configuration;
-            this.RequestedApiVersion = requestedApiVersion;
-            this.JsonSerializer = new JsonSerializer();
+            Configuration = configuration;
+            RequestedApiVersion = requestedApiVersion;
+            JsonSerializer = new JsonSerializer();
 
-            this.Images = new ImageOperations(this);
-            this.Containers = new ContainerOperations(this);
-            this.Miscellaneous = new MiscellaneousOperations(this);
-        }
+            Images = new ImageOperations(this);
+            Containers = new ContainerOperations(this);
+            Miscellaneous = new MiscellaneousOperations(this);
 
-        private HttpClient GetHttpClient()
-        {
-            return this.Configuration.Credentials.BuildHttpClient();
+            _client = new HttpClient(Configuration.Credentials.Handler, false);
+
+            _defaultTimeout = _client.Timeout;
+
+            _client.Timeout = InfiniteTimeout;
         }
 
         #region Convenience methods
@@ -74,31 +80,50 @@ namespace Docker.DotNet
 
         internal async Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IRequestContent data, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await this.MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, null, data, cancellationToken);
-            string body = await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = await MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, null, data, cancellationToken).ConfigureAwait(false);
+
+            string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
             HandleIfErrorResponse(response.StatusCode, body, errorHandlers);
+
             return new DockerApiResponse(response.StatusCode, body);
         }
 
         internal async Task<Stream> MakeRequestForStreamAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await MakeRequestInnerAsync(TimeSpan.FromMilliseconds(Timeout.Infinite), HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken);
+            HttpResponseMessage response = await MakeRequestInnerAsync(InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
+
             HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
-            return await response.Content.ReadAsStreamAsync();
+
+            return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> MakeRequestInnerAsync(TimeSpan? requestTimeout, HttpCompletionOption completionOption, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
+        private Task<HttpResponseMessage> MakeRequestInnerAsync(TimeSpan? requestTimeout, HttpCompletionOption completionOption, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            using (HttpClient client = this.GetHttpClient())
-            {
-                if (requestTimeout.HasValue)
-                {
-                    client.Timeout = requestTimeout.Value;
-                }
+            HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);
 
-                HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);
-                return await client.SendAsync(request, completionOption, cancellationToken);
+            if (requestTimeout.HasValue)
+            {
+                if (requestTimeout.Value != InfiniteTimeout)
+                {
+                    cancellationToken = CreateTimeoutToken(cancellationToken, requestTimeout.Value);
+                }
             }
+            else
+            {
+                cancellationToken = CreateTimeoutToken(cancellationToken, _defaultTimeout);
+            }
+
+            return _client.SendAsync(request, completionOption, cancellationToken);
+        }
+
+        private CancellationToken CreateTimeoutToken(CancellationToken token, TimeSpan timeout)
+        {
+            CancellationTokenSource timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+
+            timeoutTokenSource.CancelAfter(timeout);
+
+            return timeoutTokenSource.Token;
         }
 
         #endregion
@@ -116,6 +141,7 @@ namespace Docker.DotNet
             {
                 handler(statusCode, responseBody);
             }
+
             _defaultErrorHandlingDelegate(statusCode, responseBody);
         }
 
@@ -128,8 +154,10 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("path");
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(this.Configuration.EndpointBaseUri, this.RequestedApiVersion, path, queryString));
+            HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(Configuration.EndpointBaseUri, RequestedApiVersion, path, queryString));
+
             request.Headers.Add("User-Agent", UserAgent);
+
             if (headers != null)
             {
                 foreach (var header in headers)

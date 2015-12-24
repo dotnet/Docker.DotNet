@@ -39,7 +39,7 @@ namespace Docker.DotNet
 
             string path = "images/json";
             IQueryString queryParameters = new QueryString<ListImagesParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ImageListResponse[]>(response.Body);
         }
 
@@ -51,7 +51,7 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/json", name);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Get, path, null);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ImageResponse>(response.Body);
         }
 
@@ -63,7 +63,7 @@ namespace Docker.DotNet
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/history", name);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Get, path, null);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ImageHistoryResponse[]>(response.Body);
         }
 
@@ -99,7 +99,7 @@ namespace Docker.DotNet
 
             string path = string.Format(CultureInfo.InvariantCulture, "images/{0}", name);
             IQueryString queryParameters = new QueryString<DeleteImageParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Delete, path, queryParameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(new[] {NoSuchImageHandler}, HttpMethod.Delete, path, queryParameters).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<Dictionary<string, string>[]>(response.Body);
         }
 
@@ -112,7 +112,7 @@ namespace Docker.DotNet
 
             string path = "images/search";
             IQueryString queryParameters = new QueryString<SearchImagesParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ImageSearchResponse[]>(response.Body);
         }
 
