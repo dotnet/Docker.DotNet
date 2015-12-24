@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Http;
 
 namespace Docker.DotNet
 {
