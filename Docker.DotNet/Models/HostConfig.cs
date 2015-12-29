@@ -12,6 +12,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Links")]
         public IList<string> Links { get; set; }
 
+        [DataMember(Name = "GroupAdd")]
+        public IList<string> GroupAdd { get; set; }
+
         [DataMember(Name = "ContainerIDFile")]
         public string ContainerIdFile { get; set; }
 

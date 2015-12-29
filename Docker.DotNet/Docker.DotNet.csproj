@@ -41,10 +41,15 @@
     <Compile Include="Credentials.cs" />
     <Compile Include="DockerApiException.cs" />
     <Compile Include="DockerApiResponse.cs" />
+    <Compile Include="DockerApiStreamedResponse.cs" />
     <Compile Include="DockerClient.cs" />
     <Compile Include="DockerClientConfiguration.cs" />
     <Compile Include="DockerContainerNotFoundException.cs" />
     <Compile Include="DockerImageNotFoundException.cs" />
+    <Compile Include="Models\ContainerPathStats.cs" />
+    <Compile Include="Models\ExtractArchiveToContainerParameters.cs" />
+    <Compile Include="Models\GetArchiveFromContainerParameters.cs" />
+    <Compile Include="Models\GetArchiveFromContainerResponse.cs" />
     <Compile Include="HttpUtility.cs" />
     <Compile Include="IContainerOperations.cs" />
     <Compile Include="IDockerClient.cs" />
