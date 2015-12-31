@@ -74,6 +74,11 @@ namespace Docker.DotNet
             return MakeRequestForStreamAsync(errorHandlers, method, path, queryString, null, data, cancellationToken);
         }
 
+        internal Task<DockerApiStreamedResponse> MakeRequestForStreamedResponseAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IRequestContent data, CancellationToken cancellationToken)
+        {
+            return MakeRequestForStreamedResponseAsync(errorHandlers, method, path, queryString, null, data, cancellationToken);
+        }
+
         #endregion
 
         #region HTTP Calls
@@ -96,6 +101,16 @@ namespace Docker.DotNet
             HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
 
             return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        }
+
+        internal async Task<DockerApiStreamedResponse> MakeRequestForStreamedResponseAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
+        {
+            HttpResponseMessage response = await MakeRequestInnerAsync(TimeSpan.FromMilliseconds(Timeout.Infinite), HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken);
+            HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
+
+            Stream body = await response.Content.ReadAsStreamAsync();
+
+            return new DockerApiStreamedResponse(response.StatusCode, body, response.Headers);
         }
 
         private Task<HttpResponseMessage> MakeRequestInnerAsync(TimeSpan? requestTimeout, HttpCompletionOption completionOption, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)

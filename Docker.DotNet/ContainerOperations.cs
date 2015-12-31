@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using System.Linq;
+using System.Text;
 
 namespace Docker.DotNet
 {
@@ -276,6 +278,7 @@ namespace Docker.DotNet
             return this.Client.MakeRequestForStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, queryParameters, null, cancellationToken);
         }
 
+        [Obsolete("Deprecated since api version 1.20 in favor of the archive methods")]
         public Task<Stream> CopyFromContainerAsync(string id, CopyFromContainerParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
@@ -299,6 +302,60 @@ namespace Docker.DotNet
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/copy", id);
             return this.Client.MakeRequestForStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data, cancellationToken);
+        }
+
+        public async Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+
+            IQueryString queryParameters = new QueryString<GetArchiveFromContainerParameters>(parameters);
+
+            string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/archive", id);
+
+            DockerApiStreamedResponse response = await this.Client.MakeRequestForStreamedResponseAsync(new[] { NoSuchContainerHandler }, statOnly ? HttpMethod.Head : HttpMethod.Get, path, queryParameters, null, cancellationToken);
+
+            string statHeader = response.Headers.GetValues("X-Docker-Container-Path-Stat").First();
+
+            byte[] bytes = Convert.FromBase64String(statHeader);
+
+            string stat = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+
+            ContainerPathStat pathStat = this.Client.JsonSerializer.DeserializeObject<ContainerPathStat>(stat);
+
+            return new GetArchiveFromContainerResponse
+            {
+                Stat = pathStat,
+                Stream = statOnly ? null : response.Body
+            };
+        }
+
+        public Task ExtractArchiveToContainerAsync(string id, ExtractArchiveToContainerParameters parameters, Stream stream, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException("id");
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException("parameters");
+            }
+
+            IQueryString queryParameters = new QueryString<ExtractArchiveToContainerParameters>(parameters);
+
+            BinaryRequestContent data = new BinaryRequestContent(stream, "application/x-tar");
+
+            string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/archive", id);
+
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Put, path, queryParameters, data, null, cancellationToken);
         }
     }
 }
