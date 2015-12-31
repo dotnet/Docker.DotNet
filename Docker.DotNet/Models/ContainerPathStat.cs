@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerPathStats
+    public class ContainerPathStat
     {
         [DataMember(Name = "Name")]
         public string Name { get; set; }

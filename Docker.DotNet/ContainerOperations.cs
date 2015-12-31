@@ -304,7 +304,7 @@ namespace Docker.DotNet
             return this.Client.MakeRequestForStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data, cancellationToken);
         }
 
-        public async Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statsOnly, CancellationToken cancellationToken)
+        public async Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -320,20 +320,20 @@ namespace Docker.DotNet
 
             string path = string.Format(CultureInfo.InvariantCulture, "containers/{0}/archive", id);
 
-            DockerApiStreamedResponse response = await this.Client.MakeRequestForStreamedResponseAsync(new[] { NoSuchContainerHandler }, statsOnly ? HttpMethod.Head : HttpMethod.Get, path, queryParameters, null, cancellationToken);
+            DockerApiStreamedResponse response = await this.Client.MakeRequestForStreamedResponseAsync(new[] { NoSuchContainerHandler }, statOnly ? HttpMethod.Head : HttpMethod.Get, path, queryParameters, null, cancellationToken);
 
             string statHeader = response.Headers.GetValues("X-Docker-Container-Path-Stat").First();
 
             byte[] bytes = Convert.FromBase64String(statHeader);
 
-            string stats = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+            string stat = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
 
-            ContainerPathStats pathStats = this.Client.JsonSerializer.DeserializeObject<ContainerPathStats>(stats);
+            ContainerPathStat pathStat = this.Client.JsonSerializer.DeserializeObject<ContainerPathStat>(stat);
 
             return new GetArchiveFromContainerResponse
             {
-                Stats = pathStats,
-                Stream = statsOnly ? null : response.Body
+                Stat = pathStat,
+                Stream = statOnly ? null : response.Body
             };
         }
 

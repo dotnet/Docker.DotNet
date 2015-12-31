@@ -6,6 +6,6 @@
         public string Path { get; set; }
 
         [QueryStringParameter("noOverwriteDirNonDir", false, typeof(BoolQueryStringConverter))]
-        public bool NoOverwriteDirNonDir { get; set; }
+        public bool? NoOverwriteDirNonDir { get; set; }
     }
 }

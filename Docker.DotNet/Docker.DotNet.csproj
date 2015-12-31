@@ -46,7 +46,7 @@
     <Compile Include="DockerClientConfiguration.cs" />
     <Compile Include="DockerContainerNotFoundException.cs" />
     <Compile Include="DockerImageNotFoundException.cs" />
-    <Compile Include="Models\ContainerPathStats.cs" />
+    <Compile Include="Models\ContainerPathStat.cs" />
     <Compile Include="Models\ExtractArchiveToContainerParameters.cs" />
     <Compile Include="Models\GetArchiveFromContainerParameters.cs" />
     <Compile Include="Models\GetArchiveFromContainerResponse.cs" />

@@ -42,7 +42,7 @@ namespace Docker.DotNet
 
         Task<Stream> CopyFromContainerAsync(string id, CopyFromContainerParameters parameters, CancellationToken cancellationToken);
 
-        Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statsOnly, CancellationToken cancellationToken);
+        Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken);
 
         Task ExtractArchiveToContainerAsync(string id, ExtractArchiveToContainerParameters parameters, Stream stream, CancellationToken cancellationToken);
     }

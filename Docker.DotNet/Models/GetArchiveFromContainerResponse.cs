@@ -4,7 +4,7 @@ namespace Docker.DotNet.Models
 {
     public class GetArchiveFromContainerResponse
     {
-        public ContainerPathStats Stats { get; set; }
+        public ContainerPathStat Stat { get; set; }
 
         public Stream Stream { get; set; }
     }
