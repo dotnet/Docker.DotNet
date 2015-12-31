@@ -160,6 +160,17 @@ Backwards compatibility is not tested and therefore not guaranteed.
 ## Changelog
 
 ```
+v1.2.2
+======
++ Added no/unless-stopped restart policies (#41)
++ Bugfix: streams are being closed prematurely (#42)
++ Added /containers/(id)/archive methods from Remote API v1.20 (#43)
++ Deprecated: CopyFromContainerAsync (in favor of archival methods) (#43)
+
+Acknowledgements
+- Oliver Neal (@ItsVeryWindy)
+
+
 v1.2.1
 ======
 + Added missing restart policies no/unless-stopped
