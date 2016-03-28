@@ -9,6 +9,7 @@ DemoClient/**
 *.user
 *.sln.docstates
 *.userprefs
+*.lock.json
 
 # Build results
 [Dd]ebug/

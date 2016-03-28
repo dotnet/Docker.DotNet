@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 
 namespace Docker.DotNet
 {
+    using System.Reflection;
+
     internal class JsonIso8601AndUnixEpochDateConverter : Newtonsoft.Json.JsonConverter
     {
         private static readonly DateTime UnixEpochBase = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -20,7 +22,7 @@ namespace Docker.DotNet
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
         {
-            bool isNullableType = (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof (Nullable<>));
+            bool isNullableType = (objectType.GetTypeInfo().IsGenericType && objectType.GetGenericTypeDefinition() == typeof (Nullable<>));
             object value = reader.Value;
 
             DateTime result;
