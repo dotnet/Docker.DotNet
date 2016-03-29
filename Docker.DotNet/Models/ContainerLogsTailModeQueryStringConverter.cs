@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace Docker.DotNet.Models
 {
+    using System.Reflection;
+
     internal class ContainerLogsTailModeQueryStringConverter : IQueryStringConverter
     {
         public ContainerLogsTailModeQueryStringConverter()

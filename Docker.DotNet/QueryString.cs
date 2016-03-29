@@ -112,7 +112,7 @@ namespace Docker.DotNet
                     "No public property getters found on type {0}.", t.FullName));
             }
 
-            PropertyInfo[] attributedPublicProperties = properties.Where(p => Attribute.GetCustomAttribute(p, ofAttributeType) != null).ToArray();
+            PropertyInfo[] attributedPublicProperties = properties.Where(p => p.GetCustomAttribute<TAttribType>() != null).ToArray();
             if (!attributedPublicProperties.Any())
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture,
@@ -120,7 +120,7 @@ namespace Docker.DotNet
             }
 
             return attributedPublicProperties.Select(pi =>
-                new Tuple<PropertyInfo, TAttribType>(pi, Attribute.GetCustomAttribute(pi, ofAttributeType) as TAttribType)).ToArray();
+                new Tuple<PropertyInfo, TAttribType>(pi, pi.GetCustomAttribute<TAttribType>())).ToArray();
         }
     }
 }

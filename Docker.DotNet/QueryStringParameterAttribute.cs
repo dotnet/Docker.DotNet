@@ -4,6 +4,8 @@ using System.Linq;
 
 namespace Docker.DotNet
 {
+    using System.Reflection;
+
     [AttributeUsage(AttributeTargets.Property)]
     internal class QueryStringParameterAttribute : Attribute
     {
