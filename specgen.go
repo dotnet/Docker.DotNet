@@ -3,51 +3,34 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"reflect"
 	"strings"
-	"time"
 
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
-	"github.com/docker/engine-api/types/filters"
-	"github.com/docker/engine-api/types/network"
 	"github.com/docker/engine-api/types/registry"
 )
 
-var emptyStruct = reflect.TypeOf(struct{}{})
+func boolString(b bool) string {
+	if b {
+		return "true"
+	}
 
-type csTypeDef struct {
-	Name     string
-	NeedsOpt bool
+	return "false"
 }
 
-var specialTypes = map[reflect.Type]csTypeDef{
-	reflect.TypeOf(time.Time{}): {"System.DateTime", false},
-	emptyStruct:                 {"BUG_IN_CONVERSION", false},
+var typeCustomizations = map[typeCustomizationKey]CSType{
+	{reflect.TypeOf(container.RestartPolicy{}), "Name"}: {"", "RestartPolicyKind", false},
+	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:   {"", "FileSystemChangeKind", false},
+	{reflect.TypeOf(types.Image{}), "Created"}:          {"System", "DateTime", false},
 }
 
-var kindMap = map[reflect.Kind]csTypeDef{
-	reflect.Int:   {"int", true},
-	reflect.Int8:  {"sbyte", true},
-	reflect.Int16: {"short", true},
-	reflect.Int32: {"int", true},
-	reflect.Int64: {"long", true},
-
-	reflect.Uint:   {"uint", true},
-	reflect.Uint8:  {"byte", true},
-	reflect.Uint16: {"ushort", true},
-	reflect.Uint32: {"uint", true},
-	reflect.Uint64: {"ulong", true},
-
-	reflect.String: {"string", false},
-
-	reflect.Bool: {"bool", true},
-
-	reflect.Float32: {"float", true},
-	reflect.Float64: {"double", true},
+type typeCustomizationKey struct {
+	Type         reflect.Type
+	PropertyName string
 }
 
 type typeDef struct {
@@ -55,70 +38,7 @@ type typeDef struct {
 	CsName string
 }
 
-type AuthConfigParameters types.AuthConfig
-
-// POST /containers/create
-type ContainerCreateOptions struct {
-	Name             string                    `rest:"in:query,name:name"`
-	Config           *container.Config         `rest:"in:body"`
-	HostConfig       *container.HostConfig     `rest:"in:body"`
-	NetworkingConfig *network.NetworkingConfig `rest:"in:body"`
-}
-
-// GET /containers/(id)/json
-type ContainerInspectParameters struct {
-	IncludeSize bool `rest:"in:query,name:size"`
-}
-
-// POST /containers/(id)/kill
-type ContainerKillParameters struct {
-	Signal string `rest:"in:query,name:signal`
-}
-
-// POST /containers/(id)/rename
-type ContainerRenameParameters struct {
-	NewName string `rest:"in:query,name:name`
-}
-
-// POST /containers/(id)/restart
-type ContainerRestartParameters struct {
-	WaitBeforeKillSeconds uint32 `rest:"in:query,name:t`
-}
-
-// POST /containers/(id)/start
-type ContainerStartParameters struct {
-	DetachKeys string `rest:"in:query,name:detachKeys`
-}
-
-// POST /containers/(id)/stop
-type ContainerStopParameters struct {
-	WaitBeforeKillSeconds uint32 `rest:"in:query,name:t`
-}
-
-// GET /containers/(id)/top
-type ContainerListProcessesParameters struct {
-	PsArgs string `rest:"in:query,name:ps_args"`
-}
-
-// GET /images/(id)/json
-type ImageInspectParameters struct {
-	IncludeSize bool `rest:"in:query,name:size`
-}
-
-// GET /volumes
-type VolumesListParameters struct {
-	Filters filters.Args `rest:"in:query,name:filters"`
-}
-
-type VolumeResponse types.Volume
-
-// GET /volumes
-type VolumesListResponse struct {
-	Volumes  []*VolumeResponse
-	Warnings []string
-}
-
-var dockerTypes = []typeDef{
+var dockerTypesToReflect = []typeDef{
 
 	// POST /auth
 	{reflect.TypeOf(AuthConfigParameters{}), "AuthConfigParameters"},
@@ -285,34 +205,33 @@ var dockerTypes = []typeDef{
 	// DELETE /volumes/(id)
 }
 
-func csType(t reflect.Type, opt bool) string {
-	def, ok := specialTypes[t]
+func csType(t reflect.Type, opt bool) CSType {
+	def, ok := CSCustomTypeMap[t]
 	if !ok {
-		def, ok = kindMap[t.Kind()]
+		def, ok = CSInboxTypesMap[t.Kind()]
 	}
+
 	if ok {
-		if opt && def.NeedsOpt {
-			return def.Name + "?"
-		}
-		return def.Name
+		return def
 	}
 
 	switch t.Kind() {
 	case reflect.Array:
-		return fmt.Sprintf("%s[]", csType(t.Elem(), false))
+		return CSType{"", fmt.Sprintf("%s[]", csType(t.Elem(), false).Name), false}
 	case reflect.Slice:
-		return fmt.Sprintf("IList<%s>", csType(t.Elem(), false))
+		return CSType{"System.Collections.Generic", fmt.Sprintf("IList<%s>", csType(t.Elem(), false).Name), false}
 	case reflect.Map:
-		if t.Elem() == emptyStruct {
-			return fmt.Sprintf("ISet<%s>", csType(t.Key(), false))
+		if t.Elem() == EmptyStruct {
+			return CSType{"System.Collections.Generic", fmt.Sprintf("ISet<%s>", csType(t.Key(), false).Name), false}
 		}
-		return fmt.Sprintf("IDictionary<%s, %s>", csType(t.Key(), false), csType(t.Elem(), false))
+
+		return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, %s>", csType(t.Key(), false).Name, csType(t.Elem(), false).Name), false}
 	case reflect.Ptr:
 		return csType(t.Elem(), true)
 	case reflect.Struct:
-		return t.Name()
+		return CSType{"", t.Name(), false}
 	case reflect.Interface:
-		return "object"
+		return CSType{"", "object", false}
 	default:
 		panic(fmt.Errorf("cannot convert type %s", t))
 	}
@@ -329,8 +248,7 @@ func ultimateType(t reflect.Type) reflect.Type {
 	}
 }
 
-func writeTypeFields(t reflect.Type, w io.Writer, serialized map[reflect.Type]int, deps []reflect.Type) []reflect.Type {
-	n := 0
+func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[string]*CSModelType) {
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 
@@ -339,141 +257,138 @@ func writeTypeFields(t reflect.Type, w io.Writer, serialized map[reflect.Type]in
 			continue
 		}
 
-		// If the type is anonymous we need to inline its values to this struct.
+		// If the type is anonymous we need to inline its values to this model.
 		if f.Anonymous {
-			deps = writeTypeFields(ultimateType(f.Type), w, serialized, deps)
+			clen := len(m.Constructors)
+			if clen == 0 {
+				// We need to add a default constructor and a custom one since its the first time.
+				m.Constructors = append(m.Constructors, NewConstructor(), NewConstructor())
+			}
+
+            ut := ultimateType(f.Type)
+			reflectType(ut.Name(), ut, reflectedTypes)
+			newType := reflectedTypes[ut.Name()]
+			m.Constructors[1].Parameters = append(m.Constructors[1].Parameters, CSParameter{newType, f.Name})
+
+			// Now we need to add in all of the inherited types parameters
+			for _, p := range newType.Properties {
+				m.Properties = append(m.Properties, p)
+			}
 		} else {
+			// If we are referencing a struct that isnt inline or anonymous we need to update it too.
+			if ut := ultimateType(f.Type); ut.Kind() == reflect.Struct {
+				if _, ok := CSInboxTypesMap[f.Type.Kind()]; !ok {
+					if _, ok := CSCustomTypeMap[f.Type]; !ok {
+						reflectType(ut.Name(), ut, reflectedTypes)
+					}
+				}
+			}
+
+			// If the json tag says to omit we skip generation.
 			jsonTag := strings.Split(f.Tag.Get("json"), ",")
 			if jsonTag[0] == "-" {
 				continue
 			}
+
+			// Create our new property.
+			csProp := NewProperty(f.Name, csType(f.Type, false))
 
 			jsonName := f.Name
 			if jsonTag[0] != "" {
 				jsonName = jsonTag[0]
 			}
 
-			if n != 0 {
-				fmt.Fprintln(w, "")
-			}
-			n++
-
-			if ft := ultimateType(f.Type); ft.Kind() == reflect.Struct {
-				if _, ok := specialTypes[ft]; !ok {
-					if _, ok := serialized[ft]; !ok {
-						deps = append(deps, ft)
-						serialized[ft] = 1
-					}
-				}
-			}
-
-			ft := csType(f.Type, false)
-			if ft == "" {
-				ft = f.Name
+			if ft, ok := typeCustomizations[typeCustomizationKey{t, f.Name}]; ok {
+				// We have a custom modification. Change the type.
+				csProp.Type = ft
 			}
 
 			if restTag, err := RestTagFromString(f.Tag.Get("rest")); err == nil && restTag.In != Body {
 
-				fmt.Fprintf(w, "        [QueryStringParameter(\"%s\", %t", restTag.Name, restTag.Required)
+				a := NewAttribute(CSType{"", "QueryStringParameter", false})
+				a.Arguments = append(a.Arguments, CSArgument{restTag.Name, CSInboxTypesMap[reflect.String]}, CSArgument{boolString(restTag.Required), CSInboxTypesMap[reflect.Bool]})
+
 				switch f.Type.Kind() {
 				case reflect.Bool:
-					fmt.Fprint(w, ", typeof(BoolQueryStringConverter)")
+					a.Arguments = append(a.Arguments, CSArgument{Value: "typeof(BoolQueryStringConverter)"})
 				}
 
-				fmt.Fprint(w, ")]\n")
-
-				if restTag.Required {
-					fmt.Fprintf(w, "        public %s %s { get; set; }\n", ft, f.Name)
-				} else {
-					if def, ok := kindMap[f.Type.Kind()]; ok && def.NeedsOpt {
-						// Struct types in c# require ? for nullable types.
-						fmt.Fprintf(w, "        public %s? %s { get; set; }\n", ft, f.Name)
-					} else {
-						fmt.Fprintf(w, "        public %s %s { get; set; }\n", ft, f.Name)
-					}
-				}
+				csProp.IsOpt = !restTag.Required
+				csProp.Attributes = append(csProp.Attributes, *a)
 			} else {
-				fmt.Fprintf(w, "        [DataMember(Name = \"%s\")]\n", jsonName)
-				fmt.Fprintf(w, "        public %s %s { get; set; }\n", ft, f.Name)
+				a := NewAttribute(CSType{"", "DataMember", false})
+				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"Name", CSArgument{jsonName, CSInboxTypesMap[reflect.String]}})
+				csProp.Attributes = append(csProp.Attributes, *a)
 			}
+
+			// Lastly assign the property to our type.
+			m.Properties = append(m.Properties, *csProp)
 		}
-
 	}
-
-	return deps
 }
 
-func writeType(t reflect.Type, name string, w io.Writer, serialized map[reflect.Type]int) []reflect.Type {
+func reflectType(name string, t reflect.Type, reflectedTypes map[string]*CSModelType) {
+	if _, ok := reflectedTypes[name]; ok {
+		return
+	} else if name == "" {
+        return
+    }
 
-	fmt.Fprintln(w, "using System.Collections.Generic;")
-	fmt.Fprintln(w, "using System.Runtime.Serialization;")
-	fmt.Fprintln(w, "")
-	fmt.Fprintln(w, "namespace Docker.DotNet.Models")
-	fmt.Fprintln(w, "{")
-	fmt.Fprintln(w, "    [DataContract]")
-	fmt.Fprintf(w, "    public class %s // (%s)\n", name, t)
-	fmt.Fprintln(w, "    {")
+	m := NewModel(name, fmt.Sprintf("%s", t))
+	reflectedTypes[name] = m
 
-	var deps = []reflect.Type{}
-	deps = writeTypeFields(t, w, serialized, deps)
+	reflectTypeMembers(t, m, reflectedTypes)
+}
 
-	fmt.Fprintln(w, "    }")
-	fmt.Fprintln(w, "}")
+func reflectDockerType(t typeDef, reflectedTypes map[string]*CSModelType) {
+	reflectType(t.CsName, t.Type, reflectedTypes)
+}
 
-	return deps
+func reflectDockerTypes() map[string]*CSModelType {
+	reflectedTypes := make(map[string]*CSModelType)
+
+	for _, t := range dockerTypesToReflect {
+		reflectDockerType(t, reflectedTypes)
+	}
+
+	return reflectedTypes
 }
 
 func main() {
-	allTypes := dockerTypes
-	serialized := make(map[reflect.Type]int)
+	sourcePath := "D:\\gowork\\src\\github.com\\Microsoft\\Docker-PowerShell\\src\\Docker.DotNet\\Docker.DotNet\\Models"
 
-	for _, t := range allTypes {
-		serialized[t.Type] = 1
+	// Delete any previously generated files.
+	if files, err := ioutil.ReadDir(sourcePath); err != nil {
+		panic(err)
+	} else {
+		for _, file := range files {
+			if strings.HasSuffix(file.Name(), ".Generated.cs") {
+				if err := os.Remove(path.Join(sourcePath, file.Name())); err != nil {
+                    panic(err)
+                }
+			}
+		}
 	}
-	for len(allTypes) > 0 {
-		t := allTypes[len(allTypes)-1]
-		allTypes = allTypes[:len(allTypes)-1]
-		f, err := ioutil.TempFile("", "ser")
+
+	csTypes := reflectDockerTypes()
+
+	for k, v := range csTypes {
+		f, err := ioutil.TempFile(sourcePath, "ser")
 		if err != nil {
 			panic(err)
 		}
+
 		defer f.Close()
+
 		b := bufio.NewWriter(f)
-		name := t.CsName
-		if name == "" {
-			name = t.Type.Name()
-		}
-		for _, d := range writeType(t.Type, name, b, serialized) {
-			allTypes = append(allTypes, typeDef{d, ""})
-		}
+		v.ToFile(b)
 		err = b.Flush()
 		if err != nil {
 			os.Remove(f.Name())
 			panic(err)
 		}
+
 		f.Close()
-
-		source, err := os.Open(f.Name())
-		if err != nil {
-			os.Remove(f.Name())
-			panic(err)
-		}
-
-		dest, err := os.Create("D:\\git\\Microsoft\\hyperv\\DockerPS\\src\\Docker.DotNet\\Docker.DotNet\\Models\\" + name + ".Generated.cs")
-
-		if err != nil {
-			os.Remove(f.Name())
-			panic(err)
-		}
-
-		if w, err := io.Copy(dest, source); err != nil {
-			os.Remove(f.Name())
-			source.Close()
-			os.Remove(source.Name())
-			dest.Close()
-			os.Remove(dest.Name())
-			fmt.Println(w)
-			panic(err)
-		}
+		os.Rename(f.Name(), path.Join(sourcePath, k+".Generated.cs"))
 	}
 }
