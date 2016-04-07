@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -16,7 +16,7 @@ namespace Docker.DotNet.Models
         public uint Mode { get; set; }
 
         [DataMember(Name = "mtime")]
-        public System.DateTime Mtime { get; set; }
+        public DateTime Mtime { get; set; }
 
         [DataMember(Name = "linkTarget")]
         public string LinkTarget { get; set; }

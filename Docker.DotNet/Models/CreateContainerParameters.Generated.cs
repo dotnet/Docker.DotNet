@@ -6,6 +6,39 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class CreateContainerParameters // (main.ContainerCreateOptions)
     {
+        public CreateContainerParameters()
+        {
+        }
+
+        public CreateContainerParameters(Config Config)
+        {
+            if (Config != null)            {
+                this.Hostname = Config.Hostname;
+                this.Domainname = Config.Domainname;
+                this.User = Config.User;
+                this.AttachStdin = Config.AttachStdin;
+                this.AttachStdout = Config.AttachStdout;
+                this.AttachStderr = Config.AttachStderr;
+                this.ExposedPorts = Config.ExposedPorts;
+                this.PublishService = Config.PublishService;
+                this.Tty = Config.Tty;
+                this.OpenStdin = Config.OpenStdin;
+                this.StdinOnce = Config.StdinOnce;
+                this.Env = Config.Env;
+                this.Cmd = Config.Cmd;
+                this.ArgsEscaped = Config.ArgsEscaped;
+                this.Image = Config.Image;
+                this.Volumes = Config.Volumes;
+                this.WorkingDir = Config.WorkingDir;
+                this.Entrypoint = Config.Entrypoint;
+                this.NetworkDisabled = Config.NetworkDisabled;
+                this.MacAddress = Config.MacAddress;
+                this.OnBuild = Config.OnBuild;
+                this.Labels = Config.Labels;
+                this.StopSignal = Config.StopSignal;
+            }
+        }
+
         [QueryStringParameter("name", false)]
         public string Name { get; set; }
 

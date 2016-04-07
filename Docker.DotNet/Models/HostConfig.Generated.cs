@@ -6,6 +6,43 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class HostConfig // (container.HostConfig)
     {
+        public HostConfig()
+        {
+        }
+
+        public HostConfig(Resources Resources)
+        {
+            if (Resources != null)            {
+                this.CPUShares = Resources.CPUShares;
+                this.Memory = Resources.Memory;
+                this.CgroupParent = Resources.CgroupParent;
+                this.BlkioWeight = Resources.BlkioWeight;
+                this.BlkioWeightDevice = Resources.BlkioWeightDevice;
+                this.BlkioDeviceReadBps = Resources.BlkioDeviceReadBps;
+                this.BlkioDeviceWriteBps = Resources.BlkioDeviceWriteBps;
+                this.BlkioDeviceReadIOps = Resources.BlkioDeviceReadIOps;
+                this.BlkioDeviceWriteIOps = Resources.BlkioDeviceWriteIOps;
+                this.CPUPeriod = Resources.CPUPeriod;
+                this.CPUQuota = Resources.CPUQuota;
+                this.CpusetCpus = Resources.CpusetCpus;
+                this.CpusetMems = Resources.CpusetMems;
+                this.Devices = Resources.Devices;
+                this.DiskQuota = Resources.DiskQuota;
+                this.KernelMemory = Resources.KernelMemory;
+                this.MemoryReservation = Resources.MemoryReservation;
+                this.MemorySwap = Resources.MemorySwap;
+                this.MemorySwappiness = Resources.MemorySwappiness;
+                this.OomKillDisable = Resources.OomKillDisable;
+                this.PidsLimit = Resources.PidsLimit;
+                this.Ulimits = Resources.Ulimits;
+                this.CPUCount = Resources.CPUCount;
+                this.CPUPercent = Resources.CPUPercent;
+                this.IOMaximumIOps = Resources.IOMaximumIOps;
+                this.IOMaximumBandwidth = Resources.IOMaximumBandwidth;
+                this.NetworkMaximumBandwidth = Resources.NetworkMaximumBandwidth;
+            }
+        }
+
         [DataMember(Name = "Binds")]
         public IList<string> Binds { get; set; }
 
@@ -160,10 +197,10 @@ namespace Docker.DotNet.Models
         public long MemorySwap { get; set; }
 
         [DataMember(Name = "MemorySwappiness")]
-        public long? MemorySwappiness { get; set; }
+        public long MemorySwappiness { get; set; }
 
         [DataMember(Name = "OomKillDisable")]
-        public bool? OomKillDisable { get; set; }
+        public bool OomKillDisable { get; set; }
 
         [DataMember(Name = "PidsLimit")]
         public long PidsLimit { get; set; }

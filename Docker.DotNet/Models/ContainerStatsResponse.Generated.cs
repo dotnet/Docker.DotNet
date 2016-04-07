@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -6,8 +7,24 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerStatsResponse // (types.StatsJSON)
     {
+        public ContainerStatsResponse()
+        {
+        }
+
+        public ContainerStatsResponse(Stats Stats)
+        {
+            if (Stats != null)            {
+                this.Read = Stats.Read;
+                this.PreCPUStats = Stats.PreCPUStats;
+                this.CPUStats = Stats.CPUStats;
+                this.MemoryStats = Stats.MemoryStats;
+                this.BlkioStats = Stats.BlkioStats;
+                this.PidsStats = Stats.PidsStats;
+            }
+        }
+
         [DataMember(Name = "read")]
-        public System.DateTime Read { get; set; }
+        public DateTime Read { get; set; }
 
         [DataMember(Name = "precpu_stats")]
         public CPUStats PreCPUStats { get; set; }

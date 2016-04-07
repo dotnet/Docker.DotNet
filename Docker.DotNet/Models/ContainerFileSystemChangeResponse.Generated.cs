@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -7,7 +6,7 @@ namespace Docker.DotNet.Models
     public class ContainerFileSystemChangeResponse // (types.ContainerChange)
     {
         [DataMember(Name = "Kind")]
-        public int Kind { get; set; }
+        public FileSystemChangeKind Kind { get; set; }
 
         [DataMember(Name = "Path")]
         public string Path { get; set; }

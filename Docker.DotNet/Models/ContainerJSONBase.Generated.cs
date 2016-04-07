@@ -4,40 +4,8 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerInspectResponse // (types.ContainerJSON)
+    public class ContainerJSONBase // (types.ContainerJSONBase)
     {
-        public ContainerInspectResponse()
-        {
-        }
-
-        public ContainerInspectResponse(ContainerJSONBase ContainerJSONBase)
-        {
-            if (ContainerJSONBase != null)            {
-                this.ID = ContainerJSONBase.ID;
-                this.Created = ContainerJSONBase.Created;
-                this.Path = ContainerJSONBase.Path;
-                this.Args = ContainerJSONBase.Args;
-                this.State = ContainerJSONBase.State;
-                this.Image = ContainerJSONBase.Image;
-                this.ResolvConfPath = ContainerJSONBase.ResolvConfPath;
-                this.HostnamePath = ContainerJSONBase.HostnamePath;
-                this.HostsPath = ContainerJSONBase.HostsPath;
-                this.LogPath = ContainerJSONBase.LogPath;
-                this.Node = ContainerJSONBase.Node;
-                this.Name = ContainerJSONBase.Name;
-                this.RestartCount = ContainerJSONBase.RestartCount;
-                this.Driver = ContainerJSONBase.Driver;
-                this.MountLabel = ContainerJSONBase.MountLabel;
-                this.ProcessLabel = ContainerJSONBase.ProcessLabel;
-                this.AppArmorProfile = ContainerJSONBase.AppArmorProfile;
-                this.ExecIDs = ContainerJSONBase.ExecIDs;
-                this.HostConfig = ContainerJSONBase.HostConfig;
-                this.GraphDriver = ContainerJSONBase.GraphDriver;
-                this.SizeRw = ContainerJSONBase.SizeRw;
-                this.SizeRootFs = ContainerJSONBase.SizeRootFs;
-            }
-        }
-
         [DataMember(Name = "Id")]
         public string ID { get; set; }
 
@@ -103,14 +71,5 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "SizeRootFs")]
         public long SizeRootFs { get; set; }
-
-        [DataMember(Name = "Mounts")]
-        public IList<MountPoint> Mounts { get; set; }
-
-        [DataMember(Name = "Config")]
-        public Config Config { get; set; }
-
-        [DataMember(Name = "NetworkSettings")]
-        public NetworkSettings NetworkSettings { get; set; }
     }
 }

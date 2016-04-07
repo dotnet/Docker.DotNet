@@ -4,45 +4,8 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerUpdateParameters // (container.UpdateConfig)
+    public class Resources // (container.Resources)
     {
-        public ContainerUpdateParameters()
-        {
-        }
-
-        public ContainerUpdateParameters(Resources Resources)
-        {
-            if (Resources != null)            {
-                this.CPUShares = Resources.CPUShares;
-                this.Memory = Resources.Memory;
-                this.CgroupParent = Resources.CgroupParent;
-                this.BlkioWeight = Resources.BlkioWeight;
-                this.BlkioWeightDevice = Resources.BlkioWeightDevice;
-                this.BlkioDeviceReadBps = Resources.BlkioDeviceReadBps;
-                this.BlkioDeviceWriteBps = Resources.BlkioDeviceWriteBps;
-                this.BlkioDeviceReadIOps = Resources.BlkioDeviceReadIOps;
-                this.BlkioDeviceWriteIOps = Resources.BlkioDeviceWriteIOps;
-                this.CPUPeriod = Resources.CPUPeriod;
-                this.CPUQuota = Resources.CPUQuota;
-                this.CpusetCpus = Resources.CpusetCpus;
-                this.CpusetMems = Resources.CpusetMems;
-                this.Devices = Resources.Devices;
-                this.DiskQuota = Resources.DiskQuota;
-                this.KernelMemory = Resources.KernelMemory;
-                this.MemoryReservation = Resources.MemoryReservation;
-                this.MemorySwap = Resources.MemorySwap;
-                this.MemorySwappiness = Resources.MemorySwappiness;
-                this.OomKillDisable = Resources.OomKillDisable;
-                this.PidsLimit = Resources.PidsLimit;
-                this.Ulimits = Resources.Ulimits;
-                this.CPUCount = Resources.CPUCount;
-                this.CPUPercent = Resources.CPUPercent;
-                this.IOMaximumIOps = Resources.IOMaximumIOps;
-                this.IOMaximumBandwidth = Resources.IOMaximumBandwidth;
-                this.NetworkMaximumBandwidth = Resources.NetworkMaximumBandwidth;
-            }
-        }
-
         [DataMember(Name = "CpuShares")]
         public long CPUShares { get; set; }
 
@@ -123,8 +86,5 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "NetworkMaximumBandwidth")]
         public ulong NetworkMaximumBandwidth { get; set; }
-
-        [DataMember(Name = "RestartPolicy")]
-        public RestartPolicy RestartPolicy { get; set; }
     }
 }

@@ -6,6 +6,36 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class NetworkSettings // (types.NetworkSettings)
     {
+        public NetworkSettings()
+        {
+        }
+
+        public NetworkSettings(NetworkSettingsBase NetworkSettingsBase, DefaultNetworkSettings DefaultNetworkSettings)
+        {
+            if (NetworkSettingsBase != null)            {
+                this.Bridge = NetworkSettingsBase.Bridge;
+                this.SandboxID = NetworkSettingsBase.SandboxID;
+                this.HairpinMode = NetworkSettingsBase.HairpinMode;
+                this.LinkLocalIPv6Address = NetworkSettingsBase.LinkLocalIPv6Address;
+                this.LinkLocalIPv6PrefixLen = NetworkSettingsBase.LinkLocalIPv6PrefixLen;
+                this.Ports = NetworkSettingsBase.Ports;
+                this.SandboxKey = NetworkSettingsBase.SandboxKey;
+                this.SecondaryIPAddresses = NetworkSettingsBase.SecondaryIPAddresses;
+                this.SecondaryIPv6Addresses = NetworkSettingsBase.SecondaryIPv6Addresses;
+            }
+
+            if (DefaultNetworkSettings != null)            {
+                this.EndpointID = DefaultNetworkSettings.EndpointID;
+                this.Gateway = DefaultNetworkSettings.Gateway;
+                this.GlobalIPv6Address = DefaultNetworkSettings.GlobalIPv6Address;
+                this.GlobalIPv6PrefixLen = DefaultNetworkSettings.GlobalIPv6PrefixLen;
+                this.IPAddress = DefaultNetworkSettings.IPAddress;
+                this.IPPrefixLen = DefaultNetworkSettings.IPPrefixLen;
+                this.IPv6Gateway = DefaultNetworkSettings.IPv6Gateway;
+                this.MacAddress = DefaultNetworkSettings.MacAddress;
+            }
+        }
+
         [DataMember(Name = "Bridge")]
         public string Bridge { get; set; }
 

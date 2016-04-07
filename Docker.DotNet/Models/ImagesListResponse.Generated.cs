@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -19,7 +20,7 @@ namespace Docker.DotNet.Models
         public IList<string> RepoDigests { get; set; }
 
         [DataMember(Name = "Created")]
-        public long Created { get; set; }
+        public DateTime Created { get; set; }
 
         [DataMember(Name = "Size")]
         public long Size { get; set; }
