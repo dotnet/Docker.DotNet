@@ -30,9 +30,10 @@ namespace Microsoft.Net.Http.Client
                 byte[] requestBytes = Encoding.ASCII.GetBytes(rawRequest);
                 await Transport.WriteAsync(requestBytes, 0, requestBytes.Length, cancellationToken);
 
-                // TODO: Determin if there's a request body?
-                // Wait for 100-continue?
-                // Send body
+                if (request.Content != null)
+                {
+                    await request.Content.CopyToAsync(Transport);
+                }
 
                 // Receive headers
                 List<string> responseLines = await ReadResponseLinesAsync(cancellationToken);
@@ -57,29 +58,18 @@ namespace Microsoft.Net.Http.Client
             builder.Append(request.Version.ToString(2));
             builder.Append(CRLF);
 
-            foreach (var header in request.Headers)
-            {
-                foreach (var value in header.Value)
-                {
-                    builder.Append(header.Key);
-                    builder.Append(": ");
-                    builder.Append(value);
-                    builder.Append(CRLF);
-                }
-            }
+            builder.Append(request.Headers.ToString());
 
             if (request.Content != null)
             {
-                foreach (var header in request.Content.Headers)
+                // Force the content to compute its content length if it has not already.
+                var contentLength = request.Content.Headers.ContentLength;
+                if (contentLength.HasValue)
                 {
-                    foreach (var value in header.Value)
-                    {
-                        builder.Append(header.Key);
-                        builder.Append(": ");
-                        builder.Append(value);
-                        builder.Append(CRLF);
-                    }
+                    request.Content.Headers.ContentLength = contentLength.Value;
                 }
+
+                builder.Append(request.Content.Headers.ToString());
             }
             // Headers end with an empty line
             builder.Append(CRLF);

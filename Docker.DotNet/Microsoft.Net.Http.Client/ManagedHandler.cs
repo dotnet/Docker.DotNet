@@ -123,11 +123,6 @@ namespace Microsoft.Net.Http.Client
             ProcessHostHeader(request);
             request.Headers.ConnectionClose = true; // TODO: Connection re-use is not supported.
 
-            if (request.Method != HttpMethod.Get)
-            {
-                throw new NotImplementedException(request.Method.Method); // TODO: POST
-            }
-
             ProxyMode proxyMode = DetermineProxyModeAndAddressLine(request);
             Stream transport = await ConnectAsync(request, cancellationToken);
 
