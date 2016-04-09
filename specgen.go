@@ -222,7 +222,7 @@ func csType(t reflect.Type, opt bool) CSType {
 		return CSType{"System.Collections.Generic", fmt.Sprintf("IList<%s>", csType(t.Elem(), false).Name), false}
 	case reflect.Map:
 		if t.Elem() == EmptyStruct {
-			return CSType{"System.Collections.Generic", fmt.Sprintf("ISet<%s>", csType(t.Key(), false).Name), false}
+			return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, object>", csType(t.Key(), false).Name), false}
 		}
 
 		return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, %s>", csType(t.Key(), false).Name, csType(t.Elem(), false).Name), false}
@@ -265,7 +265,7 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 				m.Constructors = append(m.Constructors, NewConstructor(), NewConstructor())
 			}
 
-            ut := ultimateType(f.Type)
+			ut := ultimateType(f.Type)
 			reflectType(ut.Name(), ut, reflectedTypes)
 			newType := reflectedTypes[ut.Name()]
 			m.Constructors[1].Parameters = append(m.Constructors[1].Parameters, CSParameter{newType, f.Name})
@@ -331,8 +331,8 @@ func reflectType(name string, t reflect.Type, reflectedTypes map[string]*CSModel
 	if _, ok := reflectedTypes[name]; ok {
 		return
 	} else if name == "" {
-        return
-    }
+		return
+	}
 
 	m := NewModel(name, fmt.Sprintf("%s", t))
 	reflectedTypes[name] = m
@@ -364,8 +364,8 @@ func main() {
 		for _, file := range files {
 			if strings.HasSuffix(file.Name(), ".Generated.cs") {
 				if err := os.Remove(path.Join(sourcePath, file.Name())); err != nil {
-                    panic(err)
-                }
+					panic(err)
+				}
 			}
 		}
 	}
