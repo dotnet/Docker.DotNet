@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    public class BufferedReadStream : ApmStream
+    public class BufferedReadStream : Stream
     {
         private const char CR = '\r';
         private const char LF = '\n';
 
-        private readonly ApmStream _inner;
+        private readonly Stream _inner;
         private readonly byte[] _buffer;
         private int _bufferOffset = 0;
         private int _bufferCount = 0;
         private bool _disposed;
 
-        public BufferedReadStream(ApmStream inner)
+        public BufferedReadStream(Stream inner)
         {
             if (inner == null)
             {
@@ -92,16 +92,6 @@ namespace Microsoft.Net.Http.Client
             _inner.Write(buffer, offset, count);
         }
 
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-        {
-            return _inner.BeginWrite(buffer, offset, count, callback, state);
-        }
-
-        public override void EndWrite(IAsyncResult asyncResult)
-        {
-            _inner.EndWrite(asyncResult);
-        }
-
         public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             return _inner.WriteAsync(buffer, offset, count, cancellationToken);
@@ -139,38 +129,6 @@ namespace Microsoft.Net.Http.Client
             }
 
             return await _inner.ReadAsync(buffer, offset, count, cancellationToken);
-        }
-
-        // We only anticipate using ReadAsync
-        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-        {
-            // Validate Inputs
-
-            // Drain buffer
-            if (_bufferCount > 0)
-            {
-                int toCopy = Math.Min(_bufferCount, count);
-                Buffer.BlockCopy(_buffer, _bufferOffset, buffer, offset, toCopy);
-                _bufferOffset += toCopy;
-                _bufferCount -= toCopy;
-
-                TaskCompletionSource<int> tcs = new TaskCompletionSource<int>(state);
-                tcs.TrySetResult(toCopy);
-                callback(tcs.Task);
-                return tcs.Task;
-            }
-
-            return _inner.BeginRead(buffer, offset, count, callback, state);
-        }
-
-        public override int EndRead(IAsyncResult asyncResult)
-        {
-            Task<int> task = asyncResult as Task<int>;
-            if (task != null)
-            {
-                return task.Result;
-            }
-            return _inner.EndRead(asyncResult);
         }
 
         private void EnsureBufferd()

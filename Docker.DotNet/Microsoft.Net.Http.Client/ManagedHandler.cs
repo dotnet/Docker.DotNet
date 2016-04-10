@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -119,7 +120,7 @@ namespace Microsoft.Net.Http.Client
             }
 
             ProxyMode proxyMode = DetermineProxyModeAndAddressLine(request);
-            ApmStream transport = await ConnectAsync(request, cancellationToken);
+            Stream transport = await ConnectAsync(request, cancellationToken);
 
             if (proxyMode == ProxyMode.Tunnel)
             {
@@ -132,7 +133,7 @@ namespace Microsoft.Net.Http.Client
             {
                 SslStream sslStream = new SslStream(transport);
                 await sslStream.AuthenticateAsClientAsync(request.GetHostProperty());
-                transport = new ApmStreamWrapper(sslStream);
+                transport = sslStream;
             }
 
             var bufferedReadStream = new BufferedReadStream(transport);
@@ -255,13 +256,13 @@ namespace Microsoft.Net.Http.Client
             return ProxyMode.Tunnel;
         }
 
-        private async Task<ApmStream> ConnectAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        private async Task<Stream> ConnectAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             TcpClient client = new TcpClient();
             try
             {
                 await client.ConnectAsync(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value);
-                return new ApmStreamWrapper(client.GetStream());
+                return client.GetStream();
             }
             catch (SocketException sox)
             {
@@ -270,7 +271,7 @@ namespace Microsoft.Net.Http.Client
             }
         }
 
-        private async Task TunnelThroughProxyAsync(HttpRequestMessage request, ApmStream transport, CancellationToken cancellationToken)
+        private async Task TunnelThroughProxyAsync(HttpRequestMessage request, Stream transport, CancellationToken cancellationToken)
         {
             // Send a Connect request:
             // CONNECT server.example.com:80 HTTP / 1.1

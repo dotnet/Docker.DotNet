@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    public class ChunkedReadStream : ApmStream
+    public class ChunkedReadStream : Stream
     {
         private readonly BufferedReadStream _inner;
         private bool _expectChunkHeader = true;
@@ -187,45 +187,6 @@ namespace Microsoft.Net.Http.Client
             }
         }
 
-        public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-        {
-            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>(state);
-            InternalReadAsync(buffer, offset, count, callback, tcs);
-            return tcs.Task;
-        }
-        private async void InternalReadAsync(byte[] buffer, int offset, int count, AsyncCallback callback, TaskCompletionSource<int> tcs)
-        {
-            try
-            {
-                int read = await ReadAsync(buffer, offset, count);
-                tcs.TrySetResult(read);
-            }
-            catch (Exception ex)
-            {
-                tcs.TrySetException(ex);
-            }
-
-            try
-            {
-                callback(tcs.Task);
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        public override int EndRead(IAsyncResult asyncResult)
-        {
-            Task<int> t = (Task<int>)asyncResult;
-            t.Wait();
-
-            if (t.IsFaulted)
-            {
-                throw new IOException(string.Empty, t.Exception);
-            }
-            return t.Result;
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -245,16 +206,6 @@ namespace Microsoft.Net.Http.Client
         }
 
         public override void Write(byte[] buffer, int offset, int count)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void EndWrite(IAsyncResult asyncResult)
         {
             throw new NotSupportedException();
         }
