@@ -32,7 +32,19 @@ namespace Microsoft.Net.Http.Client
 
                 if (request.Content != null)
                 {
-                    await request.Content.CopyToAsync(Transport);
+                    if (request.Content.Headers.ContentLength.HasValue)
+                    {
+                        await request.Content.CopyToAsync(Transport);
+                    }
+                    else
+                    {
+                        // The length of the data is unknown. Send it in chunked mode.
+                        using (var chunkedStream = new ChunkedWriteStream(Transport))
+                        {
+                            await request.Content.CopyToAsync(chunkedStream);
+                            await chunkedStream.EndContentAsync(cancellationToken);
+                        }
+                    }
                 }
 
                 // Receive headers
@@ -70,6 +82,11 @@ namespace Microsoft.Net.Http.Client
                 }
 
                 builder.Append(request.Content.Headers.ToString());
+                if (!contentLength.HasValue)
+                {
+                    // Add header for chunked mode.
+                    builder.Append("Transfer-Encoding: chunked\r\n");
+                }
             }
             // Headers end with an empty line
             builder.Append(CRLF);
