@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0-*",
+  "dependencies": {},
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Net.Http": ""
+      }
+    },
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.Net.Http": ""
+      }
+    },
+    "dnxcore50": {
+      "dependencies": {
+        "System.Globalization": "4.0.11-beta-*",
+        "System.Linq": "4.0.1-beta-*",
+        "System.Net.Http": "4.0.1-beta-*",
+        "System.Net.Sockets": "4.0.10-beta-*",
+        "System.Net.Security": "4.0.0-beta-*",
+        "System.Security.Cryptography.X509Certificates": "4.0.0-beta-*",
+        "System.Security.Principal": "4.0.1-beta-*",
+        "System.Text.Encoding": "4.0.11-beta-*",
+        "System.Threading.Tasks": "4.0.11-beta-*"
+      }
+    }
+  }
+}
