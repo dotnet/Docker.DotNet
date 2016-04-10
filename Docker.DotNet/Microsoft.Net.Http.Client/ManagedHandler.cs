@@ -13,8 +13,15 @@ namespace Microsoft.Net.Http.Client
 {
     public class ManagedHandler : HttpMessageHandler
     {
-        public ManagedHandler()
+        public ManagedHandler() : this(TCPStreamOpener)
         {
+        }
+
+        public delegate Task<Stream> StreamOpener(string host, int port, CancellationToken cancellationToken);
+
+        public ManagedHandler(StreamOpener opener)
+        {
+            _opener = opener;
             MaxAutomaticRedirects = 20;
             RedirectMode = RedirectMode.NoDowngrade;
         }
@@ -28,6 +35,8 @@ namespace Microsoft.Net.Http.Client
         public int MaxAutomaticRedirects { get; set; }
 
         public RedirectMode RedirectMode { get; set; }
+
+        private StreamOpener _opener;
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -256,18 +265,30 @@ namespace Microsoft.Net.Http.Client
             return ProxyMode.Tunnel;
         }
 
-        private async Task<Stream> ConnectAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        private static async Task<Stream> TCPStreamOpener(string host, int port, CancellationToken cancellationToken)
         {
             TcpClient client = new TcpClient();
             try
             {
-                await client.ConnectAsync(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value);
+                await client.ConnectAsync(host, port);
                 return client.GetStream();
+            }
+            catch (SocketException)
+            {
+                ((IDisposable)client).Dispose();
+                throw;
+            }
+        }
+
+        private async Task<Stream> ConnectAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                return await _opener(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value, cancellationToken);
             }
             catch (SocketException sox)
             {
-                ((IDisposable)client).Dispose();
-                throw new HttpRequestException("Request failed", sox);
+                throw new HttpRequestException("Connection failed", sox);
             }
         }
 
