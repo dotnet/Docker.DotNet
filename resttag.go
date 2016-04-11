@@ -15,57 +15,51 @@ const (
 	RequiredTag = "required"
 )
 
+// RestTag is a type that represents the valid values of a 'rest' struct tag.
 type RestTag struct {
 	In       string
 	Name     string
 	Required bool
 }
 
+// RestTagFromString is a method to parse a 'rest' struct tag to a resulting RestTag struct.
+// This can take the form of rest:in,name,required
 func RestTagFromString(tag string) (RestTag, error) {
 	if tag == "" {
-		return RestTag{}, errors.New("Nil or empty tag string.")
+		return RestTag{}, errors.New("Nil or empty tag string")
+	}
+
+	entries := strings.Split(tag, ",")
+	elen := len(entries)
+	if elen < 1 {
+		return RestTag{}, errors.New("You must support at least the first 'in' tag")
 	}
 
 	r := RestTag{In: "", Name: "", Required: false}
 	requiresName := false
-
-	entries := strings.Split(tag, ",")
-	for _, entry := range entries {
-		decls := strings.Split(entry, ":")
-		if len(decls) == 2 {
-			tag, value := decls[0], decls[1]
-			switch tag {
-			case InTag:
-				switch value {
-				case Header:
-					r.In = value
-					requiresName = true
-				case Body:
-					r.In = value
-				case Query:
-					r.In = value
-					requiresName = true
-				default:
-					return RestTag{}, errors.New("Incorrect 'in' value: " + value)
-				}
-			case NameTag:
-				r.Name = value
-			default:
-				return RestTag{}, errors.New("Unknown 2 part tag:value of: " + entry)
-			}
-		} else if entry == RequiredTag {
-			r.Required = true
-		} else {
-			return RestTag{}, errors.New("Unknown entry: " + entry)
+	if elen >= 1 {
+		r.In = entries[0]
+		switch r.In {
+		case Header:
+			requiresName = true
+		case Body:
+		case Query:
+			requiresName = true
+		default:
+			return RestTag{}, errors.New("Incorrect 'in' value: " + r.In)
 		}
 	}
 
-	if r.In == "" {
-		return RestTag{}, errors.New("in: tag is always required.")
+	if elen >= 2 {
+		r.Name = entries[1]
+	}
+
+	if elen >= 3 && entries[2] == "required" {
+		r.Required = true
 	}
 
 	if requiresName && r.Name == "" {
-		return RestTag{}, errors.New("in: tag required name: tag.")
+		return RestTag{}, errors.New("in: tag required name: tag")
 	}
 
 	return r, nil

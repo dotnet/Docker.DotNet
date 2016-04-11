@@ -354,9 +354,11 @@ func reflectDockerTypes() map[string]*CSModelType {
 }
 
 func main() {
+	argsLen := len(os.Args)
 	sourcePath := ""
-	i, _ := fmt.Scanln(sourcePath)
-	if i == 1 {
+	if argsLen >= 2 {
+		sourcePath = os.Args[1]
+		fmt.Println(sourcePath)
 		if _, err := os.Stat(sourcePath); err != nil {
 			if os.IsNotExist(err) {
 				panic(sourcePath + ", is not a valid directory.")
