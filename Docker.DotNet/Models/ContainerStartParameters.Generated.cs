@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerStartParameters // (main.ContainerStartParameters)
     {
-        [DataMember(Name = "DetachKeys")]
+        [QueryStringParameter("detachKeys", false)]
         public string DetachKeys { get; set; }
     }
 }

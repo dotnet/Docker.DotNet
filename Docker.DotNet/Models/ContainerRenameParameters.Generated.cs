@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerRenameParameters // (main.ContainerRenameParameters)
     {
-        [DataMember(Name = "NewName")]
+        [QueryStringParameter("name", false)]
         public string NewName { get; set; }
     }
 }
