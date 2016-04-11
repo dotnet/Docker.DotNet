@@ -7,20 +7,13 @@ import (
 	"os"
 	"path"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
 	"github.com/docker/engine-api/types/registry"
 )
-
-func boolString(b bool) string {
-	if b {
-		return "true"
-	}
-
-	return "false"
-}
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
 	{reflect.TypeOf(container.RestartPolicy{}), "Name"}: {"", "RestartPolicyKind", false},
@@ -262,7 +255,7 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 			clen := len(m.Constructors)
 			if clen == 0 {
 				// We need to add a default constructor and a custom one since its the first time.
-				m.Constructors = append(m.Constructors, NewConstructor(), NewConstructor())
+				m.Constructors = append(m.Constructors, CSConstructor{}, CSConstructor{})
 			}
 
 			ut := ultimateType(f.Type)
@@ -291,7 +284,7 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 			}
 
 			// Create our new property.
-			csProp := NewProperty(f.Name, csType(f.Type, false))
+			csProp := CSProperty{Name: f.Name, Type: csType(f.Type, false)}
 
 			jsonName := f.Name
 			if jsonTag[0] != "" {
@@ -305,8 +298,14 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 
 			if restTag, err := RestTagFromString(f.Tag.Get("rest")); err == nil && restTag.In != Body {
 
-				a := NewAttribute(CSType{"", "QueryStringParameter", false})
-				a.Arguments = append(a.Arguments, CSArgument{restTag.Name, CSInboxTypesMap[reflect.String]}, CSArgument{boolString(restTag.Required), CSInboxTypesMap[reflect.Bool]})
+				a := CSAttribute{Type: CSType{"", "QueryStringParameter", false}}
+				a.Arguments = append(
+					a.Arguments,
+					CSArgument{
+						restTag.Name,
+						CSInboxTypesMap[reflect.String]},
+					CSArgument{strconv.FormatBool(restTag.Required),
+						CSInboxTypesMap[reflect.Bool]})
 
 				switch f.Type.Kind() {
 				case reflect.Bool:
@@ -314,15 +313,15 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 				}
 
 				csProp.IsOpt = !restTag.Required
-				csProp.Attributes = append(csProp.Attributes, *a)
+				csProp.Attributes = append(csProp.Attributes, a)
 			} else {
-				a := NewAttribute(CSType{"", "DataMember", false})
+				a := CSAttribute{Type: CSType{"", "DataMember", false}}
 				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"Name", CSArgument{jsonName, CSInboxTypesMap[reflect.String]}})
-				csProp.Attributes = append(csProp.Attributes, *a)
+				csProp.Attributes = append(csProp.Attributes, a)
 			}
 
 			// Lastly assign the property to our type.
-			m.Properties = append(m.Properties, *csProp)
+			m.Properties = append(m.Properties, csProp)
 		}
 	}
 }
@@ -355,7 +354,17 @@ func reflectDockerTypes() map[string]*CSModelType {
 }
 
 func main() {
-	sourcePath := "D:\\gowork\\src\\github.com\\Microsoft\\Docker-PowerShell\\src\\Docker.DotNet\\Docker.DotNet\\Models"
+	sourcePath := ""
+	i, _ := fmt.Scanln(sourcePath)
+	if i == 1 {
+		if _, err := os.Stat(sourcePath); err != nil {
+			if os.IsNotExist(err) {
+				panic(sourcePath + ", is not a valid directory.")
+			}
+		}
+	} else {
+		sourcePath, _ = os.Getwd()
+	}
 
 	// Delete any previously generated files.
 	if files, err := ioutil.ReadDir(sourcePath); err != nil {
@@ -381,7 +390,7 @@ func main() {
 		defer f.Close()
 
 		b := bufio.NewWriter(f)
-		v.ToFile(b)
+		v.Write(b)
 		err = b.Flush()
 		if err != nil {
 			os.Remove(f.Name())

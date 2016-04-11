@@ -8,9 +8,10 @@ import (
 	"time"
 )
 
+// EmptyStruct is a type that represents a struct with no exported values.
 var EmptyStruct = reflect.TypeOf(struct{}{})
 
-// CSInboxTypesMap The Go type kind to C# type map.
+// CSInboxTypesMap is a map from Go type kind to C# type.
 var CSInboxTypesMap = map[reflect.Kind]CSType{
 	reflect.Int:   {"", "int", true},
 	reflect.Int8:  {"", "sbyte", true},
@@ -32,18 +33,20 @@ var CSInboxTypesMap = map[reflect.Kind]CSType{
 	reflect.Float64: {"", "double", true},
 }
 
-// CSCustomTypeMap The Go type to C# type map.
+// CSCustomTypeMap is a map from Go reflected types to C# types.
 var CSCustomTypeMap = map[reflect.Type]CSType{
 	reflect.TypeOf(time.Time{}): {"System", "DateTime", true},
 	EmptyStruct:                 {"", "BUG_IN_CONVERSION", false},
 }
 
+// CSArgument is a type that represents a C# argument that can
+// be passed to a function/constructor.
 type CSArgument struct {
 	Value string
 	Type  CSType
 }
 
-func (a CSArgument) toString() string {
+func (a CSArgument) String() string {
 	if a.Type.Name == "string" {
 		return fmt.Sprintf("\"%s\"", a.Value)
 	}
@@ -51,32 +54,25 @@ func (a CSArgument) toString() string {
 	return a.Value
 }
 
+// CSNamedArgument is a type that represents a C# named argument that
+// can take the form of Name = Argument to a function/constructor.
 type CSNamedArgument struct {
 	Name     string
 	Argument CSArgument
 }
 
-func (a CSNamedArgument) toString() string {
-	return fmt.Sprintf("%s = %s", a.Name, a.Argument.toString())
+func (a CSNamedArgument) String() string {
+	return fmt.Sprintf("%s = %s", a.Name, a.Argument)
 }
 
-// CSAttribute A representation of a C# attribute.
+// CSAttribute is a type that represents a C# attribute.
 type CSAttribute struct {
 	Type           CSType
 	Arguments      []CSArgument
 	NamedArguments []CSNamedArgument
 }
 
-// NewAttribute Creates a new C# attribute with valid slices.
-func NewAttribute(t CSType) *CSAttribute {
-	a := CSAttribute{Type: t}
-	a.Arguments = make([]CSArgument, 0)
-	a.NamedArguments = make([]CSNamedArgument, 0)
-
-	return &a
-}
-
-func (a *CSAttribute) toString() string {
+func (a CSAttribute) String() string {
 	s := fmt.Sprintf("[%s", a.Type.Name)
 
 	lenA := len(a.Arguments)
@@ -87,7 +83,7 @@ func (a *CSAttribute) toString() string {
 	}
 
 	for i, a := range a.Arguments {
-		s += a.toString()
+		s += a.String()
 
 		if i != lenA-1 {
 			s += ", "
@@ -95,7 +91,7 @@ func (a *CSAttribute) toString() string {
 	}
 
 	for i, n := range a.NamedArguments {
-		s += n.toString()
+		s += n.String()
 
 		if i != lenN-1 {
 			s += ", "
@@ -109,14 +105,14 @@ func (a *CSAttribute) toString() string {
 	return s + "]"
 }
 
-// CSType A representation of a C# type.
+// CSType is a type that represents a C# type.
 type CSType struct {
 	Namespace  string
 	Name       string
 	IsNullable bool
 }
 
-// CSParameter A representation of a C# parameter to a function/constructor.
+// CSParameter is a type that represents a parameter declaration of a C# parameter to a function/constructor.
 type CSParameter struct {
 	Type *CSModelType
 	Name string
@@ -126,19 +122,12 @@ func (p CSParameter) toString() string {
 	return fmt.Sprintf("%s %s", p.Type.Name, p.Name)
 }
 
-// CSConstructor A representation of a C# instance constructor.
+// CSConstructor is a type that represents a constructor declaration in C#.
 type CSConstructor struct {
 	Parameters []CSParameter
 }
 
-func NewConstructor() CSConstructor {
-	c := CSConstructor{}
-	c.Parameters = make([]CSParameter, 0)
-
-	return c
-}
-
-// CSProperty A representation of a C# property type.
+// CSProperty is a type that represents a property declaration in C#.
 type CSProperty struct {
 	Name       string
 	Type       CSType
@@ -146,15 +135,7 @@ type CSProperty struct {
 	Attributes []CSAttribute
 }
 
-// NewProperty Creates a new property with a valid attributes slice.
-func NewProperty(name string, t CSType) *CSProperty {
-	p := CSProperty{Name: name, Type: t, IsOpt: false}
-	p.Attributes = make([]CSAttribute, 0)
-
-	return &p
-}
-
-// CSModelType A representation of a golang reflected struct that has been transformed to a C# class.
+// CSModelType is a type that represents a reflected type to generate a C# model for.
 type CSModelType struct {
 	Name         string
 	SourceName   string
@@ -163,21 +144,20 @@ type CSModelType struct {
 	Attributes   []CSAttribute
 }
 
-// NewModel Creates a new model type with valid slices
+// NewModel creates a new model type with valid slices
 func NewModel(name, sourceName string) *CSModelType {
-	s := CSModelType{}
-	s.Name = name
-	s.SourceName = sourceName
-	s.Constructors = make([]CSConstructor, 0)
-	s.Properties = make([]CSProperty, 0)
-	s.Attributes = make([]CSAttribute, 0)
-	s.Attributes = append(s.Attributes, *NewAttribute(CSType{"System.Runtime.Serialization", "DataContract", false}))
+	s := CSModelType{
+		Name:       name,
+		SourceName: sourceName,
+	}
+
+	s.Attributes = append(s.Attributes, CSAttribute{Type: CSType{"System.Runtime.Serialization", "DataContract", false}})
 
 	return &s
 }
 
-// ToFile Writes the specific model type to the io writer given.
-func (t *CSModelType) ToFile(w io.Writer) {
+// Write the specific model type to the io writer given.
+func (t *CSModelType) Write(w io.Writer) {
 	usings := calcUsings(t)
 	for _, u := range usings {
 		fmt.Fprintf(w, "using %s;\n", u)
@@ -224,7 +204,7 @@ func safeAddUsing(using string, usings []string, added map[string]bool) []string
 
 func writeClass(w io.Writer, t *CSModelType) {
 	for _, a := range t.Attributes {
-		fmt.Fprintf(w, "    %s\n", a.toString())
+		fmt.Fprintf(w, "    %s\n", a)
 	}
 
 	fmt.Fprintf(w, "    public class %s // (%s)\n", t.Name, t.SourceName)
@@ -265,7 +245,7 @@ func writeConstructors(w io.Writer, typeName string, constructors []CSConstructo
 		// If we had parameters we need to handle the copy of the data for the structs.
 		if plen > 0 {
 			for pi, p := range c.Parameters {
-				fmt.Fprintf(w, "            if (%s != null)", p.Name)
+				fmt.Fprintf(w, "            if (%s != null)\n", p.Name)
 				fmt.Fprintln(w, "            {")
 
 				// Assign each of the types.
@@ -292,7 +272,7 @@ func writeProperties(w io.Writer, properties []CSProperty) {
 	len := len(properties)
 	for i, p := range properties {
 		for _, a := range p.Attributes {
-			fmt.Fprintf(w, "        %s\n", a.toString())
+			fmt.Fprintf(w, "        %s\n", a)
 		}
 
 		if p.Type.IsNullable && p.IsOpt {
