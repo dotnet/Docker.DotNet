@@ -12,7 +12,8 @@ namespace Docker.DotNet.Models
 
         public CreateContainerParameters(Config Config)
         {
-            if (Config != null)            {
+            if (Config != null)
+            {
                 this.Hostname = Config.Hostname;
                 this.Domainname = Config.Domainname;
                 this.User = Config.User;

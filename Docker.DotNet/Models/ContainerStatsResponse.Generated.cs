@@ -13,7 +13,8 @@ namespace Docker.DotNet.Models
 
         public ContainerStatsResponse(Stats Stats)
         {
-            if (Stats != null)            {
+            if (Stats != null)
+            {
                 this.Read = Stats.Read;
                 this.PreCPUStats = Stats.PreCPUStats;
                 this.CPUStats = Stats.CPUStats;
