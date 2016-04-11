@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ConatinerRestartParameters // (main.ContainerRestartParameters)
     {
-        [DataMember(Name = "WaitBeforeKillSeconds")]
-        public uint WaitBeforeKillSeconds { get; set; }
+        [QueryStringParameter("t", false)]
+        public uint? WaitBeforeKillSeconds { get; set; }
     }
 }

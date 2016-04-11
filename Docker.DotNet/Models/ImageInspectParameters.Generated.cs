@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImageInspectParameters // (main.ImageInspectParameters)
     {
-        [DataMember(Name = "IncludeSize")]
-        public bool IncludeSize { get; set; }
+        [QueryStringParameter("size", false, typeof(BoolQueryStringConverter))]
+        public bool? IncludeSize { get; set; }
     }
 }

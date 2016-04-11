@@ -8,10 +8,10 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Height")]
-        public int Height { get; set; }
+        [QueryStringParameter("h", false)]
+        public int? Height { get; set; }
 
-        [DataMember(Name = "Width")]
-        public int Width { get; set; }
+        [QueryStringParameter("w", false)]
+        public int? Width { get; set; }
     }
 }

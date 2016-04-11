@@ -12,7 +12,8 @@ namespace Docker.DotNet.Models
 
         public ContainerInspectResponse(ContainerJSONBase ContainerJSONBase)
         {
-            if (ContainerJSONBase != null)            {
+            if (ContainerJSONBase != null)
+            {
                 this.ID = ContainerJSONBase.ID;
                 this.Created = ContainerJSONBase.Created;
                 this.Path = ContainerJSONBase.Path;

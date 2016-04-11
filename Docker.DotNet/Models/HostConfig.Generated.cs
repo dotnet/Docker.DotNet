@@ -12,7 +12,8 @@ namespace Docker.DotNet.Models
 
         public HostConfig(Resources Resources)
         {
-            if (Resources != null)            {
+            if (Resources != null)
+            {
                 this.CPUShares = Resources.CPUShares;
                 this.Memory = Resources.Memory;
                 this.CgroupParent = Resources.CgroupParent;

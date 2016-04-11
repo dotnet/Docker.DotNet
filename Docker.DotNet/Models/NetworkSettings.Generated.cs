@@ -12,7 +12,8 @@ namespace Docker.DotNet.Models
 
         public NetworkSettings(NetworkSettingsBase NetworkSettingsBase, DefaultNetworkSettings DefaultNetworkSettings)
         {
-            if (NetworkSettingsBase != null)            {
+            if (NetworkSettingsBase != null)
+            {
                 this.Bridge = NetworkSettingsBase.Bridge;
                 this.SandboxID = NetworkSettingsBase.SandboxID;
                 this.HairpinMode = NetworkSettingsBase.HairpinMode;
@@ -24,7 +25,8 @@ namespace Docker.DotNet.Models
                 this.SecondaryIPv6Addresses = NetworkSettingsBase.SecondaryIPv6Addresses;
             }
 
-            if (DefaultNetworkSettings != null)            {
+            if (DefaultNetworkSettings != null)
+            {
                 this.EndpointID = DefaultNetworkSettings.EndpointID;
                 this.Gateway = DefaultNetworkSettings.Gateway;
                 this.GlobalIPv6Address = DefaultNetworkSettings.GlobalIPv6Address;

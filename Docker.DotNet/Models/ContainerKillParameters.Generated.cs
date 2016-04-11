@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerKillParameters // (main.ContainerKillParameters)
     {
-        [DataMember(Name = "Signal")]
+        [QueryStringParameter("signal", false)]
         public string Signal { get; set; }
     }
 }
