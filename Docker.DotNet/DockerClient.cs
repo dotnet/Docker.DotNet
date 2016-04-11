@@ -26,6 +26,8 @@ namespace Docker.DotNet
         public IContainerOperations Containers { get; private set; }
 
         public IMiscellaneousOperations Miscellaneous { get; private set; }
+        
+        public INetworkOperations Networks { get; private set; }
 
         private readonly ApiResponseErrorHandlingDelegate _defaultErrorHandlingDelegate = (statusCode, body) =>
         {
@@ -49,6 +51,7 @@ namespace Docker.DotNet
             Images = new ImageOperations(this);
             Containers = new ContainerOperations(this);
             Miscellaneous = new MiscellaneousOperations(this);
+            Networks = new NetworkOperations(this);
 
             _client = new HttpClient(Configuration.Credentials.Handler, false);
 
