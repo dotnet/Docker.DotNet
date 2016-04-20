@@ -17,6 +17,7 @@ namespace Docker.DotNet.BasicAuth
             }
         }
 
+#if !netstandard
         public BasicAuthCredentials(SecureString username, SecureString password, bool isTls = false)
         {
             if (username == null)
@@ -33,6 +34,7 @@ namespace Docker.DotNet.BasicAuth
 
             _isTls = isTls;
         }
+#endif
 
         public BasicAuthCredentials(string username, string password, bool isTls = false)
         {
@@ -46,12 +48,20 @@ namespace Docker.DotNet.BasicAuth
                 throw new ArgumentException("password");
             }
 
+#if !netstandard
             _handler = CreateHandler(ConvertToSecureString(username), ConvertToSecureString(password));
+#else
+            _handler = CreateHandler(username, password);
+#endif
 
             _isTls = isTls;
         }
 
+#if !netstandard
         private BasicAuthHandler CreateHandler(SecureString username, SecureString password)
+#else
+        private BasicAuthHandler CreateHandler(string username, string password)
+#endif
         {
             return new BasicAuthHandler(username, password, new HttpClientHandler());
         }
@@ -61,6 +71,7 @@ namespace Docker.DotNet.BasicAuth
             return _isTls;
         }
 
+#if !netstandard
         private static SecureString ConvertToSecureString(string str)
         {
             var secureStr = new SecureString();
@@ -74,6 +85,7 @@ namespace Docker.DotNet.BasicAuth
             }
             return secureStr;
         }
+#endif
 
         public override void Dispose()
         {
