@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "2.124.0",
   "dependencies": {
     "Newtonsoft.Json": "8.0.3"
@@ -20,6 +20,14 @@
         "System.Text.Encoding": "4.0.10",
         "System.Text.Encoding.Extensions": "4.0.10",
         "System.Threading.Tasks": "4.0.10"
+      }
+    },
+    "net46": {
+      "dependencies": {
+        "System.Net.Http": "4.0.0"
+      },
+      "frameworkAssemblies": {
+        "System.Runtime.Serialization": "4.0.0.0"
       }
     }
   }

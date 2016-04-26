@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>a9c3e587-ddec-494b-96e2-bfb4fc34ec74</ProjectGuid>
-    <RootNamespace>Docker.DotNet</RootNamespace>
+    <ProjectGuid>ec789466-95c7-4fab-9575-18b2ff55abd3</ProjectGuid>
+    <RootNamespace>Docker.DotNet.BasicAuth</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">$(SolutionDir)\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">$(SolutionDir)\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
   </PropertyGroup>

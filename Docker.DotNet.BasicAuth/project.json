@@ -1,0 +1,24 @@
+{
+  "version": "1.2.2",
+  "dependencies": {
+    "Docker.DotNet": "1.2.2"
+  },
+  "frameworks": {
+    "netstandard1.3": {
+      "imports": [ "dotnet", "netcore50" ],
+      "compilationOptions": {
+        "define": ["netstandard"]
+      },
+      "dependencies": {
+        "System.Runtime": "4.0.20",
+        "System.Text.Encoding": "4.0.10"
+      }
+    },
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.20.0",
+        "System.Security": "4.0.0.0"
+      }
+    }
+  }
+}
