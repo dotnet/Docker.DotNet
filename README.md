@@ -160,6 +160,14 @@ Backwards compatibility is not tested and therefore not guaranteed.
 ## Changelog
 
 ```
+v2.124.0
+======
++ Updated to support Docker Engine API 1.24.
+
+Acknowledgements
+- Justin Terry (@jterry75)
+
+
 v1.2.2
 ======
 + Added no/unless-stopped restart policies (#41)
