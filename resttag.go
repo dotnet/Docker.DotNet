@@ -31,9 +31,6 @@ func RestTagFromString(tag string) (RestTag, error) {
 
 	entries := strings.Split(tag, ",")
 	elen := len(entries)
-	if elen < 1 {
-		return RestTag{}, errors.New("You must support at least the first 'in' tag")
-	}
 
 	r := RestTag{In: "", Name: "", Required: false}
 	requiresName := false
