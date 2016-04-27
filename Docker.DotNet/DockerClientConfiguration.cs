@@ -9,7 +9,7 @@ namespace Docker.DotNet
         public Credentials Credentials { get; internal set; }
 
         public DockerClientConfiguration(Uri endpoint)
-            : this(endpoint, new AnonymousCredentials())
+            : this(endpoint, null)
         {
         }
 
@@ -20,13 +20,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("endpoint");
             }
 
-            if (credentials == null)
-            {
-                throw new ArgumentNullException("credentials");
-            }
-
-            EndpointBaseUri = SanitizeEndpoint(endpoint, credentials.IsTlsCredentials());
-            Credentials = credentials;
+            Credentials = credentials ?? new AnonymousCredentials();;
+            EndpointBaseUri = SanitizeEndpoint(endpoint, Credentials.IsTlsCredentials());
         }
 
         public DockerClient CreateClient()
