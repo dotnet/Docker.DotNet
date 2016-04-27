@@ -2,15 +2,19 @@
 
 This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications. 
 
-It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically. Currently, it supports [Docker Remote API v1.16][v1.16].
+It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically.
+
+**Versioning:** For example, `v2.124.0` supports `v1.24` of Docker Remote API.
 
 ## Installation
 
-You can add this library to your project using [NuGet][nuget]. This is the only method this library is currently distributed unless you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
+You can add this library to your project using [NuGet][nuget]. This is the only method this library is currently distributed unless
+you choose to build your own binaries using source code. Run the following command in the “Package Manager Console”:
 
     PM> Install-Package Docker.DotNet
     
-Or right click to your project in Visual Studio, choose “Manage NuGet Packages” and search for ‘Docker.DotNet’ and click ‘Install’. ([see NuGet Gallery][nuget-gallery].)
+Or right click to your project in Visual Studio, choose “Manage NuGet Packages” and search for ‘Docker.DotNet’ and click ‘Install’.
+([see NuGet Gallery][nuget-gallery].)
 
 ## Usage
 
@@ -33,7 +37,8 @@ IList<ContainerResponse> containers = await client.Containers.ListContainersAsyn
 
 #### Example: Create an image by pulling from Docker Registry
 
-The code below pulls `fedora/memcached` image to your Docker instance using your Docker Hub account. You can anonymously download the image as well by passing `null` instead of AuthConfig object:
+The code below pulls `fedora/memcached` image to your Docker instance using your Docker Hub account. You can
+anonymously download the image as well by passing `null` instead of AuthConfig object:
 
 ```csharp
 Stream stream  = await client.Images.CreateImageAsync (new CreateImageParameters () {
@@ -68,11 +73,14 @@ var stopped = await client.Containers.StopContainerAsync ("39e3317fd258",
     CancellationToken.None);
 ```
 
-Above, the `Wait` field is of type `TimeSpan?` which means optional. This code will wait 30 seconds before killing it. If you like to cancel the waiting, you can use the CancellationToken parameter.
+Above, the `Wait` field is of type `TimeSpan?` which means optional. This code will wait 30 seconds before
+killing it. If you like to cancel the waiting, you can use the CancellationToken parameter.
 
 #### Example: Dealing with Stream responses
 
-Some Docker API endpoints are designed to return stream responses. For example [Monitoring Docker events](https://docs.docker.com/reference/api/docker_remote_api_v1.13/#monitor-dockers-events) continuously streams the status in a format like :
+Some Docker API endpoints are designed to return stream responses. For example 
+[Monitoring Docker events](https://docs.docker.com/reference/api/docker_remote_api_v1.13/#monitor-dockers-events)
+continuously streams the status in a format like :
 
 ```json
 {"status":"create","id":"dfdf82bd3881","from":"base:latest","time":1374067924}
@@ -153,9 +161,13 @@ Here are typical exceptions thrown from the client library:
 
 ## Versioning
 
-Development of this client library was initially based on [Docker Remote API v1.14][v1.14]. Its forward compatibility is dependent on Docker's policy on forward compatibility. Feel free to send pull requests as the API changes over time. Please refer to the Changelog below to see what version of Docker Remote API is currently supported.
+Version if this package uses SemVer format: `MAJOR.MINOR.PATCH`. MINOR segment indicates
+the Docker Remote API version support. For instance `v2.124.0` of this library supports
+Docker Remote API `v1.24`. This does not guarantee backwards compatibility as Docker Remote
+API does not guarantee that either.
 
-Backwards compatibility is not tested and therefore not guaranteed.
+MAJOR is preserved for major breaking changes we make to the library itself such as how
+the calls are made or how authentication is made. PATCH is just for incremental fixes.
 
 ## Changelog
 
@@ -261,7 +273,6 @@ This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet 
 
 [docker-remote-api]: https://docs.docker.com/reference/api/docker_remote_api/
 [v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
-[v1.16]: https://docs.docker.com/reference/api/docker_remote_api_v1.16/
 [docker-tls]: https://docs.docker.com/articles/https/
 [nuget]: http://www.nuget.org
 [nuget-gallery]: https://www.nuget.org/packages/Docker.DotNet/
