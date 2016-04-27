@@ -162,11 +162,14 @@ Backwards compatibility is not tested and therefore not guaranteed.
 ```
 v2.124.0
 ======
+
+This release contains breaking changes!
+
 + Updated to support Docker Engine API 1.24.
++ Types are now code generated from Docker source.
 
 Acknowledgements
 - Justin Terry (@jterry75)
-
 
 v1.2.2
 ======
@@ -253,6 +256,8 @@ This work is licensed under [Apache 2.0 License](LICENSE). Copyright 2014 Ahmet 
 * [Josh Garverick](http://blogs.obliteracy.net/)
 * [Andreas Bieber](https://github.com/Gandalis)
 * [Shakirov Ruslan](https://github.com/build-your-web)
+* [Justin Terry](https://github.com/jterry75)
+* [Stefan J. Wernli](https://github.com/swernli)
 
 [docker-remote-api]: https://docs.docker.com/reference/api/docker_remote_api/
 [v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
