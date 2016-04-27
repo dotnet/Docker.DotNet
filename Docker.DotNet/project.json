@@ -4,11 +4,16 @@
     "Newtonsoft.Json": "8.0.3"
   },
   "runtimes": {
-    "win": {}
+    "win10-x64": {},
+    "win10-x86": {}
   },
   "frameworks": {
     "netstandard1.3": {
-      "imports": [ "dotnet", "netcore50", "uap10" ],
+      "imports": [
+        "dotnet",
+        "netcore50",
+        "uap10"
+      ],
       "dependencies": {
         "System.Collections": "4.0.10",
         "System.IO": "4.0.10",
@@ -26,16 +31,13 @@
       }
     },
     "net46": {
-      "dependencies": {
-        "System.Net.Http": "4.0.0"
-      },
       "frameworkAssemblies": {
-        "System.Runtime.Serialization": "4.0.0.0"
+        "System.Net.Http": "",
+        "System.Runtime.Serialization": ""
       }
     },
     "net45": {
       "frameworkAssemblies": {
-        "mscorlib": "",
         "System.Net.Http": "",
         "System.Runtime.Serialization": ""
       }
