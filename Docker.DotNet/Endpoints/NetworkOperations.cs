@@ -90,14 +90,14 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var path = $"networks/{id}/json";
+            var path = $"networks/{id}";
             var response = await this.Client.MakeRequestAsync(new[] {NoSuchNetworkHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<NetworkResponse>(response.Body);
         }
 
         public async Task<IList<NetworkListResponse>> ListNetworksAsync(NetworksListParameters parameters)
         {
-            var path = "networks/json";
+            var path = "networks";
             var queryParameters = parameters == null ? null : new QueryString<NetworksListParameters>(parameters);
             var response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<NetworkListResponse[]>(response.Body);
