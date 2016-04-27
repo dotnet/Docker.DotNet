@@ -1,17 +1,21 @@
 {
-  "version": "1.2.2-*",
-  "description": "X509Certificate and WebRequestHandler wrapper for Docker.DotNet",
-  "frameworks": {
-    "net46": {
-        "dependencies": {
-            "System.Threading": "4.0.10",
-            "Docker.DotNet": "2.124.0"
+    "version": "1.2.2-*",
+    "description": "X509Certificate and WebRequestHandler wrapper for Docker.DotNet",
+    "dependencies": {
+        "Docker.DotNet": "2.124.0"
+    },
+    "frameworks": {
+        "net46": {
+            "frameworkAssemblies": {
+                "System.Net.Http": "",
+                "System.Net.Http.WebRequest": ""
+            }
         },
-        "frameworkAssemblies": {
-            "System.IdentityModel": "",
-            "System.Net.Http.WebRequest": "",
-            "System.Net.Http": ""
+        "net45": {
+            "frameworkAssemblies": {
+                "System.Net.Http": "",
+                "System.Net.Http.WebRequest": ""
+            }
         }
     }
-  }
 }
