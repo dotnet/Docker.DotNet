@@ -7,8 +7,6 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Docker.DotNet.X509")]
-[assembly: InternalsVisibleTo("Docker.DotNet.UnitTests")]
-[assembly: InternalsVisibleTo("Docker.DotNet.IntegrationTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
