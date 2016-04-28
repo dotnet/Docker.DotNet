@@ -38,30 +38,30 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(types.AuthResponse{}), "AuthResponse"},
 
 	// POST /build
-	{reflect.TypeOf(types.ImageBuildOptions{}), "ImageBuildParameters"},
+	{reflect.TypeOf(ImageBuildParameters{}), "ImageBuildParameters"},
 	{reflect.TypeOf(types.ImageBuildResponse{}), "ImageBuildResponse"},
 
 	// POST /commit
-	{reflect.TypeOf(types.ContainerCommitOptions{}), "CommitContainerChangesParameters"},
+	{reflect.TypeOf(ContainerCommitParamters{}), "CommitContainerChangesParameters"},
 	{reflect.TypeOf(types.ContainerCommitResponse{}), "CommitContainerChangesResponse"},
 
 	// POST /containers/create
-	{reflect.TypeOf(ContainerCreateOptions{}), "CreateContainerParameters"},
+	{reflect.TypeOf(ContainerCreateParameters{}), "CreateContainerParameters"},
 	{reflect.TypeOf(types.ContainerCreateResponse{}), "CreateContainerResponse"},
 
 	// GET /containers/json
-	{reflect.TypeOf(types.ContainerListOptions{}), "ContainersListParameters"},
+	{reflect.TypeOf(ContainerListParameters{}), "ContainersListParameters"},
 	{reflect.TypeOf(types.Container{}), "ContainerListResponse"},
 
 	// DELETE /containers/(id)
-	{reflect.TypeOf(types.ContainerRemoveOptions{}), "ContainerRemoveParameters"},
+	{reflect.TypeOf(ContainerRemoveParameters{}), "ContainerRemoveParameters"},
 
 	// GET /containers/(id)/archive
-	{reflect.TypeOf(types.CopyToContainerOptions{}), "ContainerPathStatParameters"},
+	{reflect.TypeOf(ContainerPathStatParameters{}), "ContainerPathStatParameters"},
 	{reflect.TypeOf(types.ContainerPathStat{}), "ContainerPathStatResponse"},
 
 	// POST /containers/(id)/attach
-	{reflect.TypeOf(types.ContainerAttachOptions{}), "ContainerAttachParameters"},
+	{reflect.TypeOf(ContainerAttachParameters{}), "ContainerAttachParameters"},
 
 	// POST /containers/(id)/attach/ws
 
@@ -74,7 +74,7 @@ var dockerTypesToReflect = []typeDef{
 	// TODO: TAR Stream
 
 	// POST /containers/(id)/exec
-	{reflect.TypeOf(types.ExecConfig{}), "ContainerExecCreateParameters"},
+	{reflect.TypeOf(ContainerExecCreateParameters{}), "ContainerExecCreateParameters"},
 	{reflect.TypeOf(types.ContainerExecCreateResponse{}), "ContainerExecCreateResponse"},
 
 	// GET /containers/(id)/json
@@ -85,7 +85,7 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(ContainerKillParameters{}), "ContainerKillParameters"},
 
 	// GET /containers/(id)/logs
-	{reflect.TypeOf(types.ContainerLogsOptions{}), "ContainerLogsParameters"},
+	{reflect.TypeOf(ContainerLogsParameters{}), "ContainerLogsParameters"},
 
 	// POST /containers/(id)/pause
 
@@ -93,7 +93,7 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(ContainerRenameParameters{}), "ContainerRenameParameters"},
 
 	// POST /containers/(id)/resize
-	{reflect.TypeOf(types.ResizeOptions{}), "ContainerResizeParameters"},
+	{reflect.TypeOf(ContainerResizeParameters{}), "ContainerResizeParameters"},
 
 	// POST /containers/(id)/restart
 	{reflect.TypeOf(ContainerRestartParameters{}), "ConatinerRestartParameters"},
@@ -105,6 +105,7 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(ContainerStopParameters{}), "ContainerStopParameters"},
 
 	// GET /containers/(id)/stats
+	{reflect.TypeOf(ContainerStatsParameters{}), "ContainerStatsParameters"},
 	{reflect.TypeOf(types.StatsJSON{}), "ContainerStatsResponse"},
 
 	// GET /containers/(id)/top
@@ -114,37 +115,38 @@ var dockerTypesToReflect = []typeDef{
 	// POST /containers/(id)/unpause
 
 	// POST /containers/(id)/update
-	{reflect.TypeOf(container.UpdateConfig{}), "ContainerUpdateParameters"},
+	{reflect.TypeOf(ContainerUpdateParameters{}), "ContainerUpdateParameters"},
 	{reflect.TypeOf(types.ContainerUpdateResponse{}), "ContainerUpdateResponse"},
 
 	// POST /containers/(id)/wait
 	{reflect.TypeOf(types.ContainerWaitResponse{}), "ContainerWaitResponse"},
 
 	// GET /events
-	{reflect.TypeOf(types.EventsOptions{}), "ContainerEventsParameters"},
+	{reflect.TypeOf(ContainerEventsParameters{}), "ContainerEventsParameters"},
 
 	// POST /images/create
-	{reflect.TypeOf(types.ImageCreateOptions{}), "ImagesCreateParameters"},
-	{reflect.TypeOf(types.ImageImportOptions{}), "ImagesImportParameters"},
-	{reflect.TypeOf(types.ImagePullOptions{}), "ImagesPullParameters"},
+	{reflect.TypeOf(ImageCreateParameters{}), "ImagesCreateParameters"},
+	{reflect.TypeOf(ImageImportParameters{}), "ImagesImportParameters"},
+	{reflect.TypeOf(ImagePullParameters{}), "ImagesPullParameters"},
 
 	// GET /images/get
 	// TODO: stream
 
 	// GET /images/json
-	{reflect.TypeOf(types.ImageListOptions{}), "ImagesListParameters"},
+	{reflect.TypeOf(ImageListParameters{}), "ImagesListParameters"},
 	{reflect.TypeOf(types.Image{}), "ImagesListResponse"},
 
 	// POST /images/load
-	// TODO: quite:bool application/x-tar body.
+	// TODO: headers: application/x-tar body.
+	{reflect.TypeOf(ImageLoadParameters{}), "ImageLoadParameters"},
 	{reflect.TypeOf(types.ImageLoadResponse{}), "ImagesLoadResponse"},
 
 	// GET /images/search
-	{reflect.TypeOf(types.ImageSearchOptions{}), "ImagesSearchParameters"},
+	{reflect.TypeOf(ImageSearchParameters{}), "ImagesSearchParameters"},
 	{reflect.TypeOf(registry.SearchResult{}), "ImageSearchResponse"},
 
 	// DELETE /images/(id)
-	{reflect.TypeOf(types.ImageRemoveOptions{}), "ImageDeleteParameters"},
+	{reflect.TypeOf(ImageDeleteParameters{}), "ImageDeleteParameters"},
 	{reflect.TypeOf(types.ImageDelete{}), "ImageDeleteResponse"},
 
 	// GET /images/(id)/history
@@ -155,20 +157,20 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(types.ImageInspect{}), "ImageInspectResponse"},
 
 	// POST /images/(id)/push
-	{reflect.TypeOf(types.ImagePushOptions{}), "ImagePushParameters"},
+	{reflect.TypeOf(ImagePushParameters{}), "ImagePushParameters"},
 
 	// POST /images/(id)/tag
-	{reflect.TypeOf(types.ImageTagOptions{}), "ImageTagParameters"},
+	{reflect.TypeOf(ImageTagParameters{}), "ImageTagParameters"},
 
 	// GET /info
 	{reflect.TypeOf(types.Info{}), "SystemInfoResponse"},
 
 	// GET /networks
-	{reflect.TypeOf(types.NetworkListOptions{}), "NetworksListParameters"},
+	{reflect.TypeOf(NetworkListParameters{}), "NetworksListParameters"},
 	{reflect.TypeOf(types.NetworkResource{}), "NetworkListResponse"},
 
 	// POST /networks/create
-	{reflect.TypeOf(types.NetworkCreate{}), "NetworksCreateParameters"},
+	{reflect.TypeOf(types.NetworkCreateRequest{}), "NetworksCreateParameters"},
 	{reflect.TypeOf(types.NetworkCreateResponse{}), "NetworksCreateResponse"},
 
 	// GET /networks/(id)
@@ -245,6 +247,10 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 
+		if f.Type.Kind() == reflect.Func {
+			continue
+		}
+
 		if f.Type.Kind() == reflect.Struct && f.Type.Name() == "" {
 			// TODO: Inline struct definitions. Probably need to write an inline class named the property name?
 			continue
@@ -297,6 +303,9 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 			}
 
 			if restTag, err := RestTagFromString(f.Tag.Get("rest")); err == nil && restTag.In != Body {
+				if restTag.Name == "" {
+					restTag.Name = strings.ToLower(f.Name)
+				}
 
 				a := CSAttribute{Type: CSType{"", "QueryStringParameter", false}}
 				a.Arguments = append(
