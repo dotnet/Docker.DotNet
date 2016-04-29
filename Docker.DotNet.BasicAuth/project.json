@@ -8,22 +8,6 @@
     "win10-x86": {}
   },
   "frameworks": {
-    "netstandard1.3": {
-      "imports": [
-        "dotnet",
-        "netcore50",
-        "uap10"
-      ],
-      "compilationOptions": {
-        "define": [
-          "netstandard"
-        ]
-      },
-      "dependencies": {
-        "System.Runtime": "4.0.20",
-        "System.Text.Encoding": "4.0.10"
-      }
-    },
     "net46": {
       "frameworkAssemblies": {
         "System.Runtime": "",
