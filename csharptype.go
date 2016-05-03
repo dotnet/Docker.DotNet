@@ -13,13 +13,13 @@ var EmptyStruct = reflect.TypeOf(struct{}{})
 
 // CSInboxTypesMap is a map from Go type kind to C# type.
 var CSInboxTypesMap = map[reflect.Kind]CSType{
-	reflect.Int:   {"", "int", true},
+	reflect.Int:   {"", "long", true}, // In practice most clients are 64bit so in go Int will be too.
 	reflect.Int8:  {"", "sbyte", true},
 	reflect.Int16: {"", "short", true},
 	reflect.Int32: {"", "int", true},
 	reflect.Int64: {"", "long", true},
 
-	reflect.Uint:   {"", "uint", true},
+	reflect.Uint:   {"", "ulong", true}, // In practice most clients are 64bit so in go Uint will be too.
 	reflect.Uint8:  {"", "byte", true},
 	reflect.Uint16: {"", "ushort", true},
 	reflect.Uint32: {"", "uint", true},
