@@ -24,7 +24,7 @@ namespace Docker.DotNet.Models
         public string Before { get; set; }
 
         [QueryStringParameter("limit", false)]
-        public int? Limit { get; set; }
+        public long? Limit { get; set; }
 
         [QueryStringParameter("filters", false)]
         public Args Filter { get; set; }

@@ -6,7 +6,7 @@ namespace Docker.DotNet.Models
     public class ImageSearchResponse // (registry.SearchResult)
     {
         [DataMember(Name = "star_count")]
-        public int StarCount { get; set; }
+        public long StarCount { get; set; }
 
         [DataMember(Name = "is_official")]
         public bool IsOfficial { get; set; }

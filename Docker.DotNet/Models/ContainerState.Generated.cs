@@ -24,10 +24,10 @@ namespace Docker.DotNet.Models
         public bool Dead { get; set; }
 
         [DataMember(Name = "Pid")]
-        public int Pid { get; set; }
+        public long Pid { get; set; }
 
         [DataMember(Name = "ExitCode")]
-        public int ExitCode { get; set; }
+        public long ExitCode { get; set; }
 
         [DataMember(Name = "Error")]
         public string Error { get; set; }

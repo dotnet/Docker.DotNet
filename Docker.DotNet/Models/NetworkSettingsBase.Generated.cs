@@ -19,7 +19,7 @@ namespace Docker.DotNet.Models
         public string LinkLocalIPv6Address { get; set; }
 
         [DataMember(Name = "LinkLocalIPv6PrefixLen")]
-        public int LinkLocalIPv6PrefixLen { get; set; }
+        public long LinkLocalIPv6PrefixLen { get; set; }
 
         [DataMember(Name = "Ports")]
         public IDictionary<string, IList<PortBinding>> Ports { get; set; }

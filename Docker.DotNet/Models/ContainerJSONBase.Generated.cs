@@ -43,7 +43,7 @@ namespace Docker.DotNet.Models
         public string Name { get; set; }
 
         [DataMember(Name = "RestartCount")]
-        public int RestartCount { get; set; }
+        public long RestartCount { get; set; }
 
         [DataMember(Name = "Driver")]
         public string Driver { get; set; }

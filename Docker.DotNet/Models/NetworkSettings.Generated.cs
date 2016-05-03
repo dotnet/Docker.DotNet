@@ -51,7 +51,7 @@ namespace Docker.DotNet.Models
         public string LinkLocalIPv6Address { get; set; }
 
         [DataMember(Name = "LinkLocalIPv6PrefixLen")]
-        public int LinkLocalIPv6PrefixLen { get; set; }
+        public long LinkLocalIPv6PrefixLen { get; set; }
 
         [DataMember(Name = "Ports")]
         public IDictionary<string, IList<PortBinding>> Ports { get; set; }
@@ -75,13 +75,13 @@ namespace Docker.DotNet.Models
         public string GlobalIPv6Address { get; set; }
 
         [DataMember(Name = "GlobalIPv6PrefixLen")]
-        public int GlobalIPv6PrefixLen { get; set; }
+        public long GlobalIPv6PrefixLen { get; set; }
 
         [DataMember(Name = "IPAddress")]
         public string IPAddress { get; set; }
 
         [DataMember(Name = "IPPrefixLen")]
-        public int IPPrefixLen { get; set; }
+        public long IPPrefixLen { get; set; }
 
         [DataMember(Name = "IPv6Gateway")]
         public string IPv6Gateway { get; set; }

@@ -9,6 +9,6 @@ namespace Docker.DotNet.Models
         public RestartPolicyKind Name { get; set; }
 
         [DataMember(Name = "MaximumRetryCount")]
-        public int MaximumRetryCount { get; set; }
+        public long MaximumRetryCount { get; set; }
     }
 }

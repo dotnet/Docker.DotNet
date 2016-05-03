@@ -6,6 +6,6 @@ namespace Docker.DotNet.Models
     public class ContainerWaitResponse // (types.ContainerWaitResponse)
     {
         [DataMember(Name = "StatusCode")]
-        public int StatusCode { get; set; }
+        public long StatusCode { get; set; }
     }
 }
