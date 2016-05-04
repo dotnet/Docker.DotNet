@@ -6,7 +6,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImageBuildParameters // (main.ImageBuildParameters)
     {
-        [QueryStringParameter("t", false)]
+        [QueryStringParameter("t", false, typeof(EnumerableQueryStringConverter))]
         public IList<string> Tags { get; set; }
 
         [QueryStringParameter("q", false, typeof(BoolQueryStringConverter))]
@@ -60,16 +60,16 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("dockerfile", false)]
         public string Dockerfile { get; set; }
 
-        [QueryStringParameter("ulimits", false)]
+        [QueryStringParameter("ulimits", false, typeof(EnumerableQueryStringConverter))]
         public IList<Ulimit> Ulimits { get; set; }
 
-        [QueryStringParameter("buildargs", false)]
+        [QueryStringParameter("buildargs", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, string> BuildArgs { get; set; }
 
         [DataMember(Name = "AuthConfigs", EmitDefaultValue = false)]
         public IDictionary<string, AuthConfig> AuthConfigs { get; set; }
 
-        [QueryStringParameter("labels", false)]
+        [QueryStringParameter("labels", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, string> Labels { get; set; }
     }
 }
