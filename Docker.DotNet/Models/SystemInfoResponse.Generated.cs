@@ -10,19 +10,19 @@ namespace Docker.DotNet.Models
         public string ID { get; set; }
 
         [DataMember(Name = "Containers")]
-        public int Containers { get; set; }
+        public long Containers { get; set; }
 
         [DataMember(Name = "ContainersRunning")]
-        public int ContainersRunning { get; set; }
+        public long ContainersRunning { get; set; }
 
         [DataMember(Name = "ContainersPaused")]
-        public int ContainersPaused { get; set; }
+        public long ContainersPaused { get; set; }
 
         [DataMember(Name = "ContainersStopped")]
-        public int ContainersStopped { get; set; }
+        public long ContainersStopped { get; set; }
 
         [DataMember(Name = "Images")]
-        public int Images { get; set; }
+        public long Images { get; set; }
 
         [DataMember(Name = "Driver")]
         public string Driver { get; set; }
@@ -70,13 +70,13 @@ namespace Docker.DotNet.Models
         public bool Debug { get; set; }
 
         [DataMember(Name = "NFd")]
-        public int NFd { get; set; }
+        public long NFd { get; set; }
 
         [DataMember(Name = "OomKillDisable")]
         public bool OomKillDisable { get; set; }
 
         [DataMember(Name = "NGoroutines")]
-        public int NGoroutines { get; set; }
+        public long NGoroutines { get; set; }
 
         [DataMember(Name = "SystemTime")]
         public string SystemTime { get; set; }
@@ -91,7 +91,7 @@ namespace Docker.DotNet.Models
         public string CgroupDriver { get; set; }
 
         [DataMember(Name = "NEventsListener")]
-        public int NEventsListener { get; set; }
+        public long NEventsListener { get; set; }
 
         [DataMember(Name = "KernelVersion")]
         public string KernelVersion { get; set; }
@@ -112,7 +112,7 @@ namespace Docker.DotNet.Models
         public ServiceConfig RegistryConfig { get; set; }
 
         [DataMember(Name = "NCPU")]
-        public int NCPU { get; set; }
+        public long NCPU { get; set; }
 
         [DataMember(Name = "MemTotal")]
         public long MemTotal { get; set; }

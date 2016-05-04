@@ -102,7 +102,7 @@ namespace Docker.DotNet.Models
         public IList<string> Links { get; set; }
 
         [DataMember(Name = "OomScoreAdj")]
-        public int OomScoreAdj { get; set; }
+        public long OomScoreAdj { get; set; }
 
         [DataMember(Name = "PidMode")]
         public string PidMode { get; set; }
@@ -138,7 +138,7 @@ namespace Docker.DotNet.Models
         public IDictionary<string, string> Sysctls { get; set; }
 
         [DataMember(Name = "ConsoleSize")]
-        public int[] ConsoleSize { get; set; }
+        public long[] ConsoleSize { get; set; }
 
         [DataMember(Name = "Isolation")]
         public string Isolation { get; set; }

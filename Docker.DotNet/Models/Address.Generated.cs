@@ -9,6 +9,6 @@ namespace Docker.DotNet.Models
         public string Addr { get; set; }
 
         [DataMember(Name = "PrefixLen")]
-        public int PrefixLen { get; set; }
+        public long PrefixLen { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace Docker.DotNet.Models
         public string IPAddress { get; set; }
 
         [DataMember(Name = "IPPrefixLen")]
-        public int IPPrefixLen { get; set; }
+        public long IPPrefixLen { get; set; }
 
         [DataMember(Name = "IPv6Gateway")]
         public string IPv6Gateway { get; set; }
@@ -37,7 +37,7 @@ namespace Docker.DotNet.Models
         public string GlobalIPv6Address { get; set; }
 
         [DataMember(Name = "GlobalIPv6PrefixLen")]
-        public int GlobalIPv6PrefixLen { get; set; }
+        public long GlobalIPv6PrefixLen { get; set; }
 
         [DataMember(Name = "MacAddress")]
         public string MacAddress { get; set; }

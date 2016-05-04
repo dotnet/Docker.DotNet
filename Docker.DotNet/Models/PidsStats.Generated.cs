@@ -7,5 +7,8 @@ namespace Docker.DotNet.Models
     {
         [DataMember(Name = "current")]
         public ulong Current { get; set; }
+
+        [DataMember(Name = "limit")]
+        public ulong Limit { get; set; }
     }
 }

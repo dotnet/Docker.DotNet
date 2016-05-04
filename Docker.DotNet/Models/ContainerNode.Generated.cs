@@ -19,10 +19,10 @@ namespace Docker.DotNet.Models
         public string Name { get; set; }
 
         [DataMember(Name = "Cpus")]
-        public int Cpus { get; set; }
+        public long Cpus { get; set; }
 
         [DataMember(Name = "Memory")]
-        public int Memory { get; set; }
+        public long Memory { get; set; }
 
         [DataMember(Name = "Labels")]
         public IDictionary<string, string> Labels { get; set; }
