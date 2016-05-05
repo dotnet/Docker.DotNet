@@ -113,17 +113,7 @@ namespace Docker.DotNet
 
             _endpointBaseUri = uri;
 
-            ManagedHandler handler;
-            if (opener != null)
-            {
-                handler = new ManagedHandler(opener);
-            }
-            else
-            {
-                handler = new ManagedHandler();
-            }
-
-            _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
+            _client = new HttpClient(Configuration.Credentials.GetHandler(new ManagedHandler(opener)), true);
             _defaultTimeout = _client.Timeout;
             _client.Timeout = InfiniteTimeout;
         }

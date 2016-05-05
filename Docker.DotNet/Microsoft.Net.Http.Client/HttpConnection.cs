@@ -12,8 +12,6 @@ namespace Microsoft.Net.Http.Client
 {
     internal class HttpConnection : IDisposable
     {
-        private const string CRLF = "\r\n";
-
         public HttpConnection(BufferedReadStream transport)
         {
             Transport = transport;
@@ -68,7 +66,7 @@ namespace Microsoft.Net.Http.Client
             builder.Append(request.GetAddressLineProperty());
             builder.Append(" HTTP/");
             builder.Append(request.Version.ToString(2));
-            builder.Append(CRLF);
+            builder.Append("\r\n");
 
             builder.Append(request.Headers.ToString());
 
@@ -89,7 +87,7 @@ namespace Microsoft.Net.Http.Client
                 }
             }
             // Headers end with an empty line
-            builder.Append(CRLF);
+            builder.Append("\r\n");
             return builder.ToString();
         }
 

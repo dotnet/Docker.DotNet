@@ -15,15 +15,15 @@ namespace Microsoft.Net.Http.Client
 {
     public class ManagedHandler : HttpMessageHandler
     {
-        public ManagedHandler() : this(TCPStreamOpener)
-        {
-        }
-
         public delegate Task<Stream> StreamOpener(string host, int port, CancellationToken cancellationToken);
 
-        public ManagedHandler(StreamOpener opener)
+        public ManagedHandler(StreamOpener opener = null)
         {
             _opener = opener;
+            if (_opener == null)
+            {
+                _opener = TCPStreamOpener;
+            }
         }
 
         public Uri ProxyAddress

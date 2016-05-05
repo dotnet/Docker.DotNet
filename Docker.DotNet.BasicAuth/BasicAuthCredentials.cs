@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Security;
 
 namespace Docker.DotNet.BasicAuth
@@ -30,16 +29,6 @@ namespace Docker.DotNet.BasicAuth
 
         private BasicAuthCredentials(MaybeSecureString username, MaybeSecureString password, bool isTls)
         {
-            if (username.Empty)
-            {
-                throw new ArgumentException("username");
-            }
-
-            if (password.Empty)
-            {
-                throw new ArgumentException("password");
-            }
-
             _isTls = isTls;
             _username = username;
             _password = password;

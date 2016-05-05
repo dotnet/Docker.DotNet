@@ -14,18 +14,8 @@ namespace Docker.DotNet.BasicAuth
 
         public BasicAuthHandler(MaybeSecureString username, MaybeSecureString password, HttpMessageHandler innerHandler) : base(innerHandler)
         {
-            if (username.Empty)
-            {
-                throw new ArgumentException("username");
-            }
-
-            if (password.Empty)
-            {
-                throw new ArgumentException("password");
-            }
-
-            _username = username;
-            _password = password;
+            _username = username.Copy();
+            _password = password.Copy();
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -39,6 +29,15 @@ namespace Docker.DotNet.BasicAuth
         {
             var authInfo = $"{_username}:{_password}";
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(authInfo));
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _username.Dispose();
+                _password.Dispose();
+            }
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Microsoft.Net.Http.Client
         {
             _innerStream.Flush();
         }
-        
+
         public override Task FlushAsync(CancellationToken cancellationToken)
         {
             return _innerStream.FlushAsync(cancellationToken);
@@ -68,16 +68,17 @@ namespace Microsoft.Net.Http.Client
             {
                 return;
             }
-                        
+
             var chunkSize = Encoding.ASCII.GetBytes(Convert.ToString(count, 16) + "\r\n");
-            await _innerStream.WriteAsync(chunkSize, 0, chunkSize.Length, cancellationToken);
-            await _innerStream.WriteAsync(buffer, offset, count, cancellationToken);
+            await _innerStream.WriteAsync(chunkSize, 0, chunkSize.Length, cancellationToken).ConfigureAwait(false);
+            await _innerStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            await _innerStream.WriteAsync(chunkSize, chunkSize.Length - 2, 2, cancellationToken).ConfigureAwait(false);
         }
-        
-        public async Task EndContentAsync(CancellationToken cancellationToken)
+
+        public Task EndContentAsync(CancellationToken cancellationToken)
         {
             var data = Encoding.ASCII.GetBytes("0\r\n\r\n");
-            await _innerStream.WriteAsync(data, 0, 0, cancellationToken);
+            return _innerStream.WriteAsync(data, 0, data.Length, cancellationToken);
         }
     }
 }

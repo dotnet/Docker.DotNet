@@ -4,13 +4,19 @@ using System.Security;
 
 namespace Docker.DotNet.BasicAuth
 {
-    internal struct MaybeSecureString : IDisposable
+    internal class MaybeSecureString : IDisposable
     {
 #if !netstandard
-        public SecureString Value;
+
+        public SecureString Value { get; }
 
         public MaybeSecureString(string str)
         {
+            if (string.IsNullOrEmpty(str))
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
             var secureStr = new SecureString();
 
             if (str.Length > 0)
@@ -24,9 +30,14 @@ namespace Docker.DotNet.BasicAuth
             Value = secureStr;
         }
 
-        public MaybeSecureString(SecureString value)
+        public MaybeSecureString(SecureString str)
         {
-            Value = value;
+            if (str == null)
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
+            Value = str.Copy();
         }
 
         public void Dispose()
@@ -34,7 +45,10 @@ namespace Docker.DotNet.BasicAuth
             Value.Dispose();
         }
 
-        public bool Empty => Value == null;
+        public MaybeSecureString Copy()
+        {
+            return new MaybeSecureString(Value.Copy());
+        }
 
         public override string ToString()
         {
@@ -52,23 +66,33 @@ namespace Docker.DotNet.BasicAuth
         }
 
 #else
-        public string Value;
 
-        public MaybeSecureString(string value)
+        public string Value { get; }
+
+        public MaybeSecureString(string str)
         {
-            Value = value;
+            if (string.IsNullOrEmpty(str))
+            {
+                throw new ArgumentNullException(nameof(str));
+            }
+
+            Value = str;
         }
 
         public void Dispose()
         {
         }
 
-        public bool Empty => string.IsNullOrEmpty(Value);
+        public MaybeSecureString Copy()
+        {
+            return this;
+        }
 
         public override string ToString()
         {
             return Value;
         }
+
 #endif
     }
 }

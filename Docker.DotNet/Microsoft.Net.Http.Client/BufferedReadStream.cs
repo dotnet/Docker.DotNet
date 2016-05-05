@@ -99,26 +99,28 @@ namespace Microsoft.Net.Http.Client
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            // Validate Inputs
-
-            // Drain buffer
-            if (_bufferCount > 0)
+            int read = ReadBuffer(buffer, offset, count);
+            if (read > 0)
             {
-                int toCopy = Math.Min(_bufferCount, count);
-                Buffer.BlockCopy(_buffer, _bufferOffset, buffer, offset, toCopy);
-                _bufferOffset += toCopy;
-                _bufferCount -= toCopy;
-                return toCopy;
+                return read;
             }
 
             return _inner.Read(buffer, offset, count);
         }
 
-        public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            // Validate Inputs
+            int read = ReadBuffer(buffer, offset, count);
+            if (read > 0)
+            {
+                return Task.FromResult(read);
+            }
 
-            // Drain buffer
+            return _inner.ReadAsync(buffer, offset, count, cancellationToken);
+        }
+
+        private int ReadBuffer(byte[] buffer, int offset, int count)
+        {
             if (_bufferCount > 0)
             {
                 int toCopy = Math.Min(_bufferCount, count);
@@ -128,84 +130,35 @@ namespace Microsoft.Net.Http.Client
                 return toCopy;
             }
 
-            return await _inner.ReadAsync(buffer, offset, count, cancellationToken);
+            return 0;
         }
 
-        private void EnsureBufferd()
+        private async Task EnsureBufferedAsync(CancellationToken cancel)
         {
             if (_bufferCount == 0)
             {
                 _bufferOffset = 0;
-                _bufferCount = _inner.Read(_buffer, _bufferOffset, _buffer.Length);
+                _bufferCount = await _inner.ReadAsync(_buffer, _bufferOffset, _buffer.Length, cancel).ConfigureAwait(false);
                 if (_bufferCount == 0)
                 {
                     throw new IOException("Unexpected end of stream");
                 }
             }
-        }
-
-        private async Task EnsureBufferdAsync(CancellationToken cancel)
-        {
-            if (_bufferCount == 0)
-            {
-                _bufferOffset = 0;
-                _bufferCount = await _inner.ReadAsync(_buffer, _bufferOffset, _buffer.Length, cancel);
-                if (_bufferCount == 0)
-                {
-                    throw new IOException("Unexpected end of stream");
-                }
-            }
-        }
-
-        // TODO: Line length limits?
-        public string ReadLine()
-        {
-            CheckDisposed();
-            StringBuilder builder = new StringBuilder();
-            bool foundCR = false, foundCRLF = false;
-            do
-            {
-                if (_bufferCount == 0)
-                {
-                    EnsureBufferd();
-                }
-                char ch = (char)_buffer[_bufferOffset]; // TODO: Encoding enforcement
-                builder.Append(ch);
-                _bufferOffset++;
-                _bufferCount--;
-                if (ch == CR)
-                {
-                    foundCR = true;
-                }
-                else if (ch == LF)
-                {
-                    if (foundCR)
-                    {
-                        foundCRLF = true;
-                    }
-                    else
-                    {
-                        foundCR = false;
-                    }
-                }
-            }
-            while (!foundCRLF);
-
-            return builder.ToString(0, builder.Length - 2); // Drop the CRLF
         }
 
         // TODO: Line length limits?
         public async Task<string> ReadLineAsync(CancellationToken cancel)
         {
-            CheckDisposed();
+            ThrowIfDisposed();
             StringBuilder builder = new StringBuilder();
             bool foundCR = false, foundCRLF = false;
             do
             {
                 if (_bufferCount == 0)
                 {
-                    await EnsureBufferdAsync(cancel);
+                    await EnsureBufferedAsync(cancel).ConfigureAwait(false);
                 }
+
                 char ch = (char)_buffer[_bufferOffset]; // TODO: Encoding enforcement
                 builder.Append(ch);
                 _bufferOffset++;
@@ -231,11 +184,11 @@ namespace Microsoft.Net.Http.Client
             return builder.ToString(0, builder.Length - 2); // Drop the CRLF
         }
 
-        private void CheckDisposed()
+        private void ThrowIfDisposed()
         {
             if (_disposed)
             {
-                throw new ObjectDisposedException(typeof(BufferedReadStream).FullName);
+                throw new ObjectDisposedException(nameof(BufferedReadStream));
             }
         }
     }
