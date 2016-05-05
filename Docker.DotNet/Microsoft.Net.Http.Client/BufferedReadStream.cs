@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    public class BufferedReadStream : Stream
+    internal class BufferedReadStream : Stream
     {
         private const char CR = '\r';
         private const char LF = '\n';
@@ -222,7 +222,7 @@ namespace Microsoft.Net.Http.Client
                     }
                     else
                     {
-                        foundCR = false;                             
+                        foundCR = false;
                     }
                 }
             }

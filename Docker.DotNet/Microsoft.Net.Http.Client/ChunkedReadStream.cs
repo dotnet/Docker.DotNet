@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    public class ChunkedReadStream : Stream
+    internal class ChunkedReadStream : Stream
     {
         private readonly BufferedReadStream _inner;
         private bool _expectChunkHeader = true;

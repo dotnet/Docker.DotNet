@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    public class ContentLengthReadStream : Stream
+    internal class ContentLengthReadStream : Stream
     {
         private readonly Stream _inner;
         private long _bytesRemaining;

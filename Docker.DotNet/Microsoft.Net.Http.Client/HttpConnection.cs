@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    public class HttpConnection : IDisposable
+    internal class HttpConnection : IDisposable
     {
         private const string CRLF = "\r\n";
 

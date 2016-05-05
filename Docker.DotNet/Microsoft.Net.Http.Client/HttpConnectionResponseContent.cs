@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    public class HttpConnectionResponseContent : HttpContent
+    internal class HttpConnectionResponseContent : HttpContent
     {
         private readonly HttpConnection _connection;
         private Stream _responseStream;

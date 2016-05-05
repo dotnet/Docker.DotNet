@@ -3,7 +3,7 @@ using System.Net.Http;
 
 namespace Microsoft.Net.Http.Client
 {
-    public static class RequestExtensions
+    internal static class RequestExtensions
     {
         public static bool IsHttp(this HttpRequestMessage request)
         {
