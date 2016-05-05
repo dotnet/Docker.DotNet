@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,8 +24,6 @@ namespace Microsoft.Net.Http.Client
         public ManagedHandler(StreamOpener opener)
         {
             _opener = opener;
-            MaxAutomaticRedirects = 20;
-            RedirectMode = RedirectMode.NoDowngrade;
         }
 
         public Uri ProxyAddress
@@ -32,9 +32,13 @@ namespace Microsoft.Net.Http.Client
             get; set;
         }
 
-        public int MaxAutomaticRedirects { get; set; }
+        public int MaxAutomaticRedirects { get; set; } = 20;
 
-        public RedirectMode RedirectMode { get; set; }
+        public RedirectMode RedirectMode { get; set; } = RedirectMode.NoDowngrade;
+
+        public X509CertificateCollection ClientCertificates { get; set; }
+
+        public RemoteCertificateValidationCallback ServerCertificateValidationCallback { get; set; }
 
         private StreamOpener _opener;
 
@@ -135,8 +139,8 @@ namespace Microsoft.Net.Http.Client
 
             if (request.IsHttps())
             {
-                SslStream sslStream = new SslStream(transport);
-                await sslStream.AuthenticateAsClientAsync(request.GetHostProperty());
+                SslStream sslStream = new SslStream(transport, false, ServerCertificateValidationCallback);
+                await sslStream.AuthenticateAsClientAsync(request.GetHostProperty(), ClientCertificates, SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls, false);
                 transport = sslStream;
             }
 
@@ -292,19 +296,19 @@ namespace Microsoft.Net.Http.Client
             // Send a Connect request:
             // CONNECT server.example.com:80 HTTP / 1.1
             // Host: server.example.com:80
-            var connectReqeuest = new HttpRequestMessage();
-            connectReqeuest.Headers.ProxyAuthorization = request.Headers.ProxyAuthorization;
-            connectReqeuest.Method = new HttpMethod("CONNECT");
+            var connectRequest = new HttpRequestMessage();
+            connectRequest.Headers.ProxyAuthorization = request.Headers.ProxyAuthorization;
+            connectRequest.Method = new HttpMethod("CONNECT");
             // TODO: IPv6 hosts
             string authority = request.GetHostProperty() + ":" + request.GetPortProperty().Value;
-            connectReqeuest.SetAddressLineProperty(authority);
-            connectReqeuest.Headers.Host = authority;
+            connectRequest.SetAddressLineProperty(authority);
+            connectRequest.Headers.Host = authority;
 
             HttpConnection connection = new HttpConnection(new BufferedReadStream(transport));
             HttpResponseMessage connectResponse;
             try
             {
-                connectResponse = await connection.SendAsync(connectReqeuest, cancellationToken);
+                connectResponse = await connection.SendAsync(connectRequest, cancellationToken);
                 // TODO:? await connectResponse.Content.LoadIntoBufferAsync(); // Drain any body
                 // There's no danger of accidently consuming real response data because the real request hasn't been sent yet.
             }
