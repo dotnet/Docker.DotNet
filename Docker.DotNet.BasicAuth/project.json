@@ -1,7 +1,8 @@
 {
   "version": "1.2.2",
   "dependencies": {
-    "Docker.DotNet": "2.124.0"
+    "Docker.DotNet": "2.125.0",
+    "Microsoft.Net.Http": "2.2.29"
   },
   "runtimes": {
     "win10-x64": {},

@@ -2,7 +2,7 @@
     "version": "1.2.2-*",
     "description": "X509Certificate and WebRequestHandler wrapper for Docker.DotNet",
     "dependencies": {
-        "Docker.DotNet": "2.124.0"
+        "Docker.DotNet": "2.125.0"
     },
     "frameworks": {
         "net46": {

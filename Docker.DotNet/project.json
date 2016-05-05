@@ -1,5 +1,5 @@
 {
-  "version": "2.124.0",
+  "version": "2.125.0",
   "dependencies": {
     "Newtonsoft.Json": "8.0.3"
   },
@@ -10,8 +10,11 @@
   "frameworks": {
     "net46": {
       "frameworkAssemblies": {
-        "System.Net.Http": "",
+        "System.Net.Http": "4.0.0.0",
         "System.Runtime.Serialization": ""
+      },
+      "dependencies": {
+        "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-rc2-20113"
       }
     },
     "net45": {
