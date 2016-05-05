@@ -319,6 +319,10 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 				switch f.Type.Kind() {
 				case reflect.Bool:
 					a.Arguments = append(a.Arguments, CSArgument{Value: "typeof(BoolQueryStringConverter)"})
+				case reflect.Slice, reflect.Array:
+					a.Arguments = append(a.Arguments, CSArgument{Value: "typeof(EnumerableQueryStringConverter)"})
+				case reflect.Map:
+					a.Arguments = append(a.Arguments, CSArgument{Value: "typeof(MapQueryStringConverter)"})
 				}
 
 				csProp.IsOpt = !restTag.Required
