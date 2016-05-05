@@ -6,148 +6,148 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class SystemInfoResponse // (types.Info)
     {
-        [DataMember(Name = "ID")]
+        [DataMember(Name = "ID", EmitDefaultValue = false)]
         public string ID { get; set; }
 
-        [DataMember(Name = "Containers")]
+        [DataMember(Name = "Containers", EmitDefaultValue = false)]
         public long Containers { get; set; }
 
-        [DataMember(Name = "ContainersRunning")]
+        [DataMember(Name = "ContainersRunning", EmitDefaultValue = false)]
         public long ContainersRunning { get; set; }
 
-        [DataMember(Name = "ContainersPaused")]
+        [DataMember(Name = "ContainersPaused", EmitDefaultValue = false)]
         public long ContainersPaused { get; set; }
 
-        [DataMember(Name = "ContainersStopped")]
+        [DataMember(Name = "ContainersStopped", EmitDefaultValue = false)]
         public long ContainersStopped { get; set; }
 
-        [DataMember(Name = "Images")]
+        [DataMember(Name = "Images", EmitDefaultValue = false)]
         public long Images { get; set; }
 
-        [DataMember(Name = "Driver")]
+        [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public string Driver { get; set; }
 
-        [DataMember(Name = "DriverStatus")]
+        [DataMember(Name = "DriverStatus", EmitDefaultValue = false)]
         public IList<string[]> DriverStatus { get; set; }
 
-        [DataMember(Name = "SystemStatus")]
+        [DataMember(Name = "SystemStatus", EmitDefaultValue = false)]
         public IList<string[]> SystemStatus { get; set; }
 
-        [DataMember(Name = "Plugins")]
+        [DataMember(Name = "Plugins", EmitDefaultValue = false)]
         public PluginsInfo Plugins { get; set; }
 
-        [DataMember(Name = "MemoryLimit")]
+        [DataMember(Name = "MemoryLimit", EmitDefaultValue = false)]
         public bool MemoryLimit { get; set; }
 
-        [DataMember(Name = "SwapLimit")]
+        [DataMember(Name = "SwapLimit", EmitDefaultValue = false)]
         public bool SwapLimit { get; set; }
 
-        [DataMember(Name = "KernelMemory")]
+        [DataMember(Name = "KernelMemory", EmitDefaultValue = false)]
         public bool KernelMemory { get; set; }
 
-        [DataMember(Name = "CpuCfsPeriod")]
+        [DataMember(Name = "CpuCfsPeriod", EmitDefaultValue = false)]
         public bool CPUCfsPeriod { get; set; }
 
-        [DataMember(Name = "CpuCfsQuota")]
+        [DataMember(Name = "CpuCfsQuota", EmitDefaultValue = false)]
         public bool CPUCfsQuota { get; set; }
 
-        [DataMember(Name = "CPUShares")]
+        [DataMember(Name = "CPUShares", EmitDefaultValue = false)]
         public bool CPUShares { get; set; }
 
-        [DataMember(Name = "CPUSet")]
+        [DataMember(Name = "CPUSet", EmitDefaultValue = false)]
         public bool CPUSet { get; set; }
 
-        [DataMember(Name = "IPv4Forwarding")]
+        [DataMember(Name = "IPv4Forwarding", EmitDefaultValue = false)]
         public bool IPv4Forwarding { get; set; }
 
-        [DataMember(Name = "BridgeNfIptables")]
+        [DataMember(Name = "BridgeNfIptables", EmitDefaultValue = false)]
         public bool BridgeNfIptables { get; set; }
 
-        [DataMember(Name = "BridgeNfIp6tables")]
+        [DataMember(Name = "BridgeNfIp6tables", EmitDefaultValue = false)]
         public bool BridgeNfIP6tables { get; set; }
 
-        [DataMember(Name = "Debug")]
+        [DataMember(Name = "Debug", EmitDefaultValue = false)]
         public bool Debug { get; set; }
 
-        [DataMember(Name = "NFd")]
+        [DataMember(Name = "NFd", EmitDefaultValue = false)]
         public long NFd { get; set; }
 
-        [DataMember(Name = "OomKillDisable")]
+        [DataMember(Name = "OomKillDisable", EmitDefaultValue = false)]
         public bool OomKillDisable { get; set; }
 
-        [DataMember(Name = "NGoroutines")]
+        [DataMember(Name = "NGoroutines", EmitDefaultValue = false)]
         public long NGoroutines { get; set; }
 
-        [DataMember(Name = "SystemTime")]
+        [DataMember(Name = "SystemTime", EmitDefaultValue = false)]
         public string SystemTime { get; set; }
 
-        [DataMember(Name = "ExecutionDriver")]
+        [DataMember(Name = "ExecutionDriver", EmitDefaultValue = false)]
         public string ExecutionDriver { get; set; }
 
-        [DataMember(Name = "LoggingDriver")]
+        [DataMember(Name = "LoggingDriver", EmitDefaultValue = false)]
         public string LoggingDriver { get; set; }
 
-        [DataMember(Name = "CgroupDriver")]
+        [DataMember(Name = "CgroupDriver", EmitDefaultValue = false)]
         public string CgroupDriver { get; set; }
 
-        [DataMember(Name = "NEventsListener")]
+        [DataMember(Name = "NEventsListener", EmitDefaultValue = false)]
         public long NEventsListener { get; set; }
 
-        [DataMember(Name = "KernelVersion")]
+        [DataMember(Name = "KernelVersion", EmitDefaultValue = false)]
         public string KernelVersion { get; set; }
 
-        [DataMember(Name = "OperatingSystem")]
+        [DataMember(Name = "OperatingSystem", EmitDefaultValue = false)]
         public string OperatingSystem { get; set; }
 
-        [DataMember(Name = "OSType")]
+        [DataMember(Name = "OSType", EmitDefaultValue = false)]
         public string OSType { get; set; }
 
-        [DataMember(Name = "Architecture")]
+        [DataMember(Name = "Architecture", EmitDefaultValue = false)]
         public string Architecture { get; set; }
 
-        [DataMember(Name = "IndexServerAddress")]
+        [DataMember(Name = "IndexServerAddress", EmitDefaultValue = false)]
         public string IndexServerAddress { get; set; }
 
-        [DataMember(Name = "RegistryConfig")]
+        [DataMember(Name = "RegistryConfig", EmitDefaultValue = false)]
         public ServiceConfig RegistryConfig { get; set; }
 
-        [DataMember(Name = "NCPU")]
+        [DataMember(Name = "NCPU", EmitDefaultValue = false)]
         public long NCPU { get; set; }
 
-        [DataMember(Name = "MemTotal")]
+        [DataMember(Name = "MemTotal", EmitDefaultValue = false)]
         public long MemTotal { get; set; }
 
-        [DataMember(Name = "DockerRootDir")]
+        [DataMember(Name = "DockerRootDir", EmitDefaultValue = false)]
         public string DockerRootDir { get; set; }
 
-        [DataMember(Name = "HttpProxy")]
+        [DataMember(Name = "HttpProxy", EmitDefaultValue = false)]
         public string HTTPProxy { get; set; }
 
-        [DataMember(Name = "HttpsProxy")]
+        [DataMember(Name = "HttpsProxy", EmitDefaultValue = false)]
         public string HTTPSProxy { get; set; }
 
-        [DataMember(Name = "NoProxy")]
+        [DataMember(Name = "NoProxy", EmitDefaultValue = false)]
         public string NoProxy { get; set; }
 
-        [DataMember(Name = "Name")]
+        [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }
 
-        [DataMember(Name = "Labels")]
+        [DataMember(Name = "Labels", EmitDefaultValue = false)]
         public IList<string> Labels { get; set; }
 
-        [DataMember(Name = "ExperimentalBuild")]
+        [DataMember(Name = "ExperimentalBuild", EmitDefaultValue = false)]
         public bool ExperimentalBuild { get; set; }
 
-        [DataMember(Name = "ServerVersion")]
+        [DataMember(Name = "ServerVersion", EmitDefaultValue = false)]
         public string ServerVersion { get; set; }
 
-        [DataMember(Name = "ClusterStore")]
+        [DataMember(Name = "ClusterStore", EmitDefaultValue = false)]
         public string ClusterStore { get; set; }
 
-        [DataMember(Name = "ClusterAdvertise")]
+        [DataMember(Name = "ClusterAdvertise", EmitDefaultValue = false)]
         public string ClusterAdvertise { get; set; }
 
-        [DataMember(Name = "SecurityOptions")]
+        [DataMember(Name = "SecurityOptions", EmitDefaultValue = false)]
         public IList<string> SecurityOptions { get; set; }
     }
 }

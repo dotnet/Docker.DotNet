@@ -6,10 +6,10 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class CreateContainerResponse // (types.ContainerCreateResponse)
     {
-        [DataMember(Name = "Id")]
+        [DataMember(Name = "Id", EmitDefaultValue = false)]
         public string ID { get; set; }
 
-        [DataMember(Name = "Warnings")]
+        [DataMember(Name = "Warnings", EmitDefaultValue = false)]
         public IList<string> Warnings { get; set; }
     }
 }

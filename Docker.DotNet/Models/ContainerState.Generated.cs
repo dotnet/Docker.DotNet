@@ -5,37 +5,37 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerState // (types.ContainerState)
     {
-        [DataMember(Name = "Status")]
+        [DataMember(Name = "Status", EmitDefaultValue = false)]
         public string Status { get; set; }
 
-        [DataMember(Name = "Running")]
+        [DataMember(Name = "Running", EmitDefaultValue = false)]
         public bool Running { get; set; }
 
-        [DataMember(Name = "Paused")]
+        [DataMember(Name = "Paused", EmitDefaultValue = false)]
         public bool Paused { get; set; }
 
-        [DataMember(Name = "Restarting")]
+        [DataMember(Name = "Restarting", EmitDefaultValue = false)]
         public bool Restarting { get; set; }
 
-        [DataMember(Name = "OOMKilled")]
+        [DataMember(Name = "OOMKilled", EmitDefaultValue = false)]
         public bool OOMKilled { get; set; }
 
-        [DataMember(Name = "Dead")]
+        [DataMember(Name = "Dead", EmitDefaultValue = false)]
         public bool Dead { get; set; }
 
-        [DataMember(Name = "Pid")]
+        [DataMember(Name = "Pid", EmitDefaultValue = false)]
         public long Pid { get; set; }
 
-        [DataMember(Name = "ExitCode")]
+        [DataMember(Name = "ExitCode", EmitDefaultValue = false)]
         public long ExitCode { get; set; }
 
-        [DataMember(Name = "Error")]
+        [DataMember(Name = "Error", EmitDefaultValue = false)]
         public string Error { get; set; }
 
-        [DataMember(Name = "StartedAt")]
+        [DataMember(Name = "StartedAt", EmitDefaultValue = false)]
         public string StartedAt { get; set; }
 
-        [DataMember(Name = "FinishedAt")]
+        [DataMember(Name = "FinishedAt", EmitDefaultValue = false)]
         public string FinishedAt { get; set; }
     }
 }

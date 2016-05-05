@@ -6,70 +6,70 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerJSONBase // (types.ContainerJSONBase)
     {
-        [DataMember(Name = "Id")]
+        [DataMember(Name = "Id", EmitDefaultValue = false)]
         public string ID { get; set; }
 
-        [DataMember(Name = "Created")]
+        [DataMember(Name = "Created", EmitDefaultValue = false)]
         public string Created { get; set; }
 
-        [DataMember(Name = "Path")]
+        [DataMember(Name = "Path", EmitDefaultValue = false)]
         public string Path { get; set; }
 
-        [DataMember(Name = "Args")]
+        [DataMember(Name = "Args", EmitDefaultValue = false)]
         public IList<string> Args { get; set; }
 
-        [DataMember(Name = "State")]
+        [DataMember(Name = "State", EmitDefaultValue = false)]
         public ContainerState State { get; set; }
 
-        [DataMember(Name = "Image")]
+        [DataMember(Name = "Image", EmitDefaultValue = false)]
         public string Image { get; set; }
 
-        [DataMember(Name = "ResolvConfPath")]
+        [DataMember(Name = "ResolvConfPath", EmitDefaultValue = false)]
         public string ResolvConfPath { get; set; }
 
-        [DataMember(Name = "HostnamePath")]
+        [DataMember(Name = "HostnamePath", EmitDefaultValue = false)]
         public string HostnamePath { get; set; }
 
-        [DataMember(Name = "HostsPath")]
+        [DataMember(Name = "HostsPath", EmitDefaultValue = false)]
         public string HostsPath { get; set; }
 
-        [DataMember(Name = "LogPath")]
+        [DataMember(Name = "LogPath", EmitDefaultValue = false)]
         public string LogPath { get; set; }
 
-        [DataMember(Name = "Node")]
+        [DataMember(Name = "Node", EmitDefaultValue = false)]
         public ContainerNode Node { get; set; }
 
-        [DataMember(Name = "Name")]
+        [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }
 
-        [DataMember(Name = "RestartCount")]
+        [DataMember(Name = "RestartCount", EmitDefaultValue = false)]
         public long RestartCount { get; set; }
 
-        [DataMember(Name = "Driver")]
+        [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public string Driver { get; set; }
 
-        [DataMember(Name = "MountLabel")]
+        [DataMember(Name = "MountLabel", EmitDefaultValue = false)]
         public string MountLabel { get; set; }
 
-        [DataMember(Name = "ProcessLabel")]
+        [DataMember(Name = "ProcessLabel", EmitDefaultValue = false)]
         public string ProcessLabel { get; set; }
 
-        [DataMember(Name = "AppArmorProfile")]
+        [DataMember(Name = "AppArmorProfile", EmitDefaultValue = false)]
         public string AppArmorProfile { get; set; }
 
-        [DataMember(Name = "ExecIDs")]
+        [DataMember(Name = "ExecIDs", EmitDefaultValue = false)]
         public IList<string> ExecIDs { get; set; }
 
-        [DataMember(Name = "HostConfig")]
+        [DataMember(Name = "HostConfig", EmitDefaultValue = false)]
         public HostConfig HostConfig { get; set; }
 
-        [DataMember(Name = "GraphDriver")]
+        [DataMember(Name = "GraphDriver", EmitDefaultValue = false)]
         public GraphDriverData GraphDriver { get; set; }
 
-        [DataMember(Name = "SizeRw")]
+        [DataMember(Name = "SizeRw", EmitDefaultValue = false)]
         public long SizeRw { get; set; }
 
-        [DataMember(Name = "SizeRootFs")]
+        [DataMember(Name = "SizeRootFs", EmitDefaultValue = false)]
         public long SizeRootFs { get; set; }
     }
 }

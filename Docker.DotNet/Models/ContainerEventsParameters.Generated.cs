@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerEventsParameters // (types.EventsOptions)
+    public class ContainerEventsParameters // (main.ContainerEventsParameters)
     {
         [QueryStringParameter("since", false)]
         public string Since { get; set; }

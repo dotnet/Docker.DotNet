@@ -5,10 +5,10 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImageDeleteResponse // (types.ImageDelete)
     {
-        [DataMember(Name = "Untagged")]
+        [DataMember(Name = "Untagged", EmitDefaultValue = false)]
         public string Untagged { get; set; }
 
-        [DataMember(Name = "Deleted")]
+        [DataMember(Name = "Deleted", EmitDefaultValue = false)]
         public string Deleted { get; set; }
     }
 }

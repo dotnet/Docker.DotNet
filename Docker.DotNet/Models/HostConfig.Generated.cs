@@ -44,184 +44,184 @@ namespace Docker.DotNet.Models
             }
         }
 
-        [DataMember(Name = "Binds")]
+        [DataMember(Name = "Binds", EmitDefaultValue = false)]
         public IList<string> Binds { get; set; }
 
-        [DataMember(Name = "ContainerIDFile")]
+        [DataMember(Name = "ContainerIDFile", EmitDefaultValue = false)]
         public string ContainerIDFile { get; set; }
 
-        [DataMember(Name = "LogConfig")]
+        [DataMember(Name = "LogConfig", EmitDefaultValue = false)]
         public LogConfig LogConfig { get; set; }
 
-        [DataMember(Name = "NetworkMode")]
+        [DataMember(Name = "NetworkMode", EmitDefaultValue = false)]
         public string NetworkMode { get; set; }
 
-        [DataMember(Name = "PortBindings")]
+        [DataMember(Name = "PortBindings", EmitDefaultValue = false)]
         public IDictionary<string, IList<PortBinding>> PortBindings { get; set; }
 
-        [DataMember(Name = "RestartPolicy")]
+        [DataMember(Name = "RestartPolicy", EmitDefaultValue = false)]
         public RestartPolicy RestartPolicy { get; set; }
 
-        [DataMember(Name = "AutoRemove")]
+        [DataMember(Name = "AutoRemove", EmitDefaultValue = false)]
         public bool AutoRemove { get; set; }
 
-        [DataMember(Name = "VolumeDriver")]
+        [DataMember(Name = "VolumeDriver", EmitDefaultValue = false)]
         public string VolumeDriver { get; set; }
 
-        [DataMember(Name = "VolumesFrom")]
+        [DataMember(Name = "VolumesFrom", EmitDefaultValue = false)]
         public IList<string> VolumesFrom { get; set; }
 
-        [DataMember(Name = "CapAdd")]
+        [DataMember(Name = "CapAdd", EmitDefaultValue = false)]
         public IList<string> CapAdd { get; set; }
 
-        [DataMember(Name = "CapDrop")]
+        [DataMember(Name = "CapDrop", EmitDefaultValue = false)]
         public IList<string> CapDrop { get; set; }
 
-        [DataMember(Name = "Dns")]
+        [DataMember(Name = "Dns", EmitDefaultValue = false)]
         public IList<string> DNS { get; set; }
 
-        [DataMember(Name = "DnsOptions")]
+        [DataMember(Name = "DnsOptions", EmitDefaultValue = false)]
         public IList<string> DNSOptions { get; set; }
 
-        [DataMember(Name = "DnsSearch")]
+        [DataMember(Name = "DnsSearch", EmitDefaultValue = false)]
         public IList<string> DNSSearch { get; set; }
 
-        [DataMember(Name = "ExtraHosts")]
+        [DataMember(Name = "ExtraHosts", EmitDefaultValue = false)]
         public IList<string> ExtraHosts { get; set; }
 
-        [DataMember(Name = "GroupAdd")]
+        [DataMember(Name = "GroupAdd", EmitDefaultValue = false)]
         public IList<string> GroupAdd { get; set; }
 
-        [DataMember(Name = "IpcMode")]
+        [DataMember(Name = "IpcMode", EmitDefaultValue = false)]
         public string IpcMode { get; set; }
 
-        [DataMember(Name = "Cgroup")]
+        [DataMember(Name = "Cgroup", EmitDefaultValue = false)]
         public string Cgroup { get; set; }
 
-        [DataMember(Name = "Links")]
+        [DataMember(Name = "Links", EmitDefaultValue = false)]
         public IList<string> Links { get; set; }
 
-        [DataMember(Name = "OomScoreAdj")]
+        [DataMember(Name = "OomScoreAdj", EmitDefaultValue = false)]
         public long OomScoreAdj { get; set; }
 
-        [DataMember(Name = "PidMode")]
+        [DataMember(Name = "PidMode", EmitDefaultValue = false)]
         public string PidMode { get; set; }
 
-        [DataMember(Name = "Privileged")]
+        [DataMember(Name = "Privileged", EmitDefaultValue = false)]
         public bool Privileged { get; set; }
 
-        [DataMember(Name = "PublishAllPorts")]
+        [DataMember(Name = "PublishAllPorts", EmitDefaultValue = false)]
         public bool PublishAllPorts { get; set; }
 
-        [DataMember(Name = "ReadonlyRootfs")]
+        [DataMember(Name = "ReadonlyRootfs", EmitDefaultValue = false)]
         public bool ReadonlyRootfs { get; set; }
 
-        [DataMember(Name = "SecurityOpt")]
+        [DataMember(Name = "SecurityOpt", EmitDefaultValue = false)]
         public IList<string> SecurityOpt { get; set; }
 
-        [DataMember(Name = "StorageOpt")]
+        [DataMember(Name = "StorageOpt", EmitDefaultValue = false)]
         public IDictionary<string, string> StorageOpt { get; set; }
 
-        [DataMember(Name = "Tmpfs")]
+        [DataMember(Name = "Tmpfs", EmitDefaultValue = false)]
         public IDictionary<string, string> Tmpfs { get; set; }
 
-        [DataMember(Name = "UTSMode")]
+        [DataMember(Name = "UTSMode", EmitDefaultValue = false)]
         public string UTSMode { get; set; }
 
-        [DataMember(Name = "UsernsMode")]
+        [DataMember(Name = "UsernsMode", EmitDefaultValue = false)]
         public string UsernsMode { get; set; }
 
-        [DataMember(Name = "ShmSize")]
+        [DataMember(Name = "ShmSize", EmitDefaultValue = false)]
         public long ShmSize { get; set; }
 
-        [DataMember(Name = "Sysctls")]
+        [DataMember(Name = "Sysctls", EmitDefaultValue = false)]
         public IDictionary<string, string> Sysctls { get; set; }
 
-        [DataMember(Name = "ConsoleSize")]
+        [DataMember(Name = "ConsoleSize", EmitDefaultValue = false)]
         public long[] ConsoleSize { get; set; }
 
-        [DataMember(Name = "Isolation")]
+        [DataMember(Name = "Isolation", EmitDefaultValue = false)]
         public string Isolation { get; set; }
 
-        [DataMember(Name = "CpuShares")]
+        [DataMember(Name = "CpuShares", EmitDefaultValue = false)]
         public long CPUShares { get; set; }
 
-        [DataMember(Name = "Memory")]
+        [DataMember(Name = "Memory", EmitDefaultValue = false)]
         public long Memory { get; set; }
 
-        [DataMember(Name = "CgroupParent")]
+        [DataMember(Name = "CgroupParent", EmitDefaultValue = false)]
         public string CgroupParent { get; set; }
 
-        [DataMember(Name = "BlkioWeight")]
+        [DataMember(Name = "BlkioWeight", EmitDefaultValue = false)]
         public ushort BlkioWeight { get; set; }
 
-        [DataMember(Name = "BlkioWeightDevice")]
+        [DataMember(Name = "BlkioWeightDevice", EmitDefaultValue = false)]
         public IList<WeightDevice> BlkioWeightDevice { get; set; }
 
-        [DataMember(Name = "BlkioDeviceReadBps")]
+        [DataMember(Name = "BlkioDeviceReadBps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceReadBps { get; set; }
 
-        [DataMember(Name = "BlkioDeviceWriteBps")]
+        [DataMember(Name = "BlkioDeviceWriteBps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceWriteBps { get; set; }
 
-        [DataMember(Name = "BlkioDeviceReadIOps")]
+        [DataMember(Name = "BlkioDeviceReadIOps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceReadIOps { get; set; }
 
-        [DataMember(Name = "BlkioDeviceWriteIOps")]
+        [DataMember(Name = "BlkioDeviceWriteIOps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceWriteIOps { get; set; }
 
-        [DataMember(Name = "CpuPeriod")]
+        [DataMember(Name = "CpuPeriod", EmitDefaultValue = false)]
         public long CPUPeriod { get; set; }
 
-        [DataMember(Name = "CpuQuota")]
+        [DataMember(Name = "CpuQuota", EmitDefaultValue = false)]
         public long CPUQuota { get; set; }
 
-        [DataMember(Name = "CpusetCpus")]
+        [DataMember(Name = "CpusetCpus", EmitDefaultValue = false)]
         public string CpusetCpus { get; set; }
 
-        [DataMember(Name = "CpusetMems")]
+        [DataMember(Name = "CpusetMems", EmitDefaultValue = false)]
         public string CpusetMems { get; set; }
 
-        [DataMember(Name = "Devices")]
+        [DataMember(Name = "Devices", EmitDefaultValue = false)]
         public IList<DeviceMapping> Devices { get; set; }
 
-        [DataMember(Name = "DiskQuota")]
+        [DataMember(Name = "DiskQuota", EmitDefaultValue = false)]
         public long DiskQuota { get; set; }
 
-        [DataMember(Name = "KernelMemory")]
+        [DataMember(Name = "KernelMemory", EmitDefaultValue = false)]
         public long KernelMemory { get; set; }
 
-        [DataMember(Name = "MemoryReservation")]
+        [DataMember(Name = "MemoryReservation", EmitDefaultValue = false)]
         public long MemoryReservation { get; set; }
 
-        [DataMember(Name = "MemorySwap")]
+        [DataMember(Name = "MemorySwap", EmitDefaultValue = false)]
         public long MemorySwap { get; set; }
 
-        [DataMember(Name = "MemorySwappiness")]
+        [DataMember(Name = "MemorySwappiness", EmitDefaultValue = false)]
         public long MemorySwappiness { get; set; }
 
-        [DataMember(Name = "OomKillDisable")]
+        [DataMember(Name = "OomKillDisable", EmitDefaultValue = false)]
         public bool OomKillDisable { get; set; }
 
-        [DataMember(Name = "PidsLimit")]
+        [DataMember(Name = "PidsLimit", EmitDefaultValue = false)]
         public long PidsLimit { get; set; }
 
-        [DataMember(Name = "Ulimits")]
+        [DataMember(Name = "Ulimits", EmitDefaultValue = false)]
         public IList<Ulimit> Ulimits { get; set; }
 
-        [DataMember(Name = "CpuCount")]
+        [DataMember(Name = "CpuCount", EmitDefaultValue = false)]
         public long CPUCount { get; set; }
 
-        [DataMember(Name = "CpuPercent")]
+        [DataMember(Name = "CpuPercent", EmitDefaultValue = false)]
         public long CPUPercent { get; set; }
 
-        [DataMember(Name = "IOMaximumIOps")]
+        [DataMember(Name = "IOMaximumIOps", EmitDefaultValue = false)]
         public ulong IOMaximumIOps { get; set; }
 
-        [DataMember(Name = "IOMaximumBandwidth")]
+        [DataMember(Name = "IOMaximumBandwidth", EmitDefaultValue = false)]
         public ulong IOMaximumBandwidth { get; set; }
 
-        [DataMember(Name = "NetworkMaximumBandwidth")]
+        [DataMember(Name = "NetworkMaximumBandwidth", EmitDefaultValue = false)]
         public ulong NetworkMaximumBandwidth { get; set; }
     }
 }

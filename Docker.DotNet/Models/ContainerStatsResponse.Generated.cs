@@ -24,25 +24,25 @@ namespace Docker.DotNet.Models
             }
         }
 
-        [DataMember(Name = "read")]
+        [DataMember(Name = "read", EmitDefaultValue = false)]
         public DateTime Read { get; set; }
 
-        [DataMember(Name = "precpu_stats")]
+        [DataMember(Name = "precpu_stats", EmitDefaultValue = false)]
         public CPUStats PreCPUStats { get; set; }
 
-        [DataMember(Name = "cpu_stats")]
+        [DataMember(Name = "cpu_stats", EmitDefaultValue = false)]
         public CPUStats CPUStats { get; set; }
 
-        [DataMember(Name = "memory_stats")]
+        [DataMember(Name = "memory_stats", EmitDefaultValue = false)]
         public MemoryStats MemoryStats { get; set; }
 
-        [DataMember(Name = "blkio_stats")]
+        [DataMember(Name = "blkio_stats", EmitDefaultValue = false)]
         public BlkioStats BlkioStats { get; set; }
 
-        [DataMember(Name = "pids_stats")]
+        [DataMember(Name = "pids_stats", EmitDefaultValue = false)]
         public PidsStats PidsStats { get; set; }
 
-        [DataMember(Name = "networks")]
+        [DataMember(Name = "networks", EmitDefaultValue = false)]
         public IDictionary<string, NetworkStats> Networks { get; set; }
     }
 }

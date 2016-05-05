@@ -4,12 +4,9 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImagesImportParameters // (types.ImageImportOptions)
+    public class ImagesImportParameters // (main.ImageImportParameters)
     {
-        [DataMember(Name = "Source")]
-        public object Source { get; set; }
-
-        [QueryStringParameter("fromSrc", false)]
+        [QueryStringParameter("fromSrc", true)]
         public string SourceName { get; set; }
 
         [QueryStringParameter("repo", false)]

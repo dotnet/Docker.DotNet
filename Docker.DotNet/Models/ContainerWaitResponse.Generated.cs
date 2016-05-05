@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerWaitResponse // (types.ContainerWaitResponse)
     {
-        [DataMember(Name = "StatusCode")]
+        [DataMember(Name = "StatusCode", EmitDefaultValue = false)]
         public long StatusCode { get; set; }
     }
 }

@@ -7,28 +7,28 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImagesListResponse // (types.Image)
     {
-        [DataMember(Name = "Id")]
+        [DataMember(Name = "Id", EmitDefaultValue = false)]
         public string ID { get; set; }
 
-        [DataMember(Name = "ParentId")]
+        [DataMember(Name = "ParentId", EmitDefaultValue = false)]
         public string ParentID { get; set; }
 
-        [DataMember(Name = "RepoTags")]
+        [DataMember(Name = "RepoTags", EmitDefaultValue = false)]
         public IList<string> RepoTags { get; set; }
 
-        [DataMember(Name = "RepoDigests")]
+        [DataMember(Name = "RepoDigests", EmitDefaultValue = false)]
         public IList<string> RepoDigests { get; set; }
 
-        [DataMember(Name = "Created")]
+        [DataMember(Name = "Created", EmitDefaultValue = false)]
         public DateTime Created { get; set; }
 
-        [DataMember(Name = "Size")]
+        [DataMember(Name = "Size", EmitDefaultValue = false)]
         public long Size { get; set; }
 
-        [DataMember(Name = "VirtualSize")]
+        [DataMember(Name = "VirtualSize", EmitDefaultValue = false)]
         public long VirtualSize { get; set; }
 
-        [DataMember(Name = "Labels")]
+        [DataMember(Name = "Labels", EmitDefaultValue = false)]
         public IDictionary<string, string> Labels { get; set; }
     }
 }

@@ -5,10 +5,10 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class AuthResponse // (types.AuthResponse)
     {
-        [DataMember(Name = "Status")]
+        [DataMember(Name = "Status", EmitDefaultValue = false)]
         public string Status { get; set; }
 
-        [DataMember(Name = "IdentityToken")]
+        [DataMember(Name = "IdentityToken", EmitDefaultValue = false)]
         public string IdentityToken { get; set; }
     }
 }

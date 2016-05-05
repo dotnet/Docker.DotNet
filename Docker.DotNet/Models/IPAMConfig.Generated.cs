@@ -6,16 +6,16 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class IPAMConfig // (network.IPAMConfig)
     {
-        [DataMember(Name = "Subnet")]
+        [DataMember(Name = "Subnet", EmitDefaultValue = false)]
         public string Subnet { get; set; }
 
-        [DataMember(Name = "IPRange")]
+        [DataMember(Name = "IPRange", EmitDefaultValue = false)]
         public string IPRange { get; set; }
 
-        [DataMember(Name = "Gateway")]
+        [DataMember(Name = "Gateway", EmitDefaultValue = false)]
         public string Gateway { get; set; }
 
-        [DataMember(Name = "AuxiliaryAddresses")]
+        [DataMember(Name = "AuxiliaryAddresses", EmitDefaultValue = false)]
         public IDictionary<string, string> AuxAddress { get; set; }
     }
 }

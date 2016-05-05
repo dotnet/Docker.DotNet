@@ -38,58 +38,58 @@ namespace Docker.DotNet.Models
             }
         }
 
-        [DataMember(Name = "Bridge")]
+        [DataMember(Name = "Bridge", EmitDefaultValue = false)]
         public string Bridge { get; set; }
 
-        [DataMember(Name = "SandboxID")]
+        [DataMember(Name = "SandboxID", EmitDefaultValue = false)]
         public string SandboxID { get; set; }
 
-        [DataMember(Name = "HairpinMode")]
+        [DataMember(Name = "HairpinMode", EmitDefaultValue = false)]
         public bool HairpinMode { get; set; }
 
-        [DataMember(Name = "LinkLocalIPv6Address")]
+        [DataMember(Name = "LinkLocalIPv6Address", EmitDefaultValue = false)]
         public string LinkLocalIPv6Address { get; set; }
 
-        [DataMember(Name = "LinkLocalIPv6PrefixLen")]
+        [DataMember(Name = "LinkLocalIPv6PrefixLen", EmitDefaultValue = false)]
         public long LinkLocalIPv6PrefixLen { get; set; }
 
-        [DataMember(Name = "Ports")]
+        [DataMember(Name = "Ports", EmitDefaultValue = false)]
         public IDictionary<string, IList<PortBinding>> Ports { get; set; }
 
-        [DataMember(Name = "SandboxKey")]
+        [DataMember(Name = "SandboxKey", EmitDefaultValue = false)]
         public string SandboxKey { get; set; }
 
-        [DataMember(Name = "SecondaryIPAddresses")]
+        [DataMember(Name = "SecondaryIPAddresses", EmitDefaultValue = false)]
         public IList<Address> SecondaryIPAddresses { get; set; }
 
-        [DataMember(Name = "SecondaryIPv6Addresses")]
+        [DataMember(Name = "SecondaryIPv6Addresses", EmitDefaultValue = false)]
         public IList<Address> SecondaryIPv6Addresses { get; set; }
 
-        [DataMember(Name = "EndpointID")]
+        [DataMember(Name = "EndpointID", EmitDefaultValue = false)]
         public string EndpointID { get; set; }
 
-        [DataMember(Name = "Gateway")]
+        [DataMember(Name = "Gateway", EmitDefaultValue = false)]
         public string Gateway { get; set; }
 
-        [DataMember(Name = "GlobalIPv6Address")]
+        [DataMember(Name = "GlobalIPv6Address", EmitDefaultValue = false)]
         public string GlobalIPv6Address { get; set; }
 
-        [DataMember(Name = "GlobalIPv6PrefixLen")]
+        [DataMember(Name = "GlobalIPv6PrefixLen", EmitDefaultValue = false)]
         public long GlobalIPv6PrefixLen { get; set; }
 
-        [DataMember(Name = "IPAddress")]
+        [DataMember(Name = "IPAddress", EmitDefaultValue = false)]
         public string IPAddress { get; set; }
 
-        [DataMember(Name = "IPPrefixLen")]
+        [DataMember(Name = "IPPrefixLen", EmitDefaultValue = false)]
         public long IPPrefixLen { get; set; }
 
-        [DataMember(Name = "IPv6Gateway")]
+        [DataMember(Name = "IPv6Gateway", EmitDefaultValue = false)]
         public string IPv6Gateway { get; set; }
 
-        [DataMember(Name = "MacAddress")]
+        [DataMember(Name = "MacAddress", EmitDefaultValue = false)]
         public string MacAddress { get; set; }
 
-        [DataMember(Name = "Networks")]
+        [DataMember(Name = "Networks", EmitDefaultValue = false)]
         public IDictionary<string, EndpointSettings> Networks { get; set; }
     }
 }

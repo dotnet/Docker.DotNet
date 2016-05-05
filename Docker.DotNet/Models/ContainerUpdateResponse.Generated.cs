@@ -6,7 +6,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerUpdateResponse // (types.ContainerUpdateResponse)
     {
-        [DataMember(Name = "Warnings")]
+        [DataMember(Name = "Warnings", EmitDefaultValue = false)]
         public IList<string> Warnings { get; set; }
     }
 }
