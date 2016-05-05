@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Net.Http.Client;
 
 namespace Docker.DotNet
 {
@@ -26,7 +27,7 @@ namespace Docker.DotNet
         public IContainerOperations Containers { get; private set; }
 
         public IMiscellaneousOperations Miscellaneous { get; private set; }
-        
+
         public INetworkOperations Networks { get; private set; }
 
         private readonly ApiResponseErrorHandlingDelegate _defaultErrorHandlingDelegate = (statusCode, body) =>
@@ -39,6 +40,8 @@ namespace Docker.DotNet
 
         private readonly HttpClient _client;
         private readonly TimeSpan _defaultTimeout;
+
+        private readonly Uri _endpointBaseUri;
 
         internal readonly IEnumerable<ApiResponseErrorHandlingDelegate> NoErrorHandlers = Enumerable.Empty<ApiResponseErrorHandlingDelegate>();
 
@@ -53,10 +56,75 @@ namespace Docker.DotNet
             Miscellaneous = new MiscellaneousOperations(this);
             Networks = new NetworkOperations(this);
 
-            _client = new HttpClient(Configuration.Credentials.Handler, false);
+            ManagedHandler.StreamOpener opener;
+            var uri = Configuration.EndpointBaseUri;
+            switch (uri.Scheme.ToLowerInvariant())
+            {
+                case "npipe":
+                    if (Configuration.Credentials.IsTlsCredentials())
+                    {
+                        throw new Exception("TLS not supported over npipe");
+                    }
 
+                    var segments = uri.Segments;
+                    if (segments.Length != 3 || !segments[1].Equals("pipe/", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        throw new ArgumentException($"{Configuration.EndpointBaseUri} is not a valid npipe URI");
+                    }
+
+                    var serverName = uri.Host;
+                    var pipeName = uri.Segments[2];
+
+                    uri = new UriBuilder("http", pipeName).Uri;
+                    opener = async (string host, int port, CancellationToken cancellationToken) =>
+                    {
+                        // NamedPipeClientStream handles file not found by polling until the server arrives. Use a short
+                        // timeout so that the user doesn't get stuck waiting for a dockerd instance that is not running.
+                        int timeout = 100; // 100ms
+                        var stream = new System.IO.Pipes.NamedPipeClientStream(serverName, pipeName);
+#if NET45
+                        await Task.Run(() => stream.Connect(timeout), cancellationToken);
+#else
+                        await stream.ConnectAsync(timeout, cancellationToken);
+#endif
+                        return stream;
+                    };
+
+                    break;
+
+                case "tcp":
+                case "http":
+                    var builder = new UriBuilder(uri);
+                    builder.Scheme = configuration.Credentials.IsTlsCredentials() ? "https" : "http";
+                    uri = builder.Uri;
+                    opener = null;
+                    break;
+
+                case "https":
+                    opener = null;
+                    break;
+
+                //case "unix":
+                // TODO
+
+                default:
+                    throw new Exception($"Unknown URL scheme {configuration.EndpointBaseUri.Scheme}");
+            }
+
+            _endpointBaseUri = uri;
+
+            ManagedHandler handler;
+            if (opener != null)
+            {
+                handler = new ManagedHandler(opener);
+            }
+            else
+            {
+                handler = new ManagedHandler();
+            }
+
+            _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
             _defaultTimeout = _client.Timeout;
-
             _client.Timeout = InfiniteTimeout;
         }
 
@@ -172,7 +240,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("path");
             }
 
-            HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(Configuration.EndpointBaseUri, RequestedApiVersion, path, queryString));
+            HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, RequestedApiVersion, path, queryString));
 
             request.Headers.Add("User-Agent", UserAgent);
 

@@ -7,7 +7,7 @@ namespace Docker.DotNet
     {
         public abstract bool IsTlsCredentials();
 
-        public abstract HttpMessageHandler Handler { get; }
+        public abstract HttpMessageHandler GetHandler(HttpMessageHandler innerHandler);
 
         public virtual void Dispose()
         {

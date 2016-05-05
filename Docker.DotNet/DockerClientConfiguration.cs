@@ -20,8 +20,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException("endpoint");
             }
 
-            Credentials = credentials ?? new AnonymousCredentials();;
-            EndpointBaseUri = SanitizeEndpoint(endpoint, Credentials.IsTlsCredentials());
+            Credentials = credentials ?? new AnonymousCredentials();
+            EndpointBaseUri = endpoint;
         }
 
         public DockerClient CreateClient()
@@ -32,22 +32,6 @@ namespace Docker.DotNet
         public DockerClient CreateClient(Version requestedApiVersion)
         {
             return new DockerClient(this, requestedApiVersion);
-        }
-
-        private static Uri SanitizeEndpoint(Uri endpoint, bool isTls)
-        {
-            UriBuilder builder = new UriBuilder(endpoint);
-
-            if (isTls)
-            {
-                builder.Scheme = "https";
-            }
-            else if (builder.Scheme.Equals("tcp", StringComparison.CurrentCultureIgnoreCase)) // JMG: Changed from InvariantCultureIgnoreCase, not supported in PCL
-            {
-                builder.Scheme = "http";
-            }
-
-            return builder.Uri;
         }
 
         public void Dispose()
