@@ -6,62 +6,46 @@ namespace Docker.DotNet.BasicAuth
 {
     public class BasicAuthCredentials : Credentials
     {
-        private readonly BasicAuthHandler _handler;
         private readonly bool _isTls;
 
-        public override HttpMessageHandler Handler
+        private readonly MaybeSecureString _username;
+        private readonly MaybeSecureString _password;
+
+        public override HttpMessageHandler GetHandler(HttpMessageHandler innerHandler)
         {
-            get
-            {
-                return _handler;
-            }
+            return new BasicAuthHandler(_username, _password, innerHandler);
         }
 
 #if !netstandard
         public BasicAuthCredentials(SecureString username, SecureString password, bool isTls = false)
+            : this(new MaybeSecureString(username), new MaybeSecureString(password), isTls)
         {
-            if (username == null)
-            {
-                throw new ArgumentException("username");
-            }
-
-            if (password == null)
-            {
-                throw new ArgumentException("password");
-            }
-
-            _handler = CreateHandler(username, password);
-
-            _isTls = isTls;
         }
 #endif
 
         public BasicAuthCredentials(string username, string password, bool isTls = false)
+            : this(new MaybeSecureString(username), new MaybeSecureString(password), isTls)
         {
-            if (string.IsNullOrEmpty(username))
+        }
+
+        private BasicAuthCredentials(MaybeSecureString username, MaybeSecureString password, bool isTls)
+        {
+            if (username.Empty)
             {
                 throw new ArgumentException("username");
             }
 
-            if (string.IsNullOrEmpty(password))
+            if (password.Empty)
             {
                 throw new ArgumentException("password");
             }
 
-#if !netstandard
-            _handler = CreateHandler(ConvertToSecureString(username), ConvertToSecureString(password));
-#else
-            _handler = CreateHandler(username, password);
-#endif
-
             _isTls = isTls;
+            _username = username;
+            _password = password;
         }
 
-#if !netstandard
-        private BasicAuthHandler CreateHandler(SecureString username, SecureString password)
-#else
-        private BasicAuthHandler CreateHandler(string username, string password)
-#endif
+        private BasicAuthHandler CreateHandler(MaybeSecureString username, MaybeSecureString password)
         {
             return new BasicAuthHandler(username, password, new HttpClientHandler());
         }
@@ -71,25 +55,10 @@ namespace Docker.DotNet.BasicAuth
             return _isTls;
         }
 
-#if !netstandard
-        private static SecureString ConvertToSecureString(string str)
-        {
-            var secureStr = new SecureString();
-
-            if (str.Length > 0)
-            {
-                foreach (char c in str)
-                {
-                    secureStr.AppendChar(c);
-                }
-            }
-            return secureStr;
-        }
-#endif
-
         public override void Dispose()
         {
-            _handler.Dispose();
+            _username.Dispose();
+            _password.Dispose();
         }
     }
 }
