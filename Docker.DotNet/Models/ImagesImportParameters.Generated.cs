@@ -18,7 +18,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("tag", false)]
         public string Tag { get; set; }
 
-        [QueryStringParameter("changes", false)]
+        [QueryStringParameter("changes", false, typeof(EnumerableQueryStringConverter))]
         public IList<string> Changes { get; set; }
     }
 }

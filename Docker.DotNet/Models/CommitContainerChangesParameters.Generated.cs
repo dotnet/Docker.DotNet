@@ -21,7 +21,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("author", false)]
         public string Author { get; set; }
 
-        [QueryStringParameter("changes", false)]
+        [QueryStringParameter("changes", false, typeof(EnumerableQueryStringConverter))]
         public IList<string> Changes { get; set; }
 
         [QueryStringParameter("pause", false, typeof(BoolQueryStringConverter))]

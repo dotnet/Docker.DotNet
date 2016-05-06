@@ -6,10 +6,6 @@ namespace Docker.DotNet
     {
         bool CanConvert(Type t);
 
-        string Convert(object o);
-
-        bool ChangesKey();
-
-        string GetKey(object o);
+        string[] Convert(object o);
     }
 }

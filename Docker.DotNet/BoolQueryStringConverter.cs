@@ -1,34 +1,21 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Docker.DotNet.Models
 {
     internal class BoolQueryStringConverter : IQueryStringConverter
     {
-        public BoolQueryStringConverter()
-        {
-        }
-
         public bool CanConvert(Type t)
         {
             return t == typeof (bool);
         }
 
-        public string Convert(object o)
+        public string[] Convert(object o)
         {
-            bool val = System.Convert.ToBoolean(o);
-            int intval = val ? 1 : 0;
-            return intval.ToString(CultureInfo.InvariantCulture);
-        }
+            Debug.Assert(o != null);
 
-        public bool ChangesKey()
-        {
-            return false;
-        }
-
-        public string GetKey(object o)
-        {
-            throw new NotImplementedException();
+            return new[] {System.Convert.ToInt32(System.Convert.ToBoolean(o)).ToString(CultureInfo.InvariantCulture)};
         }
     }
 }
