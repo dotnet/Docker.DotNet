@@ -26,11 +26,23 @@ namespace Microsoft.Net.Http.Client
             }
         }
 
-        public Uri ProxyAddress
+        public IWebProxy Proxy
         {
-            // TODO: Validate that only an absolute http address is specified. Path, query, and fragment are ignored
-            get; set;
+            get
+            {
+                if (_proxy == null)
+                {
+                    _proxy = WebRequest.GetSystemWebProxy();
+                }
+                return _proxy;
+            }
+            set
+            {
+                _proxy = value;
+            }
         }
+
+        public bool UseProxy { get; set; } = true;
 
         public int MaxAutomaticRedirects { get; set; } = 20;
 
@@ -41,6 +53,7 @@ namespace Microsoft.Net.Http.Client
         public RemoteCertificateValidationCallback ServerCertificateValidationCallback { get; set; }
 
         private StreamOpener _opener;
+        private IWebProxy _proxy;
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -243,10 +256,17 @@ namespace Microsoft.Net.Http.Client
                 request.SetAddressLineProperty(pathAndQuery);
             }
 
-            if (ProxyAddress == null)
+            if (!UseProxy || Proxy.IsBypassed(request.RequestUri))
             {
                 return ProxyMode.None;
             }
+
+            var proxyUri = Proxy.GetProxy(request.RequestUri);
+            if (proxyUri == null)
+            {
+                return ProxyMode.None;
+            }
+
             if (request.IsHttp())
             {
                 if (string.IsNullOrEmpty(addressLine))
@@ -254,13 +274,13 @@ namespace Microsoft.Net.Http.Client
                     addressLine = scheme + "://" + host + ":" + port.Value + pathAndQuery;
                     request.SetAddressLineProperty(addressLine);
                 }
-                request.SetConnectionHostProperty(ProxyAddress.DnsSafeHost);
-                request.SetConnectionPortProperty(ProxyAddress.Port);
+                request.SetConnectionHostProperty(proxyUri.DnsSafeHost);
+                request.SetConnectionPortProperty(proxyUri.Port);
                 return ProxyMode.Http;
             }
             // Tunneling generates a completely seperate request, don't alter the original, just the connection address.
-            request.SetConnectionHostProperty(ProxyAddress.DnsSafeHost);
-            request.SetConnectionPortProperty(ProxyAddress.Port);
+            request.SetConnectionHostProperty(proxyUri.DnsSafeHost);
+            request.SetConnectionPortProperty(proxyUri.Port);
             return ProxyMode.Tunnel;
         }
 
