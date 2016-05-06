@@ -4,15 +4,23 @@ using Newtonsoft.Json.Converters;
 namespace Docker.DotNet
 {
     /// <summary>
-    /// Facade for <see cref="Newtonsoft.Json.JsonConvert"/>.
+    /// Facade for <see cref="JsonConvert"/>.
     /// </summary>
     internal class JsonSerializer
     {
-        private Newtonsoft.Json.JsonConverter[] Converters { get; set; }
+        private JsonConverter[] Converters { get; }
+
+        static JsonSerializer()
+        {
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+        }
 
         public JsonSerializer()
         {
-            this.Converters = new Newtonsoft.Json.JsonConverter[]
+            this.Converters = new JsonConverter[]
             {
                 new JsonIso8601AndUnixEpochDateConverter(),
                 new JsonVersionConverter(),
