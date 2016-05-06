@@ -3,11 +3,8 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerLogsParameters // (types.ContainerLogsOptions)
+    public class ContainerLogsParameters // (main.ContainerLogsParameters)
     {
-        [DataMember(Name = "ContainerID")]
-        public string ContainerID { get; set; }
-
         [QueryStringParameter("stdout", false, typeof(BoolQueryStringConverter))]
         public bool? ShowStdout { get; set; }
 

@@ -3,11 +3,8 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImageDeleteParameters // (types.ImageRemoveOptions)
+    public class ImageDeleteParameters // (main.ImageDeleteParameters)
     {
-        [DataMember(Name = "ImageID")]
-        public string ImageID { get; set; }
-
         [QueryStringParameter("force", false, typeof(BoolQueryStringConverter))]
         public bool? Force { get; set; }
 

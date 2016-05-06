@@ -6,16 +6,16 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class VolumesCreateParameters // (types.VolumeCreateRequest)
     {
-        [DataMember(Name = "Name")]
+        [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }
 
-        [DataMember(Name = "Driver")]
+        [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public string Driver { get; set; }
 
-        [DataMember(Name = "DriverOpts")]
+        [DataMember(Name = "DriverOpts", EmitDefaultValue = false)]
         public IDictionary<string, string> DriverOpts { get; set; }
 
-        [DataMember(Name = "Labels")]
+        [DataMember(Name = "Labels", EmitDefaultValue = false)]
         public IDictionary<string, string> Labels { get; set; }
     }
 }

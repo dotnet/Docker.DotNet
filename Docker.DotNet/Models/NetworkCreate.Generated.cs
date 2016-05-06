@@ -4,16 +4,10 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class NetworkResponse // (types.NetworkResource)
+    public class NetworkCreate // (types.NetworkCreate)
     {
-        [DataMember(Name = "Name", EmitDefaultValue = false)]
-        public string Name { get; set; }
-
-        [DataMember(Name = "Id", EmitDefaultValue = false)]
-        public string ID { get; set; }
-
-        [DataMember(Name = "Scope", EmitDefaultValue = false)]
-        public string Scope { get; set; }
+        [DataMember(Name = "CheckDuplicate", EmitDefaultValue = false)]
+        public bool CheckDuplicate { get; set; }
 
         [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public string Driver { get; set; }
@@ -26,9 +20,6 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Internal", EmitDefaultValue = false)]
         public bool Internal { get; set; }
-
-        [DataMember(Name = "Containers", EmitDefaultValue = false)]
-        public IDictionary<string, EndpointResource> Containers { get; set; }
 
         [DataMember(Name = "Options", EmitDefaultValue = false)]
         public IDictionary<string, string> Options { get; set; }

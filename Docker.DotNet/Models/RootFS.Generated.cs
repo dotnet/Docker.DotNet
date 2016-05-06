@@ -6,13 +6,13 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class RootFS // (types.RootFS)
     {
-        [DataMember(Name = "Type")]
+        [DataMember(Name = "Type", EmitDefaultValue = false)]
         public string Type { get; set; }
 
-        [DataMember(Name = "Layers")]
+        [DataMember(Name = "Layers", EmitDefaultValue = false)]
         public IList<string> Layers { get; set; }
 
-        [DataMember(Name = "BaseLayer")]
+        [DataMember(Name = "BaseLayer", EmitDefaultValue = false)]
         public string BaseLayer { get; set; }
     }
 }

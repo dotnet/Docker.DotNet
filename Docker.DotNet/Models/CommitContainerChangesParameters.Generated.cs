@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class CommitContainerChangesParameters // (types.ContainerCommitOptions)
+    public class CommitContainerChangesParameters // (main.ContainerCommitParamters)
     {
         [QueryStringParameter("container", true)]
         public string ContainerID { get; set; }
@@ -27,7 +27,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("pause", false, typeof(BoolQueryStringConverter))]
         public bool? Pause { get; set; }
 
-        [DataMember(Name = "Config")]
+        [DataMember(Name = "Config", EmitDefaultValue = false)]
         public Config Config { get; set; }
     }
 }

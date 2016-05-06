@@ -6,10 +6,10 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class VolumesListResponse // (main.VolumesListResponse)
     {
-        [DataMember(Name = "Volumes")]
+        [DataMember(Name = "Volumes", EmitDefaultValue = false)]
         public IList<VolumeResponse> Volumes { get; set; }
 
-        [DataMember(Name = "Warnings")]
+        [DataMember(Name = "Warnings", EmitDefaultValue = false)]
         public IList<string> Warnings { get; set; }
     }
 }

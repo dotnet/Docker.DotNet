@@ -6,22 +6,22 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImageHistoryResponse // (types.ImageHistory)
     {
-        [DataMember(Name = "Id")]
+        [DataMember(Name = "Id", EmitDefaultValue = false)]
         public string ID { get; set; }
 
-        [DataMember(Name = "Created")]
+        [DataMember(Name = "Created", EmitDefaultValue = false)]
         public long Created { get; set; }
 
-        [DataMember(Name = "CreatedBy")]
+        [DataMember(Name = "CreatedBy", EmitDefaultValue = false)]
         public string CreatedBy { get; set; }
 
-        [DataMember(Name = "Tags")]
+        [DataMember(Name = "Tags", EmitDefaultValue = false)]
         public IList<string> Tags { get; set; }
 
-        [DataMember(Name = "Size")]
+        [DataMember(Name = "Size", EmitDefaultValue = false)]
         public long Size { get; set; }
 
-        [DataMember(Name = "Comment")]
+        [DataMember(Name = "Comment", EmitDefaultValue = false)]
         public string Comment { get; set; }
     }
 }

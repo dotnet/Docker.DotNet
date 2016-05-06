@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImageBuildParameters // (types.ImageBuildOptions)
+    public class ImageBuildParameters // (main.ImageBuildParameters)
     {
         [QueryStringParameter("t", false)]
         public IList<string> Tags { get; set; }
@@ -66,11 +66,8 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("buildargs", false)]
         public IDictionary<string, string> BuildArgs { get; set; }
 
-        [DataMember(Name = "AuthConfigs")]
+        [DataMember(Name = "AuthConfigs", EmitDefaultValue = false)]
         public IDictionary<string, AuthConfig> AuthConfigs { get; set; }
-
-        [DataMember(Name = "Context")]
-        public object Context { get; set; }
 
         [QueryStringParameter("labels", false)]
         public IDictionary<string, string> Labels { get; set; }

@@ -5,10 +5,10 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class WeightDevice // (blkiodev.WeightDevice)
     {
-        [DataMember(Name = "Path")]
+        [DataMember(Name = "Path", EmitDefaultValue = false)]
         public string Path { get; set; }
 
-        [DataMember(Name = "Weight")]
+        [DataMember(Name = "Weight", EmitDefaultValue = false)]
         public ushort Weight { get; set; }
     }
 }

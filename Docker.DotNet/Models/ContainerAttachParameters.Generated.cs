@@ -3,11 +3,8 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerAttachParameters // (types.ContainerAttachOptions)
+    public class ContainerAttachParameters // (main.ContainerAttachParameters)
     {
-        [DataMember(Name = "ContainerID")]
-        public string ContainerID { get; set; }
-
         [QueryStringParameter("stream", false, typeof(BoolQueryStringConverter))]
         public bool? Stream { get; set; }
 

@@ -4,128 +4,129 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerUpdateParameters // (container.UpdateConfig)
+    public class ContainerUpdateParameters // (main.ContainerUpdateParameters)
     {
         public ContainerUpdateParameters()
         {
         }
 
-        public ContainerUpdateParameters(Resources Resources)
+        public ContainerUpdateParameters(UpdateConfig UpdateConfig)
         {
-            if (Resources != null)
+            if (UpdateConfig != null)
             {
-                this.CPUShares = Resources.CPUShares;
-                this.Memory = Resources.Memory;
-                this.CgroupParent = Resources.CgroupParent;
-                this.BlkioWeight = Resources.BlkioWeight;
-                this.BlkioWeightDevice = Resources.BlkioWeightDevice;
-                this.BlkioDeviceReadBps = Resources.BlkioDeviceReadBps;
-                this.BlkioDeviceWriteBps = Resources.BlkioDeviceWriteBps;
-                this.BlkioDeviceReadIOps = Resources.BlkioDeviceReadIOps;
-                this.BlkioDeviceWriteIOps = Resources.BlkioDeviceWriteIOps;
-                this.CPUPeriod = Resources.CPUPeriod;
-                this.CPUQuota = Resources.CPUQuota;
-                this.CpusetCpus = Resources.CpusetCpus;
-                this.CpusetMems = Resources.CpusetMems;
-                this.Devices = Resources.Devices;
-                this.DiskQuota = Resources.DiskQuota;
-                this.KernelMemory = Resources.KernelMemory;
-                this.MemoryReservation = Resources.MemoryReservation;
-                this.MemorySwap = Resources.MemorySwap;
-                this.MemorySwappiness = Resources.MemorySwappiness;
-                this.OomKillDisable = Resources.OomKillDisable;
-                this.PidsLimit = Resources.PidsLimit;
-                this.Ulimits = Resources.Ulimits;
-                this.CPUCount = Resources.CPUCount;
-                this.CPUPercent = Resources.CPUPercent;
-                this.IOMaximumIOps = Resources.IOMaximumIOps;
-                this.IOMaximumBandwidth = Resources.IOMaximumBandwidth;
-                this.NetworkMaximumBandwidth = Resources.NetworkMaximumBandwidth;
+                this.CPUShares = UpdateConfig.CPUShares;
+                this.Memory = UpdateConfig.Memory;
+                this.CgroupParent = UpdateConfig.CgroupParent;
+                this.BlkioWeight = UpdateConfig.BlkioWeight;
+                this.BlkioWeightDevice = UpdateConfig.BlkioWeightDevice;
+                this.BlkioDeviceReadBps = UpdateConfig.BlkioDeviceReadBps;
+                this.BlkioDeviceWriteBps = UpdateConfig.BlkioDeviceWriteBps;
+                this.BlkioDeviceReadIOps = UpdateConfig.BlkioDeviceReadIOps;
+                this.BlkioDeviceWriteIOps = UpdateConfig.BlkioDeviceWriteIOps;
+                this.CPUPeriod = UpdateConfig.CPUPeriod;
+                this.CPUQuota = UpdateConfig.CPUQuota;
+                this.CpusetCpus = UpdateConfig.CpusetCpus;
+                this.CpusetMems = UpdateConfig.CpusetMems;
+                this.Devices = UpdateConfig.Devices;
+                this.DiskQuota = UpdateConfig.DiskQuota;
+                this.KernelMemory = UpdateConfig.KernelMemory;
+                this.MemoryReservation = UpdateConfig.MemoryReservation;
+                this.MemorySwap = UpdateConfig.MemorySwap;
+                this.MemorySwappiness = UpdateConfig.MemorySwappiness;
+                this.OomKillDisable = UpdateConfig.OomKillDisable;
+                this.PidsLimit = UpdateConfig.PidsLimit;
+                this.Ulimits = UpdateConfig.Ulimits;
+                this.CPUCount = UpdateConfig.CPUCount;
+                this.CPUPercent = UpdateConfig.CPUPercent;
+                this.IOMaximumIOps = UpdateConfig.IOMaximumIOps;
+                this.IOMaximumBandwidth = UpdateConfig.IOMaximumBandwidth;
+                this.NetworkMaximumBandwidth = UpdateConfig.NetworkMaximumBandwidth;
+                this.RestartPolicy = UpdateConfig.RestartPolicy;
             }
         }
 
-        [DataMember(Name = "CpuShares")]
+        [DataMember(Name = "CpuShares", EmitDefaultValue = false)]
         public long CPUShares { get; set; }
 
-        [DataMember(Name = "Memory")]
+        [DataMember(Name = "Memory", EmitDefaultValue = false)]
         public long Memory { get; set; }
 
-        [DataMember(Name = "CgroupParent")]
+        [DataMember(Name = "CgroupParent", EmitDefaultValue = false)]
         public string CgroupParent { get; set; }
 
-        [DataMember(Name = "BlkioWeight")]
+        [DataMember(Name = "BlkioWeight", EmitDefaultValue = false)]
         public ushort BlkioWeight { get; set; }
 
-        [DataMember(Name = "BlkioWeightDevice")]
+        [DataMember(Name = "BlkioWeightDevice", EmitDefaultValue = false)]
         public IList<WeightDevice> BlkioWeightDevice { get; set; }
 
-        [DataMember(Name = "BlkioDeviceReadBps")]
+        [DataMember(Name = "BlkioDeviceReadBps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceReadBps { get; set; }
 
-        [DataMember(Name = "BlkioDeviceWriteBps")]
+        [DataMember(Name = "BlkioDeviceWriteBps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceWriteBps { get; set; }
 
-        [DataMember(Name = "BlkioDeviceReadIOps")]
+        [DataMember(Name = "BlkioDeviceReadIOps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceReadIOps { get; set; }
 
-        [DataMember(Name = "BlkioDeviceWriteIOps")]
+        [DataMember(Name = "BlkioDeviceWriteIOps", EmitDefaultValue = false)]
         public IList<ThrottleDevice> BlkioDeviceWriteIOps { get; set; }
 
-        [DataMember(Name = "CpuPeriod")]
+        [DataMember(Name = "CpuPeriod", EmitDefaultValue = false)]
         public long CPUPeriod { get; set; }
 
-        [DataMember(Name = "CpuQuota")]
+        [DataMember(Name = "CpuQuota", EmitDefaultValue = false)]
         public long CPUQuota { get; set; }
 
-        [DataMember(Name = "CpusetCpus")]
+        [DataMember(Name = "CpusetCpus", EmitDefaultValue = false)]
         public string CpusetCpus { get; set; }
 
-        [DataMember(Name = "CpusetMems")]
+        [DataMember(Name = "CpusetMems", EmitDefaultValue = false)]
         public string CpusetMems { get; set; }
 
-        [DataMember(Name = "Devices")]
+        [DataMember(Name = "Devices", EmitDefaultValue = false)]
         public IList<DeviceMapping> Devices { get; set; }
 
-        [DataMember(Name = "DiskQuota")]
+        [DataMember(Name = "DiskQuota", EmitDefaultValue = false)]
         public long DiskQuota { get; set; }
 
-        [DataMember(Name = "KernelMemory")]
+        [DataMember(Name = "KernelMemory", EmitDefaultValue = false)]
         public long KernelMemory { get; set; }
 
-        [DataMember(Name = "MemoryReservation")]
+        [DataMember(Name = "MemoryReservation", EmitDefaultValue = false)]
         public long MemoryReservation { get; set; }
 
-        [DataMember(Name = "MemorySwap")]
+        [DataMember(Name = "MemorySwap", EmitDefaultValue = false)]
         public long MemorySwap { get; set; }
 
-        [DataMember(Name = "MemorySwappiness")]
+        [DataMember(Name = "MemorySwappiness", EmitDefaultValue = false)]
         public long MemorySwappiness { get; set; }
 
-        [DataMember(Name = "OomKillDisable")]
+        [DataMember(Name = "OomKillDisable", EmitDefaultValue = false)]
         public bool OomKillDisable { get; set; }
 
-        [DataMember(Name = "PidsLimit")]
+        [DataMember(Name = "PidsLimit", EmitDefaultValue = false)]
         public long PidsLimit { get; set; }
 
-        [DataMember(Name = "Ulimits")]
+        [DataMember(Name = "Ulimits", EmitDefaultValue = false)]
         public IList<Ulimit> Ulimits { get; set; }
 
-        [DataMember(Name = "CpuCount")]
+        [DataMember(Name = "CpuCount", EmitDefaultValue = false)]
         public long CPUCount { get; set; }
 
-        [DataMember(Name = "CpuPercent")]
+        [DataMember(Name = "CpuPercent", EmitDefaultValue = false)]
         public long CPUPercent { get; set; }
 
-        [DataMember(Name = "IOMaximumIOps")]
+        [DataMember(Name = "IOMaximumIOps", EmitDefaultValue = false)]
         public ulong IOMaximumIOps { get; set; }
 
-        [DataMember(Name = "IOMaximumBandwidth")]
+        [DataMember(Name = "IOMaximumBandwidth", EmitDefaultValue = false)]
         public ulong IOMaximumBandwidth { get; set; }
 
-        [DataMember(Name = "NetworkMaximumBandwidth")]
+        [DataMember(Name = "NetworkMaximumBandwidth", EmitDefaultValue = false)]
         public ulong NetworkMaximumBandwidth { get; set; }
 
-        [DataMember(Name = "RestartPolicy")]
+        [DataMember(Name = "RestartPolicy", EmitDefaultValue = false)]
         public RestartPolicy RestartPolicy { get; set; }
     }
 }

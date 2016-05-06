@@ -3,11 +3,8 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImageTagParameters // (types.ImageTagOptions)
+    public class ImageTagParameters // (main.ImageTagParameters)
     {
-        [DataMember(Name = "ImageID")]
-        public string ImageID { get; set; }
-
         [QueryStringParameter("repo", false)]
         public string RepositoryName { get; set; }
 

@@ -6,10 +6,10 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerProcessesResponse // (types.ContainerProcessList)
     {
-        [DataMember(Name = "Processes")]
+        [DataMember(Name = "Processes", EmitDefaultValue = false)]
         public IList<IList<string>> Processes { get; set; }
 
-        [DataMember(Name = "Titles")]
+        [DataMember(Name = "Titles", EmitDefaultValue = false)]
         public IList<string> Titles { get; set; }
     }
 }

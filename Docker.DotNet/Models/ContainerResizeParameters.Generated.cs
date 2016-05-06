@@ -3,15 +3,12 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerResizeParameters // (types.ResizeOptions)
+    public class ContainerResizeParameters // (main.ContainerResizeParameters)
     {
-        [DataMember(Name = "ID")]
-        public string ID { get; set; }
-
         [QueryStringParameter("h", false)]
-        public int? Height { get; set; }
+        public long? Height { get; set; }
 
         [QueryStringParameter("w", false)]
-        public int? Width { get; set; }
+        public long? Width { get; set; }
     }
 }

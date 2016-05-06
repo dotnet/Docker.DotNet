@@ -4,28 +4,8 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerExecCreateParameters // (main.ContainerExecCreateParameters)
+    public class ExecConfig // (types.ExecConfig)
     {
-        public ContainerExecCreateParameters()
-        {
-        }
-
-        public ContainerExecCreateParameters(ExecConfig ExecConfig)
-        {
-            if (ExecConfig != null)
-            {
-                this.User = ExecConfig.User;
-                this.Privileged = ExecConfig.Privileged;
-                this.Tty = ExecConfig.Tty;
-                this.AttachStdin = ExecConfig.AttachStdin;
-                this.AttachStderr = ExecConfig.AttachStderr;
-                this.AttachStdout = ExecConfig.AttachStdout;
-                this.Detach = ExecConfig.Detach;
-                this.DetachKeys = ExecConfig.DetachKeys;
-                this.Cmd = ExecConfig.Cmd;
-            }
-        }
-
         [DataMember(Name = "User", EmitDefaultValue = false)]
         public string User { get; set; }
 

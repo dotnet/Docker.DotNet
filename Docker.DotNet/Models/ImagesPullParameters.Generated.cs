@@ -3,15 +3,15 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImagesPullParameters // (types.ImagePullOptions)
+    public class ImagesPullParameters // (main.ImagePullParameters)
     {
-        [QueryStringParameter("fromImage", false)]
-        public string ImageID { get; set; }
+        [QueryStringParameter("fromImage", true)]
+        public string Parent { get; set; }
 
         [QueryStringParameter("tag", false)]
         public string Tag { get; set; }
 
-        [DataMember(Name = "RegistryAuth")]
+        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
         public string RegistryAuth { get; set; }
     }
 }
