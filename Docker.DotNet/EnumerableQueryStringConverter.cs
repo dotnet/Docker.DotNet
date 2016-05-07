@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using Newtonsoft.Json;
 
 namespace Docker.DotNet
@@ -13,7 +14,7 @@ namespace Docker.DotNet
     {
         public bool CanConvert(Type t)
         {
-            return typeof (IEnumerable).IsAssignableFrom(t);
+            return typeof (IEnumerable).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo());
         }
 
         public string[] Convert(object o)

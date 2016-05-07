@@ -5,6 +5,22 @@
         "Docker.DotNet": "2.124.0"
     },
     "frameworks": {
+        "netstandard1.3": {
+            "buildOptions": {
+                "define": [
+                    "netstandard1_3"
+                ]
+            },
+            "imports": [
+                "dotnet5.4",
+                "netcoreapp",
+                "uap10",
+                "portable-dnxcore50+net45+win8+wp8+wpa81"
+            ],
+            "dependencies": {
+                "System.Security.Cryptography.X509Certificates": "4.0.0-beta-23516"
+            }
+        },
         "net46": {
             "frameworkAssemblies": {
                 "System.Net.Http": "",

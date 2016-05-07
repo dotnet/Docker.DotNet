@@ -1,7 +1,11 @@
-﻿using System.Net;
+﻿#if !netstandard1_3
+using System.Net;
+#endif
+
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Net.Http.Client;
+using System.Net.Security;
 
 namespace Docker.DotNet.X509
 {
@@ -13,6 +17,8 @@ namespace Docker.DotNet.X509
         {
             _certificate = clientCertificate;
         }
+        
+        public RemoteCertificateValidationCallback ServerCertificateValidationCallback { get; set; }
 
         public override HttpMessageHandler GetHandler(HttpMessageHandler innerHandler)
         {
@@ -22,7 +28,14 @@ namespace Docker.DotNet.X509
                 _certificate
             };
 
-            handler.ServerCertificateValidationCallback = ServicePointManager.ServerCertificateValidationCallback;
+            
+#if !netstandard1_3
+            if (this.ServerCertificateValidationCallback == null)
+            {
+                handler.ServerCertificateValidationCallback = ServicePointManager.ServerCertificateValidationCallback;
+            }
+#endif
+            handler.ServerCertificateValidationCallback = this.ServerCertificateValidationCallback;
             return handler;
         }
 

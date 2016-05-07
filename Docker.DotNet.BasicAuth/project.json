@@ -3,11 +3,20 @@
   "dependencies": {
     "Docker.DotNet": "2.124.0"
   },
-  "runtimes": {
-    "win10-x64": {},
-    "win10-x86": {}
-  },
   "frameworks": {
+    "netstandard1.3": {
+      "imports": [
+        "dotnet5.4",
+        "netcoreapp",
+        "uap10",
+        "portable-dnxcore50+net45+win8+wp8+wpa81"
+      ],
+      "buildOptions": {
+        "define": [
+          "netstandard1_3"
+        ]
+      }
+    },
     "net46": {
       "frameworkAssemblies": {
         "System.Runtime": "",
