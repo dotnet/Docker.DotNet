@@ -17,7 +17,7 @@ namespace Docker.DotNet.X509
         {
             _certificate = clientCertificate;
         }
-        
+
         public RemoteCertificateValidationCallback ServerCertificateValidationCallback { get; set; }
 
         public override HttpMessageHandler GetHandler(HttpMessageHandler innerHandler)
@@ -28,14 +28,14 @@ namespace Docker.DotNet.X509
                 _certificate
             };
 
-            
-#if !netstandard1_3
-            if (this.ServerCertificateValidationCallback == null)
+            handler.ServerCertificateValidationCallback = this.ServerCertificateValidationCallback;
+#if !NETSTANDARD1_3
+            if (handler.ServerCertificateValidationCallback == null)
             {
                 handler.ServerCertificateValidationCallback = ServicePointManager.ServerCertificateValidationCallback;
             }
 #endif
-            handler.ServerCertificateValidationCallback = this.ServerCertificateValidationCallback;
+
             return handler;
         }
 
