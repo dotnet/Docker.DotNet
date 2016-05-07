@@ -32,7 +32,7 @@ namespace Microsoft.Net.Http.Client
             {
                 if (_proxy == null)
                 {
-                    _proxy = WebRequest.GetSystemWebProxy();
+                    _proxy = WebRequest.DefaultWebProxy;
                 }
                 return _proxy;
             }

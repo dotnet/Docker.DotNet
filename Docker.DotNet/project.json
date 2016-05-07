@@ -3,11 +3,29 @@
   "dependencies": {
     "Newtonsoft.Json": "8.0.3"
   },
-  "runtimes": {
-    "win10-x64": {},
-    "win10-x86": {}
-  },
   "frameworks": {
+    "netstandard1.3": {
+      "imports": [
+        "dotnet5.4",
+        "netcoreapp",
+        "uap10",
+        "portable-dnxcore50+net45+win8+wp8+wpa81"
+      ],
+      "dependencies": {
+        "System.IO": "4.0.11-rc3-23829",
+        "System.IO.Pipes": "4.0.0-beta-23516",
+        "System.Linq": "4.0.1-rc3-23829",
+        "System.Net.Http": "4.0.1-rc3-23829",
+        "System.Net.Requests": "4.0.11-beta-23516",
+        "System.Net.Security": "4.0.0-beta-23516",
+        "System.Net.Sockets": "4.1.0-rc3-23829",
+        "System.Text.Encoding": "4.0.11-rc3-23829",
+        "System.Reflection.Extensions": "4.0.1-rc3-23829",
+        "System.Reflection.TypeExtensions": "4.1.0-rc3-23829",
+        "System.Runtime": "4.0.21-rc3-23829",
+        "System.Runtime.Serialization.Primitives": "4.1.0-rc3-23829"
+      }
+    },
     "net46": {
       "frameworkAssemblies": {
         "System.Net.Http": "",

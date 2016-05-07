@@ -67,7 +67,7 @@ namespace Docker.DotNet
                     }
 
                     var segments = uri.Segments;
-                    if (segments.Length != 3 || !segments[1].Equals("pipe/", StringComparison.InvariantCultureIgnoreCase))
+                    if (segments.Length != 3 || !segments[1].Equals("pipe/", StringComparison.OrdinalIgnoreCase))
                     {
                         throw new ArgumentException($"{Configuration.EndpointBaseUri} is not a valid npipe URI");
                     }

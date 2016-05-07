@@ -6,7 +6,7 @@ namespace Docker.DotNet.BasicAuth
 {
     internal class MaybeSecureString : IDisposable
     {
-#if !netstandard
+#if !netstandard1_3
 
         public SecureString Value { get; }
 
