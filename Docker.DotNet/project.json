@@ -24,7 +24,8 @@
         "System.Reflection.Extensions": "4.0.1-rc3-23829",
         "System.Reflection.TypeExtensions": "4.1.0-rc3-23829",
         "System.Runtime": "4.0.21-rc3-23829",
-        "System.Runtime.Serialization.Primitives": "4.1.0-rc3-23829"
+        "System.Runtime.Serialization.Primitives": "4.1.0-rc3-23829",
+        "System.Threading.Overlapped": "4.0.0"
       }
     },
     "net46": {

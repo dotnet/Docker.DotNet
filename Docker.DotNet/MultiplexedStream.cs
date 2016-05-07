@@ -142,10 +142,10 @@ namespace Docker.DotNet
                         stream = stdin;
                         break;
                     case TargetStream.StandardOut:
-                        stream = stdin;
+                        stream = stdout;
                         break;
                     case TargetStream.StandardError:
-                        stream = stdin;
+                        stream = stderr;
                         break;
                 }
 

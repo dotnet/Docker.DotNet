@@ -18,22 +18,29 @@ namespace Microsoft.Net.Http.Client
         public delegate Task<Stream> StreamOpener(string host, int port, CancellationToken cancellationToken);
         public delegate Task<Socket> SocketOpener(string host, int port, CancellationToken cancellationToken);
 
-        public ManagedHandler(StreamOpener opener)
+        public ManagedHandler()
         {
-            _streamOpener = opener;
-            if (_streamOpener == null)
-            {
-                _socketOpener = TCPSocketOpener;
-            }
+            _socketOpener = TCPSocketOpener;
         }
 
-        public ManagedHandler(SocketOpener opener = null)
+        public ManagedHandler(StreamOpener opener)
         {
-            _socketOpener = opener;
-            if (_socketOpener == null)
+            if (opener == null)
             {
-                _socketOpener = TCPSocketOpener;
+                throw new ArgumentNullException(nameof(opener));
             }
+
+            _streamOpener = opener;
+        }
+
+        public ManagedHandler(SocketOpener opener)
+        {
+            if (opener == null)
+            {
+                throw new ArgumentNullException(nameof(opener));
+            }
+
+            _socketOpener = opener;
         }
 
         public IWebProxy Proxy

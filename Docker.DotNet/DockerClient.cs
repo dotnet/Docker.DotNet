@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -81,13 +82,14 @@ namespace Docker.DotNet
                         // NamedPipeClientStream handles file not found by polling until the server arrives. Use a short
                         // timeout so that the user doesn't get stuck waiting for a dockerd instance that is not running.
                         int timeout = 100; // 100ms
-                        var stream = new System.IO.Pipes.NamedPipeClientStream(serverName, pipeName);
+                        var stream = new NamedPipeClientStream(serverName, pipeName);
+                        var dockerStream = new DockerPipeStream(stream);
 #if NET45
                         await Task.Run(() => stream.Connect(timeout), cancellationToken);
 #else
                         await stream.ConnectAsync(timeout, cancellationToken);
 #endif
-                        return stream;
+                        return dockerStream;
                     };
 
                     break;
@@ -113,7 +115,17 @@ namespace Docker.DotNet
 
             _endpointBaseUri = uri;
 
-            _client = new HttpClient(Configuration.Credentials.GetHandler(new ManagedHandler(opener)), true);
+            ManagedHandler handler;
+            if (opener == null)
+            {
+                handler = new ManagedHandler();
+            }
+            else
+            {
+                handler = new ManagedHandler(opener);
+            }
+
+            _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
             _defaultTimeout = _client.Timeout;
             _client.Timeout = InfiniteTimeout;
         }

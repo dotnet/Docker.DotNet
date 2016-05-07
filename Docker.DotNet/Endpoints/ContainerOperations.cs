@@ -28,20 +28,6 @@ namespace Docker.DotNet
             this.Client = client;
         }
 
-        public async Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken)
-        {
-            var path = $"containers/{id}/attach";
-            var queryParameters = new QueryString<ContainerAttachParameters>(parameters);
-            var stream = await this.Client.MakeRequestForHijackedStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, null, cancellationToken).ConfigureAwait(false);
-            if (!stream.CanCloseWrite)
-            {
-                stream.Dispose();
-                throw new NotSupportedException("Cannot shutdown write on this transport");
-            }
-
-            return new MultiplexedStream(stream, !tty);
-        }
-
         public async Task<IList<ContainerListResponse>> ListContainersAsync(ContainersListParameters parameters)
         {
             if (parameters == null)
@@ -63,7 +49,7 @@ namespace Docker.DotNet
             }
 
             var path = $"containers/{id}/json";
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ContainerInspectResponse>(response.Body);
         }
 
@@ -83,7 +69,7 @@ namespace Docker.DotNet
 
             var path = "containers/create";
             var data = new JsonRequestContent<CreateContainerParameters>(parameters, this.Client.JsonSerializer);
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, qs, data).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, qs, data).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<CreateContainerResponse>(response.Body);
         }
 
@@ -95,7 +81,7 @@ namespace Docker.DotNet
             }
 
             var path = $"containers/{id}/export";
-            return this.Client.MakeRequestForStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null, null, null, cancellationToken);
+            return this.Client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, path, null, null, null, cancellationToken);
         }
 
         public async Task<ContainerProcessesResponse> ListProcessesAsync(string id, ContainerListProcessesParameters parameters)
@@ -112,7 +98,7 @@ namespace Docker.DotNet
 
             var path = $"containers/{id}/top";
             IQueryString queryParameters = new QueryString<ContainerListProcessesParameters>(parameters);
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ContainerProcessesResponse>(response.Body);
         }
 
@@ -124,7 +110,7 @@ namespace Docker.DotNet
             }
 
             var path = $"containers/{id}/changes";
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, path, null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ContainerFileSystemChangeResponse[]>(response.Body);
         }
 
@@ -141,7 +127,7 @@ namespace Docker.DotNet
             {
                 data = new JsonRequestContent<HostConfig>(hostConfig, this.Client.JsonSerializer);
             }
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, data).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, data).ConfigureAwait(false);
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
@@ -179,7 +165,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<ContainerStopParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
@@ -200,7 +186,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<ConatinerRestartParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
-            return this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, new TimeSpan?(new TimeSpan(Timeout.Infinite)), cancellationToken);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters, null, new TimeSpan?(new TimeSpan(Timeout.Infinite)), cancellationToken);
         }
 
         public Task KillContainerAsync(string id, ContainerKillParameters parameters)
@@ -217,7 +203,7 @@ namespace Docker.DotNet
 
             var path = $"containers/{id}/kill";
             IQueryString queryParameters = new QueryString<ContainerKillParameters>(parameters);
-            return this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters);
         }
 
         public Task PauseContainerAsync(string id)
@@ -228,7 +214,7 @@ namespace Docker.DotNet
             }
 
             var path = $"containers/{id}/pause";
-            return this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null);
         }
 
         public Task UnpauseContainerAsync(string id)
@@ -239,7 +225,7 @@ namespace Docker.DotNet
             }
 
             var path = $"containers/{id}/unpause";
-            return this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null);
         }
 
         public async Task<ContainerWaitResponse> WaitContainerAsync(string id, CancellationToken cancellationToken)
@@ -250,7 +236,7 @@ namespace Docker.DotNet
             }
 
             var path = $"containers/{id}/wait";
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, null, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<ContainerWaitResponse>(response.Body);
         }
 
@@ -268,7 +254,7 @@ namespace Docker.DotNet
 
             var path = $"containers/{id}";
             IQueryString queryParameters = new QueryString<ContainerRemoveParameters>(parameters);
-            return this.Client.MakeRequestAsync(new[] {NoSuchContainerHandler}, HttpMethod.Delete, path, queryParameters);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Delete, path, queryParameters);
         }
 
         public Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken)
@@ -285,7 +271,7 @@ namespace Docker.DotNet
 
             var path = $"containers/{id}/logs";
             IQueryString queryParameters = new QueryString<ContainerLogsParameters>(parameters);
-            return this.Client.MakeRequestForStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Get, path, queryParameters, null, cancellationToken);
+            return this.Client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, path, queryParameters, null, cancellationToken);
         }
 
         public async Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken)
@@ -340,6 +326,30 @@ namespace Docker.DotNet
             var path = $"containers/{id}/archive";
 
             return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Put, path, queryParameters, data, null, cancellationToken);
+        }
+
+        public async Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var path = $"containers/{id}/attach";
+            var queryParameters = new QueryString<ContainerAttachParameters>(parameters);
+            var stream = await this.Client.MakeRequestForHijackedStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters, null, null, cancellationToken).ConfigureAwait(false);
+            if (!stream.CanCloseWrite)
+            {
+                stream.Dispose();
+                throw new NotSupportedException("Cannot shutdown write on this transport");
+            }
+
+            return new MultiplexedStream(stream, !tty);
         }
     }
 }
