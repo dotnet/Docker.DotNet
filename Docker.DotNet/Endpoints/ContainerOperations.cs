@@ -28,6 +28,20 @@ namespace Docker.DotNet
             this.Client = client;
         }
 
+        public async Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken)
+        {
+            var path = $"containers/{id}/attach";
+            var queryParameters = new QueryString<ContainerAttachParameters>(parameters);
+            var stream = await this.Client.MakeRequestForHijackedStreamAsync(new[] {NoSuchContainerHandler}, HttpMethod.Post, path, queryParameters, null, null, cancellationToken).ConfigureAwait(false);
+            if (!stream.CanCloseWrite)
+            {
+                stream.Dispose();
+                throw new NotSupportedException("Cannot shutdown write on this transport");
+            }
+
+            return new MultiplexedStream(stream, !tty);
+        }
+
         public async Task<IList<ContainerListResponse>> ListContainersAsync(ContainersListParameters parameters)
         {
             if (parameters == null)

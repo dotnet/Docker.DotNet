@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    internal class HttpConnectionResponseContent : HttpContent
+    public class HttpConnectionResponseContent : HttpContent
     {
         private readonly HttpConnection _connection;
         private Stream _responseStream;
 
-        public HttpConnectionResponseContent(HttpConnection connection)
+        internal HttpConnectionResponseContent(HttpConnection connection)
         {
             _connection = connection;
         }
 
-        public void ResolveResponseStream(bool chunked)
+        internal void ResolveResponseStream(bool chunked)
         {
             if (_responseStream != null)
             {
@@ -34,6 +34,16 @@ namespace Microsoft.Net.Http.Client
                 // Raw, read until end and close
                 _responseStream = _connection.Transport;
             }
+        }
+
+        public WriteClosableStream HijackStream()
+        {
+            if (_responseStream != _connection.Transport)
+            {
+                throw new InvalidOperationException("cannot hijack chunked or content length stream");
+            }
+
+            return _connection.Transport;
         }
 
         protected override Task SerializeToStreamAsync(Stream stream, System.Net.TransportContext context)

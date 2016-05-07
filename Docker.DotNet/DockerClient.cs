@@ -174,6 +174,21 @@ namespace Docker.DotNet
             return new DockerApiStreamedResponse(response.StatusCode, body, response.Headers);
         }
 
+        internal async Task<WriteClosableStream> MakeRequestForHijackedStreamAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
+        {
+            HttpResponseMessage response = await MakeRequestInnerAsync(InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
+
+            HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
+
+            var content = response.Content as HttpConnectionResponseContent;
+            if (content == null)
+            {
+                throw new NotSupportedException("message handler does not support hijacked streams");
+            }
+
+            return content.HijackStream();
+        }
+
         private Task<HttpResponseMessage> MakeRequestInnerAsync(TimeSpan? requestTimeout, HttpCompletionOption completionOption, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
             HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);

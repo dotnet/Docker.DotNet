@@ -16,13 +16,23 @@ namespace Microsoft.Net.Http.Client
     public class ManagedHandler : HttpMessageHandler
     {
         public delegate Task<Stream> StreamOpener(string host, int port, CancellationToken cancellationToken);
+        public delegate Task<Socket> SocketOpener(string host, int port, CancellationToken cancellationToken);
 
-        public ManagedHandler(StreamOpener opener = null)
+        public ManagedHandler(StreamOpener opener)
         {
-            _opener = opener;
-            if (_opener == null)
+            _streamOpener = opener;
+            if (_streamOpener == null)
             {
-                _opener = TCPStreamOpener;
+                _socketOpener = TCPSocketOpener;
+            }
+        }
+
+        public ManagedHandler(SocketOpener opener = null)
+        {
+            _socketOpener = opener;
+            if (_socketOpener == null)
+            {
+                _socketOpener = TCPSocketOpener;
             }
         }
 
@@ -52,7 +62,8 @@ namespace Microsoft.Net.Http.Client
 
         public RemoteCertificateValidationCallback ServerCertificateValidationCallback { get; set; }
 
-        private StreamOpener _opener;
+        private StreamOpener _streamOpener;
+        private SocketOpener _socketOpener;
         private IWebProxy _proxy;
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -141,7 +152,25 @@ namespace Microsoft.Net.Http.Client
             request.Headers.ConnectionClose = true; // TODO: Connection re-use is not supported.
 
             ProxyMode proxyMode = DetermineProxyModeAndAddressLine(request);
-            Stream transport = await ConnectAsync(request, cancellationToken);
+            Socket socket;
+            Stream transport;
+            try
+            {
+                if (_socketOpener != null)
+                {
+                    socket = await _socketOpener(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value, cancellationToken).ConfigureAwait(false);
+                    transport = new NetworkStream(socket);
+                }
+                else
+                {
+                    socket = null;
+                    transport = await _streamOpener(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            catch (SocketException sox)
+            {
+                throw new HttpRequestException("Connection failed", sox);
+            }
 
             if (proxyMode == ProxyMode.Tunnel)
             {
@@ -157,7 +186,7 @@ namespace Microsoft.Net.Http.Client
                 transport = sslStream;
             }
 
-            var bufferedReadStream = new BufferedReadStream(transport);
+            var bufferedReadStream = new BufferedReadStream(transport, socket);
             var connection = new HttpConnection(bufferedReadStream);
             return await connection.SendAsync(request, cancellationToken);
         }
@@ -284,31 +313,47 @@ namespace Microsoft.Net.Http.Client
             return ProxyMode.Tunnel;
         }
 
-        private static async Task<Stream> TCPStreamOpener(string host, int port, CancellationToken cancellationToken)
+        private static async Task<Socket> TCPSocketOpener(string host, int port, CancellationToken cancellationToken)
         {
-            TcpClient client = new TcpClient();
-            try
+            var addresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
+            if (addresses.Length == 0)
             {
-                await client.ConnectAsync(host, port);
-                return client.GetStream();
+                throw new Exception($"could not resolve address for {host}");
             }
-            catch (SocketException)
-            {
-                ((IDisposable)client).Dispose();
-                throw;
-            }
-        }
 
-        private async Task<Stream> ConnectAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            try
+            Socket connectedSocket = null;
+            Exception lastException = null;
+            foreach (var address in addresses)
             {
-                return await _opener(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value, cancellationToken);
+                var s = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                try
+                {
+#if NETSTANDARD1_3
+                    await s.ConnectAsync(address, port).ConfigureAwait(false);
+#else
+                    await Task.Factory.FromAsync(
+                        s.BeginConnect,
+                        s.EndConnect,
+                        new IPEndPoint(address, port),
+                        null
+                    ).ConfigureAwait(false);
+#endif
+                    connectedSocket = s;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    s.Dispose();
+                    lastException = e;
+                }
             }
-            catch (SocketException sox)
+
+            if (connectedSocket == null)
             {
-                throw new HttpRequestException("Connection failed", sox);
+                throw lastException;
             }
+
+            return connectedSocket;
         }
 
         private async Task TunnelThroughProxyAsync(HttpRequestMessage request, Stream transport, CancellationToken cancellationToken)
@@ -324,7 +369,7 @@ namespace Microsoft.Net.Http.Client
             connectRequest.SetAddressLineProperty(authority);
             connectRequest.Headers.Host = authority;
 
-            HttpConnection connection = new HttpConnection(new BufferedReadStream(transport));
+            HttpConnection connection = new HttpConnection(new BufferedReadStream(transport, null));
             HttpResponseMessage connectResponse;
             try
             {

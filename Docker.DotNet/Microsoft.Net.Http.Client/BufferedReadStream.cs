@@ -1,29 +1,32 @@
 ﻿using System;
 using System.IO;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    internal class BufferedReadStream : Stream
+    internal class BufferedReadStream : WriteClosableStream
     {
         private const char CR = '\r';
         private const char LF = '\n';
 
         private readonly Stream _inner;
+        private readonly Socket _socket;
         private readonly byte[] _buffer;
         private int _bufferOffset = 0;
         private int _bufferCount = 0;
         private bool _disposed;
 
-        public BufferedReadStream(Stream inner)
+        public BufferedReadStream(Stream inner, Socket socket)
         {
             if (inner == null)
             {
                 throw new ArgumentNullException("inner");
             }
             _inner = inner;
+            _socket = socket;
             _buffer = new byte[1024];
         }
 
@@ -190,6 +193,26 @@ namespace Microsoft.Net.Http.Client
             {
                 throw new ObjectDisposedException(nameof(BufferedReadStream));
             }
+        }
+
+        public override bool CanCloseWrite => _socket != null || _inner is WriteClosableStream;
+
+        public override void CloseWrite()
+        {
+            if (_socket != null)
+            {
+                _socket.Shutdown(SocketShutdown.Send);
+                return;
+            }
+
+            var s = _inner as WriteClosableStream;
+            if (s != null)
+            {
+                s.CloseWrite();
+                return;
+            }
+
+            throw new NotSupportedException("Cannot shutdown write on this transport");
         }
     }
 }
