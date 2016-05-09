@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+#if NETSTANDARD1_3
 using System.Reflection;
+#endif
 
 namespace Docker.DotNet
 {
