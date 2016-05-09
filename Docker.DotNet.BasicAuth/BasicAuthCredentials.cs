@@ -15,7 +15,7 @@ namespace Docker.DotNet.BasicAuth
             return new BasicAuthHandler(_username, _password, innerHandler);
         }
 
-#if !netstandard1_3
+#if !NETSTANDARD1_3
         public BasicAuthCredentials(SecureString username, SecureString password, bool isTls = false)
             : this(new MaybeSecureString(username), new MaybeSecureString(password), isTls)
         {

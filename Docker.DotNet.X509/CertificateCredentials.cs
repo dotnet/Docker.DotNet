@@ -1,4 +1,4 @@
-﻿#if !netstandard1_3
+﻿#if !NETSTANDARD1_3
 using System.Net;
 #endif
 

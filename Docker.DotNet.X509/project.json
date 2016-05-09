@@ -6,11 +6,6 @@
     },
     "frameworks": {
         "netstandard1.3": {
-            "buildOptions": {
-                "define": [
-                    "netstandard1_3"
-                ]
-            },
             "imports": [
                 "dotnet5.4",
                 "netcoreapp",
