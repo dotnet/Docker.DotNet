@@ -74,7 +74,7 @@ var dockerTypesToReflect = []typeDef{
 	// TODO: TAR Stream
 
 	// POST /containers/(id)/exec
-	{reflect.TypeOf(ContainerExecCreateParameters{}), "ContainerExecCreateParameters"},
+	{reflect.TypeOf(types.ExecConfig{}), "ContainerExecCreateParameters"},
 	{reflect.TypeOf(types.ContainerExecCreateResponse{}), "ContainerExecCreateResponse"},
 
 	// GET /containers/(id)/json
@@ -93,6 +93,7 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(ContainerRenameParameters{}), "ContainerRenameParameters"},
 
 	// POST /containers/(id)/resize
+	// POST /exec/(id)/resize
 	{reflect.TypeOf(ContainerResizeParameters{}), "ContainerResizeParameters"},
 
 	// POST /containers/(id)/restart
@@ -120,6 +121,12 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /containers/(id)/wait
 	{reflect.TypeOf(types.ContainerWaitResponse{}), "ContainerWaitResponse"},
+
+	// POST /exec/(id)/start
+	{reflect.TypeOf(types.ExecStartCheck{}), "ContainerExecStartParameters"},
+
+	// GET /exec/(id)/json
+	{reflect.TypeOf(types.ContainerExecInspect{}), "ContainerExecInspectResponse"},
 
 	// GET /events
 	{reflect.TypeOf(ContainerEventsParameters{}), "ContainerEventsParameters"},

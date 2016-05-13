@@ -43,6 +43,17 @@ namespace Docker.DotNet
         Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken);
 
         Task ExtractArchiveToContainerAsync(string id, ContainerPathStatParameters parameters, Stream stream, CancellationToken cancellationToken);
+
         Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken);
+
+        Task ResizeContainerTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken);
+
+        Task StartContainerExecAsync(string id, CancellationToken cancellationToken);
+
+        Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken);
+
+        Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken);
+
+        Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken);
     }
 }

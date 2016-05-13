@@ -88,11 +88,6 @@ type ContainerAttachParameters struct {
 	DetachKeys string `rest:"query,detachKeys"`
 }
 
-// POST /containers/(id)/exec
-type ContainerExecCreateParameters struct {
-	*types.ExecConfig
-}
-
 // GET /containers/(id)/json
 type ContainerInspectParameters struct {
 	IncludeSize bool `rest:"query,size"`
