@@ -351,5 +351,90 @@ namespace Docker.DotNet
 
             return new MultiplexedStream(stream, !tty);
         }
+
+        public Task ResizeContainerTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var path = $"containers/{id}/resize";
+            var queryParameters = new QueryString<ContainerResizeParameters>(parameters);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters, null, null, cancellationToken);
+        }
+
+        public Task StartContainerExecAsync(string id, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var path = $"exec/{id}/start";
+            var parameters = new ContainerExecStartParameters
+            {
+                Detach = true,
+            };
+            var data = new JsonRequestContent<ContainerExecStartParameters>(parameters, this.Client.JsonSerializer);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, data, null, cancellationToken);
+        }
+
+        public async Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var path = $"exec/{id}/start";
+            var parameters = new ContainerExecStartParameters
+            {
+                Tty = tty,
+            };
+            var data = new JsonRequestContent<ContainerExecStartParameters>(parameters, this.Client.JsonSerializer);
+            var stream = await this.Client.MakeRequestForHijackedStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, null, data, cancellationToken).ConfigureAwait(false);
+            if (!stream.CanCloseWrite)
+            {
+                stream.Dispose();
+                throw new NotSupportedException("Cannot shutdown write on this transport");
+            }
+
+            return new MultiplexedStream(stream, !tty);
+        }
+
+        public async Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            var path = $"exec/{id}/json";
+            var response = await this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, path, null, null, null, cancellationToken).ConfigureAwait(false);
+            return this.Client.JsonSerializer.DeserializeObject<ContainerExecInspectResponse>(response.Body);
+        }
+
+        public Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var path = $"exec/{id}/resize";
+            var queryParameters = new QueryString<ContainerResizeParameters>(parameters);
+            return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters, null, null, cancellationToken);
+        }
     }
 }
