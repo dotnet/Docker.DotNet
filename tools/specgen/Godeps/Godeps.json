@@ -1,0 +1,57 @@
+{
+	"ImportPath": "github.com/Microsoft/Docker-PowerShell/src/Docker.DotNet/tools/specgen",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
+	"Deps": [
+		{
+			"ImportPath": "github.com/docker/engine-api/types",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/blkiodev",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/container",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/filters",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/network",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/registry",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/strslice",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/versions",
+			"Comment": "v0.3.1-75-gfd7f99d",
+			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+		},
+		{
+			"ImportPath": "github.com/docker/go-connections/nat",
+			"Comment": "v0.2.0-2-gf549a93",
+			"Rev": "f549a9393d05688dff0992ef3efd8bbe6c628aeb"
+		},
+		{
+			"ImportPath": "github.com/docker/go-units",
+			"Comment": "v0.3.0",
+			"Rev": "5d2041e26a699eaca682e2ea41c8f891e1060444"
+		}
+	]
+}
