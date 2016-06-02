@@ -4,9 +4,9 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class Args // (filters.Args)
+    public class Args // (main.Args)
     {
-        [DataMember(Name = "fields", EmitDefaultValue = false)]
-        public IDictionary<string, IDictionary<string, bool>> fields { get; set; }
+        [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
+        public IDictionary<string, IList<string>> Filters { get; set; }
     }
 }
