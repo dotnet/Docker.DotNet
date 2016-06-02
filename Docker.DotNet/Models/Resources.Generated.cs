@@ -83,8 +83,5 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "IOMaximumBandwidth", EmitDefaultValue = false)]
         public ulong IOMaximumBandwidth { get; set; }
-
-        [DataMember(Name = "NetworkMaximumBandwidth", EmitDefaultValue = false)]
-        public ulong NetworkMaximumBandwidth { get; set; }
     }
 }

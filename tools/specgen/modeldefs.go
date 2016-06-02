@@ -9,9 +9,7 @@ import (
 
 type AuthConfigParameters types.AuthConfig
 
-type Args struct {
-	Filters map[string][]string `rest:"query"`
-}
+type Args map[string]map[string]bool
 
 // POST /build
 type ImageBuildParameters struct {
@@ -61,12 +59,12 @@ type ContainerCreateParameters struct {
 
 // GET /containers/json
 type ContainerListParameters struct {
-	Size   bool   `rest:"query"`
-	All    bool   `rest:"query"`
-	Since  string `rest:"query"`
-	Before string `rest:"query"`
-	Limit  int    `rest:"query"`
-	Filter Args   `rest:"query"`
+	Size    bool   `rest:"query"`
+	All     bool   `rest:"query"`
+	Since   string `rest:"query"`
+	Before  string `rest:"query"`
+	Limit   int    `rest:"query"`
+	Filters Args   `rest:"query"`
 }
 
 // DELETE /containers/(id)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -11,7 +12,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("all", false, typeof(BoolQueryStringConverter))]
         public bool? All { get; set; }
 
-        [QueryStringParameter("filters", false)]
-        public Args Filters { get; set; }
+        [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
+        public IDictionary<string, IDictionary<string, bool>> Filters { get; set; }
     }
 }

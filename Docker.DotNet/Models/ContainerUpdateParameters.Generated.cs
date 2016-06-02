@@ -40,7 +40,6 @@ namespace Docker.DotNet.Models
                 this.CPUPercent = UpdateConfig.CPUPercent;
                 this.IOMaximumIOps = UpdateConfig.IOMaximumIOps;
                 this.IOMaximumBandwidth = UpdateConfig.IOMaximumBandwidth;
-                this.NetworkMaximumBandwidth = UpdateConfig.NetworkMaximumBandwidth;
                 this.RestartPolicy = UpdateConfig.RestartPolicy;
             }
         }
@@ -122,9 +121,6 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "IOMaximumBandwidth", EmitDefaultValue = false)]
         public ulong IOMaximumBandwidth { get; set; }
-
-        [DataMember(Name = "NetworkMaximumBandwidth", EmitDefaultValue = false)]
-        public ulong NetworkMaximumBandwidth { get; set; }
 
         [DataMember(Name = "RestartPolicy", EmitDefaultValue = false)]
         public RestartPolicy RestartPolicy { get; set; }
