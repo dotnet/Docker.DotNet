@@ -40,7 +40,6 @@ namespace Docker.DotNet.Models
                 this.CPUPercent = Resources.CPUPercent;
                 this.IOMaximumIOps = Resources.IOMaximumIOps;
                 this.IOMaximumBandwidth = Resources.IOMaximumBandwidth;
-                this.NetworkMaximumBandwidth = Resources.NetworkMaximumBandwidth;
             }
         }
 
@@ -137,6 +136,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Sysctls", EmitDefaultValue = false)]
         public IDictionary<string, string> Sysctls { get; set; }
 
+        [DataMember(Name = "runtime", EmitDefaultValue = false)]
+        public string Runtime { get; set; }
+
         [DataMember(Name = "ConsoleSize", EmitDefaultValue = false)]
         public long[] ConsoleSize { get; set; }
 
@@ -220,8 +222,5 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "IOMaximumBandwidth", EmitDefaultValue = false)]
         public ulong IOMaximumBandwidth { get; set; }
-
-        [DataMember(Name = "NetworkMaximumBandwidth", EmitDefaultValue = false)]
-        public ulong NetworkMaximumBandwidth { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -20,7 +21,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("limit", false)]
         public long? Limit { get; set; }
 
-        [QueryStringParameter("filter", false)]
-        public Args Filter { get; set; }
+        [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
+        public IDictionary<string, IDictionary<string, bool>> Filters { get; set; }
     }
 }

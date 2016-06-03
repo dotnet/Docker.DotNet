@@ -149,5 +149,11 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "SecurityOptions", EmitDefaultValue = false)]
         public IList<string> SecurityOptions { get; set; }
+
+        [DataMember(Name = "Runtimes", EmitDefaultValue = false)]
+        public IDictionary<string, Runtime> Runtimes { get; set; }
+
+        [DataMember(Name = "DefaultRuntime", EmitDefaultValue = false)]
+        public string DefaultRuntime { get; set; }
     }
 }

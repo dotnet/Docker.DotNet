@@ -3,12 +3,13 @@ package main
 import (
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
-	"github.com/docker/engine-api/types/filters"
 	"github.com/docker/engine-api/types/network"
 	"github.com/docker/go-units"
 )
 
 type AuthConfigParameters types.AuthConfig
+
+type Args map[string]map[string]bool
 
 // POST /build
 type ImageBuildParameters struct {
@@ -58,12 +59,12 @@ type ContainerCreateParameters struct {
 
 // GET /containers/json
 type ContainerListParameters struct {
-	Size   bool         `rest:"query"`
-	All    bool         `rest:"query"`
-	Since  string       `rest:"query"`
-	Before string       `rest:"query"`
-	Limit  int          `rest:"query"`
-	Filter filters.Args `rest:"query"`
+	Size    bool   `rest:"query"`
+	All     bool   `rest:"query"`
+	Since   string `rest:"query"`
+	Before  string `rest:"query"`
+	Limit   int    `rest:"query"`
+	Filters Args   `rest:"query"`
 }
 
 // DELETE /containers/(id)
@@ -151,9 +152,9 @@ type ContainerUpdateParameters struct {
 
 // GET /events
 type ContainerEventsParameters struct {
-	Since   string       `rest:"query"`
-	Until   string       `rest:"query"`
-	Filters filters.Args `rest:"query"`
+	Since   string `rest:"query"`
+	Until   string `rest:"query"`
+	Filters Args   `rest:"query"`
 }
 
 // POST /images/create
@@ -179,9 +180,9 @@ type ImagePullParameters struct {
 
 // GET /images/json
 type ImageListParameters struct {
-	MatchName string       `rest:"query,filter"`
-	All       bool         `rest:"query"`
-	Filters   filters.Args `rest:"query"`
+	MatchName string `rest:"query,filter"`
+	All       bool   `rest:"query"`
+	Filters   Args   `rest:"query"`
 }
 
 // POST /images/load
@@ -222,12 +223,12 @@ type ImageTagParameters struct {
 
 // GET /networks
 type NetworkListParameters struct {
-	Filters filters.Args `rest:"query"`
+	Filters Args `rest:"query"`
 }
 
 // GET /volumes
 type VolumesListParameters struct {
-	Filters filters.Args `rest:"query"`
+	Filters Args `rest:"query"`
 }
 
 type VolumeResponse types.Volume
