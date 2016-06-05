@@ -292,7 +292,14 @@ namespace Microsoft.Net.Http.Client
                 request.SetAddressLineProperty(pathAndQuery);
             }
 
-            if (!UseProxy || Proxy.IsBypassed(request.RequestUri))
+            try
+            {
+                if (!UseProxy || Proxy.IsBypassed(request.RequestUri))
+                {
+                    return ProxyMode.None;
+                }
+            }
+            catch (System.PlatformNotSupportedException)
             {
                 return ProxyMode.None;
             }
