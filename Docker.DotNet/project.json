@@ -12,7 +12,7 @@
         "portable-dnxcore50+net45+win8+wp8+wpa81"
       ],
       "dependencies": {
-        "System.Buffers": "4.0.0",
+        "System.Buffers": "4.0.0-rc3-23829",
         "System.IO": "4.0.11-rc3-23829",
         "System.IO.Pipes": "4.0.0-beta-23516",
         "System.Linq": "4.0.1-rc3-23829",
@@ -30,14 +30,22 @@
       }
     },
     "net46": {
+      "dependencies": {
+        "System.Buffers": "4.0.0"
+      },
       "frameworkAssemblies": {
         "System.Net.Http": "",
+        "System.Runtime": "",
         "System.Runtime.Serialization": ""
       }
     },
     "net45": {
+      "dependencies": {
+        "System.Buffers": "4.0.0"
+      },
       "frameworkAssemblies": {
         "System.Net.Http": "",
+        "System.Runtime": "",
         "System.Runtime.Serialization": ""
       }
     }
