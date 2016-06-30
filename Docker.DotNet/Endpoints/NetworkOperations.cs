@@ -51,7 +51,7 @@ namespace Docker.DotNet
 
             var path = "networks/create";
             var data = new JsonRequestContent<NetworksCreateParameters>(parameters, this.Client.JsonSerializer);
-            var response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null, data).ConfigureAwait(false);
+            var response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, null, data).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<NetworksCreateResponse>(response.Body);
         }
 
