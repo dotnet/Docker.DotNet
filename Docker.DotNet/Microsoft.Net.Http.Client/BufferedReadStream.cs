@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
@@ -20,14 +21,18 @@ namespace Microsoft.Net.Http.Client
         private bool _disposed;
 
         public BufferedReadStream(Stream inner, Socket socket)
+            : this(inner, socket, 1024)
+        { }
+
+        public BufferedReadStream(Stream inner, Socket socket, int bufferLength)
         {
             if (inner == null)
             {
-                throw new ArgumentNullException("inner");
+                throw new ArgumentNullException(nameof(inner));
             }
             _inner = inner;
             _socket = socket;
-            _buffer = new byte[1024];
+            _buffer = ArrayPool<byte>.Shared.Rent(bufferLength);
         }
 
         public override bool CanRead
@@ -73,10 +78,14 @@ namespace Microsoft.Net.Http.Client
 
         protected override void Dispose(bool disposing)
         {
-            _disposed = true;
-            if (disposing)
+            if (!_disposed)
             {
-                _inner.Dispose();
+                _disposed = true;
+                if (disposing)
+                {
+                    _inner.Dispose();
+                    ArrayPool<byte>.Shared.Return(_buffer);
+                }
             }
         }
 
