@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
+using System.Buffers;
 
 namespace Docker.DotNet
 {
@@ -14,7 +15,7 @@ namespace Docker.DotNet
         private byte[] _header = new byte[8];
         private bool _multiplexed;
 
-        const int bufferSize = 81920;
+        const int BufferSize = 81920;
 
         public MultiplexedStream(WriteClosableStream stream, bool multiplexed)
         {
@@ -111,45 +112,61 @@ namespace Docker.DotNet
 
         public async Task CopyFromAsync(Stream input, CancellationToken cancellationToken)
         {
-            var buffer = new byte[bufferSize];
-            for (;;)
-            {
-                var count = await input.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-                if (count == 0)
-                {
-                    break;
-                }
+            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
 
-                await WriteAsync(buffer, 0, count, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                for (;;)
+                {
+                    var count = await input.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                    if (count == 0)
+                    {
+                        break;
+                    }
+
+                    await WriteAsync(buffer, 0, count, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
             }
         }
 
         public async Task CopyOutputToAsync(Stream stdin, Stream stdout, Stream stderr, CancellationToken cancellationToken)
         {
-            var buffer = new byte[bufferSize];
-            for (;;)
+            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
+
+            try
             {
-                var result = await ReadOutputAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-                if (result.EOF)
+                for (;;)
                 {
-                    return;
-                }
+                    var result = await ReadOutputAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                    if (result.EOF)
+                    {
+                        return;
+                    }
 
-                Stream stream = null;
-                switch (result.Target)
-                {
-                    case TargetStream.StandardIn:
-                        stream = stdin;
-                        break;
-                    case TargetStream.StandardOut:
-                        stream = stdout;
-                        break;
-                    case TargetStream.StandardError:
-                        stream = stderr;
-                        break;
-                }
+                    Stream stream = null;
+                    switch (result.Target)
+                    {
+                        case TargetStream.StandardIn:
+                            stream = stdin;
+                            break;
+                        case TargetStream.StandardOut:
+                            stream = stdout;
+                            break;
+                        case TargetStream.StandardError:
+                            stream = stderr;
+                            break;
+                    }
 
-                await stream.WriteAsync(buffer, 0, result.Count, cancellationToken).ConfigureAwait(false);
+                    await stream.WriteAsync(buffer, 0, result.Count, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
             }
         }
 
