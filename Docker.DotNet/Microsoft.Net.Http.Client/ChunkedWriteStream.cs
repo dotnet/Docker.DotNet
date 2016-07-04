@@ -8,7 +8,7 @@ namespace Microsoft.Net.Http.Client
 {
     internal class ChunkedWriteStream : Stream
     {
-        private static readonly byte[] s_endContentBytes = Encoding.ASCII.GetBytes("0\r\n\r\n");
+        private static readonly byte[] s_EndContentBytes = Encoding.ASCII.GetBytes("0\r\n\r\n");
 
         private Stream _innerStream;
 
@@ -82,8 +82,7 @@ namespace Microsoft.Net.Http.Client
 
         public Task EndContentAsync(CancellationToken cancellationToken)
         {
-            var data = s_endContentBytes;
-            return _innerStream.WriteAsync(data, 0, data.Length, cancellationToken);
+            return _innerStream.WriteAsync(s_EndContentBytes, 0, s_EndContentBytes.Length, cancellationToken);
         }
     }
 }
