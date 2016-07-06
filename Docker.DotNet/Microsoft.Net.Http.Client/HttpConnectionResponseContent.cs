@@ -64,9 +64,16 @@ namespace Microsoft.Net.Http.Client
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            try
             {
-                _responseStream.Dispose();
+                if (disposing)
+                {
+                    _responseStream.Dispose();
+                }
+            }
+            finally
+            {
+                base.Dispose(disposing);
             }
         }
     }
