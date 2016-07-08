@@ -1,6 +1,8 @@
 using System;
+#if !NETSTANDARD1_3
 using System.Runtime.InteropServices;
 using System.Security;
+#endif
 
 namespace Docker.DotNet.BasicAuth
 {
