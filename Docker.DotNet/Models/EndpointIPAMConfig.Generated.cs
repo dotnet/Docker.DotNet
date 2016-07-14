@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -10,5 +11,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "IPv6Address", EmitDefaultValue = false)]
         public string IPv6Address { get; set; }
+
+        [DataMember(Name = "LinkLocalIPs", EmitDefaultValue = false)]
+        public IList<string> LinkLocalIPs { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace Docker.DotNet.Models
                 this.StdinOnce = Config.StdinOnce;
                 this.Env = Config.Env;
                 this.Cmd = Config.Cmd;
+                this.Healthcheck = Config.Healthcheck;
                 this.ArgsEscaped = Config.ArgsEscaped;
                 this.Image = Config.Image;
                 this.Volumes = Config.Volumes;
@@ -36,6 +37,8 @@ namespace Docker.DotNet.Models
                 this.OnBuild = Config.OnBuild;
                 this.Labels = Config.Labels;
                 this.StopSignal = Config.StopSignal;
+                this.StopTimeout = Config.StopTimeout;
+                this.Shell = Config.Shell;
             }
         }
 
@@ -78,6 +81,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Cmd", EmitDefaultValue = false)]
         public IList<string> Cmd { get; set; }
 
+        [DataMember(Name = "Healthcheck", EmitDefaultValue = false)]
+        public HealthConfig Healthcheck { get; set; }
+
         [DataMember(Name = "ArgsEscaped", EmitDefaultValue = false)]
         public bool ArgsEscaped { get; set; }
 
@@ -107,6 +113,12 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "StopSignal", EmitDefaultValue = false)]
         public string StopSignal { get; set; }
+
+        [DataMember(Name = "StopTimeout", EmitDefaultValue = false)]
+        public long StopTimeout { get; set; }
+
+        [DataMember(Name = "Shell", EmitDefaultValue = false)]
+        public IList<string> Shell { get; set; }
 
         [DataMember(Name = "HostConfig", EmitDefaultValue = false)]
         public HostConfig HostConfig { get; set; }

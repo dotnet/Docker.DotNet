@@ -155,5 +155,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "DefaultRuntime", EmitDefaultValue = false)]
         public string DefaultRuntime { get; set; }
+
+        [DataMember(Name = "Swarm", EmitDefaultValue = false)]
+        public Info Swarm { get; set; }
     }
 }
