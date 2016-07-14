@@ -16,10 +16,13 @@ import (
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
-	{reflect.TypeOf(container.RestartPolicy{}), "Name"}: {"", "RestartPolicyKind", false},
-	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:   {"", "FileSystemChangeKind", false},
-	{reflect.TypeOf(types.Image{}), "Created"}:          {"System", "DateTime", false},
-	{reflect.TypeOf(types.Container{}), "Created"}:      {"System", "DateTime", false},
+	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
+	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
+	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:      {"", "FileSystemChangeKind", false},
+	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}: {"System", "DateTime", false},
+	{reflect.TypeOf(types.Image{}), "Created"}:             {"System", "DateTime", false},
+	{reflect.TypeOf(types.ImageHistory{}), "Created"}:      {"System", "DateTime", false},
+	{reflect.TypeOf(types.ImageInspect{}), "Created"}:      {"System", "DateTime", false},
 }
 
 type typeCustomizationKey struct {

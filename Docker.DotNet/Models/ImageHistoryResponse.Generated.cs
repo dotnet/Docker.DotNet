@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -10,7 +11,7 @@ namespace Docker.DotNet.Models
         public string ID { get; set; }
 
         [DataMember(Name = "Created", EmitDefaultValue = false)]
-        public long Created { get; set; }
+        public DateTime Created { get; set; }
 
         [DataMember(Name = "CreatedBy", EmitDefaultValue = false)]
         public string CreatedBy { get; set; }
