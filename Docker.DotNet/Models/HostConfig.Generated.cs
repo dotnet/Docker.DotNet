@@ -136,7 +136,7 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Sysctls", EmitDefaultValue = false)]
         public IDictionary<string, string> Sysctls { get; set; }
 
-        [DataMember(Name = "runtime", EmitDefaultValue = false)]
+        [DataMember(Name = "Runtime", EmitDefaultValue = false)]
         public string Runtime { get; set; }
 
         [DataMember(Name = "ConsoleSize", EmitDefaultValue = false)]

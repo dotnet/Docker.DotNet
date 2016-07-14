@@ -1,57 +1,62 @@
 {
 	"ImportPath": "github.com/Microsoft/Docker-PowerShell/src/Docker.DotNet/tools/specgen",
 	"GoVersion": "go1.6",
-	"GodepVersion": "v62",
+	"GodepVersion": "v74",
 	"Deps": [
 		{
 			"ImportPath": "github.com/docker/engine-api/types",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/blkiodev",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/container",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/filters",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/network",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/registry",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/strslice",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/versions",
-			"Comment": "v0.3.1-75-gfd7f99d",
-			"Rev": "fd7f99d354831e7e809386087e7ec3129fdb1520"
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		},
 		{
 			"ImportPath": "github.com/docker/go-connections/nat",
-			"Comment": "v0.2.0-2-gf549a93",
-			"Rev": "f549a9393d05688dff0992ef3efd8bbe6c628aeb"
+			"Comment": "v0.2.0-7-gfa2850f",
+			"Rev": "fa2850ff103453a9ad190da0df0af134f0314b3d"
 		},
 		{
 			"ImportPath": "github.com/docker/go-units",
-			"Comment": "v0.3.0",
-			"Rev": "5d2041e26a699eaca682e2ea41c8f891e1060444"
+			"Comment": "v0.1.0-14-g651fc22",
+			"Rev": "651fc226e7441360384da338d0fd37f2440ffbe3"
+		},
+		{
+			"ImportPath": "github.com/docker/engine-api/types/swarm",
+			"Comment": "v0.3.1-232-g1d24745",
+			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
 		}
 	]
 }

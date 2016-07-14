@@ -37,5 +37,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "FinishedAt", EmitDefaultValue = false)]
         public string FinishedAt { get; set; }
+
+        [DataMember(Name = "Health", EmitDefaultValue = false)]
+        public Health Health { get; set; }
     }
 }
