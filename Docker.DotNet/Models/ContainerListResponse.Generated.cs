@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -22,7 +23,7 @@ namespace Docker.DotNet.Models
         public string Command { get; set; }
 
         [DataMember(Name = "Created", EmitDefaultValue = false)]
-        public long Created { get; set; }
+        public DateTime Created { get; set; }
 
         [DataMember(Name = "Ports", EmitDefaultValue = false)]
         public IList<Port> Ports { get; set; }
