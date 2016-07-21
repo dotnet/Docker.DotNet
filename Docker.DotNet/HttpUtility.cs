@@ -9,7 +9,7 @@ namespace Docker.DotNet
         {
             if (baseUri == null)
             {
-                throw new ArgumentNullException("baseUri");
+                throw new ArgumentNullException(nameof(baseUri));
             }
 
             UriBuilder builder = new UriBuilder(baseUri);

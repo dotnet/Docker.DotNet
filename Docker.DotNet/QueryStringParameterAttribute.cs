@@ -24,12 +24,12 @@ namespace Docker.DotNet
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             if (converterType != null && !converterType.GetInterfaces().Contains(typeof (IQueryStringConverter)))
             {
-                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Provided query string converter type is not {0}", typeof (IQueryStringConverter).FullName), "converterType");
+                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Provided query string converter type is not {0}", typeof (IQueryStringConverter).FullName), nameof(converterType));
             }
 
             this.Name = name;

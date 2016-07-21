@@ -17,7 +17,7 @@ namespace Docker.DotNet
         {
             if (endpoint == null)
             {
-                throw new ArgumentNullException("endpoint");
+                throw new ArgumentNullException(nameof(endpoint));
             }
 
             Credentials = credentials ?? new AnonymousCredentials();

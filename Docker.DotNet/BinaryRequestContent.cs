@@ -15,12 +15,12 @@ namespace Docker.DotNet
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
 
             if (string.IsNullOrEmpty(mimeType))
             {
-                throw new ArgumentNullException("mimeType");
+                throw new ArgumentNullException(nameof(mimeType));
             }
 
             this.Stream = stream;

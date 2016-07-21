@@ -34,12 +34,7 @@ namespace Docker.DotNet.BasicAuth
             _isTls = isTls;
             _username = username;
             _password = password;
-        }
-
-        private BasicAuthHandler CreateHandler(MaybeSecureString username, MaybeSecureString password)
-        {
-            return new BasicAuthHandler(username, password, new HttpClientHandler());
-        }
+        }      
 
         public override bool IsTlsCredentials()
         {

@@ -13,10 +13,6 @@ namespace Docker.DotNet
             ConverterInstanceRegistry = new Dictionary<Type, IQueryStringConverter>();
         }
 
-        public QueryStringConverterInstanceFactory()
-        {
-        }
-
         public IQueryStringConverter GetConverterInstance(Type t)
         {
             IQueryStringConverter cached = GetCachedInstance(t);
