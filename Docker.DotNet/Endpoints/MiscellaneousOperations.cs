@@ -21,18 +21,16 @@ namespace Docker.DotNet
         {
             if (authConfig == null)
             {
-                throw new ArgumentNullException("authConfig");
+                throw new ArgumentNullException(nameof(authConfig));
             }
             var data = new JsonRequestContent<AuthConfigParameters>(authConfig, this.Client.JsonSerializer);
-
-            const string path = "auth";
-            return this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, null, data);
+            
+            return this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, "auth", null, data);
         }
 
         public async Task<VersionResponse> GetVersionAsync()
-        {
-            const string path = "version";
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null).ConfigureAwait(false);
+        {            
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, "version", null).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<VersionResponse>(response.Body);
         }
 
@@ -42,9 +40,8 @@ namespace Docker.DotNet
         }
 
         public async Task<SystemInfoResponse> GetSystemInfoAsync()
-        {
-            const string path = "info";
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, null).ConfigureAwait(false); ;
+        {            
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, "info", null).ConfigureAwait(false); ;
             return this.Client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
         }
 
@@ -52,25 +49,24 @@ namespace Docker.DotNet
         {
             if (parameters == null)
             {
-                throw new ArgumentNullException("parameters");
+                throw new ArgumentNullException(nameof(parameters));
             }
-
-            const string path = "events";
+           
             IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters);
-            return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters, null, cancellationToken);
+            return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
         }
 
         public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters)
         {
             if (parameters == null)
             {
-                throw new ArgumentNullException("parameters");
+                throw new ArgumentNullException(nameof(parameters));
             }
 
             JsonRequestContent<Config> data = parameters.Config == null ? null : new JsonRequestContent<Config>(parameters.Config, this.Client.JsonSerializer);
-            const string path = "commit";
+                        
             IQueryString queryParameters = new QueryString<CommitContainerChangesParameters>(parameters);
-            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, data).ConfigureAwait(false);
+            DockerApiResponse response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, "commit", queryParameters, data).ConfigureAwait(false);
             return this.Client.JsonSerializer.DeserializeObject<CommitContainerChangesResponse>(response.Body);
         }
 
@@ -78,7 +74,7 @@ namespace Docker.DotNet
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
             string path = string.Format(CultureInfo.InvariantCulture, "images/{0}/get", name);
@@ -89,30 +85,28 @@ namespace Docker.DotNet
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
             }
 
-            BinaryRequestContent data = new BinaryRequestContent(stream, "application/x-tar");
-            const string path = "images/load";
-            return this.Client.MakeRequestAsync(new[] {ImageOperations.NoSuchImageHandler}, HttpMethod.Post, path, null, data, null, cancellationToken);
+            BinaryRequestContent data = new BinaryRequestContent(stream, "application/x-tar");            
+            return this.Client.MakeRequestAsync(new[] {ImageOperations.NoSuchImageHandler}, HttpMethod.Post, "images/load", null, data, null, cancellationToken);
         }
 
         public Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken)
         {
             if (contents == null)
             {
-                throw new ArgumentNullException("contents");
+                throw new ArgumentNullException(nameof(contents));
             }
 
             if (parameters == null)
             {
-                throw new ArgumentNullException("parameters");
+                throw new ArgumentNullException(nameof(parameters));
             }
 
-            BinaryRequestContent data = new BinaryRequestContent(contents, "application/tar");
-            const string path = "build";
+            BinaryRequestContent data = new BinaryRequestContent(contents, "application/tar");                        
             IQueryString queryParameters = new QueryString<ImageBuildParameters>(parameters);
-            return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, queryParameters, data, cancellationToken);
+            return this.Client.MakeRequestForStreamAsync(this.Client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
         }
     }
 }

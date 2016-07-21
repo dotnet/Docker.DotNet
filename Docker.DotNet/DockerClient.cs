@@ -15,7 +15,7 @@ namespace Docker.DotNet
     {
         private const string UserAgent = "Docker.DotNet";
 
-        private static TimeSpan InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+        private static readonly TimeSpan InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
 
         private Version RequestedApiVersion { get; set; }
 
@@ -237,7 +237,7 @@ namespace Docker.DotNet
         {
             if (handlers == null)
             {
-                throw new ArgumentNullException("handlers");
+                throw new ArgumentNullException(nameof(handlers));
             }
 
             foreach (var handler in handlers)
@@ -254,7 +254,7 @@ namespace Docker.DotNet
         {
             if (string.IsNullOrEmpty("path"))
             {
-                throw new ArgumentNullException("path");
+                throw new ArgumentNullException(nameof(path));
             }
 
             HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, RequestedApiVersion, path, queryString));

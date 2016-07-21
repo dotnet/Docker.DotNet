@@ -6,7 +6,7 @@ namespace Docker.DotNet
 {
     using System.Reflection;
 
-    internal class JsonIso8601AndUnixEpochDateConverter : Newtonsoft.Json.JsonConverter
+    internal class JsonIso8601AndUnixEpochDateConverter : JsonConverter
     {
         private static readonly DateTime UnixEpochBase = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

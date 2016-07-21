@@ -17,12 +17,12 @@ namespace Docker.DotNet
         {
             if (EqualityComparer<T>.Default.Equals(val))
             {
-                throw new ArgumentNullException("val");
+                throw new ArgumentNullException(nameof(val));
             }
 
             if (serializer == null)
             {
-                throw new ArgumentNullException("serializer");
+                throw new ArgumentNullException(nameof(serializer));
             }
 
             this.Value = val;

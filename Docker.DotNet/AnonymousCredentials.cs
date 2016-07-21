@@ -4,10 +4,6 @@ namespace Docker.DotNet
 {
     public class AnonymousCredentials : Credentials
     {
-        public AnonymousCredentials()
-        {
-        }
-
         public override bool IsTlsCredentials()
         {
             return false;
