@@ -7,11 +7,13 @@ import (
 	"github.com/docker/go-units"
 )
 
+// AuthConfigParameters for authorization
 type AuthConfigParameters types.AuthConfig
 
+// Args map
 type Args map[string]map[string]bool
 
-// POST /build
+// ImageBuildParameters for POST /build
 type ImageBuildParameters struct {
 	Tags           []string          `rest:"query,t"`
 	SuppressOutput bool              `rest:"query,q"`
@@ -37,7 +39,7 @@ type ImageBuildParameters struct {
 	Labels         map[string]string `rest:"query"`
 }
 
-// POST /commit
+// ContainerCommitParamters for POST /commit
 type ContainerCommitParamters struct {
 	ContainerID    string   `rest:"query,container,required"`
 	RepositoryName string   `rest:"query,repo"`
@@ -49,7 +51,7 @@ type ContainerCommitParamters struct {
 	Config         *container.Config
 }
 
-// POST /containers/create
+// ContainerCreateParameters for POST /containers/create
 type ContainerCreateParameters struct {
 	Name              string `rest:"query,name"`
 	*container.Config `rest:"body"`
@@ -57,7 +59,7 @@ type ContainerCreateParameters struct {
 	NetworkingConfig  *network.NetworkingConfig `rest:"body"`
 }
 
-// GET /containers/json
+// ContainerListParameters for GET /containers/json
 type ContainerListParameters struct {
 	Size    bool   `rest:"query"`
 	All     bool   `rest:"query"`
@@ -67,20 +69,20 @@ type ContainerListParameters struct {
 	Filters Args   `rest:"query"`
 }
 
-// DELETE /containers/(id)
+// ContainerRemoveParameters for DELETE /containers/(id)
 type ContainerRemoveParameters struct {
 	RemoveVolumes bool `rest:"query,v"`
 	RemoveLinks   bool `rest:"query,link"`
 	Force         bool `rest:"query"`
 }
 
-// GET /containers/(id)/archive
+// ContainerPathStatParameters for GET /containers/(id)/archive
 type ContainerPathStatParameters struct {
 	Path                      string `rest:"query,path,required"`
 	AllowOverwriteDirWithFile bool   `rest:"query,noOverwriteDirNonDir"`
 }
 
-// POST /containers/(id)/attach
+// ContainerAttachParameters for POST /containers/(id)/attach
 type ContainerAttachParameters struct {
 	Stream     bool   `rest:"query"`
 	Stdin      bool   `rest:"query"`
@@ -89,17 +91,17 @@ type ContainerAttachParameters struct {
 	DetachKeys string `rest:"query,detachKeys"`
 }
 
-// GET /containers/(id)/json
+// ContainerInspectParameters for GET /containers/(id)/json
 type ContainerInspectParameters struct {
 	IncludeSize bool `rest:"query,size"`
 }
 
-// POST /containers/(id)/kill
+// ContainerKillParameters for POST /containers/(id)/kill
 type ContainerKillParameters struct {
 	Signal string `rest:"query"`
 }
 
-// POST /containers/(id)/logs
+// ContainerLogsParameters for POST /containers/(id)/logs
 type ContainerLogsParameters struct {
 	ShowStdout bool   `rest:"query,stdout"`
 	ShowStderr bool   `rest:"query,stderr"`
@@ -109,61 +111,72 @@ type ContainerLogsParameters struct {
 	Tail       string `rest:"query"`
 }
 
-// POST /containers/(id)/rename
+// ContainerRenameParameters for POST /containers/(id)/rename
 type ContainerRenameParameters struct {
 	NewName string `rest:"query,name"`
 }
 
-// POST /containers/(id)/resize
+// ContainerResizeParameters for POST /containers/(id)/resize
 type ContainerResizeParameters struct {
 	Height int `rest:"query,h"`
 	Width  int `rest:"query,w"`
 }
 
-// POST /containers/(id)/restart
+// ContainerRestartParameters for POST /containers/(id)/restart
 type ContainerRestartParameters struct {
 	WaitBeforeKillSeconds uint32 `rest:"query,t"`
 }
 
-// POST /containers/(id)/start
+// ContainerStartParameters for POST /containers/(id)/start
 type ContainerStartParameters struct {
 	DetachKeys string `rest:"query,detachKeys"`
 }
 
-// POST /containers/(id)/stop
+// ContainerStopParameters for POST /containers/(id)/stop
 type ContainerStopParameters struct {
 	WaitBeforeKillSeconds uint32 `rest:"query,t"`
 }
 
-// GET /containers/(id)/stats
+// ContainerStatsParameters for GET /containers/(id)/stats
 type ContainerStatsParameters struct {
 	Stream bool `rest:"query"`
 }
 
-// GET /containers/(id)/top
+// ContainerListProcessesParameters for GET /containers/(id)/top
 type ContainerListProcessesParameters struct {
 	PsArgs string `rest:"query,ps_args"`
 }
 
-// POST /containers/(id)/update
+// ContainerUpdateParameters for POST /containers/(id)/update
 type ContainerUpdateParameters struct {
 	container.UpdateConfig
 }
 
-// GET /events
+// ContainerEventsParameters for GET /events
 type ContainerEventsParameters struct {
 	Since   string `rest:"query"`
 	Until   string `rest:"query"`
 	Filters Args   `rest:"query"`
 }
 
-// POST /images/create
+// ExecCreateParameters for POST /containers/(id)/exec
+type ExecCreateParameters struct {
+	*types.ExecConfig
+}
+
+// ExecStartParameters for POST /exec/(id)/start
+type ExecStartParameters struct {
+	*types.ExecConfig
+}
+
+// ImageCreateParameters for POST /images/create
 type ImageCreateParameters struct {
 	Parent       string `rest:"query,fromImage,required"`
 	Tag          string `rest:"query"`
 	RegistryAuth string `rest:"headers,X-Registry-Auth"`
 }
 
+// ImageImportParameters for load
 type ImageImportParameters struct {
 	SourceName     string   `rest:"query,fromSrc,required"`
 	RepositoryName string   `rest:"query,repo"`
@@ -172,68 +185,70 @@ type ImageImportParameters struct {
 	Changes        []string `rest:"query"`
 }
 
+// ImagePullParameters for pull
 type ImagePullParameters struct {
 	Parent       string `rest:"query,fromImage,required"`
 	Tag          string `rest:"query"`
 	RegistryAuth string `rest:"headers,X-Registry-Auth"`
 }
 
-// GET /images/json
+// ImageListParameters for GET /images/json
 type ImageListParameters struct {
 	MatchName string `rest:"query,filter"`
 	All       bool   `rest:"query"`
 	Filters   Args   `rest:"query"`
 }
 
-// POST /images/load
+// ImageLoadParameters for POST /images/load
 type ImageLoadParameters struct {
 	Quiet bool `rest:"query"`
 }
 
-// GET /images/search
+// ImageSearchParameters for GET /images/search
 type ImageSearchParameters struct {
 	Term         string `rest:"query"`
 	RegistryAuth string `rest:"headers,X-Registry-Auth"`
 }
 
-// DELETE /images/(id)
+// ImageDeleteParameters for DELETE /images/(id)
 type ImageDeleteParameters struct {
 	Force         bool `rest:"query"`
 	PruneChildren bool `rest:"query,noprune"`
 }
 
-// GET /images/(id)/json
+// ImageInspectParameters for GET /images/(id)/json
 type ImageInspectParameters struct {
 	IncludeSize bool `rest:"query,size"`
 }
 
-// POST /images/(id)/push
+// ImagePushParameters for POST /images/(id)/push
 type ImagePushParameters struct {
 	ImageID      string `rest:"query,fromImage"`
 	Tag          string `rest:"query"`
 	RegistryAuth string `rest:"headers,X-Registry-Auth"`
 }
 
-// POST /images/(id)/tag
+// ImageTagParameters for POST /images/(id)/tag
 type ImageTagParameters struct {
 	RepositoryName string `rest:"query,repo"`
 	Tag            string `rest:"query"`
 	Force          bool   `rest:"query"`
 }
 
-// GET /networks
+// NetworkListParameters for GET /networks
 type NetworkListParameters struct {
 	Filters Args `rest:"query"`
 }
 
-// GET /volumes
+// VolumesListParameters for GET /volumes
 type VolumesListParameters struct {
 	Filters Args `rest:"query"`
 }
 
+// VolumeResponse for volume list.
 type VolumeResponse types.Volume
 
-// GET /volumes
+// VolumesListResponse for GET /volumes
 type VolumesListResponse struct {
 	Volumes  []*VolumeResponse
 	Warnings []string
