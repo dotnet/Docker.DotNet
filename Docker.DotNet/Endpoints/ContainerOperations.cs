@@ -369,6 +369,8 @@ namespace Docker.DotNet
             return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, queryParameters, null, null, cancellationToken);
         }
 
+        // StartContainerExecAsync will start the process specified by id in detach mode with no connected
+        // stdin, stdout, or stderr pipes.
         public Task StartContainerExecAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
@@ -385,7 +387,14 @@ namespace Docker.DotNet
             return this.Client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, data, null, cancellationToken);
         }
 
+        // StartAndAttachContainerExecAsync will start the process specified by id with stdin, stdout, stderr
+        // connected, and optionally using terminal emulation if tty is true.
         public async Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken)
+        {
+            return await StartWithConfigContainerExecAsync(id, new ExecConfig() { AttachStdin = true, AttachStderr = true, AttachStdout = true, Tty = tty }, cancellationToken);
+        }
+
+        public async Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ExecConfig eConfig, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -393,11 +402,7 @@ namespace Docker.DotNet
             }
 
             var path = $"exec/{id}/start";
-            var parameters = new ContainerExecStartParameters
-            {
-                Tty = tty,
-            };
-            var data = new JsonRequestContent<ContainerExecStartParameters>(parameters, this.Client.JsonSerializer);
+            var data = new JsonRequestContent<ContainerExecStartParameters>(new ContainerExecStartParameters(eConfig), this.Client.JsonSerializer);
             var stream = await this.Client.MakeRequestForHijackedStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, path, null, null, data, cancellationToken).ConfigureAwait(false);
             if (!stream.CanCloseWrite)
             {
@@ -405,7 +410,7 @@ namespace Docker.DotNet
                 throw new NotSupportedException("Cannot shutdown write on this transport");
             }
 
-            return new MultiplexedStream(stream, !tty);
+            return new MultiplexedStream(stream, !eConfig.Tty);
         }
 
         public async Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken)

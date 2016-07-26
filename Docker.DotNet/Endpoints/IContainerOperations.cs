@@ -51,6 +51,8 @@ namespace Docker.DotNet
         Task StartContainerExecAsync(string id, CancellationToken cancellationToken);
 
         Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken);
+        
+        Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ExecConfig eConfig, CancellationToken cancellationToken);
 
         Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken);
 
