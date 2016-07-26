@@ -1,5 +1,5 @@
 {
-    "version": "2.124.1",
+    "version": "2.124.2",
     "description": "Docker.DotNet.X509 is a library that allows you to use certificate authentication with a remote Docker engine programmatically in your .NET applications.",
     "packOptions": {
         "licenseUrl": "https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE",
@@ -10,7 +10,7 @@
         "iconUrl": "https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74"
     },
     "dependencies": {
-        "Docker.DotNet": "2.124.1"
+        "Docker.DotNet": "2.124.2"
     },
     "frameworks": {
         "netstandard1.3": {
