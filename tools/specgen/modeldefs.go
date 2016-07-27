@@ -7,9 +7,6 @@ import (
 	"github.com/docker/go-units"
 )
 
-// AuthConfigParameters for authorization
-type AuthConfigParameters types.AuthConfig
-
 // Args map
 type Args map[string]map[string]bool
 
@@ -187,6 +184,7 @@ type ImageImportParameters struct {
 
 // ImagePullParameters for pull
 type ImagePullParameters struct {
+	All          bool   `rest:"query"`
 	Parent       string `rest:"query,fromImage,required"`
 	Tag          string `rest:"query"`
 	RegistryAuth string `rest:"headers,X-Registry-Auth"`

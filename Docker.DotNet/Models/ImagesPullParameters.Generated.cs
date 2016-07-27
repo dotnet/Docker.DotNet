@@ -5,6 +5,9 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImagesPullParameters // (main.ImagePullParameters)
     {
+        [QueryStringParameter("all", false, typeof(BoolQueryStringConverter))]
+        public bool? All { get; set; }
+
         [QueryStringParameter("fromImage", true)]
         public string Parent { get; set; }
 
