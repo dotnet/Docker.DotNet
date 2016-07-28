@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	Header = "header"
-	Body   = "body"
-	Query  = "query"
+	header = "header"
+	body   = "body"
+	query  = "query"
 
-	InTag       = "in"
-	NameTag     = "name"
-	RequiredTag = "required"
+	inTag       = "in"
+	nameTag     = "name"
+	requiredTag = "required"
 )
 
 // RestTag is a type that represents the valid values of a 'rest' struct tag.
@@ -36,9 +36,9 @@ func RestTagFromString(tag string) (RestTag, error) {
 	if elen >= 1 {
 		r.In = entries[0]
 		switch r.In {
-		case Header:
-		case Body:
-		case Query:
+		case header:
+		case body:
+		case query:
 		default:
 			return RestTag{}, errors.New("Incorrect 'in' value: " + r.In)
 		}

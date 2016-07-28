@@ -38,7 +38,7 @@ type typeDef struct {
 var dockerTypesToReflect = []typeDef{
 
 	// POST /auth
-	{reflect.TypeOf(AuthConfigParameters{}), "AuthConfigParameters"},
+	{reflect.TypeOf(types.AuthConfig{}), "AuthConfig"},
 	{reflect.TypeOf(types.AuthResponse{}), "AuthResponse"},
 
 	// POST /build
@@ -313,7 +313,7 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 				csProp.Type = ft
 			}
 
-			if restTag, err := RestTagFromString(f.Tag.Get("rest")); err == nil && restTag.In != Body {
+			if restTag, err := RestTagFromString(f.Tag.Get("rest")); err == nil && restTag.In != body {
 				if restTag.Name == "" {
 					restTag.Name = strings.ToLower(f.Name)
 				}

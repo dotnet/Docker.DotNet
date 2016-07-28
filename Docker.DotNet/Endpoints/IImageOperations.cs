@@ -19,8 +19,10 @@ namespace Docker.DotNet
 
         Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters);
 
-        Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfigParameters authConfig);
+        Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig);
 
-        Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfigParameters authConfig);
+        Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig);
+
+        Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig);
     }
 }

@@ -7,7 +7,7 @@ namespace Docker.DotNet
 {
     public interface IMiscellaneousOperations
     {
-        Task AuthenticateAsync(AuthConfigParameters authConfig);
+        Task AuthenticateAsync(AuthConfig authConfig);
 
         Task<VersionResponse> GetVersionAsync();
 

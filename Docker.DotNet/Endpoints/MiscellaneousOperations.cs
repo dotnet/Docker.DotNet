@@ -17,13 +17,13 @@ namespace Docker.DotNet
             this.Client = client;
         }
 
-        public Task AuthenticateAsync(AuthConfigParameters authConfig)
+        public Task AuthenticateAsync(AuthConfig authConfig)
         {
             if (authConfig == null)
             {
                 throw new ArgumentNullException(nameof(authConfig));
             }
-            var data = new JsonRequestContent<AuthConfigParameters>(authConfig, this.Client.JsonSerializer);
+            var data = new JsonRequestContent<AuthConfig>(authConfig, this.Client.JsonSerializer);
             
             return this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, "auth", null, data);
         }
