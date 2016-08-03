@@ -199,7 +199,7 @@ type ImageListParameters struct {
 
 // ImageLoadParameters for POST /images/load
 type ImageLoadParameters struct {
-	Quiet bool `rest:"query"`
+	Quiet bool `rest:"query,quiet,required"`
 }
 
 // ImageSearchParameters for GET /images/search

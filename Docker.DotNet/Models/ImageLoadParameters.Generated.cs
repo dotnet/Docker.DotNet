@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImageLoadParameters // (main.ImageLoadParameters)
     {
-        [QueryStringParameter("quiet", false, typeof(BoolQueryStringConverter))]
-        public bool? Quiet { get; set; }
+        [QueryStringParameter("quiet", true, typeof(BoolQueryStringConverter))]
+        public bool Quiet { get; set; }
     }
 }
