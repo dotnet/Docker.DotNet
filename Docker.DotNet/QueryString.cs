@@ -48,7 +48,7 @@ namespace Docker.DotNet
                     string[] valueStr;
                     if (attribute.ConverterType == null)
                     {
-                        valueStr = new[] {value.ToString()};
+                        valueStr = new[] { value.ToString() };
                     }
                     else
                     {
@@ -93,8 +93,8 @@ namespace Docker.DotNet
 
         private Tuple<PropertyInfo, TAttribType>[] FindAttributedPublicProperties<TValue, TAttribType>() where TAttribType : Attribute
         {
-            Type t = typeof (TValue);
-            Type ofAttributeType = typeof (TAttribType);
+            Type t = typeof(TValue);
+            Type ofAttributeType = typeof(TAttribType);
 
             PropertyInfo[] properties = t.GetProperties();
             IEnumerable<PropertyInfo> publicProperties = properties.Where(p => p.GetGetMethod(false).IsPublic);
@@ -113,15 +113,38 @@ namespace Docker.DotNet
             return attributedPublicProperties.Select(pi =>
                 new Tuple<PropertyInfo, TAttribType>(pi, pi.GetCustomAttribute<TAttribType>())).ToArray();
         }
-        
+
         private static bool IsDefaultOfType(object o)
         {
             if (o is ValueType)
             {
                 return o.Equals(Activator.CreateInstance(o.GetType()));
             }
-            
+
             return o == null;
-        }  
+        }
+    }
+
+    internal class EnumerableQueryString : IQueryString
+    {
+        private readonly string _key;
+        private readonly string[] _data;
+
+        public EnumerableQueryString(string key, string[] data)
+        {
+            _key = key;
+            _data = data;
+        }
+
+        /// <summary>
+        /// Returns formatted query string.
+        /// </summary>
+        /// <returns></returns>
+        public string GetQueryString()
+        {
+            return string.Join("&",
+                        _data.Select(
+                            v => $"{Uri.EscapeUriString(_key)}={Uri.EscapeDataString(v)}"));
+        }
     }
 }

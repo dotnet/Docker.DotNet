@@ -21,7 +21,11 @@ namespace Docker.DotNet
 
         Task<Stream> GetImageAsTarballAsync(string name, CancellationToken cancellationToken);
 
+        Task<Stream> GetImagesAsTarballAsync(string[] names, CancellationToken cancellationToken);
+
         Task LoadImageFromTarballAsync(Stream stream, CancellationToken cancellationToken);
+
+        Task<Stream> LoadImageFromTarball(Stream stream, ImageLoadParameters parameters, CancellationToken cancellationToken);
 
         Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken);
     }
