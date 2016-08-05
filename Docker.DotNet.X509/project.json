@@ -13,6 +13,15 @@
         "Docker.DotNet": "2.124.2"
     },
     "frameworks": {
+        "netstandard1.6": {
+            "imports": [
+                "dnxcore50",
+                "portable-net45+win8"
+            ],
+            "dependencies": {
+                "System.Security.Cryptography.X509Certificates": "4.1.0"
+            }
+        },
         "netstandard1.3": {
             "dependencies": {
                 "System.Security.Cryptography.X509Certificates": "4.1.0"

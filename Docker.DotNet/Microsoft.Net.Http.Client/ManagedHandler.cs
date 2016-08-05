@@ -342,7 +342,7 @@ namespace Microsoft.Net.Http.Client
                 var s = new Socket(SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
-#if NETSTANDARD1_3
+#if (NETSTANDARD1_3 || NETSTANDARD1_6)
                     await s.ConnectAsync(address, port).ConfigureAwait(false);
 #else
                     await Task.Factory.FromAsync(

@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD1_3
+﻿#if (!NETSTANDARD1_3 && !NETSTANDARD1_6)
 using System.Net;
 #endif
 
@@ -29,7 +29,7 @@ namespace Docker.DotNet.X509
             };
 
             handler.ServerCertificateValidationCallback = this.ServerCertificateValidationCallback;
-#if !NETSTANDARD1_3
+#if (!NETSTANDARD1_3 && !NETSTANDARD1_6)
             if (handler.ServerCertificateValidationCallback == null)
             {
                 handler.ServerCertificateValidationCallback = ServicePointManager.ServerCertificateValidationCallback;

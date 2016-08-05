@@ -1,5 +1,5 @@
 ﻿using System.Net.Http;
-#if !NETSTANDARD1_3
+#if (!NETSTANDARD1_3 && !NETSTANDARD1_6)
 using System.Security;
 #endif
 
@@ -17,7 +17,7 @@ namespace Docker.DotNet.BasicAuth
             return new BasicAuthHandler(_username, _password, innerHandler);
         }
 
-#if !NETSTANDARD1_3
+#if (!NETSTANDARD1_3 && !NETSTANDARD1_6)
         public BasicAuthCredentials(SecureString username, SecureString password, bool isTls = false)
             : this(new MaybeSecureString(username), new MaybeSecureString(password), isTls)
         {
