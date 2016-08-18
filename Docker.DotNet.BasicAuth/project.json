@@ -13,6 +13,12 @@
     "Docker.DotNet": "2.124.2"
   },
   "frameworks": {
+    "netstandard1.6": {
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ]
+    },
     "netstandard1.3": {},
     "net46": {
       "frameworkAssemblies": {
