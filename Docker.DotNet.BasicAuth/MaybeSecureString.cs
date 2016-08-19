@@ -1,5 +1,5 @@
 using System;
-#if !NETSTANDARD1_3
+#if (NET45 || NET46)
 using System.Runtime.InteropServices;
 using System.Security;
 #endif
@@ -8,7 +8,7 @@ namespace Docker.DotNet.BasicAuth
 {
     internal class MaybeSecureString : IDisposable
     {
-#if !NETSTANDARD1_3
+#if (NET45 || NET46)
 
         public SecureString Value { get; }
 

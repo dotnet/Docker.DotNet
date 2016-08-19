@@ -9,6 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
 
+#if NETSTANDARD1_6
+using System.Net.Sockets;
+#endif
+
 namespace Docker.DotNet
 {
     public sealed class DockerClient : IDockerClient
@@ -57,7 +61,7 @@ namespace Docker.DotNet
             Miscellaneous = new MiscellaneousOperations(this);
             Networks = new NetworkOperations(this);
 
-            ManagedHandler.StreamOpener opener;
+            ManagedHandler handler;
             var uri = Configuration.EndpointBaseUri;
             switch (uri.Scheme.ToLowerInvariant())
             {
@@ -77,7 +81,7 @@ namespace Docker.DotNet
                     var pipeName = uri.Segments[2];
 
                     uri = new UriBuilder("http", pipeName).Uri;
-                    opener = async (string host, int port, CancellationToken cancellationToken) =>
+                    handler = new ManagedHandler(async (string host, int port, CancellationToken cancellationToken) =>
                     {
                         // NamedPipeClientStream handles file not found by polling until the server arrives. Use a short
                         // timeout so that the user doesn't get stuck waiting for a dockerd instance that is not running.
@@ -90,7 +94,7 @@ namespace Docker.DotNet
                         await stream.ConnectAsync(timeout, cancellationToken);
 #endif
                         return dockerStream;
-                    };
+                    });
 
                     break;
 
@@ -99,31 +103,31 @@ namespace Docker.DotNet
                     var builder = new UriBuilder(uri);
                     builder.Scheme = configuration.Credentials.IsTlsCredentials() ? "https" : "http";
                     uri = builder.Uri;
-                    opener = null;
+                    handler = new ManagedHandler();
                     break;
 
                 case "https":
-                    opener = null;
+                    handler = new ManagedHandler();
                     break;
 
-                //case "unix":
-                // TODO
+#if NETSTANDARD1_6
+                case "unix":
+                    var pipeString = uri.LocalPath;
+                    handler = new ManagedHandler(async (string host, int port, CancellationToken cancellationToken) =>
+                    {
+                        var sock = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+                        await sock.ConnectAsync(new UnixDomainSocketEndPoint(pipeString));
+                        return sock;
+                    });
+                    uri = new UriBuilder("http", uri.Segments.Last()).Uri;
+                    break;
+#endif
 
                 default:
                     throw new Exception($"Unknown URL scheme {configuration.EndpointBaseUri.Scheme}");
             }
 
             _endpointBaseUri = uri;
-
-            ManagedHandler handler;
-            if (opener == null)
-            {
-                handler = new ManagedHandler();
-            }
-            else
-            {
-                handler = new ManagedHandler(opener);
-            }
 
             _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
             _defaultTimeout = _client.Timeout;
@@ -256,7 +260,6 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(path));
             }
-
             HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, RequestedApiVersion, path, queryString));
 
             request.Headers.Add("User-Agent", UserAgent);

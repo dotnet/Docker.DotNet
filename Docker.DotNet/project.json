@@ -13,6 +13,19 @@
     "Newtonsoft.Json": "9.0.1"
   },
   "frameworks": {
+    "netstandard1.6": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Buffers": "4.0.0",
+        "System.IO.Pipes": "4.0.0",
+        "System.Net.NameResolution": "4.0.0",
+        "System.Net.Requests": "4.0.11",
+        "System.Net.Security": "4.0.0",
+        "System.Reflection.Extensions": "4.0.1",
+        "System.Reflection.TypeExtensions": "4.1.0",
+        "System.Threading.Overlapped": "4.0.1"
+      }
+    },
     "netstandard1.3": {
       "dependencies": {
         "NETStandard.Library": "1.6.0",

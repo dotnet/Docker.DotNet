@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-#if NETSTANDARD1_3
+#if (NETSTANDARD1_3 || NETSTANDARD1_6)
 using System.Reflection;
 #endif
 
