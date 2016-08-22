@@ -5,7 +5,6 @@
 #if NETSTANDARD1_6
 
 using System;
-using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Text;
 using System.Net;
