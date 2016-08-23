@@ -27,12 +27,12 @@ namespace Docker.DotNet
 
         public IDictionary<string, string[]> GetKeyValuePairs()
         {
-            Dictionary<string, string[]> queryParameters = new Dictionary<string, string[]>();
+            var queryParameters = new Dictionary<string, string[]>();
             foreach (var pair in this.AttributedPublicProperties)
             {
-                PropertyInfo property = pair.Item1;
-                QueryStringParameterAttribute attribute = pair.Item2;
-                object value = property.GetValue(this.Object, null);
+                var property = pair.Item1;
+                var attribute = pair.Item2;
+                var value = property.GetValue(this.Object, null);
 
                 // 'Required' check
                 if (attribute.IsRequired && value == null)
@@ -44,7 +44,7 @@ namespace Docker.DotNet
                 // Serialize
                 if (attribute.IsRequired || !IsDefaultOfType(value))
                 {
-                    string keyStr = attribute.Name;
+                    var keyStr = attribute.Name;
                     string[] valueStr;
                     if (attribute.ConverterType == null)
                     {
@@ -52,7 +52,7 @@ namespace Docker.DotNet
                     }
                     else
                     {
-                        IQueryStringConverter converter = this.QueryStringConverterInstanceFactory.GetConverterInstance(attribute.ConverterType);
+                        var converter = this.QueryStringConverterInstanceFactory.GetConverterInstance(attribute.ConverterType);
                         valueStr = this.ConvertValue(converter, value);
 
                         if (valueStr == null)
@@ -93,17 +93,17 @@ namespace Docker.DotNet
 
         private Tuple<PropertyInfo, TAttribType>[] FindAttributedPublicProperties<TValue, TAttribType>() where TAttribType : Attribute
         {
-            Type t = typeof(TValue);
-            Type ofAttributeType = typeof(TAttribType);
+            var t = typeof(TValue);
+            var ofAttributeType = typeof(TAttribType);
 
-            PropertyInfo[] properties = t.GetProperties();
-            IEnumerable<PropertyInfo> publicProperties = properties.Where(p => p.GetGetMethod(false).IsPublic);
+            var properties = t.GetProperties();
+            var publicProperties = properties.Where(p => p.GetGetMethod(false).IsPublic);
             if (!publicProperties.Any())
             {
                 throw new InvalidOperationException($"No public property getters found on type {t.FullName}.");
             }
 
-            PropertyInfo[] attributedPublicProperties = properties.Where(p => p.GetCustomAttribute<TAttribType>() != null).ToArray();
+            var attributedPublicProperties = properties.Where(p => p.GetCustomAttribute<TAttribType>() != null).ToArray();
             if (!attributedPublicProperties.Any())
             {
                 throw new InvalidOperationException(

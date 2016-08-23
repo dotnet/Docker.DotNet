@@ -22,8 +22,8 @@ namespace Docker.DotNet
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
         {
-            bool isNullableType = (objectType.GetTypeInfo().IsGenericType && objectType.GetGenericTypeDefinition() == typeof (Nullable<>));
-            object value = reader.Value;
+            var isNullableType = (objectType.GetTypeInfo().IsGenericType && objectType.GetGenericTypeDefinition() == typeof (Nullable<>));
+            var value = reader.Value;
 
             DateTime result;
             if (value is DateTime)
@@ -42,7 +42,7 @@ namespace Docker.DotNet
             }
             else
             {
-                throw new NotImplementedException(string.Format(CultureInfo.InvariantCulture, "Deserializing {0} back to {1} is not handled.", value.GetType().FullName, objectType.FullName));
+                throw new NotImplementedException($"Deserializing {value.GetType().FullName} back to {objectType.FullName} is not handled.");
             }
 
             if (isNullableType && result == default(DateTime))

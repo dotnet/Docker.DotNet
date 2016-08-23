@@ -10,7 +10,7 @@ namespace Docker.DotNet
         public string ResponseBody { get; private set; }
 
         public DockerApiException(HttpStatusCode statusCode, string responseBody)
-            : base(string.Format("Docker API responded with status code={0}, response={1}", statusCode, responseBody))
+            : base($"Docker API responded with status code={statusCode}, response={responseBody}")
         {
             this.StatusCode = statusCode;
             this.ResponseBody = responseBody;

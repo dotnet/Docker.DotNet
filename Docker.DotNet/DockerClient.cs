@@ -19,19 +19,17 @@ namespace Docker.DotNet
     {
         private const string UserAgent = "Docker.DotNet";
 
-        private static readonly TimeSpan InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+        private static readonly TimeSpan s_InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
 
-        private Version RequestedApiVersion { get; set; }
-
-        public DockerClientConfiguration Configuration { get; private set; }
+        public DockerClientConfiguration Configuration { get; }
 
         internal JsonSerializer JsonSerializer { get; private set; }
 
-        public IImageOperations Images { get; private set; }
+        public IImageOperations Images { get; }
 
-        public IContainerOperations Containers { get; private set; }
+        public IContainerOperations Containers { get; }
 
-        public IMiscellaneousOperations Miscellaneous { get; private set; }
+        public IMiscellaneousOperations Miscellaneous { get; }
 
         public INetworkOperations Networks { get; private set; }
 
@@ -49,11 +47,12 @@ namespace Docker.DotNet
         private readonly Uri _endpointBaseUri;
 
         internal readonly IEnumerable<ApiResponseErrorHandlingDelegate> NoErrorHandlers = Enumerable.Empty<ApiResponseErrorHandlingDelegate>();
+        private readonly Version _requestedApiVersion;
 
         internal DockerClient(DockerClientConfiguration configuration, Version requestedApiVersion)
         {
             Configuration = configuration;
-            RequestedApiVersion = requestedApiVersion;
+            _requestedApiVersion = requestedApiVersion;
             JsonSerializer = new JsonSerializer();
 
             Images = new ImageOperations(this);
@@ -81,11 +80,11 @@ namespace Docker.DotNet
                     var pipeName = uri.Segments[2];
 
                     uri = new UriBuilder("http", pipeName).Uri;
-                    handler = new ManagedHandler(async (string host, int port, CancellationToken cancellationToken) =>
+                    handler = new ManagedHandler(async (host, port, cancellationToken) =>
                     {
                         // NamedPipeClientStream handles file not found by polling until the server arrives. Use a short
                         // timeout so that the user doesn't get stuck waiting for a dockerd instance that is not running.
-                        int timeout = 100; // 100ms
+                        var timeout = 100; // 100ms
                         var stream = new NamedPipeClientStream(serverName, pipeName);
                         var dockerStream = new DockerPipeStream(stream);
 #if NET45
@@ -100,8 +99,10 @@ namespace Docker.DotNet
 
                 case "tcp":
                 case "http":
-                    var builder = new UriBuilder(uri);
-                    builder.Scheme = configuration.Credentials.IsTlsCredentials() ? "https" : "http";
+                    var builder = new UriBuilder(uri)
+                    {
+                        Scheme = configuration.Credentials.IsTlsCredentials() ? "https" : "http"
+                    };
                     uri = builder.Uri;
                     handler = new ManagedHandler();
                     break;
@@ -131,7 +132,7 @@ namespace Docker.DotNet
 
             _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
             _defaultTimeout = _client.Timeout;
-            _client.Timeout = InfiniteTimeout;
+            _client.Timeout = s_InfiniteTimeout;
         }
 
         #region Convenience methods
@@ -162,9 +163,9 @@ namespace Docker.DotNet
 
         internal async Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IRequestContent data, TimeSpan? timeout, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, null, data, cancellationToken).ConfigureAwait(false);
+            var response = await MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, null, data, cancellationToken).ConfigureAwait(false);
 
-            string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             HandleIfErrorResponse(response.StatusCode, body, errorHandlers);
 
@@ -173,7 +174,7 @@ namespace Docker.DotNet
 
         internal async Task<Stream> MakeRequestForStreamAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await MakeRequestInnerAsync(InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
+            var response = await MakeRequestInnerAsync(s_InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
 
             HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
 
@@ -182,17 +183,17 @@ namespace Docker.DotNet
 
         internal async Task<DockerApiStreamedResponse> MakeRequestForStreamedResponseAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await MakeRequestInnerAsync(TimeSpan.FromMilliseconds(Timeout.Infinite), HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken);
+            var response = await MakeRequestInnerAsync(s_InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken);
             HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
 
-            Stream body = await response.Content.ReadAsStreamAsync();
+            var body = await response.Content.ReadAsStreamAsync();
 
             return new DockerApiStreamedResponse(response.StatusCode, body, response.Headers);
         }
 
         internal async Task<WriteClosableStream> MakeRequestForHijackedStreamAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpResponseMessage response = await MakeRequestInnerAsync(InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
+            var response = await MakeRequestInnerAsync(s_InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
 
             HandleIfErrorResponse(response.StatusCode, null, errorHandlers);
 
@@ -207,11 +208,11 @@ namespace Docker.DotNet
 
         private Task<HttpResponseMessage> MakeRequestInnerAsync(TimeSpan? requestTimeout, HttpCompletionOption completionOption, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken)
         {
-            HttpRequestMessage request = PrepareRequest(method, path, queryString, headers, data);
+            var request = PrepareRequest(method, path, queryString, headers, data);
 
             if (requestTimeout.HasValue)
             {
-                if (requestTimeout.Value != InfiniteTimeout)
+                if (requestTimeout.Value != s_InfiniteTimeout)
                 {
                     cancellationToken = CreateTimeoutToken(cancellationToken, requestTimeout.Value);
                 }
@@ -226,7 +227,7 @@ namespace Docker.DotNet
 
         private CancellationToken CreateTimeoutToken(CancellationToken token, TimeSpan timeout)
         {
-            CancellationTokenSource timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+            var timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
 
             timeoutTokenSource.CancelAfter(timeout);
 
@@ -260,7 +261,8 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(path));
             }
-            HttpRequestMessage request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, RequestedApiVersion, path, queryString));
+
+            var request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, this._requestedApiVersion, path, queryString));
 
             request.Headers.Add("User-Agent", UserAgent);
 
@@ -274,7 +276,7 @@ namespace Docker.DotNet
 
             if (data != null)
             {
-                HttpContent requestContent = data.GetContent(); // make the call only once.
+                var requestContent = data.GetContent(); // make the call only once.
                 request.Content = requestContent;
             }
 
