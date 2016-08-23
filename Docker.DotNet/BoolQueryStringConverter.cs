@@ -1,9 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-
-namespace Docker.DotNet.Models
+﻿namespace Docker.DotNet
 {
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+
     internal class BoolQueryStringConverter : IQueryStringConverter
     {
         public bool CanConvert(Type t)

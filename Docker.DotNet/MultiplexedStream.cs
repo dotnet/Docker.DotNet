@@ -12,11 +12,11 @@ namespace Docker.DotNet
 {
     public class MultiplexedStream : IDisposable
     {
-        private WriteClosableStream _stream;
+        private readonly WriteClosableStream _stream;
         private TargetStream _target;
         private int _remaining;
-        private byte[] _header = new byte[8];
-        private bool _multiplexed;
+        private readonly byte[] _header = new byte[8];
+        private readonly bool _multiplexed;
 
         const int BufferSize = 81920;
 
@@ -92,14 +92,14 @@ namespace Docker.DotNet
                         throw new IOException("unknown stream type");
                 }
 
-                _remaining = ((int)_header[4] << 24) |
-                            ((int)_header[5] << 16) |
-                            ((int)_header[6] << 8) |
-                            (int)_header[7];
+                _remaining = (_header[4] << 24) |
+                            (_header[5] << 16) |
+                            (_header[6] << 8) |
+                            _header[7];
             }
 
             var toRead = Math.Min(count, _remaining);
-            int read = await _stream.ReadAsync(buffer, offset, toRead, cancellationToken).ConfigureAwait(false);
+            var read = await _stream.ReadAsync(buffer, offset, toRead, cancellationToken).ConfigureAwait(false);
             if (read == 0)
             {
                 throw new EndOfStreamException();
@@ -160,7 +160,7 @@ namespace Docker.DotNet
                         return;
                     }
 
-                    Stream stream = null;
+                    Stream stream;
                     switch (result.Target)
                     {
                         case TargetStream.StandardIn:
@@ -172,6 +172,8 @@ namespace Docker.DotNet
                         case TargetStream.StandardError:
                             stream = stderr;
                             break;
+                        default:
+                            throw new InvalidOperationException($"Unknown TargetStream: '{result.Target}'.");
                     }
 
                     await stream.WriteAsync(buffer, 0, result.Count, cancellationToken).ConfigureAwait(false);

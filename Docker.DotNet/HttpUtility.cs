@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace Docker.DotNet
 {
@@ -12,11 +11,11 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(baseUri));
             }
 
-            UriBuilder builder = new UriBuilder(baseUri);
+            var builder = new UriBuilder(baseUri);
 
             if (requestedApiVersion != null)
             {
-                builder.Path += string.Format(CultureInfo.InvariantCulture, "v{0}/", requestedApiVersion);
+                builder.Path += $"v{requestedApiVersion}/";
             }
 
             if (!string.IsNullOrEmpty(path))

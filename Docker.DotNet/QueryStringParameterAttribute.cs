@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 #if (NETSTANDARD1_3 || NETSTANDARD1_6)
 using System.Reflection;
@@ -29,7 +28,7 @@ namespace Docker.DotNet
 
             if (converterType != null && !converterType.GetInterfaces().Contains(typeof (IQueryStringConverter)))
             {
-                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Provided query string converter type is not {0}", typeof (IQueryStringConverter).FullName), nameof(converterType));
+                throw new ArgumentException($"Provided query string converter type is not {typeof(IQueryStringConverter).FullName}", nameof(converterType));
             }
 
             this.Name = name;

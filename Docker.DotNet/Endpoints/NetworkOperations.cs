@@ -18,11 +18,11 @@ namespace Docker.DotNet
             }
         };
 
-        private DockerClient Client { get; set; }
+        private readonly DockerClient _client;
 
         internal NetworkOperations(DockerClient client)
         {
-            this.Client = client;
+            this._client = client;
         }
 
         public Task ConnectNetworkAsync(string id, NetworkConnectParameters parameters)
@@ -37,9 +37,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            var path = $"networks/{id}/connect";
-            var data = new JsonRequestContent<NetworkConnectParameters>(parameters, this.Client.JsonSerializer);
-            return this.Client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, path, null, data);
+            var data = new JsonRequestContent<NetworkConnectParameters>(parameters, this._client.JsonSerializer);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, $"networks/{id}/connect", null, data);
         }
 
         public async Task<NetworksCreateResponse> CreateNetworkAsync(NetworksCreateParameters parameters)
@@ -49,10 +48,9 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            var path = "networks/create";
-            var data = new JsonRequestContent<NetworksCreateParameters>(parameters, this.Client.JsonSerializer);
-            var response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Post, path, null, data).ConfigureAwait(false);
-            return this.Client.JsonSerializer.DeserializeObject<NetworksCreateResponse>(response.Body);
+            var data = new JsonRequestContent<NetworksCreateParameters>(parameters, this._client.JsonSerializer);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "networks/create", null, data).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<NetworksCreateResponse>(response.Body);
         }
 
         public Task DeleteNetworkAsync(string id)
@@ -62,8 +60,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var path = $"networks/{id}";
-            return this.Client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Delete, path, null);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Delete, $"networks/{id}", null);
         }
 
         public Task DisconnectNetworkAsync(string id, NetworkDisconnectParameters parameters)
@@ -78,9 +75,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            var path = $"networks/{id}/disconnect";
-            var data = new JsonRequestContent<NetworkDisconnectParameters>(parameters, this.Client.JsonSerializer);
-            return this.Client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, path, null, data);
+            var data = new JsonRequestContent<NetworkDisconnectParameters>(parameters, this._client.JsonSerializer);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, $"networks/{id}/disconnect", null, data);
         }
 
         public async Task<NetworkResponse> InspectNetworkAsync(string id)
@@ -90,17 +86,15 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var path = $"networks/{id}";
-            var response = await this.Client.MakeRequestAsync(new[] {NoSuchNetworkHandler}, HttpMethod.Get, path, null).ConfigureAwait(false);
-            return this.Client.JsonSerializer.DeserializeObject<NetworkResponse>(response.Body);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, $"networks/{id}", null).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<NetworkResponse>(response.Body);
         }
 
         public async Task<IList<NetworkListResponse>> ListNetworksAsync(NetworksListParameters parameters)
         {
-            var path = "networks";
             var queryParameters = parameters == null ? null : new QueryString<NetworksListParameters>(parameters);
-            var response = await this.Client.MakeRequestAsync(this.Client.NoErrorHandlers, HttpMethod.Get, path, queryParameters).ConfigureAwait(false);
-            return this.Client.JsonSerializer.DeserializeObject<NetworkListResponse[]>(response.Body);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "networks", queryParameters).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<NetworkListResponse[]>(response.Body);
         }
     }
 }

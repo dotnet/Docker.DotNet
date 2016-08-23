@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Docker.DotNet
 {
@@ -15,7 +14,7 @@ namespace Docker.DotNet
 
         public IQueryStringConverter GetConverterInstance(Type t)
         {
-            IQueryStringConverter cached = GetCachedInstance(t);
+            var cached = GetCachedInstance(t);
             if (cached != null)
             {
                 return cached;
@@ -34,7 +33,7 @@ namespace Docker.DotNet
             var instance = Activator.CreateInstance(t) as IQueryStringConverter;
             if (instance == null)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Could not get instance of {0}", t.FullName));
+                throw new InvalidOperationException($"Could not get instance of {t.FullName}");
             }
             return instance;
         }

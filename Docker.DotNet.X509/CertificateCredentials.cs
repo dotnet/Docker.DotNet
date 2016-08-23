@@ -11,7 +11,7 @@ namespace Docker.DotNet.X509
 {
     public class CertificateCredentials : Credentials
     {
-        private X509Certificate2 _certificate;
+        private readonly X509Certificate2 _certificate;
 
         public CertificateCredentials(X509Certificate2 clientCertificate)
         {

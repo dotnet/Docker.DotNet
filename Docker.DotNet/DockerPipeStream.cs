@@ -5,14 +5,13 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
-using Microsoft.Win32.SafeHandles;
 
 namespace Docker.DotNet
 {
     internal class DockerPipeStream : WriteClosableStream
     {
-        private PipeStream _stream;
-        private EventWaitHandle _event = new EventWaitHandle(false, EventResetMode.AutoReset);
+        private readonly PipeStream _stream;
+        private readonly EventWaitHandle _event = new EventWaitHandle(false, EventResetMode.AutoReset);
 
         public DockerPipeStream(PipeStream stream)
         {
@@ -50,11 +49,10 @@ namespace Docker.DotNet
             // The Docker daemon expects a write of zero bytes to signal the end of writes. Use native
             // calls to achieve this since CoreCLR ignores a zero-byte write.
             var overlapped = new NativeOverlapped();
-            SafeWaitHandle handle;
 #if NET45
-            handle = _event.SafeWaitHandle;
+            var handle = _event.SafeWaitHandle;
 #else
-            handle = _event.GetSafeWaitHandle();
+            var handle = _event.GetSafeWaitHandle();
 #endif
             // Set the low bit to tell Windows not to send the result of this IO to the
             // completion port.

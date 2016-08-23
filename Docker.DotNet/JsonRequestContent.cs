@@ -9,9 +9,8 @@ namespace Docker.DotNet
     {
         private const string JsonMimeType = "application/json";
 
-        private T Value { get; set; }
-
-        private JsonSerializer Serializer { get; set; }
+        private readonly T _value;
+        private readonly JsonSerializer _serializer;
 
         public JsonRequestContent(T val, JsonSerializer serializer)
         {
@@ -25,13 +24,13 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(serializer));
             }
 
-            this.Value = val;
-            this.Serializer = serializer;
+            this._value = val;
+            this._serializer = serializer;
         }
 
         public HttpContent GetContent()
         {
-            string serializedObject = this.Serializer.SerializeObject(this.Value);
+            var serializedObject = this._serializer.SerializeObject(this._value);
             return new StringContent(serializedObject, Encoding.UTF8, JsonMimeType);
         }
     }

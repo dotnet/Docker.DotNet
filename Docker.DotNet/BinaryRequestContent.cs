@@ -7,9 +7,8 @@ namespace Docker.DotNet
 {
     internal class BinaryRequestContent : IRequestContent
     {
-        private Stream Stream { get; set; }
-
-        private string MimeType { get; set; }
+        private readonly Stream _stream;
+        private readonly string _mimeType;
 
         public BinaryRequestContent(Stream stream, string mimeType)
         {
@@ -23,14 +22,14 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(mimeType));
             }
 
-            this.Stream = stream;
-            this.MimeType = mimeType;
+            this._stream = stream;
+            this._mimeType = mimeType;
         }
 
         public HttpContent GetContent()
         {
-            StreamContent data = new StreamContent(this.Stream);
-            data.Headers.ContentType = new MediaTypeHeaderValue(this.MimeType);
+            var data = new StreamContent(this._stream);
+            data.Headers.ContentType = new MediaTypeHeaderValue(this._mimeType);
             return data;
         }
     }
