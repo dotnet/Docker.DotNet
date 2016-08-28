@@ -22,7 +22,7 @@ You can initialize the client like the following:
 
 ```csharp
 using Docker.DotNet;
-DockerClient client = new DockerClientConfiguration("http://ubuntu-docker.cloudapp.net:4243")
+DockerClient client = new DockerClientConfiguration(new Uri("http://ubuntu-docker.cloudapp.net:4243"))
      .CreateClient();
 ```
 
@@ -30,7 +30,7 @@ DockerClient client = new DockerClientConfiguration("http://ubuntu-docker.clouda
 
 ```csharp
 IList<ContainerResponse> containers = await client.Containers.ListContainersAsync(
-	new ListContainersParameters(){
+	new ContainersListParameters(){
 		Limit = 10,
     });
 ```
@@ -41,8 +41,8 @@ The code below pulls `fedora/memcached` image to your Docker instance using your
 anonymously download the image as well by passing `null` instead of AuthConfig object:
 
 ```csharp
-Stream stream  = await client.Images.CreateImageAsync (new CreateImageParameters () {
-	FromImage = "fedora/memcached",
+Stream stream  = await client.Images.CreateImageAsync(new ImagesCreateParameters() {
+	Parent = "fedora/memcached",
 	Tag = "alpha",
 }, new AuthConfig(){
 	Email = "ahmetb@microsoft.com",
@@ -58,28 +58,27 @@ The following code will start the created container with specified host configur
 There is no usage of optional values in the method signatures, mostly because these behavior is undefined in Docker API as well.
 
 ```csharp
-await client.Containers.StartContainerAsync ("39e3317fd258", new HostConfig(){
-	Dns = new[]{"8.8.8.8", "8.8.4.4"}
+await client.Containers.StartContainerAsync("39e3317fd258", new HostConfig(){
+	DNS = new[] { "8.8.8.8", "8.8.4.4" }
 });
 ```
 
 #### Example: Stop a container
 
 ```csharp
-var stopped = await client.Containers.StopContainerAsync ("39e3317fd258",
-    new StopContainerParameters(){
-        Wait = TimeSpan.FromSeconds(30)
+var stopped = await client.Containers.StopContainerAsync("39e3317fd258", new ContainerStopParameters(){
+        WaitBeforeKillSeconds = 30
     },
     CancellationToken.None);
 ```
 
-Above, the `Wait` field is of type `TimeSpan?` which means optional. This code will wait 30 seconds before
+Above, the `WaitBeforeKillSeconds` field is of type `uint?` which means optional. This code will wait 30 seconds before
 killing it. If you like to cancel the waiting, you can use the CancellationToken parameter.
 
 #### Example: Dealing with Stream responses
 
 Some Docker API endpoints are designed to return stream responses. For example 
-[Monitoring Docker events](https://docs.docker.com/reference/api/docker_remote_api_v1.13/#monitor-dockers-events)
+[Monitoring Docker events](https://docs.docker.com/engine/reference/api/docker_remote_api_v1.24/#/monitor-docker-s-events)
 continuously streams the status in a format like :
 
 ```json
@@ -94,7 +93,7 @@ To obtain this stream you can use:
 
 ```csharp
 CancellationTokenSource cancellation = new CancellationTokenSource();
-Stream stream = await client.Miscellaneous.MonitorEventsAsync(new MonitorDockerEventsParameters(), cancellation.Token);
+Stream stream = await client.Miscellaneous.MonitorEventsAsync(new ContainerEventsParameters(), cancellation.Token);
 // Initialize a StreamReader...
 ```
 
