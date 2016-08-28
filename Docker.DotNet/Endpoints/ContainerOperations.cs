@@ -415,5 +415,21 @@ namespace Docker.DotNet
             var queryParameters = new QueryString<ContainerResizeParameters>(parameters);
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"exec/{id}/resize", queryParameters, null, null, cancellationToken);
         }
+
+        public Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            IQueryString queryParameters = new QueryString<ContainerStatsParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, cancellationToken);
+        }
     }
 }

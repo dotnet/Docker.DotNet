@@ -57,5 +57,7 @@ namespace Docker.DotNet
         Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken);
 
         Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken);
+
+        Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken);
     }
 }
