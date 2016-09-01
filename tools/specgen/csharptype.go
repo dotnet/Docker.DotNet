@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"sort"
 	"time"
+
+	"github.com/docker/engine-api/types/registry"
 )
 
 // EmptyStruct is a type that represents a struct with no exported values.
@@ -35,8 +37,9 @@ var CSInboxTypesMap = map[reflect.Kind]CSType{
 
 // CSCustomTypeMap is a map from Go reflected types to C# types.
 var CSCustomTypeMap = map[reflect.Type]CSType{
-	reflect.TypeOf(time.Time{}): {"System", "DateTime", true},
-	EmptyStruct:                 {"", "BUG_IN_CONVERSION", false},
+	reflect.TypeOf(time.Time{}):         {"System", "DateTime", true},
+	reflect.TypeOf(registry.NetIPNet{}): {"", "string", false},
+	EmptyStruct:                         {"", "BUG_IN_CONVERSION", false},
 }
 
 // CSArgument is a type that represents a C# argument that can

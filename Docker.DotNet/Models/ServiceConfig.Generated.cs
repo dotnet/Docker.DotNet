@@ -7,7 +7,7 @@ namespace Docker.DotNet.Models
     public class ServiceConfig // (registry.ServiceConfig)
     {
         [DataMember(Name = "InsecureRegistryCIDRs", EmitDefaultValue = false)]
-        public IList<NetIPNet> InsecureRegistryCIDRs { get; set; }
+        public IList<string> InsecureRegistryCIDRs { get; set; }
 
         [DataMember(Name = "IndexConfigs", EmitDefaultValue = false)]
         public IDictionary<string, IndexInfo> IndexConfigs { get; set; }
