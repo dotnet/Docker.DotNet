@@ -356,6 +356,8 @@ func reflectType(name string, t reflect.Type, reflectedTypes map[string]*CSModel
 		return
 	} else if name == "" {
 		return
+	} else if _, ok := CSCustomTypeMap[t]; ok {
+		return
 	}
 
 	m := NewModel(name, fmt.Sprintf("%s", t))
