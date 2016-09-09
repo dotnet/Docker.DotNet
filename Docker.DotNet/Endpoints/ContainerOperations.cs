@@ -108,19 +108,15 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ContainerFileSystemChangeResponse[]>(response.Body);
         }
 
-        public async Task<bool> StartContainerAsync(string id, HostConfig hostConfig)
+        public async Task<bool> StartContainerAsync(string id, ContainerStartParameters parameters)
         {
             if (string.IsNullOrEmpty(id))
             {
                 throw new ArgumentNullException(nameof(id));
             }
 
-            JsonRequestContent<HostConfig> data = null;
-            if (hostConfig != null)
-            {
-                data = new JsonRequestContent<HostConfig>(hostConfig, this._client.JsonSerializer);
-            }
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/start", null, data).ConfigureAwait(false);
+            var queryParams = parameters == null ? null : new QueryString<ContainerStartParameters>(parameters);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/start", queryParams, null).ConfigureAwait(false);
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 

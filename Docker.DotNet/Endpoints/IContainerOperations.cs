@@ -22,7 +22,7 @@ namespace Docker.DotNet
 
         Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters);
 
-        Task<bool> StartContainerAsync(string id, HostConfig hostConfig);
+        Task<bool> StartContainerAsync(string id, ContainerStartParameters parameters);
 
         Task<bool> StopContainerAsync(string id, ContainerStopParameters parameters, CancellationToken cancellationToken);
 
