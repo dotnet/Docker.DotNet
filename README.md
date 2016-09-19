@@ -156,7 +156,7 @@ Here are typical exceptions thrown from the client library:
 * **`TaskCanceledException`** is thrown from `System.Net.Http.HttpClient` library by design. It is not a friendly exception, but it indicates your request has timed out. (default request timeout is 100 seconds.) 
     * Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have timeout value overridden with infinite timespan by this library.
 * **`ArgumentNullException`** is thrown when one of the required parameters are missing/empty.
-    * Consider reading the [Docker Remote API reference](docker-remote-api) and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
+    * Consider reading the [Docker Remote API reference][docker-remote-api] and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
 
 ## Versioning
 
