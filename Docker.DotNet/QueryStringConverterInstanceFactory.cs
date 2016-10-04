@@ -1,31 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Docker.DotNet
 {
     internal class QueryStringConverterInstanceFactory : IQueryStringConverterInstanceFactory
     {
-        private static readonly IDictionary<Type, IQueryStringConverter> ConverterInstanceRegistry;
-
-        static QueryStringConverterInstanceFactory()
-        {
-            ConverterInstanceRegistry = new Dictionary<Type, IQueryStringConverter>();
-        }
+        private static readonly ConcurrentDictionary<Type, IQueryStringConverter> ConverterInstanceRegistry = new ConcurrentDictionary<Type, IQueryStringConverter>();
 
         public IQueryStringConverter GetConverterInstance(Type t)
         {
-            var cached = GetCachedInstance(t);
-            if (cached != null)
-            {
-                return cached;
-            }
-
-            // Create new instance
-            var instance = InitializeConverter(t);
-
-            // Cache the instance
-            CacheInstance(t, instance);
-            return instance;
+            return ConverterInstanceRegistry.GetOrAdd(
+                t,
+                InitializeConverter);
         }
 
         private IQueryStringConverter InitializeConverter(Type t)
@@ -36,16 +22,6 @@ namespace Docker.DotNet
                 throw new InvalidOperationException($"Could not get instance of {t.FullName}");
             }
             return instance;
-        }
-
-        private static IQueryStringConverter GetCachedInstance(Type t)
-        {
-            return (ConverterInstanceRegistry.ContainsKey(t)) ? ConverterInstanceRegistry[t] : null;
-        }
-
-        private static void CacheInstance(Type t, IQueryStringConverter instance)
-        {
-            ConverterInstanceRegistry[t] = instance;
         }
     }
 }
