@@ -158,5 +158,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Swarm", EmitDefaultValue = false)]
         public Info Swarm { get; set; }
+
+        [DataMember(Name = "LiveRestoreEnabled", EmitDefaultValue = false)]
+        public bool LiveRestoreEnabled { get; set; }
     }
 }

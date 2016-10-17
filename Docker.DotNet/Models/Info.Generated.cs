@@ -9,6 +9,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "NodeID", EmitDefaultValue = false)]
         public string NodeID { get; set; }
 
+        [DataMember(Name = "NodeAddr", EmitDefaultValue = false)]
+        public string NodeAddr { get; set; }
+
         [DataMember(Name = "LocalNodeState", EmitDefaultValue = false)]
         public string LocalNodeState { get; set; }
 
@@ -27,7 +30,7 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Managers", EmitDefaultValue = false)]
         public long Managers { get; set; }
 
-        [DataMember(Name = "CACertHash", EmitDefaultValue = false)]
-        public string CACertHash { get; set; }
+        [DataMember(Name = "Cluster", EmitDefaultValue = false)]
+        public ClusterInfo Cluster { get; set; }
     }
 }

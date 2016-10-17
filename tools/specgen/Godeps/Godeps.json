@@ -5,43 +5,43 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/docker/engine-api/types",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/blkiodev",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/container",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/filters",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/network",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/registry",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/strslice",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/versions",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		},
 		{
 			"ImportPath": "github.com/docker/go-connections/nat",
@@ -55,8 +55,8 @@
 		},
 		{
 			"ImportPath": "github.com/docker/engine-api/types/swarm",
-			"Comment": "v0.3.1-232-g1d24745",
-			"Rev": "1d247454d4307fb1ddf10d09fd2996394b085904"
+			"Comment": "v0.4.0",
+			"Rev": "3d1601b9d2436a70b0dfc045a23f6503d19195df"
 		}
 	]
 }
