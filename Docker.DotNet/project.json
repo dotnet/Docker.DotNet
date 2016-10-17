@@ -1,5 +1,5 @@
 {
-  "version": "2.124.2",
+  "version": "2.124.3",
   "description": "Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically with fully asynchronous, non-blocking and object-oriented code in your .NET applications.",
   "packOptions": {
     "licenseUrl": "https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE",
