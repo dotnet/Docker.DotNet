@@ -282,8 +282,7 @@ limitations under the License.
 * [Justin Terry](https://github.com/jterry75)
 * [Stefan J. Wernli](https://github.com/swernli)
 
-[docker-remote-api]: https://docs.docker.com/reference/api/docker_remote_api/
-[v1.14]: https://docs.docker.com/reference/api/docker_remote_api_v1.14/
+[docker-remote-api]: https://docs.docker.com/engine/reference/api/docker_remote_api/
 [docker-tls]: https://docs.docker.com/articles/https/
 [nuget]: http://www.nuget.org
 [nuget-gallery]: https://www.nuget.org/packages/Docker.DotNet/
