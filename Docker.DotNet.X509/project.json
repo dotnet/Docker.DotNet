@@ -15,12 +15,16 @@
     "frameworks": {
         "netstandard1.6": {
             "dependencies": {
-                "System.Security.Cryptography.X509Certificates": "4.1.0"
+                "System.Security.Cryptography.X509Certificates": "4.1.0",
+                "System.Security.Cryptography.Csp": "4.0.0",
+                "System.Security.SecureString": "4.0.0"
             }
         },
         "netstandard1.3": {
             "dependencies": {
-                "System.Security.Cryptography.X509Certificates": "4.1.0"
+                "System.Security.Cryptography.X509Certificates": "4.1.0",
+                "System.Security.Cryptography.Csp": "4.0.0",
+                "System.Security.SecureString": "4.0.0"
             }
         },
         "net46": {
