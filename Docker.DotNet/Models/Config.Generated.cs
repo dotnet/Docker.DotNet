@@ -76,7 +76,7 @@ namespace Docker.DotNet.Models
         public string StopSignal { get; set; }
 
         [DataMember(Name = "StopTimeout", EmitDefaultValue = false)]
-        public long StopTimeout { get; set; }
+        public long? StopTimeout { get; set; }
 
         [DataMember(Name = "Shell", EmitDefaultValue = false)]
         public IList<string> Shell { get; set; }
