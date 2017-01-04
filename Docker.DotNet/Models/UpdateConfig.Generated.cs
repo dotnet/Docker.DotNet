@@ -98,10 +98,10 @@ namespace Docker.DotNet.Models
         public long MemorySwap { get; set; }
 
         [DataMember(Name = "MemorySwappiness", EmitDefaultValue = false)]
-        public long MemorySwappiness { get; set; }
+        public long? MemorySwappiness { get; set; }
 
         [DataMember(Name = "OomKillDisable", EmitDefaultValue = false)]
-        public bool OomKillDisable { get; set; }
+        public bool? OomKillDisable { get; set; }
 
         [DataMember(Name = "PidsLimit", EmitDefaultValue = false)]
         public long PidsLimit { get; set; }

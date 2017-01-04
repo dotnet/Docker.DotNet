@@ -101,10 +101,10 @@ namespace Docker.DotNet.Models
         public GraphDriverData GraphDriver { get; set; }
 
         [DataMember(Name = "SizeRw", EmitDefaultValue = false)]
-        public long SizeRw { get; set; }
+        public long? SizeRw { get; set; }
 
         [DataMember(Name = "SizeRootFs", EmitDefaultValue = false)]
-        public long SizeRootFs { get; set; }
+        public long? SizeRootFs { get; set; }
 
         [DataMember(Name = "Mounts", EmitDefaultValue = false)]
         public IList<MountPoint> Mounts { get; set; }
