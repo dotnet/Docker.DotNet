@@ -16,6 +16,7 @@ import (
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
+	{reflect.TypeOf(container.Config{}), "Volumes"}:        {"System.Collections.Generic", "IList<string>", false},
 	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
 	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
 	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:      {"", "FileSystemChangeKind", false},

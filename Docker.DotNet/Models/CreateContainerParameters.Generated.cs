@@ -91,7 +91,7 @@ namespace Docker.DotNet.Models
         public string Image { get; set; }
 
         [DataMember(Name = "Volumes", EmitDefaultValue = false)]
-        public IDictionary<string, object> Volumes { get; set; }
+        public IList<string> Volumes { get; set; }
 
         [DataMember(Name = "WorkingDir", EmitDefaultValue = false)]
         public string WorkingDir { get; set; }
