@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/container"
-	"github.com/docker/engine-api/types/network"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
 	"github.com/docker/go-units"
 )
 
@@ -150,6 +150,18 @@ type ContainerUpdateParameters struct {
 	container.UpdateConfig
 }
 
+// ContainerUpdateResponse for POST /containers/(id)/update
+type ContainerUpdateResponse struct {
+	// Warnings are any warnings encountered during the updating of the container.
+	Warnings []string `json:"Warnings"`
+}
+
+// ContainerWaitResponse for POST /containers/(id)/wait
+type ContainerWaitResponse struct {
+	// StatusCode is the status code of the wait job
+	StatusCode int `json:"StatusCode"`
+}
+
 // ContainerEventsParameters for GET /events
 type ContainerEventsParameters struct {
 	Since   string `rest:"query"`
@@ -237,6 +249,14 @@ type ImageTagParameters struct {
 // NetworkListParameters for GET /networks
 type NetworkListParameters struct {
 	Filters Args `rest:"query"`
+}
+
+// VolumeCreateRequest for POST /volumes/create
+type VolumeCreateRequest struct {
+	Name       string            // Name is the requested name of the volume
+	Driver     string            // Driver is the name of the driver that should be used to create the volume
+	DriverOpts map[string]string // DriverOpts holds the driver specific options to use for when creating the volume.
+	Labels     map[string]string // Labels holds metadata specific to the volume being created.
 }
 
 // VolumesListParameters for GET /volumes

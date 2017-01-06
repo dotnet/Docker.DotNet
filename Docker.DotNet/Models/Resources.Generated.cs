@@ -12,6 +12,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Memory", EmitDefaultValue = false)]
         public long Memory { get; set; }
 
+        [DataMember(Name = "NanoCpus", EmitDefaultValue = false)]
+        public long NanoCPUs { get; set; }
+
         [DataMember(Name = "CgroupParent", EmitDefaultValue = false)]
         public string CgroupParent { get; set; }
 
@@ -38,6 +41,12 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "CpuQuota", EmitDefaultValue = false)]
         public long CPUQuota { get; set; }
+
+        [DataMember(Name = "CpuRealtimePeriod", EmitDefaultValue = false)]
+        public long CPURealtimePeriod { get; set; }
+
+        [DataMember(Name = "CpuRealtimeRuntime", EmitDefaultValue = false)]
+        public long CPURealtimeRuntime { get; set; }
 
         [DataMember(Name = "CpusetCpus", EmitDefaultValue = false)]
         public string CpusetCpus { get; set; }

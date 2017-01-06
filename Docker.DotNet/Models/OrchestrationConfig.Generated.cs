@@ -6,6 +6,6 @@ namespace Docker.DotNet.Models
     public class OrchestrationConfig // (swarm.OrchestrationConfig)
     {
         [DataMember(Name = "TaskHistoryRetentionLimit", EmitDefaultValue = false)]
-        public long TaskHistoryRetentionLimit { get; set; }
+        public long? TaskHistoryRetentionLimit { get; set; }
     }
 }

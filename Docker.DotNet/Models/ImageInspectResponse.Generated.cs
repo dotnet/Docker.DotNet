@@ -46,6 +46,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Os", EmitDefaultValue = false)]
         public string Os { get; set; }
 
+        [DataMember(Name = "OsVersion", EmitDefaultValue = false)]
+        public string OsVersion { get; set; }
+
         [DataMember(Name = "Size", EmitDefaultValue = false)]
         public long Size { get; set; }
 

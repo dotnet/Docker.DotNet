@@ -5,6 +5,9 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class MountPoint // (types.MountPoint)
     {
+        [DataMember(Name = "Type", EmitDefaultValue = false)]
+        public string Type { get; set; }
+
         [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }
 

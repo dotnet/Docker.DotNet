@@ -20,5 +20,14 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "limit", EmitDefaultValue = false)]
         public ulong Limit { get; set; }
+
+        [DataMember(Name = "commitbytes", EmitDefaultValue = false)]
+        public ulong Commit { get; set; }
+
+        [DataMember(Name = "commitpeakbytes", EmitDefaultValue = false)]
+        public ulong CommitPeak { get; set; }
+
+        [DataMember(Name = "privateworkingset", EmitDefaultValue = false)]
+        public ulong PrivateWorkingSet { get; set; }
     }
 }

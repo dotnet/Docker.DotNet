@@ -19,6 +19,7 @@ namespace Docker.DotNet.Models
                 this.EnableIPv6 = NetworkCreate.EnableIPv6;
                 this.IPAM = NetworkCreate.IPAM;
                 this.Internal = NetworkCreate.Internal;
+                this.Attachable = NetworkCreate.Attachable;
                 this.Options = NetworkCreate.Options;
                 this.Labels = NetworkCreate.Labels;
             }
@@ -38,6 +39,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Internal", EmitDefaultValue = false)]
         public bool Internal { get; set; }
+
+        [DataMember(Name = "Attachable", EmitDefaultValue = false)]
+        public bool Attachable { get; set; }
 
         [DataMember(Name = "Options", EmitDefaultValue = false)]
         public IDictionary<string, string> Options { get; set; }
