@@ -2,8 +2,10 @@ version: '2.124.2.{build}'
 pull_requests:
   do_not_increment_build_number: true
 init:
-- ps: (new-object net.webclient).DownloadFile('https://dotnetcli.blob.core.windows.net/dotnet/beta/Installers/Latest/dotnet-dev-win-x64.latest.exe', "c:/dotnet-install.exe")
+- ps: (new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?linkid=838401', "c:/dotnet-install.exe")
 - ps: Start-Process c:\dotnet-install.exe -ArgumentList "/install","/quiet" -Wait
 build_script:
-- ps: dotnet restore
-- ps: dotnet build Docker.DotNet Docker.DotNet.BasicAuth Docker.DotNet.X509
+- ps: dotnet restore --no-cache
+- ps: dotnet build .\Docker.DotNet\Docker.DotNet.csproj -c Release
+- ps: dotnet build .\Docker.DotNet.X509\Docker.DotNet.X509.csproj -c Release
+- ps: dotnet build .\Docker.DotNet.BasicAuth\Docker.DotNet.BasicAuth.csproj -c Release

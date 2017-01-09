@@ -1,8 +1,4 @@
-﻿#if (NET45 || NET46)
-using System.Net;
-#endif
-
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Net.Http.Client;
 using System.Net.Security;
@@ -29,12 +25,6 @@ namespace Docker.DotNet.X509
             };
 
             handler.ServerCertificateValidationCallback = this.ServerCertificateValidationCallback;
-#if (NET45 || NET46)
-            if (handler.ServerCertificateValidationCallback == null)
-            {
-                handler.ServerCertificateValidationCallback = ServicePointManager.ServerCertificateValidationCallback;
-            }
-#endif
 
             return handler;
         }

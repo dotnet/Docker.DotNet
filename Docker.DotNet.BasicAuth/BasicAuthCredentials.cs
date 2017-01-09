@@ -1,7 +1,4 @@
 ﻿using System.Net.Http;
-#if (NET45 || NET46)
-using System.Security;
-#endif
 
 namespace Docker.DotNet.BasicAuth
 {
@@ -16,13 +13,6 @@ namespace Docker.DotNet.BasicAuth
         {
             return new BasicAuthHandler(_username, _password, innerHandler);
         }
-
-#if (NET45 || NET46)
-        public BasicAuthCredentials(SecureString username, SecureString password, bool isTls = false)
-            : this(new MaybeSecureString(username), new MaybeSecureString(password), isTls)
-        {
-        }
-#endif
 
         public BasicAuthCredentials(string username, string password, bool isTls = false)
             : this(new MaybeSecureString(username), new MaybeSecureString(password), isTls)

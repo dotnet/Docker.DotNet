@@ -4,10 +4,6 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-#if (NET45 || NET46)
-using System.Security;
-#endif
-
 namespace Docker.DotNet.X509
 {
     public static class RSAUtil
@@ -18,20 +14,6 @@ namespace Docker.DotNet.X509
         {
             return new X509Certificate2(pfxFilePath, password);
         }
-
-#if (NET45 || NET46)
-        public static X509Certificate2 GetCertFromPFXSecure(string pfxFilePath, SecureString password)
-        {
-            return new X509Certificate2(pfxFilePath, password);
-        }
-
-        public static X509Certificate2 GetCertFromPEMFiles(string certFilePath, string keyFilePath)
-        {
-            var cert = new X509Certificate2(certFilePath);
-            cert.PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath);
-            return cert;
-        }
-#endif
 
         private static RSACryptoServiceProvider ReadFromPemFile(string pemFilePath)
         {
@@ -76,29 +58,34 @@ namespace Docker.DotNet.X509
                     throw new InvalidDataException("Invalid ASN.1 format.");
                 }
 
-                var rsa = new RSAParameters();
-                rsa.Modulus = rdr.ReadBytes(ReadIntegerCount(rdr));
-                rsa.Exponent = rdr.ReadBytes(ReadIntegerCount(rdr));
-                rsa.D = rdr.ReadBytes(ReadIntegerCount(rdr));
-                rsa.P = rdr.ReadBytes(ReadIntegerCount(rdr));
-                rsa.Q = rdr.ReadBytes(ReadIntegerCount(rdr));
-                rsa.DP = rdr.ReadBytes(ReadIntegerCount(rdr));
-                rsa.DQ = rdr.ReadBytes(ReadIntegerCount(rdr));
-                rsa.InverseQ = rdr.ReadBytes(ReadIntegerCount(rdr));
+                var rsa = new RSAParameters()
+                {
+                    Modulus = rdr.ReadBytes(ReadIntegerCount(rdr)),
+                    Exponent = rdr.ReadBytes(ReadIntegerCount(rdr)),
+                    D = rdr.ReadBytes(ReadIntegerCount(rdr)),
+                    P = rdr.ReadBytes(ReadIntegerCount(rdr)),
+                    Q = rdr.ReadBytes(ReadIntegerCount(rdr)),
+                    DP = rdr.ReadBytes(ReadIntegerCount(rdr)),
+                    DQ = rdr.ReadBytes(ReadIntegerCount(rdr)),
+                    InverseQ = rdr.ReadBytes(ReadIntegerCount(rdr))
+                };
 
                 // Use "1" to indicate RSA.
-                var csp = new CspParameters(1);
-                
-                // Set the KeyContainerName so that native code that looks up the private key
-                // can find it. This produces a keyset file on disk as a side effect.
-                csp.KeyContainerName = pemFilePath;
-                
-                var rsaProvider = new RSACryptoServiceProvider(csp);
+                var csp = new CspParameters(1)
+                {
 
-                // Setting to false makes sure the keystore file will be cleaned up
-                // when the current process exits.
-                rsaProvider.PersistKeyInCsp = false;
-                
+                    // Set the KeyContainerName so that native code that looks up the private key
+                    // can find it. This produces a keyset file on disk as a side effect.
+                    KeyContainerName = pemFilePath
+                };
+                var rsaProvider = new RSACryptoServiceProvider(csp)
+                {
+
+                    // Setting to false makes sure the keystore file will be cleaned up
+                    // when the current process exits.
+                    PersistKeyInCsp = false
+                };
+
                 // Import the private key into the keyset.
                 rsaProvider.ImportParameters(rsa);
 

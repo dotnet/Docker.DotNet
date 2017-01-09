@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-#if (NETSTANDARD1_3 || NETSTANDARD1_6)
 using System.Reflection;
-#endif
 
 namespace Docker.DotNet
 {

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Docker.DotNet</id>
+    <version>2.124.3</version>
+    <title>Docker.DotNet</title>
+    <authors>Docker.DotNet</authors>
+    <owners>Docker.DotNet</owners>
+    <projectUrl>https://github.com/Microsoft/Docker.DotNet</projectUrl>
+    <licenseUrl>https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE</licenseUrl>
+    <iconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</iconUrl>
+    <summary>
+      Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically.
+    </summary>
+    <description>
+      Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically with fully asynchronous, non-blocking and object-oriented code in your .NET applications.
+    </description>
+    <copyright>Copyright Microsoft 2015</copyright>
+    <tags>Docker Container C# .NET</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="NETStandard.Library" version="1.6.1" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />        
+        <dependency id="System.Buffers" version="4.3.0" />
+        <dependency id="System.IO.Pipes" version="4.3.0" />
+        <dependency id="System.Net.NameResolution" version="4.3.0" />
+        <dependency id="System.Net.Security" version="4.3.0" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
+        <dependency id="System.Threading.Overlapped" version="4.3.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\netstandard1.3\Docker.DotNet.dll" target="lib\netstandard1.3" />
+    <file src="bin\Release\netstandard1.3\Docker.DotNet.pdb" target="lib\netstandard1.5" />
+  </files>
+</package>

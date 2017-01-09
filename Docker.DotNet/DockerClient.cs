@@ -8,10 +8,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
-
-#if NETSTANDARD1_6
 using System.Net.Sockets;
-#endif
 
 namespace Docker.DotNet
 {
@@ -87,11 +84,8 @@ namespace Docker.DotNet
                         var timeout = 100; // 100ms
                         var stream = new NamedPipeClientStream(serverName, pipeName);
                         var dockerStream = new DockerPipeStream(stream);
-#if NET45
-                        await Task.Run(() => stream.Connect(timeout), cancellationToken);
-#else
+
                         await stream.ConnectAsync(timeout, cancellationToken);
-#endif
                         return dockerStream;
                     });
 
@@ -111,7 +105,6 @@ namespace Docker.DotNet
                     handler = new ManagedHandler();
                     break;
 
-#if NETSTANDARD1_6
                 case "unix":
                     var pipeString = uri.LocalPath;
                     handler = new ManagedHandler(async (string host, int port, CancellationToken cancellationToken) =>
@@ -122,7 +115,6 @@ namespace Docker.DotNet
                     });
                     uri = new UriBuilder("http", uri.Segments.Last()).Uri;
                     break;
-#endif
 
                 default:
                     throw new Exception($"Unknown URL scheme {configuration.EndpointBaseUri.Scheme}");
