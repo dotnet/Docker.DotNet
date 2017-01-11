@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerExecCreateResponse // (types.ContainerExecCreateResponse)
+    public class ContainerExecCreateResponse // (types.IDResponse)
     {
         [DataMember(Name = "Id", EmitDefaultValue = false)]
         public string ID { get; set; }

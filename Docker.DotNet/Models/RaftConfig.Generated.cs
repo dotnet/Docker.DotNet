@@ -9,15 +9,15 @@ namespace Docker.DotNet.Models
         public ulong SnapshotInterval { get; set; }
 
         [DataMember(Name = "KeepOldSnapshots", EmitDefaultValue = false)]
-        public ulong KeepOldSnapshots { get; set; }
+        public ulong? KeepOldSnapshots { get; set; }
 
         [DataMember(Name = "LogEntriesForSlowFollowers", EmitDefaultValue = false)]
         public ulong LogEntriesForSlowFollowers { get; set; }
 
-        [DataMember(Name = "HeartbeatTick", EmitDefaultValue = false)]
-        public uint HeartbeatTick { get; set; }
-
         [DataMember(Name = "ElectionTick", EmitDefaultValue = false)]
-        public uint ElectionTick { get; set; }
+        public long ElectionTick { get; set; }
+
+        [DataMember(Name = "HeartbeatTick", EmitDefaultValue = false)]
+        public long HeartbeatTick { get; set; }
     }
 }

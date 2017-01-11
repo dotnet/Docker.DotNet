@@ -7,7 +7,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/docker/engine-api/types/registry"
+	"github.com/docker/docker/api/types/registry"
 )
 
 // EmptyStruct is a type that represents a struct with no exported values.

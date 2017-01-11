@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -11,6 +12,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Id", EmitDefaultValue = false)]
         public string ID { get; set; }
+
+        [DataMember(Name = "Created", EmitDefaultValue = false)]
+        public DateTime Created { get; set; }
 
         [DataMember(Name = "Scope", EmitDefaultValue = false)]
         public string Scope { get; set; }
@@ -27,6 +31,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Internal", EmitDefaultValue = false)]
         public bool Internal { get; set; }
 
+        [DataMember(Name = "Attachable", EmitDefaultValue = false)]
+        public bool Attachable { get; set; }
+
         [DataMember(Name = "Containers", EmitDefaultValue = false)]
         public IDictionary<string, EndpointResource> Containers { get; set; }
 
@@ -35,5 +42,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Labels", EmitDefaultValue = false)]
         public IDictionary<string, string> Labels { get; set; }
+
+        [DataMember(Name = "Peers", EmitDefaultValue = false)]
+        public IList<PeerInfo> Peers { get; set; }
     }
 }

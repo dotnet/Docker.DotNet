@@ -39,5 +39,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "TaskDefaults", EmitDefaultValue = false)]
         public TaskDefaults TaskDefaults { get; set; }
+
+        [DataMember(Name = "EncryptionConfig", EmitDefaultValue = false)]
+        public EncryptionConfig EncryptionConfig { get; set; }
     }
 }

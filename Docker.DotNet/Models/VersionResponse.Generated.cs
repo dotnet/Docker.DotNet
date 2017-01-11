@@ -11,6 +11,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ApiVersion", EmitDefaultValue = false)]
         public string APIVersion { get; set; }
 
+        [DataMember(Name = "MinAPIVersion", EmitDefaultValue = false)]
+        public string MinAPIVersion { get; set; }
+
         [DataMember(Name = "GitCommit", EmitDefaultValue = false)]
         public string GitCommit { get; set; }
 

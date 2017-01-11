@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/container"
-	"github.com/docker/engine-api/types/registry"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/registry"
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
@@ -21,7 +21,7 @@ var typeCustomizations = map[typeCustomizationKey]CSType{
 	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
 	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:      {"", "FileSystemChangeKind", false},
 	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}: {"System", "DateTime", false},
-	{reflect.TypeOf(types.Image{}), "Created"}:             {"System", "DateTime", false},
+	{reflect.TypeOf(types.ImageSummary{}), "Created"}:      {"System", "DateTime", false},
 	{reflect.TypeOf(types.ImageHistory{}), "Created"}:      {"System", "DateTime", false},
 	{reflect.TypeOf(types.ImageInspect{}), "Created"}:      {"System", "DateTime", false},
 }
@@ -40,7 +40,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /auth
 	{reflect.TypeOf(types.AuthConfig{}), "AuthConfig"},
-	{reflect.TypeOf(types.AuthResponse{}), "AuthResponse"},
+	{reflect.TypeOf(registry.AuthenticateOKBody{}), "AuthResponse"},
 
 	// POST /build
 	{reflect.TypeOf(ImageBuildParameters{}), "ImageBuildParameters"},
@@ -48,11 +48,11 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /commit
 	{reflect.TypeOf(ContainerCommitParamters{}), "CommitContainerChangesParameters"},
-	{reflect.TypeOf(types.ContainerCommitResponse{}), "CommitContainerChangesResponse"},
+	{reflect.TypeOf(types.IDResponse{}), "CommitContainerChangesResponse"},
 
 	// POST /containers/create
 	{reflect.TypeOf(ContainerCreateParameters{}), "CreateContainerParameters"},
-	{reflect.TypeOf(types.ContainerCreateResponse{}), "CreateContainerResponse"},
+	{reflect.TypeOf(container.ContainerCreateCreatedBody{}), "CreateContainerResponse"},
 
 	// GET /containers/json
 	{reflect.TypeOf(ContainerListParameters{}), "ContainersListParameters"},
@@ -80,7 +80,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /containers/(id)/exec
 	{reflect.TypeOf(ExecCreateParameters{}), "ContainerExecCreateParameters"},
-	{reflect.TypeOf(types.ContainerExecCreateResponse{}), "ContainerExecCreateResponse"},
+	{reflect.TypeOf(types.IDResponse{}), "ContainerExecCreateResponse"},
 
 	// GET /containers/(id)/json
 	{reflect.TypeOf(ContainerInspectParameters{}), "ContainerInspectParameters"},
@@ -122,10 +122,10 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /containers/(id)/update
 	{reflect.TypeOf(ContainerUpdateParameters{}), "ContainerUpdateParameters"},
-	{reflect.TypeOf(types.ContainerUpdateResponse{}), "ContainerUpdateResponse"},
+	{reflect.TypeOf(ContainerUpdateResponse{}), "ContainerUpdateResponse"},
 
 	// POST /containers/(id)/wait
-	{reflect.TypeOf(types.ContainerWaitResponse{}), "ContainerWaitResponse"},
+	{reflect.TypeOf(ContainerWaitResponse{}), "ContainerWaitResponse"},
 
 	// POST /exec/(id)/start
 	{reflect.TypeOf(ExecStartParameters{}), "ContainerExecStartParameters"},
@@ -146,7 +146,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// GET /images/json
 	{reflect.TypeOf(ImageListParameters{}), "ImagesListParameters"},
-	{reflect.TypeOf(types.Image{}), "ImagesListResponse"},
+	{reflect.TypeOf(types.ImageSummary{}), "ImagesListResponse"},
 
 	// POST /images/load
 	// TODO: headers: application/x-tar body.
@@ -204,7 +204,7 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(VolumesListResponse{}), "VolumesListResponse"},
 
 	// POST /volumes/create
-	{reflect.TypeOf(types.VolumeCreateRequest{}), "VolumesCreateParameters"},
+	{reflect.TypeOf(VolumeCreateRequest{}), "VolumesCreateParameters"},
 
 	// GET /volumes/(id)
 	{reflect.TypeOf(VolumeResponse{}), "VolumeResponse"},

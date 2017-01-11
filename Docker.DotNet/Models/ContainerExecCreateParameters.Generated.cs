@@ -22,6 +22,7 @@ namespace Docker.DotNet.Models
                 this.AttachStdout = ExecConfig.AttachStdout;
                 this.Detach = ExecConfig.Detach;
                 this.DetachKeys = ExecConfig.DetachKeys;
+                this.Env = ExecConfig.Env;
                 this.Cmd = ExecConfig.Cmd;
             }
         }
@@ -49,6 +50,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "DetachKeys", EmitDefaultValue = false)]
         public string DetachKeys { get; set; }
+
+        [DataMember(Name = "Env", EmitDefaultValue = false)]
+        public IList<string> Env { get; set; }
 
         [DataMember(Name = "Cmd", EmitDefaultValue = false)]
         public IList<string> Cmd { get; set; }

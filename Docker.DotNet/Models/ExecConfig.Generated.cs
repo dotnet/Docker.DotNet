@@ -30,6 +30,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "DetachKeys", EmitDefaultValue = false)]
         public string DetachKeys { get; set; }
 
+        [DataMember(Name = "Env", EmitDefaultValue = false)]
+        public IList<string> Env { get; set; }
+
         [DataMember(Name = "Cmd", EmitDefaultValue = false)]
         public IList<string> Cmd { get; set; }
     }
