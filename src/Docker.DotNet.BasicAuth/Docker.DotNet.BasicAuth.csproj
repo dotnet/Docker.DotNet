@@ -9,6 +9,9 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Microsoft/Docker.DotNet/tree/master/Docker.DotNet.BasicAuth</RepositoryUrl>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(version)' != ''">
+    <VersionPrefix>$(version)</VersionPrefix>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />
     <EmbeddedResource Include="**\*.resx" />

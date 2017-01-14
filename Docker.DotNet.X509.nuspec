@@ -28,13 +28,19 @@
       <group targetFramework=".NETFramework4.6">
       </group>
     </dependencies>
+	<frameworkAssemblies>
+		<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net" />
+		<frameworkAssembly assemblyName="System.Net.Http.WebRequest" targetFramework="net" />
+		<frameworkAssembly assemblyName="System" targetFramework="net" />
+		<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net" />
+	</frameworkAssemblies>
   </metadata>
   <files>
-    <file src="bin\Release\netstandard1.6\Docker.DotNet.X509.dll" target="lib\netstandard1.6" />
-    <file src="bin\Release\netstandard1.6\Docker.DotNet.X509.pdb" target="lib\netstandard1.6" />
-    <file src="bin\Release\net45\Docker.DotNet.X509.dll" target="lib\net45" />
-    <file src="bin\Release\net45\Docker.DotNet.X509.pdb" target="lib\net45" />
-    <file src="bin\Release\net46\Docker.DotNet.X509.dll" target="lib\net46" />
-    <file src="bin\Release\net46\Docker.DotNet.X509.pdb" target="lib\net46" />
+    <file src="src\Docker.DotNet.X509\bin\Release\netstandard1.6\Docker.DotNet.X509.dll" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet.X509\bin\Release\netstandard1.6\Docker.DotNet.X509.pdb" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet.X509\bin\Release\net45\Docker.DotNet.X509.dll" target="lib\net45" />
+    <file src="src\Docker.DotNet.X509\bin\Release\net45\Docker.DotNet.X509.pdb" target="lib\net45" />
+    <file src="src\Docker.DotNet.X509\bin\Release\net46\Docker.DotNet.X509.dll" target="lib\net46" />
+    <file src="src\Docker.DotNet.X509\bin\Release\net46\Docker.DotNet.X509.pdb" target="lib\net46" />
   </files>
 </package>

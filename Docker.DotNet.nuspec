@@ -31,15 +31,23 @@
       <group targetFramework=".NETFramework4.5">
       </group>
       <group targetFramework=".NETFramework4.6">
+		<dependency id="System.Buffers" version="4.3.0" />
+		<dependency id="System.Runtime" version="4.3.0" />
       </group>
     </dependencies>
+	<frameworkAssemblies>
+		<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net" />
+		<frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework="net" />
+		<frameworkAssembly assemblyName="System" targetFramework="net" />
+		<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net" />
+	</frameworkAssemblies>
   </metadata>
   <files>
-    <file src="bin\Release\netstandard1.6\Docker.DotNet.dll" target="lib\netstandard1.6" />
-    <file src="bin\Release\netstandard1.6\Docker.DotNet.pdb" target="lib\netstandard1.6" />
-    <file src="bin\Release\net45\Docker.DotNet.dll" target="lib\net45" />
-    <file src="bin\Release\net45\Docker.DotNet.pdb" target="lib\net45" />
-    <file src="bin\Release\net46\Docker.DotNet.dll" target="lib\net46" />
-    <file src="bin\Release\net46\Docker.DotNet.pdb" target="lib\net46" />
+    <file src="src\Docker.DotNet\bin\Release\netstandard1.6\Docker.DotNet.dll" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet\bin\Release\netstandard1.6\Docker.DotNet.pdb" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet\bin\Release\net45\Docker.DotNet.dll" target="lib\net45" />
+    <file src="src\Docker.DotNet\bin\Release\net45\Docker.DotNet.pdb" target="lib\net45" />
+    <file src="src\Docker.DotNet\bin\Release\net46\Docker.DotNet.dll" target="lib\net46" />
+    <file src="src\Docker.DotNet\bin\Release\net46\Docker.DotNet.pdb" target="lib\net46" />
   </files>
 </package>

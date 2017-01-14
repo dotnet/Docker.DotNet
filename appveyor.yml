@@ -9,3 +9,6 @@ build_script:
 - ps: dotnet build .\Docker.DotNet\Docker.DotNet.csproj -c Release
 - ps: dotnet build .\Docker.DotNet.X509\Docker.DotNet.X509.csproj -c Release
 - ps: dotnet build .\Docker.DotNet.BasicAuth\Docker.DotNet.BasicAuth.csproj -c Release
+- ps: nuget pack Docker.DotNet.nuspec -properties version=$($env:appveyor_build_version)
+- ps: nuget pack Docker.DotNet.BasicAuth.nuspec -properties version=$($env:appveyor_build_version)
+- ps: nuget pack Docker.DotNet.X509.nuspec -properties version=$($env:appveyor_build_version)

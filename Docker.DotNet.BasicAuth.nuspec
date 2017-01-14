@@ -27,13 +27,19 @@
       <group targetFramework=".NETFramework4.6">
       </group>
     </dependencies>
+	<frameworkAssemblies>
+		<frameworkAssembly assemblyName="System.Runtime" targetFramework="net46" />
+		<frameworkAssembly assemblyName="System.Security" targetFramework="net46" />
+		<frameworkAssembly assemblyName="System" targetFramework="net" />
+		<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net" />
+	</frameworkAssemblies>
   </metadata>
   <files>
-    <file src="bin\Release\netstandard1.6\Docker.DotNet.BasicAuth.dll" target="lib\netstandard1.6" />
-    <file src="bin\Release\netstandard1.6\Docker.DotNet.BasicAuth.pdb" target="lib\netstandard1.6" />
-    <file src="bin\Release\net45\Docker.DotNet.BasicAuth.dll" target="lib\net45" />
-    <file src="bin\Release\net45\Docker.DotNet.BasicAuth.pdb" target="lib\net45" />
-    <file src="bin\Release\net46\Docker.DotNet.BasicAuth.dll" target="lib\net46" />
-    <file src="bin\Release\net46\Docker.DotNet.BasicAuth.pdb" target="lib\net46" />
+    <file src="src\Docker.DotNet.BasicAuth\bin\Release\netstandard1.6\Docker.DotNet.BasicAuth.dll" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet.BasicAuth\bin\Release\netstandard1.6\Docker.DotNet.BasicAuth.pdb" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet.BasicAuth\bin\Release\net45\Docker.DotNet.BasicAuth.dll" target="lib\net45" />
+    <file src="src\Docker.DotNet.BasicAuth\bin\Release\net45\Docker.DotNet.BasicAuth.pdb" target="lib\net45" />
+    <file src="src\Docker.DotNet.BasicAuth\bin\Release\net46\Docker.DotNet.BasicAuth.dll" target="lib\net46" />
+    <file src="src\Docker.DotNet.BasicAuth\bin\Release\net46\Docker.DotNet.BasicAuth.pdb" target="lib\net46" />
   </files>
 </package>
