@@ -50,7 +50,11 @@ namespace Docker.DotNet
             // calls to achieve this since CoreCLR ignores a zero-byte write.
             var overlapped = new NativeOverlapped();
 
+#if NET45
+            var handle = _event.SafeWaitHandle;
+#else
             var handle = _event.GetSafeWaitHandle();
+#endif
 
             // Set the low bit to tell Windows not to send the result of this IO to the
             // completion port.

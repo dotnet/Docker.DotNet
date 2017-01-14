@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Docker.DotNet.BasicAuth</id>
-    <version>2.124.3</version>
+    <version>$version$</version>
     <title>Docker.DotNet.BasicAuth</title>
     <authors>Docker.DotNet</authors>
     <owners>Docker.DotNet</owners>
@@ -18,14 +18,22 @@
     <copyright>Copyright Microsoft 2015</copyright>
     <tags>Docker Container C# .NET</tags>
     <dependencies>
-      <group targetFramework=".NETStandard1.3">
+      <group targetFramework=".NETStandard1.6">
         <dependency id="NETStandard.Library" version="1.6.1" />
-        <dependency id="Docker.DotNet" version="2.124.3" />          
+        <dependency id="Docker.DotNet" version="$version$" />          
+      </group>
+      <group targetFramework=".NETFramework4.5">
+      </group>
+      <group targetFramework=".NETFramework4.6">
       </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\netstandard1.3\Docker.DotNet.BasicAuth.dll" target="lib\netstandard1.3" />
-    <file src="bin\Release\netstandard1.3\Docker.DotNet.BasicAuth.pdb" target="lib\netstandard1.5" />
+    <file src="bin\Release\netstandard1.6\Docker.DotNet.BasicAuth.dll" target="lib\netstandard1.6" />
+    <file src="bin\Release\netstandard1.6\Docker.DotNet.BasicAuth.pdb" target="lib\netstandard1.6" />
+    <file src="bin\Release\net45\Docker.DotNet.BasicAuth.dll" target="lib\net45" />
+    <file src="bin\Release\net45\Docker.DotNet.BasicAuth.pdb" target="lib\net45" />
+    <file src="bin\Release\net46\Docker.DotNet.BasicAuth.dll" target="lib\net46" />
+    <file src="bin\Release\net46\Docker.DotNet.BasicAuth.pdb" target="lib\net46" />
   </files>
 </package>

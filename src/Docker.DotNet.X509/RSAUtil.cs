@@ -4,6 +4,10 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
+#if (NET45 || NET46)
+using System.Security;
+#endif
+
 namespace Docker.DotNet.X509
 {
     public static class RSAUtil
@@ -14,6 +18,20 @@ namespace Docker.DotNet.X509
         {
             return new X509Certificate2(pfxFilePath, password);
         }
+        
+#if (NET45 || NET46)
+        public static X509Certificate2 GetCertFromPFXSecure(string pfxFilePath, SecureString password)
+        {
+            return new X509Certificate2(pfxFilePath, password);
+        }
+
+        public static X509Certificate2 GetCertFromPEMFiles(string certFilePath, string keyFilePath)
+        {
+            var cert = new X509Certificate2(certFilePath);
+            cert.PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath);
+            return cert;
+        }
+#endif
 
         private static RSACryptoServiceProvider ReadFromPemFile(string pemFilePath)
         {

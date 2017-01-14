@@ -4,7 +4,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+#if !NET45
 using System.Buffers;
+#endif
 
 namespace Microsoft.Net.Http.Client
 {
@@ -32,7 +35,11 @@ namespace Microsoft.Net.Http.Client
             }
             _inner = inner;
             _socket = socket;
+#if !NET45
             _buffer = ArrayPool<byte>.Shared.Rent(bufferLength);
+#else
+            _buffer = new byte[bufferLength];
+#endif
         }
 
         public override bool CanRead
@@ -84,7 +91,9 @@ namespace Microsoft.Net.Http.Client
                 if (disposing)
                 {
                     _inner.Dispose();
+#if !NET45
                     ArrayPool<byte>.Shared.Return(_buffer);
+#endif
                 }
             }
         }

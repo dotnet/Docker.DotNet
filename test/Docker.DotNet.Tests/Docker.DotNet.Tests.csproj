@@ -14,8 +14,8 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta4-build1194" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Docker.DotNet.BasicAuth\Docker.DotNet.BasicAuth.csproj" />
-    <ProjectReference Include="..\Docker.DotNet.X509\Docker.DotNet.X509.csproj" />
-    <ProjectReference Include="..\Docker.DotNet\Docker.DotNet.csproj" />
+    <ProjectReference Include="..\..\src\Docker.DotNet.BasicAuth\Docker.DotNet.BasicAuth.csproj" />
+    <ProjectReference Include="..\..\src\Docker.DotNet.X509\Docker.DotNet.X509.csproj" />
+    <ProjectReference Include="..\..\src\Docker.DotNet\Docker.DotNet.csproj" />
   </ItemGroup>
 </Project>
