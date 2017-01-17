@@ -94,7 +94,6 @@ namespace Docker.DotNet.BasicAuth
         {
             return Value;
         }
-
 #endif
     }
 }
