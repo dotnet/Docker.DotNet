@@ -1,0 +1,53 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Docker.DotNet</id>
+    <version>$version$</version>
+    <title>Docker.DotNet</title>
+    <authors>Docker.DotNet</authors>
+    <owners>Docker.DotNet</owners>
+    <projectUrl>https://github.com/Microsoft/Docker.DotNet</projectUrl>
+    <licenseUrl>https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE</licenseUrl>
+    <iconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</iconUrl>
+    <summary>
+      Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically.
+    </summary>
+    <description>
+      Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically with fully asynchronous, non-blocking and object-oriented code in your .NET applications.
+    </description>
+    <copyright>Copyright Microsoft 2015</copyright>
+    <tags>Docker Container C# .NET</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard1.6">
+        <dependency id="NETStandard.Library" version="1.6.1" />
+        <dependency id="Newtonsoft.Json" version="9.0.1" />        
+        <dependency id="System.Buffers" version="4.3.0" />
+        <dependency id="System.IO.Pipes" version="4.3.0" />
+        <dependency id="System.Net.NameResolution" version="4.3.0" />
+        <dependency id="System.Net.Security" version="4.3.0" />
+        <dependency id="System.Reflection.TypeExtensions" version="4.3.0" />
+        <dependency id="System.Threading.Overlapped" version="4.3.0" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+      </group>
+      <group targetFramework=".NETFramework4.6">
+		<dependency id="System.Buffers" version="4.3.0" />
+		<dependency id="System.Runtime" version="4.3.0" />
+      </group>
+    </dependencies>
+	<frameworkAssemblies>
+		<frameworkAssembly assemblyName="System.Net.Http" targetFramework="net" />
+		<frameworkAssembly assemblyName="System.Runtime.Serialization" targetFramework="net" />
+		<frameworkAssembly assemblyName="System" targetFramework="net" />
+		<frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="net" />
+	</frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="src\Docker.DotNet\bin\Release\netstandard1.6\Docker.DotNet.dll" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet\bin\Release\netstandard1.6\Docker.DotNet.pdb" target="lib\netstandard1.6" />
+    <file src="src\Docker.DotNet\bin\Release\net45\Docker.DotNet.dll" target="lib\net45" />
+    <file src="src\Docker.DotNet\bin\Release\net45\Docker.DotNet.pdb" target="lib\net45" />
+    <file src="src\Docker.DotNet\bin\Release\net46\Docker.DotNet.dll" target="lib\net46" />
+    <file src="src\Docker.DotNet\bin\Release\net46\Docker.DotNet.pdb" target="lib\net46" />
+  </files>
+</package>

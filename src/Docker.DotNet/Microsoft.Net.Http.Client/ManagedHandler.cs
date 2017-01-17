@@ -20,27 +20,17 @@ namespace Microsoft.Net.Http.Client
 
         public ManagedHandler()
         {
-            _socketOpener = TCPSocketOpener;
+            _socketOpener = TCPSocketOpenerAsync;
         }
 
         public ManagedHandler(StreamOpener opener)
         {
-            if (opener == null)
-            {
-                throw new ArgumentNullException(nameof(opener));
-            }
-
-            _streamOpener = opener;
+            _streamOpener = opener ?? throw new ArgumentNullException(nameof(opener));
         }
 
         public ManagedHandler(SocketOpener opener)
         {
-            if (opener == null)
-            {
-                throw new ArgumentNullException(nameof(opener));
-            }
-
-            _socketOpener = opener;
+            _socketOpener = opener ?? throw new ArgumentNullException(nameof(opener));
         }
 
         public IWebProxy Proxy
@@ -327,7 +317,7 @@ namespace Microsoft.Net.Http.Client
             return ProxyMode.Tunnel;
         }
 
-        private static async Task<Socket> TCPSocketOpener(string host, int port, CancellationToken cancellationToken)
+        private static async Task<Socket> TCPSocketOpenerAsync(string host, int port, CancellationToken cancellationToken)
         {
             var addresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
             if (addresses.Length == 0)
