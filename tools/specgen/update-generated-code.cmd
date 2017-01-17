@@ -1,3 +1,3 @@
 go build
-specgen.exe ..\..\Docker.DotNet\Models
+specgen.exe ..\..\src\Docker.DotNet\Models
 del specgen.exe

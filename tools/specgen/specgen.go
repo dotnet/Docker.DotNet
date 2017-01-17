@@ -13,6 +13,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/registry"
+	"github.com/docker/docker/api/types/swarm"
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
@@ -210,6 +211,30 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(VolumeResponse{}), "VolumeResponse"},
 
 	// DELETE /volumes/(id)
+
+	//
+	// Swarm API
+	//
+
+	// POST /swarm/init
+	{reflect.TypeOf(swarm.InitRequest{}), "SwarmInitParameters"},
+
+	// POST /swarm/join
+	{reflect.TypeOf(swarm.JoinRequest{}), "SwarmJoinParameters"},
+
+	// POST /swarm/leave
+	{reflect.TypeOf(SwarmLeaveParameters{}), "SwarmLeaveParameters"},
+
+	// GET /swarm
+
+	// GET /swarm/unlockkey
+	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockResponse"},
+
+	// POST /swarm/update
+	{reflect.TypeOf(SwarmUpdateParameters{}), "SwarmUpdateParameters"},
+
+	// POST /swarm/unlock
+	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockParameters"},
 }
 
 func csType(t reflect.Type, opt bool) CSType {
