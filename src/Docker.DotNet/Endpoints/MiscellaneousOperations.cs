@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using Newtonsoft.Json;
 
 namespace Docker.DotNet
 {
@@ -44,7 +45,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
         }
 
-        public Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken)
+        public async Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventMessage> eventReport = null)
         {
             if (parameters == null)
             {
@@ -52,7 +53,21 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
+            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
+
+            using (var reader = new StreamReader(responseStream))
+            {
+                while (responseStream.CanRead && !reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (eventReport == null) continue;
+
+                    var @event = JsonConvert.DeserializeObject<EventMessage>(line);
+                    if (@event == null) continue;
+
+                    eventReport.Report(@event);
+                }
+            }
         }
 
         public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters)
