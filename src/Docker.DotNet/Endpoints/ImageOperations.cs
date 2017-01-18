@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Docker.DotNet
 {
@@ -109,28 +110,52 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImageSearchResponse[]>(response.Body);
         }
 
-        public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig);
+            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig, progress);
         }
 
-        public Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig)
+        public async Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
             }
+
+            var report = new ImageOperationProgress();
 
             IQueryString queryParameters = new QueryString<ImagesPullParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+            var reader = new StreamReader(responseStream);
+            while (responseStream.CanRead && !reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (progress == null) continue;
+
+                var @event = JObject.Parse(line);
+                if (@event == null) continue;
+
+                report.Status = @event["status"]?.Value<string>();
+
+                var progressDetail = @event["progressDetail"];
+                if (progressDetail != null && progressDetail.HasValues)
+                {
+                    if (progressDetail["current"] != null)
+                        report.Current = progressDetail["current"].Value<int>();
+
+                    if (progressDetail["total"] != null)
+                        report.Total = progressDetail["total"].Value<int>();
+                }
+                progress.Report(report);
+            }
         }
 
-        public Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig)
+        public async Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -142,8 +167,32 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
+            var report = new ImageOperationProgress();
+
             IQueryString queryParameters = new QueryString<ImagePushParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+            var reader = new StreamReader(responseStream);
+            while (responseStream.CanRead && !reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (progress == null) continue;
+
+                var @event = JObject.Parse(line);
+                if (@event == null) continue;
+
+                report.Status = @event["status"]?.Value<string>();
+
+                var progressDetail = @event["progressDetail"];
+                if (progressDetail != null && progressDetail.HasValues)
+                {
+                    if (progressDetail["current"] != null)
+                        report.Current = progressDetail["current"].Value<int>();
+
+                    if (progressDetail["total"] != null)
+                        report.Total = progressDetail["total"].Value<int>();
+                }
+                progress.Report(report);
+            }
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)

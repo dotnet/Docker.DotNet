@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using System;
 
 namespace Docker.DotNet
 {
@@ -19,10 +19,10 @@ namespace Docker.DotNet
 
         Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters);
 
-        Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig);
+        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null);
 
-        Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig);
+        Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null);
 
-        Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig);
+        Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null);
     }
 }
