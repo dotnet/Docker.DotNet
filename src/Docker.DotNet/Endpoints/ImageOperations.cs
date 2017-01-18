@@ -109,6 +109,17 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImageSearchResponse[]>(response.Body);
         }
 
+        [Obsolete("Use 'Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)'")]
+        public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig);
+        }
+
         public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
         {
             if (parameters == null)
@@ -119,17 +130,23 @@ namespace Docker.DotNet
             return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig, progress);
         }
 
-        public async Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
+        [Obsolete("Use 'Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)'")]
+        public Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
             }
 
+            IQueryString queryParameters = new QueryString<ImagesPullParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+        }
+
+        public async Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
+        {
             var report = new ImageOperationProgress();
 
-            IQueryString queryParameters = new QueryString<ImagesPullParameters>(parameters);
-            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+            var responseStream = await PullImageAsync(parameters, authConfig);
             using (var reader = new StreamReader(responseStream))
             {
                 while (responseStream.CanRead && !reader.EndOfStream)
@@ -156,7 +173,8 @@ namespace Docker.DotNet
             }
         }
 
-        public async Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
+        [Obsolete("Use 'Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)'")]
+        public Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -168,10 +186,15 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
+            IQueryString queryParameters = new QueryString<ImagePushParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+        }
+
+        public async Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null)
+        {
             var report = new ImageOperationProgress();
 
-            IQueryString queryParameters = new QueryString<ImagePushParameters>(parameters);
-            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+            var responseStream = await PushImageAsync(name, parameters, authConfig);
             using (var reader = new StreamReader(responseStream))
             {
                 while (responseStream.CanRead && !reader.EndOfStream)

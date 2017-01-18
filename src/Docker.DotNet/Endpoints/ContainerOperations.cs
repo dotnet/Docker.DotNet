@@ -239,7 +239,8 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Delete, $"containers/{id}", queryParameters);
         }
 
-        public async Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> logReport = null)
+        [Obsolete("Use 'Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> logReport = null)'")]
+        public Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -252,15 +253,20 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ContainerLogsParameters>(parameters);
-            var responseStream = await _client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, null, cancellationToken);
+            return this._client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, null, cancellationToken);
+        }
+
+        public async Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress = null)
+        {
+            var responseStream = await GetContainerLogsAsync(id, parameters, cancellationToken);
             using (var reader = new StreamReader(responseStream))
             {
                 while (responseStream.CanRead && !reader.EndOfStream)
                 {
                     var line = await reader.ReadLineAsync();
-                    if (logReport == null) continue;
+                    if (progress == null) continue;
 
-                    logReport.Report(line);
+                    progress.Report(line);
                 }
             }
         }
@@ -423,7 +429,8 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"exec/{id}/resize", queryParameters, null, null, cancellationToken);
         }
 
-        public async Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<ContainerStatsResponse> statsReport = null)
+        [Obsolete("Use 'Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<ContainerStatsResponse> statsReport = null)'")]
+        public Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -436,19 +443,24 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ContainerStatsParameters>(parameters);
-            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, cancellationToken);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, cancellationToken);
+        }
+
+        public async Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<ContainerStatsResponse> progress = null)
+        {
+            var responseStream = await GetContainerStatsAsync(id, parameters, cancellationToken);
 
             using (var reader = new StreamReader(responseStream))
             {
                 while (responseStream.CanRead && !reader.EndOfStream)
                 {
                     var line = await reader.ReadLineAsync();
-                    if (statsReport == null) continue;
+                    if (progress == null) continue;
 
                     var report = JsonConvert.DeserializeObject<ContainerStatsResponse>(line);
                     if (report == null) continue;
 
-                    statsReport.Report(report);
+                    progress.Report(report);
                 }
             }
         }

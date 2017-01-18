@@ -45,7 +45,8 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
         }
 
-        public async Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventMessage> eventReport = null)
+        [Obsolete("Use 'Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventMessage> progress = null)'")]
+        public Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken)
         {
             if (parameters == null)
             {
@@ -53,19 +54,24 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters);
-            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
+        }
+
+        public async Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventMessage> progress = null)
+        {
+            var responseStream = await MonitorEventsAsync(parameters, cancellationToken);
 
             using (var reader = new StreamReader(responseStream))
             {
                 while (responseStream.CanRead && !reader.EndOfStream)
                 {
                     var line = await reader.ReadLineAsync();
-                    if (eventReport == null) continue;
+                    if (progress == null) continue;
 
                     var @event = JsonConvert.DeserializeObject<EventMessage>(line);
                     if (@event == null) continue;
 
-                    eventReport.Report(@event);
+                    progress.Report(@event);
                 }
             }
         }
@@ -105,7 +111,7 @@ namespace Docker.DotNet
         {
             return LoadImageFromTarball(stream, new ImageLoadParameters { Quiet = true }, cancellationToken);
         }
-
+        
         public Task<Stream> LoadImageFromTarball(Stream stream, ImageLoadParameters parameters, CancellationToken cancellationToken)
         {
             if (stream == null)
