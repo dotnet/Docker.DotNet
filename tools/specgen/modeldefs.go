@@ -4,6 +4,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
+	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/go-units"
 )
 
@@ -271,4 +272,18 @@ type VolumeResponse types.Volume
 type VolumesListResponse struct {
 	Volumes  []*VolumeResponse
 	Warnings []string
+}
+
+// SwarmLeaveParameters for POST /swarm/leave
+type SwarmLeaveParameters struct {
+	Force bool `rest:"body"`
+}
+
+// SwarmUpdateParameters for POST /swarm/update
+type SwarmUpdateParameters struct {
+	Spec                   swarm.Spec `rest:"body,spec,required"`
+	Version                int64      `rest:"query,version,required"`
+	RotateWorkerToken      bool       `rest:"query"`
+	RotateManagerToken     bool       `rest:"query"`
+	RotateManagerUnlockKey bool       `rest:"query"`
 }
