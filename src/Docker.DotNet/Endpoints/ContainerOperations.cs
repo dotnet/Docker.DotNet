@@ -238,7 +238,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Delete, $"containers/{id}", queryParameters);
         }
 
-        public Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken)
+        public async Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> logReport = null)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -251,7 +251,15 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ContainerLogsParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, null, cancellationToken);
+            var responseStream = await _client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, null, cancellationToken);
+            var reader = new StreamReader(responseStream);
+            while (responseStream.CanRead && !reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (logReport == null) continue;
+                                
+                logReport.Report(line);
+            }
         }
 
         public async Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken)

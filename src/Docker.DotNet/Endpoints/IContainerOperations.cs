@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using System;
 
 namespace Docker.DotNet
 {
@@ -38,7 +39,7 @@ namespace Docker.DotNet
 
         Task RemoveContainerAsync(string id, ContainerRemoveParameters parameters);
 
-        Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken);
+        Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> logReport = null);
 
         Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken);
 

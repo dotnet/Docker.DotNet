@@ -64,7 +64,6 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImageHistoryResponse[]>(response.Body);
         }
 
-
         public Task TagImageAsync(string name, ImageTagParameters parameters)
         {
             if (string.IsNullOrEmpty(name))
