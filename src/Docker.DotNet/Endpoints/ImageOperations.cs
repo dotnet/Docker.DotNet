@@ -130,27 +130,29 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ImagesPullParameters>(parameters);
             var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
-            var reader = new StreamReader(responseStream);
-            while (responseStream.CanRead && !reader.EndOfStream)
+            using (var reader = new StreamReader(responseStream))
             {
-                var line = await reader.ReadLineAsync();
-                if (progress == null) continue;
-
-                var @event = JObject.Parse(line);
-                if (@event == null) continue;
-
-                report.Status = @event["status"]?.Value<string>();
-
-                var progressDetail = @event["progressDetail"];
-                if (progressDetail != null && progressDetail.HasValues)
+                while (responseStream.CanRead && !reader.EndOfStream)
                 {
-                    if (progressDetail["current"] != null)
-                        report.Current = progressDetail["current"].Value<int>();
+                    var line = await reader.ReadLineAsync();
+                    if (progress == null) continue;
 
-                    if (progressDetail["total"] != null)
-                        report.Total = progressDetail["total"].Value<int>();
+                    var @event = JObject.Parse(line);
+                    if (@event == null) continue;
+
+                    report.Status = @event["status"]?.Value<string>();
+
+                    var progressDetail = @event["progressDetail"];
+                    if (progressDetail != null && progressDetail.HasValues)
+                    {
+                        if (progressDetail["current"] != null)
+                            report.Current = progressDetail["current"].Value<int>();
+
+                        if (progressDetail["total"] != null)
+                            report.Total = progressDetail["total"].Value<int>();
+                    }
+                    progress.Report(report);
                 }
-                progress.Report(report);
             }
         }
 
@@ -170,27 +172,29 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ImagePushParameters>(parameters);
             var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
-            var reader = new StreamReader(responseStream);
-            while (responseStream.CanRead && !reader.EndOfStream)
+            using (var reader = new StreamReader(responseStream))
             {
-                var line = await reader.ReadLineAsync();
-                if (progress == null) continue;
-
-                var @event = JObject.Parse(line);
-                if (@event == null) continue;
-
-                report.Status = @event["status"]?.Value<string>();
-
-                var progressDetail = @event["progressDetail"];
-                if (progressDetail != null && progressDetail.HasValues)
+                while (responseStream.CanRead && !reader.EndOfStream)
                 {
-                    if (progressDetail["current"] != null)
-                        report.Current = progressDetail["current"].Value<int>();
+                    var line = await reader.ReadLineAsync();
+                    if (progress == null) continue;
 
-                    if (progressDetail["total"] != null)
-                        report.Total = progressDetail["total"].Value<int>();
+                    var @event = JObject.Parse(line);
+                    if (@event == null) continue;
+
+                    report.Status = @event["status"]?.Value<string>();
+
+                    var progressDetail = @event["progressDetail"];
+                    if (progressDetail != null && progressDetail.HasValues)
+                    {
+                        if (progressDetail["current"] != null)
+                            report.Current = progressDetail["current"].Value<int>();
+
+                        if (progressDetail["total"] != null)
+                            report.Total = progressDetail["total"].Value<int>();
+                    }
+                    progress.Report(report);
                 }
-                progress.Report(report);
             }
         }
 

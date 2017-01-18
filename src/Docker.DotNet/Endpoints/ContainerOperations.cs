@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Docker.DotNet
 {
@@ -252,13 +253,15 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ContainerLogsParameters>(parameters);
             var responseStream = await _client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, null, cancellationToken);
-            var reader = new StreamReader(responseStream);
-            while (responseStream.CanRead && !reader.EndOfStream)
+            using (var reader = new StreamReader(responseStream))
             {
-                var line = await reader.ReadLineAsync();
-                if (logReport == null) continue;
-                                
-                logReport.Report(line);
+                while (responseStream.CanRead && !reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (logReport == null) continue;
+
+                    logReport.Report(line);
+                }
             }
         }
 
@@ -420,7 +423,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"exec/{id}/resize", queryParameters, null, null, cancellationToken);
         }
 
-        public Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken)
+        public async Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<ContainerStatsResponse> statsReport = null)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -433,7 +436,21 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ContainerStatsParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, cancellationToken);
+            var responseStream = await _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, cancellationToken);
+
+            using (var reader = new StreamReader(responseStream))
+            {
+                while (responseStream.CanRead && !reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (statsReport == null) continue;
+
+                    var report = JsonConvert.DeserializeObject<ContainerStatsResponse>(line);
+                    if (report == null) continue;
+
+                    statsReport.Report(report);
+                }
+            }
         }
     }
 }
