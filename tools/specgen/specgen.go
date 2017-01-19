@@ -12,15 +12,15 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/api/types/swarm"
+	"github.com/docker/docker/pkg/jsonmessage"
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
 	{reflect.TypeOf(container.Config{}), "Volumes"}:        {"System.Collections.Generic", "IList<string>", false},
 	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
-	{reflect.TypeOf(events.Message{}), "Time"}:             {"System", "DateTime", false},
+	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Time"}:    {"System", "DateTime", false},
 	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
 	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:      {"", "FileSystemChangeKind", false},
 	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}: {"System", "DateTime", false},
@@ -138,7 +138,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// GET /events
 	{reflect.TypeOf(ContainerEventsParameters{}), "ContainerEventsParameters"},
-	{reflect.TypeOf(events.Message{}), "EventsMessage"},
+	{reflect.TypeOf(jsonmessage.JSONMessage{}), "JSONMessage"},
 
 	// POST /images/create
 	{reflect.TypeOf(ImageCreateParameters{}), "ImagesCreateParameters"},
@@ -287,7 +287,8 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 
-		if f.Type.Kind() == reflect.Func {
+		switch f.Type.Kind() {
+		case reflect.Func, reflect.Uintptr:
 			continue
 		}
 
