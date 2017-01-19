@@ -12,12 +12,14 @@ import (
 
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
+	"github.com/docker/engine-api/types/events"
 	"github.com/docker/engine-api/types/registry"
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
 	{reflect.TypeOf(container.Config{}), "Volumes"}:        {"System.Collections.Generic", "IList<string>", false},
 	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
+	{reflect.TypeOf(events.Message{}), "Time"}:             {"System", "DateTime", false},
 	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
 	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:      {"", "FileSystemChangeKind", false},
 	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}: {"System", "DateTime", false},
@@ -135,6 +137,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// GET /events
 	{reflect.TypeOf(ContainerEventsParameters{}), "ContainerEventsParameters"},
+	{reflect.TypeOf(events.Message{}), "EventsMessage"},
 
 	// POST /images/create
 	{reflect.TypeOf(ImageCreateParameters{}), "ImagesCreateParameters"},
