@@ -16,9 +16,10 @@ namespace Docker.DotNet
 
         Task<SystemInfoResponse> GetSystemInfoAsync();
 
+        [Obsolete("Use 'Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventsMessage> progress)'")]
         Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken);
 
-        Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventMessage> progress = null);
+        Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventsMessage> progress);
 
         Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters);
 

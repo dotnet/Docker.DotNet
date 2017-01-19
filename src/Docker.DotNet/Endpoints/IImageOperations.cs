@@ -18,18 +18,21 @@ namespace Docker.DotNet
 
         Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, ImageDeleteParameters parameters);
 
-        Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters);        
+        Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters);
 
+        [Obsolete("Use 'Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress)'")]
         Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig);
 
-        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null);
+        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress);
 
+        [Obsolete("Use 'Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress)'")]
         Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig);
 
-        Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null);
+        Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress);
 
+        [Obsolete("Use 'Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress)'")]
         Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig);
 
-        Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress = null);
+        Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress);
     }
 }
