@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Docker.DotNet.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -6,7 +7,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -63,7 +63,6 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImageHistoryResponse[]>(response.Body);
         }
 
-
         public Task TagImageAsync(string name, ImageTagParameters parameters)
         {
             if (string.IsNullOrEmpty(name))
@@ -119,6 +118,16 @@ namespace Docker.DotNet
             return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig);
         }
 
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig, progress);
+        }
+
         public Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig)
         {
             if (parameters == null)
@@ -128,6 +137,15 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ImagesPullParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+        }
+
+        public Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
+        {
+            return StreamUtil.MonitorStreamForMessages(
+                PullImageAsync(parameters, authConfig),
+                this._client,
+                default(CancellationToken),
+                progress);
         }
 
         public Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig)
@@ -144,6 +162,15 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ImagePushParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
+        }
+
+        public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
+        {
+            return StreamUtil.MonitorStreamForMessages(
+                PushImageAsync(name, parameters, authConfig),
+                this._client,
+                default(CancellationToken),
+                progress);
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)

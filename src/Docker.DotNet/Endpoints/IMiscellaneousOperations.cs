@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using System;
 
 namespace Docker.DotNet
 {
@@ -15,7 +16,10 @@ namespace Docker.DotNet
 
         Task<SystemInfoResponse> GetSystemInfoAsync();
 
+        [Obsolete("Use 'Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)'")]
         Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken);
+
+        Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress);
 
         Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters);
 

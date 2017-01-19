@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Docker.DotNet.Models;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -53,6 +53,15 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
+        }
+
+        public Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)
+        {
+            return StreamUtil.MonitorStreamForMessages(
+                MonitorEventsAsync(parameters, cancellationToken),
+                this._client,
+                cancellationToken,
+                progress);
         }
 
         public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters)

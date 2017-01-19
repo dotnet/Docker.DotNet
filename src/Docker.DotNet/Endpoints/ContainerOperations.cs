@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Docker.DotNet.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
-using System.Linq;
-using System.Text;
 
 namespace Docker.DotNet
 {
@@ -254,6 +254,15 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, null, cancellationToken);
         }
 
+        public Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress)
+        {
+            return StreamUtil.MonitorStream(
+                GetContainerLogsAsync(id, parameters, cancellationToken),
+                this._client,
+                cancellationToken,
+                progress);
+        }
+
         public async Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
@@ -426,6 +435,15 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ContainerStatsParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, cancellationToken);
+        }
+
+        public Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)
+        {
+            return StreamUtil.MonitorStreamForMessages(
+                GetContainerStatsAsync(id, parameters, cancellationToken),
+                this._client,
+                cancellationToken,
+                progress);
         }
     }
 }
