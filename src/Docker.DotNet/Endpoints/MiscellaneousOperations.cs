@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Docker.DotNet.Models;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -43,7 +43,7 @@ namespace Docker.DotNet
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "info", null).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
         }
-
+                
         public Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken)
         {
             if (parameters == null)
@@ -53,6 +53,25 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
+        }
+
+        public async Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<EventsMessage> progress)
+        {
+            var responseStream = await MonitorEventsAsync(parameters, cancellationToken);
+
+            using (var reader = new StreamReader(responseStream))
+            {
+                while (responseStream.CanRead && !reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (progress == null) continue;
+
+                    var @event = this._client.JsonSerializer.DeserializeObject<EventsMessage>(line);
+                    if (@event == null) continue;
+
+                    progress.Report(@event);
+                }
+            }
         }
 
         public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters)
@@ -90,7 +109,7 @@ namespace Docker.DotNet
         {
             return LoadImageFromTarball(stream, new ImageLoadParameters { Quiet = true }, cancellationToken);
         }
-
+        
         public Task<Stream> LoadImageFromTarball(Stream stream, ImageLoadParameters parameters, CancellationToken cancellationToken)
         {
             if (stream == null)

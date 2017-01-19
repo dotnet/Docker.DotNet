@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Docker.DotNet.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
-using System.Linq;
-using System.Text;
 
 namespace Docker.DotNet
 {
@@ -237,7 +237,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<ContainerRemoveParameters>(parameters);
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Delete, $"containers/{id}", queryParameters);
         }
-
+        
         public Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
@@ -252,6 +252,21 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ContainerLogsParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, null, cancellationToken);
+        }
+
+        public async Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress)
+        {
+            var responseStream = await GetContainerLogsAsync(id, parameters, cancellationToken);
+            using (var reader = new StreamReader(responseStream))
+            {
+                while (responseStream.CanRead && !reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (progress == null) continue;
+
+                    progress.Report(line);
+                }
+            }
         }
 
         public async Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken)
@@ -411,7 +426,7 @@ namespace Docker.DotNet
             var queryParameters = new QueryString<ContainerResizeParameters>(parameters);
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"exec/{id}/resize", queryParameters, null, null, cancellationToken);
         }
-
+        
         public Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
@@ -426,6 +441,25 @@ namespace Docker.DotNet
 
             IQueryString queryParameters = new QueryString<ContainerStatsParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, cancellationToken);
+        }
+
+        public async Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<ContainerStatsResponse> progress)
+        {
+            var responseStream = await GetContainerStatsAsync(id, parameters, cancellationToken);
+
+            using (var reader = new StreamReader(responseStream))
+            {
+                while (responseStream.CanRead && !reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    if (progress == null) continue;
+
+                    var report = this._client.JsonSerializer.DeserializeObject<ContainerStatsResponse>(line);
+                    if (report == null) continue;
+
+                    progress.Report(report);
+                }
+            }
         }
     }
 }
