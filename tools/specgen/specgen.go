@@ -10,20 +10,21 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/container"
-	"github.com/docker/engine-api/types/events"
-	"github.com/docker/engine-api/types/registry"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/registry"
+	"github.com/docker/docker/api/types/swarm"
+	"github.com/docker/docker/pkg/jsonmessage"
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
 	{reflect.TypeOf(container.Config{}), "Volumes"}:        {"System.Collections.Generic", "IList<string>", false},
 	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
-	{reflect.TypeOf(events.Message{}), "Time"}:             {"System", "DateTime", false},
+	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Time"}:    {"System", "DateTime", false},
 	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
 	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:      {"", "FileSystemChangeKind", false},
 	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}: {"System", "DateTime", false},
-	{reflect.TypeOf(types.Image{}), "Created"}:             {"System", "DateTime", false},
+	{reflect.TypeOf(types.ImageSummary{}), "Created"}:      {"System", "DateTime", false},
 	{reflect.TypeOf(types.ImageHistory{}), "Created"}:      {"System", "DateTime", false},
 	{reflect.TypeOf(types.ImageInspect{}), "Created"}:      {"System", "DateTime", false},
 }
@@ -42,7 +43,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /auth
 	{reflect.TypeOf(types.AuthConfig{}), "AuthConfig"},
-	{reflect.TypeOf(types.AuthResponse{}), "AuthResponse"},
+	{reflect.TypeOf(registry.AuthenticateOKBody{}), "AuthResponse"},
 
 	// POST /build
 	{reflect.TypeOf(ImageBuildParameters{}), "ImageBuildParameters"},
@@ -50,11 +51,11 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /commit
 	{reflect.TypeOf(ContainerCommitParamters{}), "CommitContainerChangesParameters"},
-	{reflect.TypeOf(types.ContainerCommitResponse{}), "CommitContainerChangesResponse"},
+	{reflect.TypeOf(types.IDResponse{}), "CommitContainerChangesResponse"},
 
 	// POST /containers/create
 	{reflect.TypeOf(ContainerCreateParameters{}), "CreateContainerParameters"},
-	{reflect.TypeOf(types.ContainerCreateResponse{}), "CreateContainerResponse"},
+	{reflect.TypeOf(container.ContainerCreateCreatedBody{}), "CreateContainerResponse"},
 
 	// GET /containers/json
 	{reflect.TypeOf(ContainerListParameters{}), "ContainersListParameters"},
@@ -82,7 +83,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /containers/(id)/exec
 	{reflect.TypeOf(ExecCreateParameters{}), "ContainerExecCreateParameters"},
-	{reflect.TypeOf(types.ContainerExecCreateResponse{}), "ContainerExecCreateResponse"},
+	{reflect.TypeOf(types.IDResponse{}), "ContainerExecCreateResponse"},
 
 	// GET /containers/(id)/json
 	{reflect.TypeOf(ContainerInspectParameters{}), "ContainerInspectParameters"},
@@ -124,10 +125,10 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /containers/(id)/update
 	{reflect.TypeOf(ContainerUpdateParameters{}), "ContainerUpdateParameters"},
-	{reflect.TypeOf(types.ContainerUpdateResponse{}), "ContainerUpdateResponse"},
+	{reflect.TypeOf(ContainerUpdateResponse{}), "ContainerUpdateResponse"},
 
 	// POST /containers/(id)/wait
-	{reflect.TypeOf(types.ContainerWaitResponse{}), "ContainerWaitResponse"},
+	{reflect.TypeOf(ContainerWaitResponse{}), "ContainerWaitResponse"},
 
 	// POST /exec/(id)/start
 	{reflect.TypeOf(ExecStartParameters{}), "ContainerExecStartParameters"},
@@ -137,7 +138,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// GET /events
 	{reflect.TypeOf(ContainerEventsParameters{}), "ContainerEventsParameters"},
-	{reflect.TypeOf(events.Message{}), "EventsMessage"},
+	{reflect.TypeOf(jsonmessage.JSONMessage{}), "JSONMessage"},
 
 	// POST /images/create
 	{reflect.TypeOf(ImageCreateParameters{}), "ImagesCreateParameters"},
@@ -149,7 +150,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// GET /images/json
 	{reflect.TypeOf(ImageListParameters{}), "ImagesListParameters"},
-	{reflect.TypeOf(types.Image{}), "ImagesListResponse"},
+	{reflect.TypeOf(types.ImageSummary{}), "ImagesListResponse"},
 
 	// POST /images/load
 	// TODO: headers: application/x-tar body.
@@ -207,12 +208,36 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(VolumesListResponse{}), "VolumesListResponse"},
 
 	// POST /volumes/create
-	{reflect.TypeOf(types.VolumeCreateRequest{}), "VolumesCreateParameters"},
+	{reflect.TypeOf(VolumeCreateRequest{}), "VolumesCreateParameters"},
 
 	// GET /volumes/(id)
 	{reflect.TypeOf(VolumeResponse{}), "VolumeResponse"},
 
 	// DELETE /volumes/(id)
+
+	//
+	// Swarm API
+	//
+
+	// POST /swarm/init
+	{reflect.TypeOf(swarm.InitRequest{}), "SwarmInitParameters"},
+
+	// POST /swarm/join
+	{reflect.TypeOf(swarm.JoinRequest{}), "SwarmJoinParameters"},
+
+	// POST /swarm/leave
+	{reflect.TypeOf(SwarmLeaveParameters{}), "SwarmLeaveParameters"},
+
+	// GET /swarm
+
+	// GET /swarm/unlockkey
+	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockResponse"},
+
+	// POST /swarm/update
+	{reflect.TypeOf(SwarmUpdateParameters{}), "SwarmUpdateParameters"},
+
+	// POST /swarm/unlock
+	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockParameters"},
 }
 
 func csType(t reflect.Type, opt bool) CSType {
@@ -262,7 +287,8 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 
-		if f.Type.Kind() == reflect.Func {
+		switch f.Type.Kind() {
+		case reflect.Func, reflect.Uintptr:
 			continue
 		}
 

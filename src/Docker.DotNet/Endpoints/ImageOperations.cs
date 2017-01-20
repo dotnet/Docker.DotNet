@@ -1,5 +1,4 @@
 ﻿using Docker.DotNet.Models;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -108,7 +107,7 @@ namespace Docker.DotNet
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "images/search", queryParameters).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ImageSearchResponse[]>(response.Body);
         }
-        
+
         public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig)
         {
             if (parameters == null)
@@ -119,7 +118,7 @@ namespace Docker.DotNet
             return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
         {
             if (parameters == null)
             {
@@ -128,7 +127,7 @@ namespace Docker.DotNet
 
             return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig, progress);
         }
-        
+
         public Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig)
         {
             if (parameters == null)
@@ -140,37 +139,15 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
         }
 
-        public async Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress)
+        public Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
         {
-            var report = new ImageOperationProgress();
-
-            var responseStream = await PullImageAsync(parameters, authConfig);
-            using (var reader = new StreamReader(responseStream))
-            {
-                while (responseStream.CanRead && !reader.EndOfStream)
-                {
-                    var line = await reader.ReadLineAsync();
-                    if (progress == null) continue;
-
-                    var @event = JObject.Parse(line);
-                    if (@event == null) continue;
-
-                    report.Status = @event["status"]?.Value<string>();
-
-                    var progressDetail = @event["progressDetail"];
-                    if (progressDetail != null && progressDetail.HasValues)
-                    {
-                        if (progressDetail["current"] != null)
-                            report.Current = progressDetail["current"].Value<int>();
-
-                        if (progressDetail["total"] != null)
-                            report.Total = progressDetail["total"].Value<int>();
-                    }
-                    progress.Report(report);
-                }
-            }
+            return StreamUtil.MonitorStreamForMessages(
+                PullImageAsync(parameters, authConfig),
+                this._client,
+                default(CancellationToken),
+                progress);
         }
-        
+
         public Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig)
         {
             if (string.IsNullOrEmpty(name))
@@ -187,35 +164,13 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
         }
 
-        public async Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<ImageOperationProgress> progress)
+        public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
         {
-            var report = new ImageOperationProgress();
-
-            var responseStream = await PushImageAsync(name, parameters, authConfig);
-            using (var reader = new StreamReader(responseStream))
-            {
-                while (responseStream.CanRead && !reader.EndOfStream)
-                {
-                    var line = await reader.ReadLineAsync();
-                    if (progress == null) continue;
-
-                    var @event = JObject.Parse(line);
-                    if (@event == null) continue;
-
-                    report.Status = @event["status"]?.Value<string>();
-
-                    var progressDetail = @event["progressDetail"];
-                    if (progressDetail != null && progressDetail.HasValues)
-                    {
-                        if (progressDetail["current"] != null)
-                            report.Current = progressDetail["current"].Value<int>();
-
-                        if (progressDetail["total"] != null)
-                            report.Total = progressDetail["total"].Value<int>();
-                    }
-                    progress.Report(report);
-                }
-            }
+            return StreamUtil.MonitorStreamForMessages(
+                PushImageAsync(name, parameters, authConfig),
+                this._client,
+                default(CancellationToken),
+                progress);
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)

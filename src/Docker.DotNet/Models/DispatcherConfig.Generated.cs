@@ -6,6 +6,6 @@ namespace Docker.DotNet.Models
     public class DispatcherConfig // (swarm.DispatcherConfig)
     {
         [DataMember(Name = "HeartbeatPeriod", EmitDefaultValue = false)]
-        public ulong HeartbeatPeriod { get; set; }
+        public long HeartbeatPeriod { get; set; }
     }
 }

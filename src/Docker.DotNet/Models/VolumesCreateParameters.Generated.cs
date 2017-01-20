@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class VolumesCreateParameters // (types.VolumeCreateRequest)
+    public class VolumesCreateParameters // (main.VolumeCreateRequest)
     {
         [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }

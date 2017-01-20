@@ -28,5 +28,11 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "tx_dropped", EmitDefaultValue = false)]
         public ulong TxDropped { get; set; }
+
+        [DataMember(Name = "endpoint_id", EmitDefaultValue = false)]
+        public string EndpointID { get; set; }
+
+        [DataMember(Name = "instance_id", EmitDefaultValue = false)]
+        public string InstanceID { get; set; }
     }
 }

@@ -81,9 +81,6 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "SystemTime", EmitDefaultValue = false)]
         public string SystemTime { get; set; }
 
-        [DataMember(Name = "ExecutionDriver", EmitDefaultValue = false)]
-        public string ExecutionDriver { get; set; }
-
         [DataMember(Name = "LoggingDriver", EmitDefaultValue = false)]
         public string LoggingDriver { get; set; }
 
@@ -147,9 +144,6 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ClusterAdvertise", EmitDefaultValue = false)]
         public string ClusterAdvertise { get; set; }
 
-        [DataMember(Name = "SecurityOptions", EmitDefaultValue = false)]
-        public IList<string> SecurityOptions { get; set; }
-
         [DataMember(Name = "Runtimes", EmitDefaultValue = false)]
         public IDictionary<string, Runtime> Runtimes { get; set; }
 
@@ -161,5 +155,23 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "LiveRestoreEnabled", EmitDefaultValue = false)]
         public bool LiveRestoreEnabled { get; set; }
+
+        [DataMember(Name = "Isolation", EmitDefaultValue = false)]
+        public string Isolation { get; set; }
+
+        [DataMember(Name = "InitBinary", EmitDefaultValue = false)]
+        public string InitBinary { get; set; }
+
+        [DataMember(Name = "ContainerdCommit", EmitDefaultValue = false)]
+        public Commit ContainerdCommit { get; set; }
+
+        [DataMember(Name = "RuncCommit", EmitDefaultValue = false)]
+        public Commit RuncCommit { get; set; }
+
+        [DataMember(Name = "InitCommit", EmitDefaultValue = false)]
+        public Commit InitCommit { get; set; }
+
+        [DataMember(Name = "SecurityOptions", EmitDefaultValue = false)]
+        public IList<string> SecurityOptions { get; set; }
     }
 }

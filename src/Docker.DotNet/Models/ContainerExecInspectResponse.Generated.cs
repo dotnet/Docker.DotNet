@@ -16,5 +16,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "ExitCode", EmitDefaultValue = false)]
         public long ExitCode { get; set; }
+
+        [DataMember(Name = "Pid", EmitDefaultValue = false)]
+        public long Pid { get; set; }
     }
 }

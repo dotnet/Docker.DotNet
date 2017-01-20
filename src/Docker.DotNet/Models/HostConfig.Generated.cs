@@ -16,6 +16,7 @@ namespace Docker.DotNet.Models
             {
                 this.CPUShares = Resources.CPUShares;
                 this.Memory = Resources.Memory;
+                this.NanoCPUs = Resources.NanoCPUs;
                 this.CgroupParent = Resources.CgroupParent;
                 this.BlkioWeight = Resources.BlkioWeight;
                 this.BlkioWeightDevice = Resources.BlkioWeightDevice;
@@ -25,6 +26,8 @@ namespace Docker.DotNet.Models
                 this.BlkioDeviceWriteIOps = Resources.BlkioDeviceWriteIOps;
                 this.CPUPeriod = Resources.CPUPeriod;
                 this.CPUQuota = Resources.CPUQuota;
+                this.CPURealtimePeriod = Resources.CPURealtimePeriod;
+                this.CPURealtimeRuntime = Resources.CPURealtimeRuntime;
                 this.CpusetCpus = Resources.CpusetCpus;
                 this.CpusetMems = Resources.CpusetMems;
                 this.Devices = Resources.Devices;
@@ -140,7 +143,7 @@ namespace Docker.DotNet.Models
         public string Runtime { get; set; }
 
         [DataMember(Name = "ConsoleSize", EmitDefaultValue = false)]
-        public long[] ConsoleSize { get; set; }
+        public ulong[] ConsoleSize { get; set; }
 
         [DataMember(Name = "Isolation", EmitDefaultValue = false)]
         public string Isolation { get; set; }
@@ -150,6 +153,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Memory", EmitDefaultValue = false)]
         public long Memory { get; set; }
+
+        [DataMember(Name = "NanoCpus", EmitDefaultValue = false)]
+        public long NanoCPUs { get; set; }
 
         [DataMember(Name = "CgroupParent", EmitDefaultValue = false)]
         public string CgroupParent { get; set; }
@@ -177,6 +183,12 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "CpuQuota", EmitDefaultValue = false)]
         public long CPUQuota { get; set; }
+
+        [DataMember(Name = "CpuRealtimePeriod", EmitDefaultValue = false)]
+        public long CPURealtimePeriod { get; set; }
+
+        [DataMember(Name = "CpuRealtimeRuntime", EmitDefaultValue = false)]
+        public long CPURealtimeRuntime { get; set; }
 
         [DataMember(Name = "CpusetCpus", EmitDefaultValue = false)]
         public string CpusetCpus { get; set; }
@@ -222,5 +234,14 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "IOMaximumBandwidth", EmitDefaultValue = false)]
         public ulong IOMaximumBandwidth { get; set; }
+
+        [DataMember(Name = "Mounts", EmitDefaultValue = false)]
+        public IList<Mount> Mounts { get; set; }
+
+        [DataMember(Name = "Init", EmitDefaultValue = false)]
+        public bool? Init { get; set; }
+
+        [DataMember(Name = "InitPath", EmitDefaultValue = false)]
+        public string InitPath { get; set; }
     }
 }

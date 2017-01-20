@@ -9,10 +9,10 @@ namespace Docker.DotNet.Models
         public string IP { get; set; }
 
         [DataMember(Name = "PrivatePort", EmitDefaultValue = false)]
-        public long PrivatePort { get; set; }
+        public ushort PrivatePort { get; set; }
 
         [DataMember(Name = "PublicPort", EmitDefaultValue = false)]
-        public long PublicPort { get; set; }
+        public ushort PublicPort { get; set; }
 
         [DataMember(Name = "Type", EmitDefaultValue = false)]
         public string Type { get; set; }
