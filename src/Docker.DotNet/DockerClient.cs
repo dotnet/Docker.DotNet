@@ -77,6 +77,12 @@ namespace Docker.DotNet
                     }
 
                     var serverName = uri.Host;
+                    if (string.Equals(serverName, "localhost", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // npipe schemes dont work with npipe://localhost/... and need npipe://./... so fix that for a client here.
+                        serverName = ".";
+                    }
+
                     var pipeName = uri.Segments[2];
 
                     uri = new UriBuilder("http", pipeName).Uri;
