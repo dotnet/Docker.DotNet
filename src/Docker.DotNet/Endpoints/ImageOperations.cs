@@ -141,7 +141,7 @@ namespace Docker.DotNet
 
         public Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
         {
-            return StreamUtil.MonitorStreamForMessages(
+            return StreamUtil.MonitorStreamForMessagesAsync(
                 PullImageAsync(parameters, authConfig),
                 this._client,
                 default(CancellationToken),
@@ -166,7 +166,7 @@ namespace Docker.DotNet
 
         public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
         {
-            return StreamUtil.MonitorStreamForMessages(
+            return StreamUtil.MonitorStreamForMessagesAsync(
                 PushImageAsync(name, parameters, authConfig),
                 this._client,
                 default(CancellationToken),

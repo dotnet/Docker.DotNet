@@ -23,7 +23,7 @@ namespace Docker.DotNet
 
         public DockerClientConfiguration Configuration { get; }
 
-        internal JsonSerializer JsonSerializer { get; private set; }
+        internal JsonSerializer JsonSerializer { get; }
 
         public IImageOperations Images { get; }
 
@@ -31,15 +31,9 @@ namespace Docker.DotNet
 
         public IMiscellaneousOperations Miscellaneous { get; }
 
-        public INetworkOperations Networks { get; private set; }
+        public INetworkOperations Networks { get; }
 
-        private readonly ApiResponseErrorHandlingDelegate _defaultErrorHandlingDelegate = (statusCode, body) =>
-        {
-            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
-            {
-                throw new DockerApiException(statusCode, body);
-            }
-        };
+        public ISwarmOperations Swarm { get; }
 
         private readonly HttpClient _client;
         private readonly TimeSpan _defaultTimeout;
@@ -59,6 +53,7 @@ namespace Docker.DotNet
             Containers = new ContainerOperations(this);
             Miscellaneous = new MiscellaneousOperations(this);
             Networks = new NetworkOperations(this);
+            Swarm = new SwarmOperations(this);
 
             ManagedHandler handler;
             var uri = Configuration.EndpointBaseUri;
@@ -168,6 +163,17 @@ namespace Docker.DotNet
 
         #region HTTP Calls
 
+        internal async Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data)
+        {
+            var response = await MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, headers, data, default(CancellationToken)).ConfigureAwait(false);
+
+            var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            HandleIfErrorResponse(response.StatusCode, body, errorHandlers);
+
+            return new DockerApiResponse(response.StatusCode, body);
+        }
+
         internal async Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IRequestContent data, TimeSpan? timeout, CancellationToken cancellationToken)
         {
             var response = await MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, null, data, cancellationToken).ConfigureAwait(false);
@@ -243,24 +249,23 @@ namespace Docker.DotNet
 
         #endregion
 
-        #region Error handling chain
-
         private void HandleIfErrorResponse(HttpStatusCode statusCode, string responseBody, IEnumerable<ApiResponseErrorHandlingDelegate> handlers)
         {
-            if (handlers == null)
+            // If no customer handlers just default the response.
+            if (handlers != null)
             {
-                throw new ArgumentNullException(nameof(handlers));
+                foreach (var handler in handlers)
+                {
+                    handler(statusCode, responseBody);
+                }
             }
 
-            foreach (var handler in handlers)
+            // No custom handler was fired. Default the response for generic success/failures.
+            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
             {
-                handler(statusCode, responseBody);
+                throw new DockerApiException(statusCode, responseBody);
             }
-
-            _defaultErrorHandlingDelegate(statusCode, responseBody);
         }
-
-        #endregion
 
         internal HttpRequestMessage PrepareRequest(HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data)
         {

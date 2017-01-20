@@ -287,3 +287,17 @@ type SwarmUpdateParameters struct {
 	RotateManagerToken     bool       `rest:"query"`
 	RotateManagerUnlockKey bool       `rest:"query"`
 }
+
+// ServiceCreateParameters for POST /services/create
+type ServiceCreateParameters struct {
+	Service      swarm.ServiceSpec `rest:"body,service,required"`
+	RegistryAuth types.AuthConfig  `rest:"headers,X-Registry-Auth"`
+}
+
+// ServiceUpdateParameters for POST /services/{id}/update
+type ServiceUpdateParameters struct {
+	Service          swarm.ServiceSpec `rest:"body,service,required"`
+	Version          int64             `rest:"query,version,required"`
+	RegistryAuthFrom string            `rest:"query"`
+	RegistryAuth     types.AuthConfig  `rest:"headers,X-Registry-Auth"`
+}
