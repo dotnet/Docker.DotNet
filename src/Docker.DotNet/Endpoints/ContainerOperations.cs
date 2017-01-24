@@ -256,7 +256,7 @@ namespace Docker.DotNet
 
         public Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress)
         {
-            return StreamUtil.MonitorStream(
+            return StreamUtil.MonitorStreamAsync(
                 GetContainerLogsAsync(id, parameters, cancellationToken),
                 this._client,
                 cancellationToken,
@@ -439,7 +439,7 @@ namespace Docker.DotNet
 
         public Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)
         {
-            return StreamUtil.MonitorStreamForMessages(
+            return StreamUtil.MonitorStreamForMessagesAsync(
                 GetContainerStatsAsync(id, parameters, cancellationToken),
                 this._client,
                 cancellationToken,

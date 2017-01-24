@@ -238,6 +238,22 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /swarm/unlock
 	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockParameters"},
+
+	// GET /services
+	// {reflect.TypeOf([]swarm.Service{}), "SwarmServices"},
+
+	// GET /services/(id)
+	{reflect.TypeOf(swarm.Service{}), "SwarmService"},
+
+	// POST /services/create
+	{reflect.TypeOf(ServiceCreateParameters{}), "ServiceCreateParameters"},
+	{reflect.TypeOf(types.ServiceCreateResponse{}), "ServiceCreateResponse"},
+
+	// POST /services/(id)/update
+	{reflect.TypeOf(ServiceUpdateParameters{}), "ServiceUpdateParameters"},
+	{reflect.TypeOf(types.ServiceUpdateResponse{}), "ServiceUpdateResponse"},
+
+	// DELETE /services/(id)
 }
 
 func csType(t reflect.Type, opt bool) CSType {

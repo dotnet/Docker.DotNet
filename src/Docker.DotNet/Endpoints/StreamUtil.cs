@@ -9,7 +9,7 @@ namespace Docker.DotNet.Models
 {
     internal static class StreamUtil
     {
-        internal static async Task MonitorStream(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
+        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
         {
             using (var stream = await streamTask)
             {
@@ -28,7 +28,7 @@ namespace Docker.DotNet.Models
             }
         }
 
-        internal static async Task MonitorStreamForMessages<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
+        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
         {
             using (var stream = await streamTask)
             {
