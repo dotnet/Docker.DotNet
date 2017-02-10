@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <Description>Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically with fully asynchronous, non-blocking and object-oriented code in your .NET applications.</Description>
     <TargetFrameworks>net45;net46;netstandard1.6</TargetFrameworks>
@@ -11,6 +11,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(version)' != ''">
     <VersionPrefix>$(version)</VersionPrefix>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" />

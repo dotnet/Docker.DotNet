@@ -35,8 +35,10 @@ namespace Docker.DotNet
 
         public ISwarmOperations Swarm { get; }
 
+        public TimeSpan DefaultTimeout { get { return _defaultTimeout; } set { _defaultTimeout = value; } }
+
         private readonly HttpClient _client;
-        private readonly TimeSpan _defaultTimeout;
+        private TimeSpan _defaultTimeout;
 
         private readonly Uri _endpointBaseUri;
 
@@ -133,15 +135,15 @@ namespace Docker.DotNet
             _endpointBaseUri = uri;
 
             _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
-            _defaultTimeout = _client.Timeout;
+            _defaultTimeout = Configuration.DefaultTimeout;
             _client.Timeout = s_InfiniteTimeout;
         }
 
         #region Convenience methods
 
-        internal Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString)
+        internal Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return MakeRequestAsync(errorHandlers, method, path, queryString, null, null, CancellationToken.None);
+            return MakeRequestAsync(errorHandlers, method, path, queryString, cancellationToken);
         }
 
         internal Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IRequestContent data)
@@ -163,9 +165,9 @@ namespace Docker.DotNet
 
         #region HTTP Calls
 
-        internal async Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data)
+        internal async Task<DockerApiResponse> MakeRequestAsync(IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers, HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, headers, data, default(CancellationToken)).ConfigureAwait(false);
+            var response = await MakeRequestInnerAsync(null, HttpCompletionOption.ResponseContentRead, method, path, queryString, headers, data, cancellationToken).ConfigureAwait(false);
 
             var body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
