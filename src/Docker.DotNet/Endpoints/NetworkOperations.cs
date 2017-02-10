@@ -38,7 +38,7 @@ namespace Docker.DotNet
             }
 
             var data = new JsonRequestContent<NetworkConnectParameters>(parameters, this._client.JsonSerializer);
-            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, $"networks/{id}/connect", null, data);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Post, $"networks/{id}/connect", null, data);
         }
 
         public async Task<NetworksCreateResponse> CreateNetworkAsync(NetworksCreateParameters parameters)
@@ -76,7 +76,7 @@ namespace Docker.DotNet
             }
 
             var data = new JsonRequestContent<NetworkDisconnectParameters>(parameters, this._client.JsonSerializer);
-            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, $"networks/{id}/disconnect", null, data);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Post, $"networks/{id}/disconnect", null, data);
         }
 
         public async Task<NetworkResponse> InspectNetworkAsync(string id)
