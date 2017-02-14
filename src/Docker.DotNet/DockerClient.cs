@@ -35,10 +35,9 @@ namespace Docker.DotNet
 
         public ISwarmOperations Swarm { get; }
 
-        public TimeSpan DefaultTimeout { get { return _defaultTimeout; } set { _defaultTimeout = value; } }
+        public TimeSpan DefaultTimeout { get; set; }
 
         private readonly HttpClient _client;
-        private TimeSpan _defaultTimeout;
 
         private readonly Uri _endpointBaseUri;
 
@@ -135,7 +134,7 @@ namespace Docker.DotNet
             _endpointBaseUri = uri;
 
             _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
-            _defaultTimeout = Configuration.DefaultTimeout;
+            DefaultTimeout = Configuration.DefaultTimeout;
             _client.Timeout = s_InfiniteTimeout;
         }
 
@@ -234,7 +233,7 @@ namespace Docker.DotNet
             }
             else
             {
-                cancellationToken = CreateTimeoutToken(cancellationToken, _defaultTimeout);
+                cancellationToken = CreateTimeoutToken(cancellationToken, DefaultTimeout);
             }
 
             return _client.SendAsync(request, completionOption, cancellationToken);
