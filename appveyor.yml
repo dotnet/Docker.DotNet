@@ -2,14 +2,9 @@ version: '2.124.2.{build}'
 pull_requests:
   do_not_increment_build_number: true
 init:
-- ps: (new-object net.webclient).DownloadFile('https://go.microsoft.com/fwlink/?linkid=838401', "c:/dotnet-install.exe")
-- ps: Start-Process c:\dotnet-install.exe -ArgumentList "/install","/quiet" -Wait
+- ps: (new-object net.webclient).DownloadFile('https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain/dotnet-install.ps1', "C:/dotnet-install.ps1")
+- ps: C:/dotnet-install.ps1 -Channel preview -Version 1.0.0-rc4-004771
 build_script:
 - ps: dotnet restore --no-cache
-- ps: dotnet build .\src\Docker.DotNet\Docker.DotNet.csproj -c Release
-- ps: dotnet build .\src\Docker.DotNet.X509\Docker.DotNet.X509.csproj -c Release
-- ps: dotnet build .\src\Docker.DotNet.BasicAuth\Docker.DotNet.BasicAuth.csproj -c Release
-- ps: dotnet build .\test\Docker.DotNet.Tests\Docker.DotNet.Tests.csproj -c Release
-- ps: nuget pack Docker.DotNet.nuspec -properties version=$($env:appveyor_build_version)
-- ps: nuget pack Docker.DotNet.BasicAuth.nuspec -properties version=$($env:appveyor_build_version)
-- ps: nuget pack Docker.DotNet.X509.nuspec -properties version=$($env:appveyor_build_version)
+- ps: dotnet build -c Release
+- ps: dotnet pack -c Release -o $pwd /p:version=$($env:appveyor_build_version)

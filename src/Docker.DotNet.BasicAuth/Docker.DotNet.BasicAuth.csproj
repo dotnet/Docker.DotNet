@@ -1,13 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Docker.DotNet.BasicAuth</PackageId>
     <Description>Docker.DotNet.BasicAuth is a library that allows you to use basic authentication with a remote Docker engine programmatically in your .NET applications.</Description>
     <TargetFrameworks>netstandard1.6;net46;net45</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>Docker.DotNet.BasicAuth</AssemblyName>
     <PackageIconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright Microsoft 2015</Copyright>
+    <PackageTags>Docker Container C# .NET</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Microsoft/Docker.DotNet/tree/master/Docker.DotNet.BasicAuth</RepositoryUrl>
+    <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(version)' != ''">
     <VersionPrefix>$(version)</VersionPrefix>
@@ -16,23 +21,18 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="**\*.cs" />
-    <EmbeddedResource Include="**\*.resx" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <PackageReference Include="NETStandard.Library" Version="1.6.1" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Docker.DotNet\Docker.DotNet.csproj" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <Reference Include="System.Runtime" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 </Project>
