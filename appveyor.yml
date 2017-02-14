@@ -7,4 +7,4 @@ init:
 build_script:
 - ps: dotnet restore --no-cache
 - ps: dotnet build -c Release
-- ps: dotnet pack -c Release -o $pwd /p:version=$(appveyor_build_version)
+- ps: dotnet pack -c Release -o $pwd /p:version=$($env:appveyor_build_version)
