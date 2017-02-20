@@ -374,7 +374,7 @@ namespace Docker.DotNet
 
         [Obsolete("Use 'Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)'")]
         Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken);
-
+        
         /// <summary>
         /// Get container stats based on resource usage.
         ///
@@ -392,5 +392,7 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
         Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task RenameContainerAsync(string id, ContainerRenameParameters parameters, CancellationToken cancellationToken);
     }
 }
