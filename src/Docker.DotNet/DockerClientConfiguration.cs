@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Docker.DotNet
 {
@@ -10,22 +11,23 @@ namespace Docker.DotNet
 
         public TimeSpan DefaultTimeout { get; internal set; } = TimeSpan.FromSeconds(100);
 
-        public DockerClientConfiguration(Uri endpoint, TimeSpan defaultTimeout) : this(endpoint, null, defaultTimeout) { }
-
-        public DockerClientConfiguration(Uri endpoint) : this(endpoint, null) { }
-
-        public DockerClientConfiguration(Uri endpoint, Credentials credentials) : this(endpoint, credentials, TimeSpan.FromSeconds(100)) { }
-
-        public DockerClientConfiguration(Uri endpoint, Credentials credentials, TimeSpan defaultTimeout)
+        public DockerClientConfiguration(Uri endpoint, Credentials credentials = null,
+            TimeSpan defaultTimeout = default(TimeSpan))
         {
             if (endpoint == null)
-            {
                 throw new ArgumentNullException(nameof(endpoint));
-            }
+
 
             Credentials = credentials ?? new AnonymousCredentials();
             EndpointBaseUri = endpoint;
-            DefaultTimeout = defaultTimeout;
+            if (defaultTimeout != TimeSpan.Zero)
+            {
+                if (defaultTimeout < Timeout.InfiniteTimeSpan)
+                    // TODO: Should be a resource for localization.
+                    // TODO: Is this a good message?
+                    throw new ArgumentException("Timeout must be greater than Timeout.Infinite", nameof(defaultTimeout));
+                DefaultTimeout = defaultTimeout;
+            }
         }
 
         public DockerClient CreateClient()
