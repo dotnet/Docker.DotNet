@@ -29,7 +29,7 @@ namespace Docker.DotNet
             this._client = client;
         }
 
-        public async Task<IList<ImagesListResponse>> ListImagesAsync(ImagesListParameters parameters)
+        public async Task<IList<ImagesListResponse>> ListImagesAsync(ImagesListParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (parameters == null)
             {
@@ -37,33 +37,33 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImagesListParameters>(parameters);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "images/json", queryParameters).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "images/json", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ImagesListResponse[]>(response.Body);
         }
 
-        public async Task<ImageInspectResponse> InspectImageAsync(string name)
+        public async Task<ImageInspectResponse> InspectImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Get, $"images/{name}/json", null).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Get, $"images/{name}/json", null, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ImageInspectResponse>(response.Body);
         }
 
-        public async Task<IList<ImageHistoryResponse>> GetImageHistoryAsync(string name)
+        public async Task<IList<ImageHistoryResponse>> GetImageHistoryAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Get, $"images/{name}/history", null).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Get, $"images/{name}/history", null, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ImageHistoryResponse[]>(response.Body);
         }
 
-        public Task TagImageAsync(string name, ImageTagParameters parameters)
+        public Task TagImageAsync(string name, ImageTagParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -76,10 +76,10 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImageTagParameters>(parameters);
-            return this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Post, $"images/{name}/tag", queryParameters);
+            return this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Post, $"images/{name}/tag", queryParameters, cancellationToken);
         }
 
-        public async Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, ImageDeleteParameters parameters)
+        public async Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, ImageDeleteParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -92,11 +92,11 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImageDeleteParameters>(parameters);
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Delete, $"images/{name}", queryParameters).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Delete, $"images/{name}", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<Dictionary<string, string>[]>(response.Body);
         }
 
-        public async Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters)
+        public async Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (parameters == null)
             {
@@ -104,7 +104,7 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImagesSearchParameters>(parameters);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "images/search", queryParameters).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "images/search", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ImageSearchResponse[]>(response.Body);
         }
 
@@ -118,14 +118,14 @@ namespace Docker.DotNet
             return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig, progress);
+            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig, progress, cancellationToken);
         }
 
         public Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig)
@@ -139,12 +139,12 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
         }
 
-        public Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
+        public Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             return StreamUtil.MonitorStreamForMessagesAsync(
                 PullImageAsync(parameters, authConfig),
                 this._client,
-                default(CancellationToken),
+                cancellationToken,
                 progress);
         }
 
@@ -164,12 +164,12 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, RegistryAuthHeaders(authConfig), null, CancellationToken.None);
         }
 
-        public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress)
+        public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             return StreamUtil.MonitorStreamForMessagesAsync(
                 PushImageAsync(name, parameters, authConfig),
                 this._client,
-                default(CancellationToken),
+                cancellationToken,
                 progress);
         }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using System.Threading;
 
 namespace Docker.DotNet
 {
@@ -16,7 +17,7 @@ namespace Docker.DotNet
         /// 500 - Server Error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<SwarmUnlockResponse> GetSwarmUnlockKeyAsync();
+        Task<SwarmUnlockResponse> GetSwarmUnlockKeyAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Initialize a new swarm.
@@ -29,7 +30,7 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="parameters">The join parameters.</param>
         /// <returns>The node id.</returns>
-        Task<string> InitSwarmAsync(SwarmInitParameters parameters);
+        Task<string> InitSwarmAsync(SwarmInitParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inspect swarm.
@@ -40,7 +41,7 @@ namespace Docker.DotNet
         /// 500 - Server Error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<ClusterInfo> InspectSwarmAsync();
+        Task<ClusterInfo> InspectSwarmAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Join an existing swarm.
@@ -51,7 +52,7 @@ namespace Docker.DotNet
         /// 503 - Node is already part of a swarm.
         /// </remarks>
         /// <param name="parameters">The join parameters.</param>
-        Task JoinSwarmAsync(SwarmJoinParameters parameters);
+        Task JoinSwarmAsync(SwarmJoinParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Leave a swarm.
@@ -62,7 +63,7 @@ namespace Docker.DotNet
         /// 503 - Node not part of a swarm.
         /// </remarks>
         /// <param name="parameters">The leave parameters.</param>
-        Task LeaveSwarmAsync(SwarmLeaveParameters parameters = null);
+        Task LeaveSwarmAsync(SwarmLeaveParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Unlock a locked manager.
@@ -73,7 +74,7 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         /// <param name="parameters">The swarm's unlock key.</param>
-        Task UnlockSwarmAsync(SwarmUnlockParameters parameters);
+        Task UnlockSwarmAsync(SwarmUnlockParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a swarm.
@@ -85,7 +86,7 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         /// <param name="parameters">The update parameters.</param>
-        Task UpdateSwarmAsync(SwarmUpdateParameters parameters);
+        Task UpdateSwarmAsync(SwarmUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion Swarm
 
@@ -102,7 +103,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<ServiceCreateResponse> CreateServiceAsync(ServiceCreateParameters parameters);
+        Task<ServiceCreateResponse> CreateServiceAsync(ServiceCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inspect a service.
@@ -115,7 +116,7 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of service.</param>
         /// <returns>The service spec.</returns>
-        Task<SwarmService> InspectServiceAsync(string id);
+        Task<SwarmService> InspectServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// List services.
@@ -125,7 +126,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<IEnumerable<SwarmService>> ListServicesAsync();
+        Task<IEnumerable<SwarmService>> ListServicesAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a service.
@@ -139,7 +140,7 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of service.</param>
         /// <returns>The service spec.</returns>
-        Task<ServiceUpdateResponse> UpdateServiceAsync(string id, ServiceUpdateParameters parameters);
+        Task<ServiceUpdateResponse> UpdateServiceAsync(string id, ServiceUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete a service.
@@ -151,7 +152,7 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         /// <param name="id">ID or name of service.</param>
-        Task RemoveServiceAsync(string id);
+        Task RemoveServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion Services
     }
