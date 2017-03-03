@@ -24,23 +24,23 @@ namespace Docker.DotNet
             }
             var data = new JsonRequestContent<AuthConfig>(authConfig, this._client.JsonSerializer);
 
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "auth", null, data, null, cancellationToken);
+            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "auth", null, data, cancellationToken);
         }
 
         public async Task<VersionResponse> GetVersionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "version", null, cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "version", cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<VersionResponse>(response.Body);
         }
 
         public Task PingAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "_ping", null, cancellationToken);
+            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "_ping", cancellationToken);
         }
 
         public async Task<SystemInfoResponse> GetSystemInfoAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "info", null, cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "info", cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
         }
 
@@ -52,7 +52,7 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, null, cancellationToken);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, cancellationToken);
         }
 
         public Task MonitorEventsAsync(ContainerEventsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
@@ -74,7 +74,7 @@ namespace Docker.DotNet
             var data = parameters.Config == null ? null : new JsonRequestContent<Config>(parameters.Config, this._client.JsonSerializer);
 
             IQueryString queryParameters = new QueryString<CommitContainerChangesParameters>(parameters);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "commit", queryParameters, data, null, cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "commit", queryParameters, data, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<CommitContainerChangesResponse>(response.Body);
         }
 
@@ -92,7 +92,7 @@ namespace Docker.DotNet
                 queryString = new EnumerableQueryString("names", names);
             }
 
-            return this._client.MakeRequestForStreamAsync(new[] { ImageOperations.NoSuchImageHandler }, HttpMethod.Get, "images/get", queryString, null, cancellationToken);
+            return this._client.MakeRequestForStreamAsync(new[] { ImageOperations.NoSuchImageHandler }, HttpMethod.Get, "images/get", queryString, cancellationToken);
         }
 
         public Task LoadImageFromTarballAsync(Stream stream, CancellationToken cancellationToken = default(CancellationToken))
@@ -108,7 +108,7 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImageLoadParameters>(parameters ?? new ImageLoadParameters());
-            var data = new BinaryRequestContent(stream, "application/x-tar");
+            IRequestContent data = new BinaryRequestContent(stream, "application/x-tar");
             return this._client.MakeRequestForStreamAsync(new[] { ImageOperations.NoSuchImageHandler }, HttpMethod.Post, "images/load", queryParameters, data, cancellationToken);
         }
 

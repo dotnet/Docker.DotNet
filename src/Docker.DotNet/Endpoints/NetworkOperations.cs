@@ -39,7 +39,7 @@ namespace Docker.DotNet
             }
 
             var data = new JsonRequestContent<NetworkConnectParameters>(parameters, this._client.JsonSerializer);
-            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Post, $"networks/{id}/connect", null, data, null, cancellationToken);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Post, $"networks/{id}/connect", null, data, cancellationToken);
         }
 
         public async Task<NetworksCreateResponse> CreateNetworkAsync(NetworksCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
@@ -50,7 +50,7 @@ namespace Docker.DotNet
             }
 
             var data = new JsonRequestContent<NetworksCreateParameters>(parameters, this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "networks/create", null, data, null, cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "networks/create", null, data, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<NetworksCreateResponse>(response.Body);
         }
 
@@ -61,7 +61,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Delete, $"networks/{id}", null, cancellationToken);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Delete, $"networks/{id}", cancellationToken);
         }
 
         public Task DisconnectNetworkAsync(string id, NetworkDisconnectParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
@@ -77,7 +77,7 @@ namespace Docker.DotNet
             }
 
             var data = new JsonRequestContent<NetworkDisconnectParameters>(parameters, this._client.JsonSerializer);
-            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Post, $"networks/{id}/disconnect", null, data, null, cancellationToken);
+            return this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Post, $"networks/{id}/disconnect", null, data, cancellationToken);
         }
 
         public async Task<NetworkResponse> InspectNetworkAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
@@ -87,7 +87,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, $"networks/{id}", null, cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchNetworkHandler }, HttpMethod.Get, $"networks/{id}", cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<NetworkResponse>(response.Body);
         }
 
