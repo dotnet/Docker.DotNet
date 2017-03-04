@@ -30,7 +30,9 @@ namespace Docker.DotNet
 
         async Task<ServiceCreateResponse> ISwarmOperations.CreateServiceAsync(ServiceCreateParameters parameters, CancellationToken cancellationToken)
         {
-            var data = new JsonRequestContent<ServiceCreateParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)), this._client.JsonSerializer);
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
+            var data = new JsonRequestContent<ServiceSpec>(parameters.Service ?? throw new ArgumentNullException(nameof(parameters.Service)), this._client.JsonSerializer);
             var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "services/create", null, null, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ServiceCreateResponse>(response.Body);
         }
@@ -112,9 +114,10 @@ namespace Docker.DotNet
         async Task<ServiceUpdateResponse> ISwarmOperations.UpdateServiceAsync(string id, ServiceUpdateParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-            var query = new QueryString<ServiceUpdateParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)));
-            var body = new JsonRequestContent<ServiceUpdateParameters>(parameters, this._client.JsonSerializer);
+            var query = new QueryString<ServiceUpdateParameters>(parameters);
+            var body = new JsonRequestContent<ServiceSpec>(parameters.Service ?? throw new ArgumentNullException(nameof(parameters.Service)), this._client.JsonSerializer);
             var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"services/{id}", query, null, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ServiceUpdateResponse>(response.Body);
         }
