@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerStatsParameters // (main.ContainerStatsParameters)
     {
-        [QueryStringParameter("stream", false, typeof(BoolQueryStringConverter))]
-        public bool? Stream { get; set; }
+        [QueryStringParameter("stream", true, typeof(BoolQueryStringConverter))]
+        public bool Stream { get; set; } = true;
     }
 }

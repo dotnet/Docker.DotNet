@@ -384,6 +384,7 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 
 				csProp.IsOpt = !restTag.Required
 				csProp.Attributes = append(csProp.Attributes, a)
+				csProp.DefaultValue = restTag.Default
 			} else {
 				a := CSAttribute{Type: CSType{"", "DataMember", false}}
 				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"Name", CSArgument{jsonName, CSInboxTypesMap[reflect.String]}})

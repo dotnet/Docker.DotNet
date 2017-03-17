@@ -138,7 +138,7 @@ type ContainerStopParameters struct {
 
 // ContainerStatsParameters for GET /containers/(id)/stats
 type ContainerStatsParameters struct {
-	Stream bool `rest:"query"`
+	Stream bool `rest:"query,stream,required,true"`
 }
 
 // ContainerListProcessesParameters for GET /containers/(id)/top

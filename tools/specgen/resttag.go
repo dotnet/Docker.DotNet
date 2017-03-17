@@ -10,8 +10,6 @@ const (
 	body   = "body"
 	query  = "query"
 
-	inTag       = "in"
-	nameTag     = "name"
 	requiredTag = "required"
 )
 
@@ -20,6 +18,7 @@ type RestTag struct {
 	In       string
 	Name     string
 	Required bool
+	Default  string
 }
 
 // RestTagFromString is a method to parse a 'rest' struct tag to a resulting RestTag struct.
@@ -50,6 +49,10 @@ func RestTagFromString(tag string) (RestTag, error) {
 
 	if elen >= 3 && entries[2] == "required" {
 		r.Required = true
+	}
+
+	if elen >= 4 {
+		r.Default = entries[3]
 	}
 
 	return r, nil
