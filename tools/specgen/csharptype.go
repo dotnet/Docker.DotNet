@@ -132,10 +132,11 @@ type CSConstructor struct {
 
 // CSProperty is a type that represents a property declaration in C#.
 type CSProperty struct {
-	Name       string
-	Type       CSType
-	IsOpt      bool
-	Attributes []CSAttribute
+	Name         string
+	Type         CSType
+	IsOpt        bool
+	Attributes   []CSAttribute
+	DefaultValue string
 }
 
 // CSModelType is a type that represents a reflected type to generate a C# model for.
@@ -279,10 +280,16 @@ func writeProperties(w io.Writer, properties []CSProperty) {
 		}
 
 		if p.Type.IsNullable && p.IsOpt {
-			fmt.Fprintf(w, "        public %s? %s { get; set; }\n", p.Type.Name, p.Name)
+			fmt.Fprintf(w, "        public %s? %s { get; set; }", p.Type.Name, p.Name)
 		} else {
-			fmt.Fprintf(w, "        public %s %s { get; set; }\n", p.Type.Name, p.Name)
+			fmt.Fprintf(w, "        public %s %s { get; set; }", p.Type.Name, p.Name)
 		}
+
+		if p.DefaultValue != "" {
+			fmt.Fprintf(w, " = %s;", p.DefaultValue)
+		}
+
+		fmt.Fprintln(w)
 
 		if i != len-1 {
 			fmt.Fprintln(w, "")
