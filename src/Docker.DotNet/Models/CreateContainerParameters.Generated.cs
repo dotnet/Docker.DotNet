@@ -64,7 +64,7 @@ namespace Docker.DotNet.Models
         public bool AttachStderr { get; set; }
 
         [DataMember(Name = "ExposedPorts", EmitDefaultValue = false)]
-        public IDictionary<string, object> ExposedPorts { get; set; }
+        public IDictionary<string, EmptyStruct> ExposedPorts { get; set; }
 
         [DataMember(Name = "Tty", EmitDefaultValue = false)]
         public bool Tty { get; set; }
@@ -91,7 +91,7 @@ namespace Docker.DotNet.Models
         public string Image { get; set; }
 
         [DataMember(Name = "Volumes", EmitDefaultValue = false)]
-        public IList<string> Volumes { get; set; }
+        public IDictionary<string, EmptyStruct> Volumes { get; set; }
 
         [DataMember(Name = "WorkingDir", EmitDefaultValue = false)]
         public string WorkingDir { get; set; }
