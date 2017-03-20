@@ -18,7 +18,6 @@ import (
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
-	{reflect.TypeOf(container.Config{}), "Volumes"}:        {"System.Collections.Generic", "IList<string>", false},
 	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
 	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Time"}:    {"System", "DateTime", false},
 	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
@@ -273,7 +272,7 @@ func csType(t reflect.Type, opt bool) CSType {
 		return CSType{"System.Collections.Generic", fmt.Sprintf("IList<%s>", csType(t.Elem(), false).Name), false}
 	case reflect.Map:
 		if t.Elem() == EmptyStruct {
-			return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, object>", csType(t.Key(), false).Name), false}
+			return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, EmptyStruct>", csType(t.Key(), false).Name), false}
 		}
 
 		return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, %s>", csType(t.Key(), false).Name, csType(t.Elem(), false).Name), false}
