@@ -21,6 +21,8 @@ namespace Docker.DotNet
         };
 
         private const string RegistryAuthHeaderKey = "X-Registry-Auth";
+        private const string TarContentType = "application/x-tar";
+        private const string ImportFromBodySource = "-";
 
         private readonly DockerClient _client;
 
@@ -171,6 +173,41 @@ namespace Docker.DotNet
                 this._client,
                 cancellationToken,
                 progress);
+        }
+
+        public Task ImportImageAsync(ImagesImportParameters parameters, AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(parameters.SourceName)
+                || parameters.SourceName == ImportFromBodySource)
+            {
+                throw new ArgumentException("SourceName must be a URL where the image can be retrieved");
+            }
+
+            return this.ImportImageAsync(parameters, null, authConfig, cancellationToken);
+        }
+
+        public Task ImportImageAsync(ImagesImportParameters parameters, string localImagePath, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            parameters.SourceName = ImportFromBodySource;
+            return this.ImportImageAsync(parameters, localImagePath, null, cancellationToken);
+        }
+
+        private Task ImportImageAsync(ImagesImportParameters parameters, string localImagePath, AuthConfig authConfig, CancellationToken cancellationToken)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            BinaryRequestContent content = null;
+            if (!string.IsNullOrEmpty(localImagePath))
+            {
+                Stream fileStream = File.OpenRead(localImagePath);
+                content = new BinaryRequestContent(fileStream, TarContentType);
+            }
+
+            IQueryString queryParameters = new QueryString<ImagesImportParameters>(parameters);
+            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)

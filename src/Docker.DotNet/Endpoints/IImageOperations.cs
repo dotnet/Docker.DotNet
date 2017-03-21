@@ -35,5 +35,9 @@ namespace Docker.DotNet
         Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig);
 
         Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task ImportImageAsync(ImagesImportParameters parameters, AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task ImportImageAsync(ImagesImportParameters parameters, string localImagePath, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
