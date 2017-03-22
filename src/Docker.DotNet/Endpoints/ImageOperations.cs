@@ -199,15 +199,18 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
+            HttpMethod httpMethod = HttpMethod.Get;
+
             BinaryRequestContent content = null;
             if (!string.IsNullOrEmpty(localImagePath))
             {
                 Stream fileStream = File.OpenRead(localImagePath);
                 content = new BinaryRequestContent(fileStream, TarContentType);
+                httpMethod = HttpMethod.Post;
             }
 
             IQueryString queryParameters = new QueryString<ImagesImportParameters>(parameters);
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
+            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)
