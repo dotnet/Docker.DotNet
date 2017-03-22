@@ -207,7 +207,7 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImagesImportParameters>(parameters);
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
+            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)
