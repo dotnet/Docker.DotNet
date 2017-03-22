@@ -188,6 +188,9 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(types.NetworkCreateRequest{}), "NetworksCreateParameters"},
 	{reflect.TypeOf(types.NetworkCreateResponse{}), "NetworksCreateResponse"},
 
+	// POST /networks/prune
+	{reflect.TypeOf(NetworksDeleteUnusedParameters{}), "NetworksDeleteUnusedParameters"},
+
 	// GET /networks/(id)
 	{reflect.TypeOf(types.NetworkResource{}), "NetworkResponse"},
 
