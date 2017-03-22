@@ -177,22 +177,10 @@ namespace Docker.DotNet
 
         public Task ImportImageAsync(ImagesImportParameters parameters, AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(parameters.SourceName)
-                || parameters.SourceName == ImportFromBodySource)
-            {
-                throw new ArgumentException("SourceName must be a URL where the image can be retrieved");
-            }
-
             return this.ImportImageAsync(parameters, null, authConfig, cancellationToken);
         }
 
-        public Task ImportImageAsync(ImagesImportParameters parameters, string localImagePath, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            parameters.SourceName = ImportFromBodySource;
-            return this.ImportImageAsync(parameters, localImagePath, null, cancellationToken);
-        }
-
-        private Task ImportImageAsync(ImagesImportParameters parameters, string localImagePath, AuthConfig authConfig, CancellationToken cancellationToken)
+        public Task ImportImageAsync(ImagesImportParameters parameters, Stream imageStream, AuthConfig authConfig, CancellationToken cancellationToken)
         {
             if (parameters == null)
             {
@@ -200,13 +188,17 @@ namespace Docker.DotNet
             }
 
             HttpMethod httpMethod = HttpMethod.Get;
-
             BinaryRequestContent content = null;
-            if (!string.IsNullOrEmpty(localImagePath))
+            if (imageStream != null)
             {
-                Stream fileStream = File.OpenRead(localImagePath);
-                content = new BinaryRequestContent(fileStream, TarContentType);
+                content = new BinaryRequestContent(imageStream, TarContentType);
                 httpMethod = HttpMethod.Post;
+                parameters.SourceName = ImportFromBodySource;
+            }
+            else if (string.IsNullOrEmpty(parameters.SourceName)
+                    || parameters.SourceName == ImportFromBodySource)
+            {
+                throw new ArgumentException("SourceName must be a URL where the image can be retrieved");
             }
 
             IQueryString queryParameters = new QueryString<ImagesImportParameters>(parameters);

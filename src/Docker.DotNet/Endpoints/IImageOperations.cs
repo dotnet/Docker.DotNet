@@ -38,6 +38,6 @@ namespace Docker.DotNet
 
         Task ImportImageAsync(ImagesImportParameters parameters, AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task ImportImageAsync(ImagesImportParameters parameters, string localImagePath, CancellationToken cancellationToken = default(CancellationToken));
+        Task ImportImageAsync(ImagesImportParameters parameters, Stream imageStream, AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
