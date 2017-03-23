@@ -123,13 +123,14 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Create an image.
-        ///
-        /// Create an image by importing it from a stream.
+        /// 
+        /// Create an image by either pulling it from a registry or importing it.
         /// </summary>
         /// <remarks>
-        /// docker import
         /// docker pull
-        ///
+        /// docker image pull
+        /// docker import
+        /// 
         /// 200 - No error.
         /// 404 - Repository does not exist or no read access.
         /// 500 - Server error.
@@ -138,12 +139,12 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Push an image.
-        ///
+        /// 
         /// Push an image to a registry.
-        ///
+        /// 
         /// If you wish to push an image on to a private registry, that image must already have a tag which
         /// references that registry. For example {registry.example.com/myimage:latest}.
-        ///
+        /// 
         /// The push is cancelled if the HTTP connection is closed.
         /// </summary>
         /// <remarks>
