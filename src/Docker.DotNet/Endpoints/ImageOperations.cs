@@ -110,41 +110,15 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImageSearchResponse[]>(response.Body);
         }
 
-        public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken)
         {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig);
+            return CreateImageAsync(parameters, authConfig, progress, cancellationToken);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            return PullImageAsync(new ImagesPullParameters() { All = false, Parent = parameters.Parent, RegistryAuth = parameters.RegistryAuth }, authConfig, progress, cancellationToken);
-        }
-
-        public Task<Stream> PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig)
-        {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            IQueryString queryParameters = new QueryString<ImagesPullParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, null, RegistryAuthHeaders(authConfig), CancellationToken.None);
-        }
-
-        public Task PullImageAsync(ImagesPullParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             return StreamUtil.MonitorStreamForMessagesAsync(
-                PullImageAsync(parameters, authConfig),
+                CreateImageAsyncPrivate(parameters, imageStream, authConfig, progress, cancellationToken),
                 this._client,
                 cancellationToken,
                 progress);
@@ -175,16 +149,26 @@ namespace Docker.DotNet
                 progress);
         }
 
-        public Task ImportImageAsync(ImagesImportParameters parameters, AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken))
+        public Task LoadImageAsync(ImageLoadParameters parameters, Stream imageStream, IProgress<JSONMessage> progress, CancellationToken cancellationToken)
         {
-            return this.ImportImageAsync(parameters, null, authConfig, cancellationToken);
+            return StreamUtil.MonitorStreamForMessagesAsync(
+                LoadImageAsyncPrivate(parameters, imageStream, progress, cancellationToken),
+                this._client,
+                cancellationToken,
+                progress);
         }
 
-        public Task ImportImageAsync(ImagesImportParameters parameters, Stream imageStream, AuthConfig authConfig, CancellationToken cancellationToken)
+        private Task<Stream> CreateImageAsyncPrivate(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken)
         {
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
+            }
+
+            if (string.IsNullOrEmpty(parameters.FromImage)
+                && string.IsNullOrEmpty(parameters.FromSrc))
+            {
+                throw new ArgumentException("Either FromImage or FromSrc must be specified");
             }
 
             HttpMethod httpMethod = HttpMethod.Get;
@@ -193,16 +177,24 @@ namespace Docker.DotNet
             {
                 content = new BinaryRequestContent(imageStream, TarContentType);
                 httpMethod = HttpMethod.Post;
-                parameters.SourceName = ImportFromBodySource;
-            }
-            else if (string.IsNullOrEmpty(parameters.SourceName)
-                    || parameters.SourceName == ImportFromBodySource)
-            {
-                throw new ArgumentException("SourceName must be a URL where the image can be retrieved");
+                parameters.FromSrc = ImportFromBodySource;
             }
 
-            IQueryString queryParameters = new QueryString<ImagesImportParameters>(parameters);
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
+            IQueryString queryParameters = new QueryString<ImagesCreateParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
+        }
+
+        private Task<Stream> LoadImageAsyncPrivate(ImageLoadParameters parameters, Stream imageStream, IProgress<JSONMessage> progress, CancellationToken cancellationToken)
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            BinaryRequestContent content = new BinaryRequestContent(imageStream, TarContentType);
+
+            IQueryString queryParameters = new QueryString<ImageLoadParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, content, cancellationToken);
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)

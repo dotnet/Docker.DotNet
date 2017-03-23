@@ -141,8 +141,6 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /images/create
 	{reflect.TypeOf(ImageCreateParameters{}), "ImagesCreateParameters"},
-	{reflect.TypeOf(ImageImportParameters{}), "ImagesImportParameters"},
-	{reflect.TypeOf(ImagePullParameters{}), "ImagesPullParameters"},
 
 	// GET /images/get
 	// TODO: stream
