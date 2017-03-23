@@ -124,26 +124,10 @@ namespace Docker.DotNet
                 progress);
         }
 
-        public Task<Stream> PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
-
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            IQueryString queryParameters = new QueryString<ImagePushParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, null, RegistryAuthHeaders(authConfig), CancellationToken.None);
-        }
-
         public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             return StreamUtil.MonitorStreamForMessagesAsync(
-                PushImageAsync(name, parameters, authConfig),
+                PushImageAsyncPrivate(name, parameters, authConfig),
                 this._client,
                 cancellationToken,
                 progress);
@@ -165,12 +149,6 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            if (string.IsNullOrEmpty(parameters.FromImage)
-                && string.IsNullOrEmpty(parameters.FromSrc))
-            {
-                throw new ArgumentException("Either FromImage or FromSrc must be specified");
-            }
-
             HttpMethod httpMethod = HttpMethod.Get;
             BinaryRequestContent content = null;
             if (imageStream != null)
@@ -184,6 +162,22 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken);
         }
 
+        private Task<Stream> PushImageAsyncPrivate(string name, ImagePushParameters parameters, AuthConfig authConfig)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            IQueryString queryParameters = new QueryString<ImagePushParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"images/{name}/push", queryParameters, null, RegistryAuthHeaders(authConfig), CancellationToken.None);
+        }
+
         private Task<Stream> LoadImageAsyncPrivate(ImageLoadParameters parameters, Stream imageStream, IProgress<JSONMessage> progress, CancellationToken cancellationToken)
         {
             if (parameters == null)
@@ -194,7 +188,7 @@ namespace Docker.DotNet
             BinaryRequestContent content = new BinaryRequestContent(imageStream, TarContentType);
 
             IQueryString queryParameters = new QueryString<ImageLoadParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, content, cancellationToken);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/load", queryParameters, content, cancellationToken);
         }
 
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)

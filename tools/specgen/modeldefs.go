@@ -236,6 +236,11 @@ type NetworkListParameters struct {
 	Filters Args `rest:"query"`
 }
 
+// NetworkDeleteUnusedParameters for POST /networks/prune
+type NetworksDeleteUnusedParameters struct {
+	Filters Args `rest:"query"`
+}
+
 // VolumeCreateRequest for POST /volumes/create
 type VolumeCreateRequest struct {
 	Name       string            // Name is the requested name of the volume

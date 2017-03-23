@@ -11,7 +11,7 @@ namespace Docker.DotNet
     {
         /// <summary>
         /// List Images.
-        ///
+        /// 
         /// Returns a list of images on the server. Not that it uses a different, smaller representation
         /// of an image than inspecting a single image.
         /// </summary>
@@ -26,7 +26,7 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Inspect an image.
-        ///
+        /// 
         /// Return low-level information about an image.
         /// </summary>
         /// <remarks>
@@ -42,7 +42,7 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Get the history of an image.
-        ///
+        /// 
         /// Return parent layers of an image.
         /// </summary>
         /// <remarks>
@@ -58,7 +58,7 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Tag an image.
-        ///
+        /// 
         /// Tag an image so that it becomes part of a registry.
         /// </summary>
         /// <remarks>
@@ -76,9 +76,9 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Remove an image.
-        ///
+        /// 
         /// Remove an image, along with any untagged parent images that were referenced by that image.
-        ///
+        /// 
         /// Images can't be removed if they have descendant images, are being used by a running container
         /// or are being used by a build.
         /// </summary>
@@ -95,7 +95,7 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Search images
-        ///
+        /// 
         /// Search for an image on Docker Hub.
         /// </summary>
         /// <remarks>
@@ -108,7 +108,7 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Create an image.
-        ///
+        /// 
         /// Create an image by either pulling it from a registry or importing it.
         /// </summary>
         /// <remarks>
@@ -128,6 +128,7 @@ namespace Docker.DotNet
         /// </summary>
         /// <remarks>
         /// docker import
+        /// docker pull
         ///
         /// 200 - No error.
         /// 404 - Repository does not exist or no read access.
