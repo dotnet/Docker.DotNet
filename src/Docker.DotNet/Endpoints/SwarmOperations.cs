@@ -33,7 +33,7 @@ namespace Docker.DotNet
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var data = new JsonRequestContent<ServiceSpec>(parameters.Service ?? throw new ArgumentNullException(nameof(parameters.Service)), this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "services/create", null, null, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "services/create", null, data, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ServiceCreateResponse>(response.Body);
         }
 
