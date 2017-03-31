@@ -8,7 +8,7 @@ namespace Docker.DotNet
 
         IContainerOperations Containers { get; }
 
-        IMiscellaneousOperations Miscellaneous { get; }
+        ISystemOperations System { get; }
 
         INetworkOperations Networks { get; }
 

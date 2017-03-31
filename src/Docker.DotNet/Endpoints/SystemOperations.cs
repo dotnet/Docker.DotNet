@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Docker.DotNet
 {
-    internal class MiscellaneousOperations : IMiscellaneousOperations
+    internal class SystemOperations : ISystemOperations
     {
         private readonly DockerClient _client;
 
-        internal MiscellaneousOperations(DockerClient client)
+        internal SystemOperations(DockerClient client)
         {
             this._client = client;
         }

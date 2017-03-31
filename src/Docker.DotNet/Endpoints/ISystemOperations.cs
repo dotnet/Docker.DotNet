@@ -6,7 +6,7 @@ using System;
 
 namespace Docker.DotNet
 {
-    public interface IMiscellaneousOperations
+    public interface ISystemOperations
     {
         /// <summary>
         /// Check auth configuration.
