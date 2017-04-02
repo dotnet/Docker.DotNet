@@ -182,6 +182,56 @@ namespace Docker.DotNet
                 progress);
         }
 
+        public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var data = parameters.Config == null
+                ? null
+                : new JsonRequestContent<Config>(parameters.Config, this._client.JsonSerializer);
+
+            IQueryString queryParameters = new QueryString<CommitContainerChangesParameters>(parameters);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "commit", queryParameters, data, cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<CommitContainerChangesResponse>(response.Body);
+        }
+
+        public Task<Stream> ExportImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return ExportImagesAsync(new[] { name }, cancellationToken);
+        }
+
+        public Task<Stream> ExportImagesAsync(string[] names, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            EnumerableQueryString queryString = null;
+
+            if (names?.Length > 0)
+            {
+                queryString = new EnumerableQueryString("names", names);
+            }
+
+            return this._client.MakeRequestForStreamAsync(new[] { ImageOperations.NoSuchImageHandler }, HttpMethod.Get, "images/get", queryString, cancellationToken);
+        }
+
+        public Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (contents == null)
+            {
+                throw new ArgumentNullException(nameof(contents));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var data = new BinaryRequestContent(contents, "application/tar");
+            IQueryString queryParameters = new QueryString<ImageBuildParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
+        }
+
         private Dictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)
         {
             return new Dictionary<string, string>
