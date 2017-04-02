@@ -125,6 +125,10 @@ namespace Docker.DotNet
         }
     }
 
+    /// <summary>
+    /// Generates query string formatted as:
+    /// [url]?key=value1&key=value2&key=value3...
+    /// </summary>
     internal class EnumerableQueryString : IQueryString
     {
         private readonly string _key;
@@ -145,6 +149,29 @@ namespace Docker.DotNet
             return string.Join("&",
                         _data.Select(
                             v => $"{Uri.EscapeUriString(_key)}={Uri.EscapeDataString(v)}"));
+        }
+    }
+
+    /// <summary>
+    /// Generates query string formatted as:
+    /// [url]?key=value1,value2,value3...
+    /// </summary>
+    internal class CommaSeparatedEnumerableQueryString : IQueryString
+    {
+        private readonly string _key;
+        private readonly string[] _data;
+
+        public CommaSeparatedEnumerableQueryString(string key, string[] data)
+        {
+            _key = key;
+            _data = data;
+        }
+
+        public string GetQueryString()
+        {
+            string[] escapedValues = _data.Select(
+                v => Uri.EscapeDataString(v)).ToArray();
+            return $"{_key}={string.Join(",", escapedValues)}";
         }
     }
 }
