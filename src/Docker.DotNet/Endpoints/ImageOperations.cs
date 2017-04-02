@@ -198,12 +198,12 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<CommitContainerChangesResponse>(response.Body);
         }
 
-        public Task<Stream> ExportImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Stream> SaveImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return ExportImagesAsync(new[] { name }, cancellationToken);
+            return SaveImagesAsync(new[] { name }, cancellationToken);
         }
 
-        public Task<Stream> ExportImagesAsync(string[] names, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Stream> SaveImagesAsync(string[] names, CancellationToken cancellationToken = default(CancellationToken))
         {
             EnumerableQueryString queryString = null;
 

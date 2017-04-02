@@ -194,7 +194,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">Image name or ID.</param>
-        Task<Stream> ExportImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Stream> SaveImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Export several images.
@@ -216,7 +216,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="names">Image names to filter by.</param>
-        Task<Stream> ExportImagesAsync(string[] names, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Stream> SaveImagesAsync(string[] names, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Build an image.
