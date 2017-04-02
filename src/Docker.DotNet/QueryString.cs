@@ -169,9 +169,8 @@ namespace Docker.DotNet
 
         public string GetQueryString()
         {
-            string[] escapedValues = _data.Select(
-                v => Uri.EscapeDataString(v)).ToArray();
-            return $"{_key}={string.Join(",", escapedValues)}";
+            string valueString = Uri.EscapeDataString(string.Join(",", _data));
+            return $"{_key}={valueString}";
         }
     }
 }
