@@ -13,6 +13,7 @@ namespace Docker.DotNet
 {
     internal class ContainerOperations : IContainerOperations
     {
+        // Testing a rebuild.
         internal static readonly ApiResponseErrorHandlingDelegate NoSuchContainerHandler = (statusCode, responseBody) =>
         {
             if (statusCode == HttpStatusCode.NotFound)
