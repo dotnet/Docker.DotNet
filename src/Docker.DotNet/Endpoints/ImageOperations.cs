@@ -227,7 +227,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            var data = new BinaryRequestContent(contents, "application/tar");
+            var data = new BinaryRequestContent(contents, TarContentType);
             IQueryString queryParameters = new QueryString<ImageBuildParameters>(parameters);
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
         }

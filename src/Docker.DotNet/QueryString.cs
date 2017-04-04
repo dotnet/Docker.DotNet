@@ -151,26 +151,4 @@ namespace Docker.DotNet
                             v => $"{Uri.EscapeUriString(_key)}={Uri.EscapeDataString(v)}"));
         }
     }
-
-    /// <summary>
-    /// Generates query string formatted as:
-    /// [url]?key=value1,value2,value3...
-    /// </summary>
-    internal class CommaSeparatedEnumerableQueryString : IQueryString
-    {
-        private readonly string _key;
-        private readonly string[] _data;
-
-        public CommaSeparatedEnumerableQueryString(string key, string[] data)
-        {
-            _key = key;
-            _data = data;
-        }
-
-        public string GetQueryString()
-        {
-            string valueString = Uri.EscapeDataString(string.Join(",", _data));
-            return $"{_key}={valueString}";
-        }
-    }
 }
