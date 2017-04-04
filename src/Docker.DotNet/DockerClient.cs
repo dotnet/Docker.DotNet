@@ -29,7 +29,7 @@ namespace Docker.DotNet
 
         public IContainerOperations Containers { get; }
 
-        public IMiscellaneousOperations Miscellaneous { get; }
+        public ISystemOperations System { get; }
 
         public INetworkOperations Networks { get; }
 
@@ -52,7 +52,7 @@ namespace Docker.DotNet
 
             Images = new ImageOperations(this);
             Containers = new ContainerOperations(this);
-            Miscellaneous = new MiscellaneousOperations(this);
+            System = new SystemOperations(this);
             Networks = new NetworkOperations(this);
             Swarm = new SwarmOperations(this);
 
