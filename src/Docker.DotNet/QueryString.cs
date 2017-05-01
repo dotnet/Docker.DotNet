@@ -125,6 +125,10 @@ namespace Docker.DotNet
         }
     }
 
+    /// <summary>
+    /// Generates query string formatted as:
+    /// [url]?key=value1&key=value2&key=value3...
+    /// </summary>
     internal class EnumerableQueryString : IQueryString
     {
         private readonly string _key;
