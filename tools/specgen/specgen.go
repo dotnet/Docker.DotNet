@@ -18,7 +18,6 @@ import (
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
-	{reflect.TypeOf(container.Config{}), "Volumes"}:        {"System.Collections.Generic", "IList<string>", false},
 	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
 	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Time"}:    {"System", "DateTime", false},
 	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
@@ -142,8 +141,6 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /images/create
 	{reflect.TypeOf(ImageCreateParameters{}), "ImagesCreateParameters"},
-	{reflect.TypeOf(ImageImportParameters{}), "ImagesImportParameters"},
-	{reflect.TypeOf(ImagePullParameters{}), "ImagesPullParameters"},
 
 	// GET /images/get
 	// TODO: stream
@@ -188,6 +185,9 @@ var dockerTypesToReflect = []typeDef{
 	// POST /networks/create
 	{reflect.TypeOf(types.NetworkCreateRequest{}), "NetworksCreateParameters"},
 	{reflect.TypeOf(types.NetworkCreateResponse{}), "NetworksCreateResponse"},
+
+	// POST /networks/prune
+	{reflect.TypeOf(NetworksDeleteUnusedParameters{}), "NetworksDeleteUnusedParameters"},
 
 	// GET /networks/(id)
 	{reflect.TypeOf(types.NetworkResource{}), "NetworkResponse"},
@@ -273,7 +273,7 @@ func csType(t reflect.Type, opt bool) CSType {
 		return CSType{"System.Collections.Generic", fmt.Sprintf("IList<%s>", csType(t.Elem(), false).Name), false}
 	case reflect.Map:
 		if t.Elem() == EmptyStruct {
-			return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, object>", csType(t.Key(), false).Name), false}
+			return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, EmptyStruct>", csType(t.Key(), false).Name), false}
 		}
 
 		return CSType{"System.Collections.Generic", fmt.Sprintf("IDictionary<%s, %s>", csType(t.Key(), false).Name, csType(t.Elem(), false).Name), false}
@@ -384,6 +384,7 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 
 				csProp.IsOpt = !restTag.Required
 				csProp.Attributes = append(csProp.Attributes, a)
+				csProp.DefaultValue = restTag.Default
 			} else {
 				a := CSAttribute{Type: CSType{"", "DataMember", false}}
 				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"Name", CSArgument{jsonName, CSInboxTypesMap[reflect.String]}})

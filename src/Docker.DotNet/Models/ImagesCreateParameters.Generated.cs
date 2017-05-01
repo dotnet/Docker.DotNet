@@ -5,13 +5,16 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ImagesCreateParameters // (main.ImageCreateParameters)
     {
-        [QueryStringParameter("fromImage", true)]
-        public string Parent { get; set; }
+        [QueryStringParameter("fromImage", false)]
+        public string FromImage { get; set; }
+
+        [QueryStringParameter("fromSrc", false)]
+        public string FromSrc { get; set; }
+
+        [QueryStringParameter("repo", false)]
+        public string Repo { get; set; }
 
         [QueryStringParameter("tag", false)]
         public string Tag { get; set; }
-
-        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
-        public string RegistryAuth { get; set; }
     }
 }

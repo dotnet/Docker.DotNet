@@ -138,7 +138,7 @@ type ContainerStopParameters struct {
 
 // ContainerStatsParameters for GET /containers/(id)/stats
 type ContainerStatsParameters struct {
-	Stream bool `rest:"query"`
+	Stream bool `rest:"query,stream,required,true"`
 }
 
 // ContainerListProcessesParameters for GET /containers/(id)/top
@@ -182,26 +182,10 @@ type ExecStartParameters struct {
 
 // ImageCreateParameters for POST /images/create
 type ImageCreateParameters struct {
-	Parent       string `rest:"query,fromImage,required"`
-	Tag          string `rest:"query"`
-	RegistryAuth string `rest:"headers,X-Registry-Auth"`
-}
-
-// ImageImportParameters for load
-type ImageImportParameters struct {
-	SourceName     string   `rest:"query,fromSrc,required"`
-	RepositoryName string   `rest:"query,repo"`
-	Message        string   `rest:"query"`
-	Tag            string   `rest:"query"`
-	Changes        []string `rest:"query"`
-}
-
-// ImagePullParameters for pull
-type ImagePullParameters struct {
-	All          bool   `rest:"query"`
-	Parent       string `rest:"query,fromImage,required"`
-	Tag          string `rest:"query"`
-	RegistryAuth string `rest:"headers,X-Registry-Auth"`
+	FromImage string `rest:"query,fromImage"`
+	FromSrc   string `rest:"query,fromSrc"`
+	Repo      string `rest:"query"`
+	Tag       string `rest:"query"`
 }
 
 // ImageListParameters for GET /images/json
@@ -249,6 +233,11 @@ type ImageTagParameters struct {
 
 // NetworkListParameters for GET /networks
 type NetworkListParameters struct {
+	Filters Args `rest:"query"`
+}
+
+// NetworkDeleteUnusedParameters for POST /networks/prune
+type NetworksDeleteUnusedParameters struct {
 	Filters Args `rest:"query"`
 }
 
