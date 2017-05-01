@@ -14,24 +14,25 @@ namespace Docker.DotNet
                 return;
             }
 
-            writer.WriteValue(timeSpan.Value.TotalMilliseconds * MiliSecondToNanoSecond);
+            writer.WriteValue((long)(timeSpan.Value.TotalMilliseconds * MiliSecondToNanoSecond));
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(TimeSpan);
+            return objectType == typeof(TimeSpan) || objectType == typeof(TimeSpan?);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
         {
-            var valueInNanoSeconds = reader.ReadAsDouble();
+            var valueInNanoSeconds = (long?)reader.Value;
+
             if (!valueInNanoSeconds.HasValue)
             {
                 return null;
             }
             var miliSecondValue = valueInNanoSeconds.Value / MiliSecondToNanoSecond;
 
-            return TimeSpan.FromMilliseconds(miliSecondValue);
+            return TimeSpan.FromMilliseconds((long)miliSecondValue);
         }
     }
 }

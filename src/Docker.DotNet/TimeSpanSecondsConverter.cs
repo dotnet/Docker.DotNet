@@ -1,5 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Docker.DotNet
 {
@@ -13,19 +14,18 @@ namespace Docker.DotNet
                 return;
             }
 
-            writer.WriteValue(timeSpan.Value.TotalSeconds);
+            writer.WriteValue((long)timeSpan.Value.TotalSeconds);
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(TimeSpan);
+            return objectType == typeof(TimeSpan) || objectType == typeof(TimeSpan?);
         }
-
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
         {
-            var valueInSeconds = reader.ReadAsInt32();
-            if (!valueInSeconds.HasValue)
+            var valueInSeconds = (long?)reader.Value;
+            if(!valueInSeconds.HasValue)
             {
                 return null;
             }

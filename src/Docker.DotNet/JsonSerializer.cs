@@ -25,7 +25,9 @@ namespace Docker.DotNet
             {
                 new JsonIso8601AndUnixEpochDateConverter(),
                 new JsonVersionConverter(),
-                new StringEnumConverter()
+                new StringEnumConverter(),
+                new TimeSpanSecondsConverter(),
+                new TimeSpanNanosecondsConverter()
             };
         }
 
