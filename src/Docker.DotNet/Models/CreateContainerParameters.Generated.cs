@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -116,7 +117,7 @@ namespace Docker.DotNet.Models
         public string StopSignal { get; set; }
 
         [DataMember(Name = "StopTimeout", EmitDefaultValue = false)]
-        [TimeSpanSerialization(SerializationTarget.Seconds)]
+        [JsonConverter(typeof(TimeSpanSecondsConverter))]
         public TimeSpan? StopTimeout { get; set; }
 
         [DataMember(Name = "Shell", EmitDefaultValue = false)]

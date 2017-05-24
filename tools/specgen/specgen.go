@@ -33,10 +33,10 @@ var typeCustomizations = map[typeCustomizationKey]CSType{
 }
 
 var customTypeAttribtues = map[typeCustomizationKey]CSAttribute{
-	{reflect.TypeOf(container.Config{}), "StopTimeout"}:          {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Seconds"}}},
-	{reflect.TypeOf(container.HealthConfig{}), "Interval"}:       {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Nanoseconds"}}},
-	{reflect.TypeOf(container.HealthConfig{}), "Timeout"}:        {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Nanoseconds"}}},
-	{reflect.TypeOf(ContainerCreateParameters{}), "StopTimeout"}: {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Seconds"}}},
+	{reflect.TypeOf(container.Config{}), "StopTimeout"}:          {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}},
+	{reflect.TypeOf(container.HealthConfig{}), "Interval"}:       {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}},
+	{reflect.TypeOf(container.HealthConfig{}), "Timeout"}:        {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}},
+	{reflect.TypeOf(ContainerCreateParameters{}), "StopTimeout"}: {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}},
 }
 
 type typeCustomizationKey struct {

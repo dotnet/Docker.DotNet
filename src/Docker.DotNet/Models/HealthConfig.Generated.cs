@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -11,11 +12,11 @@ namespace Docker.DotNet.Models
         public IList<string> Test { get; set; }
 
         [DataMember(Name = "Interval", EmitDefaultValue = false)]
-        [TimeSpanSerialization(SerializationTarget.Nanoseconds)]
+        [JsonConverter(typeof(TimeSpanNanosecondsConverter))]
         public TimeSpan Interval { get; set; }
 
         [DataMember(Name = "Timeout", EmitDefaultValue = false)]
-        [TimeSpanSerialization(SerializationTarget.Nanoseconds)]
+        [JsonConverter(typeof(TimeSpanSecondsConverter))]
         public TimeSpan Timeout { get; set; }
 
         [DataMember(Name = "Retries", EmitDefaultValue = false)]

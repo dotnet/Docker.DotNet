@@ -14,8 +14,7 @@ namespace Docker.DotNet
         {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                ContractResolver = new TimeSpanContractResolver()
+                NullValueHandling = NullValueHandling.Ignore                
             };
         }
 
