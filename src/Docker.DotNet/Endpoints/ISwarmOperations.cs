@@ -41,7 +41,7 @@ namespace Docker.DotNet
         /// 500 - Server Error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<ClusterInfo> InspectSwarmAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<SwarmInspectResponse> InspectSwarmAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Join an existing swarm.
