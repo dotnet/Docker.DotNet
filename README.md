@@ -25,6 +25,13 @@ using Docker.DotNet;
 DockerClient client = new DockerClientConfiguration(new Uri("http://ubuntu-docker.cloudapp.net:4243"))
      .CreateClient();
 ```
+or to connect to your local [Docker for Windows](https://docs.docker.com/docker-for-windows/) deamon using named pipes:
+
+```csharp
+using Docker.DotNet;
+DockerClient client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine"))
+     .CreateClient();
+```
 
 #### Example: List containers
 
