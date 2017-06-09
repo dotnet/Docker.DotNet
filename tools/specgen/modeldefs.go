@@ -236,7 +236,7 @@ type NetworkListParameters struct {
 	Filters Args `rest:"query"`
 }
 
-// NetworkDeleteUnusedParameters for POST /networks/prune
+// NetworksDeleteUnusedParameters for POST /networks/prune
 type NetworksDeleteUnusedParameters struct {
 	Filters Args `rest:"query"`
 }

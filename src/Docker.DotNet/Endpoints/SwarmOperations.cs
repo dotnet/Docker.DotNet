@@ -58,10 +58,10 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<SwarmService>(response.Body);
         }
 
-        async Task<ClusterInfo> ISwarmOperations.InspectSwarmAsync(CancellationToken cancellationToken)
+        async Task<SwarmInspectResponse> ISwarmOperations.InspectSwarmAsync(CancellationToken cancellationToken)
         {
             var response = await this._client.MakeRequestAsync(new []{ SwarmResponseHandler }, HttpMethod.Get, "swarm", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<ClusterInfo>(response.Body);
+            return this._client.JsonSerializer.DeserializeObject<SwarmInspectResponse>(response.Body);
         }
 
         async Task ISwarmOperations.JoinSwarmAsync(SwarmJoinParameters parameters, CancellationToken cancellationToken)

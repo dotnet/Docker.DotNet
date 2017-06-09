@@ -229,6 +229,7 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(SwarmLeaveParameters{}), "SwarmLeaveParameters"},
 
 	// GET /swarm
+	{reflect.TypeOf(swarm.Swarm{}), "SwarmInspectResponse"},
 
 	// GET /swarm/unlockkey
 	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockResponse"},
@@ -254,6 +255,15 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(types.ServiceUpdateResponse{}), "ServiceUpdateResponse"},
 
 	// DELETE /services/(id)
+
+	// GET /nodes
+	// GET /nodes/(id)
+	{reflect.TypeOf(swarm.Node{}), "NodeListResponse"},
+
+	// DELETE /nodes/(id)
+
+	// POST /nodes/(id)/update
+	{reflect.TypeOf(swarm.NodeSpec{}), "NodeUpdateParameters"},
 }
 
 func csType(t reflect.Type, opt bool) CSType {
