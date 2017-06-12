@@ -155,5 +155,56 @@ namespace Docker.DotNet
         Task RemoveServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion Services
+
+        #region Nodes
+
+        /// <summary>
+        /// List nodes.
+        /// </summary>
+        /// <remarks>
+        /// 200 - No error.
+        /// 500 - Server error.
+        /// 503 - Node is not part of a swarm.
+        /// </remarks>
+        /// <returns></returns>
+        Task<IEnumerable<NodeListResponse>> ListNodesAsync(CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Inspect a node.
+        /// </summary>
+        /// <remarks>
+        /// 200 - No error.
+        /// 404 - No such node.
+        /// 500 - Server error.
+        /// 503 - Node is not part of a swarm.
+        /// </remarks>
+        Task<NodeListResponse> InspectNodeAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Delete a node.
+        /// </summary>
+        /// <remarks>
+        /// 200 - No error.
+        /// 404 - No such node.
+        /// 500 - Server error.
+        /// 503 - Node is not part of a swarm.
+        /// </remarks>
+        Task RemoveNodeAsync(string id, bool force, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Update node.
+        /// </summary>
+        /// <remarks>
+        /// 200 - No error.
+        /// 404 - No such node.
+        /// 500 - Server error.
+        /// 503 - Node is not part of a swarm.
+        /// </remarks>
+        /// <param name="id">ID or name of the node.</param>
+        /// <param name="version">Current version of the node object.</param>
+        /// <param name="parameters">Parameters to update.</param>
+        Task UpdateNodeAsync(string id, long version, NodeUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        #endregion
     }
 }
