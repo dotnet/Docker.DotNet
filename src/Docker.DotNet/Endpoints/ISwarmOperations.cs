@@ -203,7 +203,7 @@ namespace Docker.DotNet
         /// <param name="id">ID or name of the node.</param>
         /// <param name="version">Current version of the node object.</param>
         /// <param name="parameters">Parameters to update.</param>
-        Task UpdateNodeAsync(string id, long version, NodeUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateNodeAsync(string id, ulong version, NodeUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion
     }

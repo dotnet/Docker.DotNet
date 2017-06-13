@@ -164,11 +164,12 @@ namespace Docker.DotNet
             await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Delete, $"nodes/{id}?force={force}", cancellationToken).ConfigureAwait(false);
         }
 
-        async Task ISwarmOperations.UpdateNodeAsync(string id, long version, NodeUpdateParameters parameters, CancellationToken cancellationToken)
+        async Task ISwarmOperations.UpdateNodeAsync(string id, ulong version, NodeUpdateParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-            await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"nodes/{id}/update?version={version}", cancellationToken);
+            var query = new EnumerableQueryString("version", new[] { version.ToString() });
+            var body = new JsonRequestContent<NodeUpdateParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)), this._client.JsonSerializer);
+            await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"nodes/{id}/update", query, body, cancellationToken);
         }
     }
 }
