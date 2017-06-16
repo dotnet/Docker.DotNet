@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-#if !NET45
+#if !NET452
 using System.Buffers;
 #endif
 
@@ -35,7 +35,7 @@ namespace Microsoft.Net.Http.Client
             }
             _inner = inner;
             _socket = socket;
-#if !NET45
+#if !NET452
             _buffer = ArrayPool<byte>.Shared.Rent(bufferLength);
 #else
             _buffer = new byte[bufferLength];
@@ -91,7 +91,7 @@ namespace Microsoft.Net.Http.Client
                 if (disposing)
                 {
                     _inner.Dispose();
-#if !NET45
+#if !NET452
                     ArrayPool<byte>.Shared.Return(_buffer);
 #endif
                 }
