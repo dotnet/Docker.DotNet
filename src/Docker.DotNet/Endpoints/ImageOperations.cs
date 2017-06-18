@@ -122,19 +122,17 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            HttpMethod httpMethod = HttpMethod.Get;
             BinaryRequestContent content = null;
             if (imageStream != null)
             {
                 content = new BinaryRequestContent(imageStream, TarContentType);
-                httpMethod = HttpMethod.Post;
                 parameters.FromSrc = ImportFromBodySource;
             }
 
             IQueryString queryParameters = new QueryString<ImagesCreateParameters>(parameters);
 
             return StreamUtil.MonitorStreamForMessagesAsync(
-                this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken),
+                this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken),
                 this._client,
                 cancellationToken,
                 progress);
