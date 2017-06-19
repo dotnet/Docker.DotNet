@@ -122,12 +122,11 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            HttpMethod httpMethod = HttpMethod.Get;
+            HttpMethod httpMethod = HttpMethod.Post;
             BinaryRequestContent content = null;
             if (imageStream != null)
             {
                 content = new BinaryRequestContent(imageStream, TarContentType);
-                httpMethod = HttpMethod.Post;
                 parameters.FromSrc = ImportFromBodySource;
             }
 
