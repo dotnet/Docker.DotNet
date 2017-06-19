@@ -152,7 +152,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<ContainerStopParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/stop", queryParameters, null, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/stop", queryParameters, null, null, TimeSpan.FromMilliseconds(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
@@ -172,7 +172,7 @@ namespace Docker.DotNet
             IQueryString queryParameters = new QueryString<ConatinerRestartParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
-            return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/restart", queryParameters, null, null, new TimeSpan(Timeout.Infinite), cancellationToken);
+            return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/restart", queryParameters, null, null, TimeSpan.FromMilliseconds(Timeout.Infinite), cancellationToken);
         }
 
         public Task KillContainerAsync(string id, ContainerKillParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
@@ -218,7 +218,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/wait", null, null, null, new TimeSpan(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/wait", null, null, null, TimeSpan.FromMilliseconds(Timeout.Infinite), cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ContainerWaitResponse>(response.Body);
         }
 
