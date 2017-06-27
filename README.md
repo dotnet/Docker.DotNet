@@ -36,7 +36,7 @@ DockerClient client = new DockerClientConfiguration(new Uri("npipe://./pipe/dock
 #### Example: List containers
 
 ```csharp
-IList<ContainerResponse> containers = await client.Containers.ListContainersAsync(
+IList<ContainerListResponse> containers = await client.Containers.ListContainersAsync(
 	new ContainersListParameters(){
 		Limit = 10,
     });
