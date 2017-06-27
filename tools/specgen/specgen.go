@@ -18,14 +18,25 @@ import (
 )
 
 var typeCustomizations = map[typeCustomizationKey]CSType{
-	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:    {"", "RestartPolicyKind", false},
-	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Time"}:    {"System", "DateTime", false},
-	{reflect.TypeOf(types.Container{}), "Created"}:         {"System", "DateTime", false},
-	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:      {"", "FileSystemChangeKind", false},
-	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}: {"System", "DateTime", false},
-	{reflect.TypeOf(types.ImageSummary{}), "Created"}:      {"System", "DateTime", false},
-	{reflect.TypeOf(types.ImageHistory{}), "Created"}:      {"System", "DateTime", false},
-	{reflect.TypeOf(types.ImageInspect{}), "Created"}:      {"System", "DateTime", false},
+	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:          {"", "RestartPolicyKind", false},
+	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Time"}:          {"System", "DateTime", false},
+	{reflect.TypeOf(types.Container{}), "Created"}:               {"System", "DateTime", false},
+	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:            {"", "FileSystemChangeKind", false},
+	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}:       {"System", "DateTime", false},
+	{reflect.TypeOf(types.ImageSummary{}), "Created"}:            {"System", "DateTime", false},
+	{reflect.TypeOf(types.ImageHistory{}), "Created"}:            {"System", "DateTime", false},
+	{reflect.TypeOf(types.ImageInspect{}), "Created"}:            {"System", "DateTime", false},
+	{reflect.TypeOf(container.Config{}), "StopTimeout"}:          {"System", "TimeSpan", true},
+	{reflect.TypeOf(container.HealthConfig{}), "Interval"}:       {"System", "TimeSpan", true},
+	{reflect.TypeOf(container.HealthConfig{}), "Timeout"}:        {"System", "TimeSpan", true},
+	{reflect.TypeOf(ContainerCreateParameters{}), "StopTimeout"}: {"System", "TimeSpan", true},
+}
+
+var customTypeAttribtues = map[typeCustomizationKey]CSAttribute{
+	{reflect.TypeOf(container.Config{}), "StopTimeout"}:          {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Seconds"}}},
+	{reflect.TypeOf(container.HealthConfig{}), "Interval"}:       {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Nanoseconds"}}},
+	{reflect.TypeOf(container.HealthConfig{}), "Timeout"}:        {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Nanoseconds"}}},
+	{reflect.TypeOf(ContainerCreateParameters{}), "StopTimeout"}: {Type: CSType{"Docker.DotNet", "TimeSpanSerialization", false}, Arguments: []CSArgument{{Value: "SerializationTarget.Seconds"}}},
 }
 
 type typeCustomizationKey struct {
@@ -401,6 +412,11 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"EmitDefaultValue", CSArgument{strconv.FormatBool(false), CSInboxTypesMap[reflect.Bool]}})
 				csProp.IsOpt = f.Type.Kind() == reflect.Ptr
 				csProp.Attributes = append(csProp.Attributes, a)
+			}
+
+			if ca, ok := customTypeAttribtues[typeCustomizationKey{t, f.Name}]; ok {
+				// We have a custom modification. Change the type.
+				csProp.Attributes = append(csProp.Attributes, ca)
 			}
 
 			// Lastly assign the property to our type.
