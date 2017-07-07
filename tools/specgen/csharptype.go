@@ -187,6 +187,9 @@ func calcUsings(t *CSModelType) []string {
 
 	for _, o := range t.Properties {
 		usings = safeAddUsing(o.Type.Namespace, usings, added)
+		for _, p := range o.Attributes {
+			usings = safeAddUsing(p.Type.Namespace, usings, added)
+		}
 	}
 
 	// TODO: System sort order them.
