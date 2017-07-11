@@ -35,6 +35,8 @@ namespace Docker.DotNet
 
         public ISwarmOperations Swarm { get; }
 
+        public IVolumeOperations Volumes { get; }
+
         public TimeSpan DefaultTimeout { get; set; }
 
         private readonly HttpClient _client;
@@ -55,6 +57,7 @@ namespace Docker.DotNet
             System = new SystemOperations(this);
             Networks = new NetworkOperations(this);
             Swarm = new SwarmOperations(this);
+            Volumes = new VolumeOperations(this);
 
             ManagedHandler handler;
             var uri = Configuration.EndpointBaseUri;
