@@ -30,6 +30,8 @@ var typeCustomizations = map[typeCustomizationKey]CSType{
 	{reflect.TypeOf(container.HealthConfig{}), "Interval"}:       {"System", "TimeSpan", true},
 	{reflect.TypeOf(container.HealthConfig{}), "Timeout"}:        {"System", "TimeSpan", true},
 	{reflect.TypeOf(ContainerCreateParameters{}), "StopTimeout"}: {"System", "TimeSpan", true},
+	{reflect.TypeOf(swarm.Task{}), "DesiredState"}:               {"", "TaskState", false},
+	{reflect.TypeOf(swarm.TaskStatus{}), "State"}:                {"", "TaskState", false},
 }
 
 var customTypeAttribtues = map[typeCustomizationKey]CSAttribute{
@@ -266,6 +268,9 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(types.ServiceUpdateResponse{}), "ServiceUpdateResponse"},
 
 	// DELETE /services/(id)
+
+	// GET /tasks
+	{reflect.TypeOf(swarm.Task{}), "TaskResponse"},
 
 	// GET /nodes
 	// GET /nodes/(id)

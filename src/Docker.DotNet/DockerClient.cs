@@ -35,6 +35,8 @@ namespace Docker.DotNet
 
         public ISwarmOperations Swarm { get; }
 
+        public ITasksOperations Tasks { get; }
+
         public IVolumeOperations Volumes { get; }
 
         public TimeSpan DefaultTimeout { get; set; }
@@ -57,6 +59,7 @@ namespace Docker.DotNet
             System = new SystemOperations(this);
             Networks = new NetworkOperations(this);
             Swarm = new SwarmOperations(this);
+            Tasks = new TasksOperations(this);
             Volumes = new VolumeOperations(this);
 
             ManagedHandler handler;
