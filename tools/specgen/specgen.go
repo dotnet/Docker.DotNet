@@ -253,6 +253,17 @@ var dockerTypesToReflect = []typeDef{
 	// POST /swarm/unlock
 	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockParameters"},
 
+	//
+	// Secrets API (swarm)
+	//
+
+	// GET /secrets
+	// GET /secrets/(id)
+	{reflect.TypeOf(swarm.Secret{}), "Secret"},
+
+	// POST /secrets/create
+	{reflect.TypeOf(SecretCreateResponse{}), "SecretCreateResponse"},
+
 	// GET /services
 	// {reflect.TypeOf([]swarm.Service{}), "SwarmServices"},
 
