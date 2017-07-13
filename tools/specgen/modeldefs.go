@@ -290,3 +290,8 @@ type ServiceUpdateParameters struct {
 	RegistryAuthFrom string            `rest:"query"`
 	RegistryAuth     types.AuthConfig  `rest:"headers,X-Registry-Auth"`
 }
+
+// SecretCreateResponse for POST /secrets/create
+type SecretCreateResponse struct {
+	ID string
+}

@@ -33,6 +33,8 @@ namespace Docker.DotNet
 
         public INetworkOperations Networks { get; }
 
+        public ISecretsOperations Secrets { get; }
+
         public ISwarmOperations Swarm { get; }
 
         public ITasksOperations Tasks { get; }
@@ -58,6 +60,7 @@ namespace Docker.DotNet
             Containers = new ContainerOperations(this);
             System = new SystemOperations(this);
             Networks = new NetworkOperations(this);
+            Secrets = new SecretsOperations(this);
             Swarm = new SwarmOperations(this);
             Tasks = new TasksOperations(this);
             Volumes = new VolumeOperations(this);
