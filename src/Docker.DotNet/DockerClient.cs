@@ -388,6 +388,10 @@ namespace Docker.DotNet
         public void Dispose()
         {
             Configuration.Dispose();
+            if (_client != null)
+            {
+                _client.Dispose();
+            }
         }
     }
 
