@@ -156,7 +156,7 @@ namespace Microsoft.Net.Http.Client
                 if (_socketOpener != null)
                 {
                     socket = await _socketOpener(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value, cancellationToken).ConfigureAwait(false);
-                    transport = new NetworkStream(socket);
+                    transport = new NetworkStream(socket, true);
                 }
                 else
                 {
