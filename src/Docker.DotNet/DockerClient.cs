@@ -200,12 +200,14 @@ namespace Docker.DotNet
             CancellationToken token)
         {
             var response = await PrivateMakeRequestAsync(timeout, HttpCompletionOption.ResponseContentRead, method, path, queryString, headers, body, token).ConfigureAwait(false);
+            using (response)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            var responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                HandleIfErrorResponse(response.StatusCode, responseBody, errorHandlers);
 
-            HandleIfErrorResponse(response.StatusCode, responseBody, errorHandlers);
-
-            return new DockerApiResponse(response.StatusCode, responseBody);
+                return new DockerApiResponse(response.StatusCode, responseBody);
+            }
         }
 
         internal Task<Stream> MakeRequestForStreamAsync(

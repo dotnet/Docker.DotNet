@@ -149,14 +149,14 @@ namespace Microsoft.Net.Http.Client
             request.Headers.ConnectionClose = true; // TODO: Connection re-use is not supported.
 
             ProxyMode proxyMode = DetermineProxyModeAndAddressLine(request);
-            Socket socket = null;
-            Stream transport = null;
+            Socket socket;
+            Stream transport;
             try
             {
                 if (_socketOpener != null)
                 {
                     socket = await _socketOpener(request.GetConnectionHostProperty(), request.GetConnectionPortProperty().Value, cancellationToken).ConfigureAwait(false);
-                    transport = new NetworkStream(socket);
+                    transport = new NetworkStream(socket, true);
                 }
                 else
                 {
@@ -166,36 +166,26 @@ namespace Microsoft.Net.Http.Client
             }
             catch (SocketException sox)
             {
-                transport?.Dispose();
-                socket?.Dispose();
                 throw new HttpRequestException("Connection failed", sox);
             }
 
-            try
+            if (proxyMode == ProxyMode.Tunnel)
             {
-                if (proxyMode == ProxyMode.Tunnel)
-                {
-                    await TunnelThroughProxyAsync(request, transport, cancellationToken);
-                }
-
-                System.Diagnostics.Debug.Assert(!(proxyMode == ProxyMode.Http && request.IsHttps()));
-
-                if (request.IsHttps())
-                {
-                    SslStream sslStream = new SslStream(transport, false, ServerCertificateValidationCallback);
-                    await sslStream.AuthenticateAsClientAsync(request.GetHostProperty(), ClientCertificates, SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls, false);
-                    transport = sslStream;
-                }
-
-                var bufferedReadStream = new BufferedReadStream(transport, socket);
-                var connection = new HttpConnection(bufferedReadStream);
-                return await connection.SendAsync(request, cancellationToken);
+                await TunnelThroughProxyAsync(request, transport, cancellationToken);
             }
-            finally
+
+            System.Diagnostics.Debug.Assert(!(proxyMode == ProxyMode.Http && request.IsHttps()));
+
+            if (request.IsHttps())
             {
-                transport?.Dispose();
-                socket?.Dispose();
+                SslStream sslStream = new SslStream(transport, false, ServerCertificateValidationCallback);
+                await sslStream.AuthenticateAsClientAsync(request.GetHostProperty(), ClientCertificates, SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls, false);
+                transport = sslStream;
             }
+
+            var bufferedReadStream = new BufferedReadStream(transport, socket);
+            var connection = new HttpConnection(bufferedReadStream);
+            return await connection.SendAsync(request, cancellationToken);
         }
 
         // Data comes from either the request.RequestUri or from the request.Properties
