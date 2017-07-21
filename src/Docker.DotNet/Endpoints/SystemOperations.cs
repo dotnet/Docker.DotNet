@@ -57,6 +57,11 @@ namespace Docker.DotNet
 
         public Task MonitorEventsAsync(ContainerEventsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (progress == null)
+            {
+                throw new ArgumentNullException(nameof(progress));
+            }
+
             return StreamUtil.MonitorStreamForMessagesAsync(
                 MonitorEventsAsync(parameters, cancellationToken),
                 this._client,

@@ -8,3 +8,4 @@ build_script:
 - ps: dotnet restore --no-cache
 - ps: dotnet build -c Release
 - ps: dotnet pack -c Release -o $pwd /p:version=$($env:appveyor_build_version)
+test: off
