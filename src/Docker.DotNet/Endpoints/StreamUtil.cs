@@ -38,12 +38,20 @@ namespace Docker.DotNet.Models
                     using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                     {
                         string line;
-                        while ((line = await reader.ReadLineAsync()) != null)
+                        try
                         {
-                            var prog = client.JsonSerializer.DeserializeObject<T>(line);
-                            if (prog == null) continue;
+                            while ((line = await reader.ReadLineAsync()) != null)
+                            {
+                                var prog = client.JsonSerializer.DeserializeObject<T>(line);
+                                if (prog == null) continue;
 
-                            progress.Report(prog);
+                                progress.Report(prog);
+                            }
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // The subsequent call to reader.ReadLineAsync() after cancellation
+                            // will fail because we disposed the stream. Just ignore here.
                         }
                     }
                 }
