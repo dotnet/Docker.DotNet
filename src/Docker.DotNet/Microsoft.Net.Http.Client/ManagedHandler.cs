@@ -149,8 +149,8 @@ namespace Microsoft.Net.Http.Client
             request.Headers.ConnectionClose = true; // TODO: Connection re-use is not supported.
 
             ProxyMode proxyMode = DetermineProxyModeAndAddressLine(request);
-            Socket socket;
-            Stream transport;
+            Socket socket = null;
+            Stream transport = null;
             try
             {
                 if (_socketOpener != null)
@@ -166,26 +166,36 @@ namespace Microsoft.Net.Http.Client
             }
             catch (SocketException sox)
             {
+                transport?.Dispose();
+                socket?.Dispose();
                 throw new HttpRequestException("Connection failed", sox);
             }
 
-            if (proxyMode == ProxyMode.Tunnel)
+            try
             {
-                await TunnelThroughProxyAsync(request, transport, cancellationToken);
+                if (proxyMode == ProxyMode.Tunnel)
+                {
+                    await TunnelThroughProxyAsync(request, transport, cancellationToken);
+                }
+
+                System.Diagnostics.Debug.Assert(!(proxyMode == ProxyMode.Http && request.IsHttps()));
+
+                if (request.IsHttps())
+                {
+                    SslStream sslStream = new SslStream(transport, false, ServerCertificateValidationCallback);
+                    await sslStream.AuthenticateAsClientAsync(request.GetHostProperty(), ClientCertificates, SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls, false);
+                    transport = sslStream;
+                }
+
+                var bufferedReadStream = new BufferedReadStream(transport, socket);
+                var connection = new HttpConnection(bufferedReadStream);
+                return await connection.SendAsync(request, cancellationToken);
             }
-
-            System.Diagnostics.Debug.Assert(!(proxyMode == ProxyMode.Http && request.IsHttps()));
-
-            if (request.IsHttps())
+            finally
             {
-                SslStream sslStream = new SslStream(transport, false, ServerCertificateValidationCallback);
-                await sslStream.AuthenticateAsClientAsync(request.GetHostProperty(), ClientCertificates, SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls, false);
-                transport = sslStream;
+                transport?.Dispose();
+                socket?.Dispose();
             }
-
-            var bufferedReadStream = new BufferedReadStream(transport, socket);
-            var connection = new HttpConnection(bufferedReadStream);
-            return await connection.SendAsync(request, cancellationToken);
         }
 
         // Data comes from either the request.RequestUri or from the request.Properties
