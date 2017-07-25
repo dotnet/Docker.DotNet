@@ -46,7 +46,24 @@ namespace Docker.DotNet
         async Task<string> ISwarmOperations.InitSwarmAsync(SwarmInitParameters parameters, CancellationToken cancellationToken)
         {
             var data = new JsonRequestContent<SwarmInitParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)), this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "swarm/init", null, data, cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(
+                new ApiResponseErrorHandlingDelegate[]
+                    {
+                        (statusCode, responseBody) =>
+                        {
+                            if (statusCode == HttpStatusCode.NotAcceptable)
+                            {
+                                // TODO: Make typed error.
+                                throw new Exception("Node is already part of a swarm.");
+                            }
+                        }
+                    },
+                HttpMethod.Post,
+                "swarm/init",
+                null,
+                data,
+                cancellationToken).ConfigureAwait(false);
+
             return response.Body;
         }
 
@@ -89,7 +106,22 @@ namespace Docker.DotNet
         async Task ISwarmOperations.LeaveSwarmAsync(SwarmLeaveParameters parameters, CancellationToken cancellationToken)
         {
             var query = parameters == null ? null : new QueryString<SwarmLeaveParameters>(parameters);
-            await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "swarm/leave", query, cancellationToken).ConfigureAwait(false);
+            await this._client.MakeRequestAsync(
+                new ApiResponseErrorHandlingDelegate[]
+                    {
+                        (statusCode, responseBody) =>
+                        {
+                            if (statusCode == HttpStatusCode.ServiceUnavailable)
+                            {
+                                // TODO: Make typed error.
+                                throw new Exception("Node is not part of a swarm.");
+                            }
+                        }
+                    },
+                HttpMethod.Post,
+                "swarm/leave",
+                query,
+                cancellationToken).ConfigureAwait(false);
         }
 
         async Task<IEnumerable<SwarmService>> ISwarmOperations.ListServicesAsync(CancellationToken cancellationToken)
@@ -126,7 +158,23 @@ namespace Docker.DotNet
         {
             var query = new QueryString<SwarmUpdateParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)));
             var body = new JsonRequestContent<Spec>(parameters.Spec ?? throw new ArgumentNullException(nameof(parameters.Spec)), this._client.JsonSerializer);
-            await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "swarm/update", query, body, cancellationToken).ConfigureAwait(false);
+            await this._client.MakeRequestAsync(
+                new ApiResponseErrorHandlingDelegate[]
+                    {
+                        (statusCode, responseBody) =>
+                        {
+                            if (statusCode == HttpStatusCode.ServiceUnavailable)
+                            {
+                                // TODO: Make typed error.
+                                throw new Exception("Node is not part of a swarm.");
+                            }
+                        }
+                    },
+                HttpMethod.Post,
+                "swarm/update",
+                query,
+                body,
+                cancellationToken).ConfigureAwait(false);
         }
 
         private IDictionary<string, string> RegistryAuthHeaders(AuthConfig authConfig)
