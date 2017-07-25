@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class SwarmLeaveParameters // (main.SwarmLeaveParameters)
     {
-        [DataMember(Name = "Force", EmitDefaultValue = false)]
-        public bool Force { get; set; }
+        [QueryStringParameter("force", false, typeof(BoolQueryStringConverter))]
+        public bool? Force { get; set; }
     }
 }

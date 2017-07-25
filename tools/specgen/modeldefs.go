@@ -265,7 +265,7 @@ type VolumesListResponse struct {
 
 // SwarmLeaveParameters for POST /swarm/leave
 type SwarmLeaveParameters struct {
-	Force bool `rest:"body"`
+	Force bool `rest:"query"`
 }
 
 // SwarmUpdateParameters for POST /swarm/update
