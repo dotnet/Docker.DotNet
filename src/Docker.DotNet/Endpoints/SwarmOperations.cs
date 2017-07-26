@@ -150,7 +150,7 @@ namespace Docker.DotNet
 
             var query = new QueryString<ServiceUpdateParameters>(parameters);
             var body = new JsonRequestContent<ServiceSpec>(parameters.Service ?? throw new ArgumentNullException(nameof(parameters.Service)), this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"services/{id}", query, null, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"services/{id}/update", query, body, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ServiceUpdateResponse>(response.Body);
         }
 
