@@ -446,7 +446,6 @@ namespace Docker.DotNet
                 progress);
         }
 
-
         public Task RenameContainerAsync(string id, ContainerRenameParameters parameters, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
@@ -454,13 +453,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            IQueryString queryParameters = new QueryString<ContainerRenameParameters>(parameters);
-            return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/rename", queryParameters, null, null, cancellationToken);
+            var queryParameters = new QueryString<ContainerRenameParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)));
+            return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/rename", queryParameters, cancellationToken);
         }
 
     }
