@@ -392,5 +392,20 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
         Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Rename a container
+        /// </summary>
+        /// <remarks>
+        /// POST /containers/{id}/rename
+        ///
+        /// 204 - No error.
+        /// 404 - No such container.
+        /// 409 - Name already in use.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID or name of the container.</param>
+        /// <param name="parameters">New name of the container.</param>
+        Task RenameContainerAsync(string id, ContainerRenameParameters parameters, CancellationToken cancellationToken);
     }
 }
