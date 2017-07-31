@@ -21,28 +21,6 @@ namespace Docker.DotNet
 
         private static readonly TimeSpan s_InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
 
-        public DockerClientConfiguration Configuration { get; }
-
-        internal JsonSerializer JsonSerializer { get; }
-
-        public IImageOperations Images { get; }
-
-        public IContainerOperations Containers { get; }
-
-        public ISystemOperations System { get; }
-
-        public INetworkOperations Networks { get; }
-
-        public ISecretsOperations Secrets { get; }
-
-        public ISwarmOperations Swarm { get; }
-
-        public ITasksOperations Tasks { get; }
-
-        public IVolumeOperations Volumes { get; }
-
-        public TimeSpan DefaultTimeout { get; set; }
-
         private readonly HttpClient _client;
 
         private readonly Uri _endpointBaseUri;
@@ -146,6 +124,28 @@ namespace Docker.DotNet
             DefaultTimeout = Configuration.DefaultTimeout;
             _client.Timeout = s_InfiniteTimeout;
         }
+
+        public DockerClientConfiguration Configuration { get; }
+
+        public TimeSpan DefaultTimeout { get; set; }
+
+        public IContainerOperations Containers { get; }
+
+        public IImageOperations Images { get; }
+
+        public INetworkOperations Networks { get; }
+
+        public IVolumeOperations Volumes { get; }
+
+        public ISecretsOperations Secrets { get; }
+
+        public ISwarmOperations Swarm { get; }
+
+        public ITasksOperations Tasks { get; }
+
+        public ISystemOperations System { get; }
+
+        internal JsonSerializer JsonSerializer { get; }
 
         internal Task<DockerApiResponse> MakeRequestAsync(
             IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
