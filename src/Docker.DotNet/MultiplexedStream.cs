@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
 
-#if !NET45
+#if !NET452
 using System.Buffers;
 #endif
 
@@ -115,7 +115,7 @@ namespace Docker.DotNet
 
         public async Task CopyFromAsync(Stream input, CancellationToken cancellationToken)
         {
-#if !NET45
+#if !NET452
             var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
 #else
             var buffer = new byte[BufferSize];
@@ -136,7 +136,7 @@ namespace Docker.DotNet
             }
             finally
             {
-#if !NET45
+#if !NET452
                 ArrayPool<byte>.Shared.Return(buffer);
 #endif
             }
@@ -144,7 +144,7 @@ namespace Docker.DotNet
 
         public async Task CopyOutputToAsync(Stream stdin, Stream stdout, Stream stderr, CancellationToken cancellationToken)
         {
-#if !NET45
+#if !NET452
             var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
 #else
             var buffer = new byte[BufferSize];
@@ -181,7 +181,7 @@ namespace Docker.DotNet
             }
             finally
             {
-#if !NET45
+#if !NET452
                 ArrayPool<byte>.Shared.Return(buffer);
 #endif
             }

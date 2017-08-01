@@ -1,4 +1,4 @@
-﻿#if (NET45 || NET46)
+﻿#if (NET452 || NET46)
 using System.Net;
 #endif
 
