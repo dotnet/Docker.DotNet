@@ -1,4 +1,4 @@
-version: '3.125.0.{build}'
+version: 3.125.0.{build}
 pull_requests:
   do_not_increment_build_number: true
 init:
@@ -6,6 +6,5 @@ init:
 - ps: C:/dotnet-install.ps1 -Channel preview -Version 1.0.0-rc4-004771
 build_script:
 - ps: dotnet restore --no-cache
-- ps: dotnet build -c Release
-- ps: dotnet pack -c Release -o $pwd /p:version=$($env:appveyor_build_version)
+- ps: dotnet pack -c Release -o $pwd --version-suffix $($env:appveyor_build_number)
 test: off
