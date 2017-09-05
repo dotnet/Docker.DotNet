@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -38,6 +37,6 @@ namespace Docker.DotNet.Models
         public string ErrorMessage { get; set; }
 
         [DataMember(Name = "aux", EmitDefaultValue = false)]
-        public IList<byte> Aux { get; set; }
+        public ObjectExtensionData Aux { get; set; }
     }
 }

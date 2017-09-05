@@ -5,6 +5,7 @@ import (
 	"io"
 	"reflect"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/docker/docker/api/types/registry"
@@ -192,8 +193,23 @@ func calcUsings(t *CSModelType) []string {
 		}
 	}
 
-	// TODO: System sort order them.
-	sort.Strings(usings)
+	// C# convertion is that 'System' usings are first. Sort them as if they are
+	// the 'least' significant order so they appear first in the output.
+	sort.Slice(usings, func(i, j int) bool {
+		ip := strings.HasPrefix(usings[i], "System")
+		jp := strings.HasPrefix(usings[j], "System")
+		if ip && jp {
+			// System sort them.
+		} else if ip {
+			// ip has 'System' prefix and jp does not.
+			return true
+		} else if jp {
+			// jp has 'System' prefix and ip does not.
+			return false
+		}
+
+		return strings.Compare(usings[i], usings[j]) < 0
+	})
 
 	return usings
 }
