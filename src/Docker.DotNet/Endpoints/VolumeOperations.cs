@@ -55,9 +55,10 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Delete, $"volumes/{name}", cancellationToken);
         }
 
-        async Task<VolumesPruneResponse> IVolumeOperations.PruneAsync(CancellationToken cancellationToken)
+        async Task<VolumesPruneResponse> IVolumeOperations.PruneAsync(VolumesPruneParameters parameters, CancellationToken cancellationToken)
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"volumes/prune", cancellationToken);
+            var queryParameters = parameters == null ? null : new QueryString<VolumesPruneParameters>(parameters);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"volumes/prune", queryParameters, cancellationToken);
             return this._client.JsonSerializer.DeserializeObject<VolumesPruneResponse>(response.Body);
         }
     }

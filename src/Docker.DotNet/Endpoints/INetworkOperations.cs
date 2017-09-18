@@ -85,18 +85,37 @@ namespace Docker.DotNet
         /// </remarks>
         Task DisconnectNetworkAsync(string id, NetworkDisconnectParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
-         /// <summary>
+        /// <summary>
         /// Delete unused networks.
         /// </summary>
         /// <param name="id">Network ID or name.</param>
         /// <remarks>
         /// docker network disconnect
         ///
+        /// HTTP POST /networks/prune
+        ///
         /// 200 - No error.
         /// 403 - Operation not supported for swarm scoped networks.
         /// 404 - Network or container not found.
         /// 500 - Server error.
         /// </remarks>
+        [System.Obsolete("Use INetworkOperations.PruneNetworksAsync")]
         Task DeleteUnusedNetworksAsync(NetworksDeleteUnusedParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Delete unused networks.
+        /// </summary>
+        /// <param name="id">Network ID or name.</param>
+        /// <remarks>
+        /// docker network disconnect
+        ///
+        /// HTTP POST /networks/prune
+        ///
+        /// 200 - No error.
+        /// 403 - Operation not supported for swarm scoped networks.
+        /// 404 - Network or container not found.
+        /// 500 - Server error.
+        /// </remarks>
+        Task<NetworksPruneResponse> PruneNetworksAsync(NetworksDeleteUnusedParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

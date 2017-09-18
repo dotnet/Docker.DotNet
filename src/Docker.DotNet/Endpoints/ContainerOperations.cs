@@ -457,5 +457,11 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/rename", queryParameters, cancellationToken);
         }
 
+        public async Task<ContainersPruneResponse> PruneContainersAsync(ContainersPruneParameters parameters, CancellationToken cancellationToken)
+        {
+            var queryParameters = parameters == null ? null : new QueryString<ContainersPruneParameters>(parameters);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "containers/prune", queryParameters, cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<ContainersPruneResponse>(response.Body);
+        }
     }
 }

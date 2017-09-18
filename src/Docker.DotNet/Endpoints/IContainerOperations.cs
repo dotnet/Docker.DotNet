@@ -407,5 +407,16 @@ namespace Docker.DotNet
         /// <param name="id">ID or name of the container.</param>
         /// <param name="parameters">New name of the container.</param>
         Task RenameContainerAsync(string id, ContainerRenameParameters parameters, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Delete stopped containers
+        /// </summary>
+        /// <remarks>
+        /// HTTP POST /containers/prune
+        ///
+        /// 200 - No error.
+        /// 500 - Server error.
+        /// </remarks>
+        Task<ContainersPruneResponse> PruneContainersAsync(ContainersPruneParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
