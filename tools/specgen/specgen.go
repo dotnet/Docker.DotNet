@@ -74,6 +74,10 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(ContainerListParameters{}), "ContainersListParameters"},
 	{reflect.TypeOf(types.Container{}), "ContainerListResponse"},
 
+	// POST /containers/prune
+	{reflect.TypeOf(ContainersPruneParameters{}), "ContainersPruneParameters"},
+	{reflect.TypeOf(types.ContainersPruneReport{}), "ContainersPruneResponse"},
+
 	// DELETE /containers/(id)
 	{reflect.TypeOf(ContainerRemoveParameters{}), "ContainerRemoveParameters"},
 
@@ -168,6 +172,10 @@ var dockerTypesToReflect = []typeDef{
 	{reflect.TypeOf(ImageLoadParameters{}), "ImageLoadParameters"},
 	{reflect.TypeOf(types.ImageLoadResponse{}), "ImagesLoadResponse"},
 
+	// POST /images/prune
+	{reflect.TypeOf(ImagesPruneParameters{}), "ImagesPruneParameters"},
+	{reflect.TypeOf(types.ImagesPruneReport{}), "ImagesPruneResponse"},
+
 	// GET /images/search
 	{reflect.TypeOf(ImageSearchParameters{}), "ImagesSearchParameters"},
 	{reflect.TypeOf(registry.SearchResult{}), "ImageSearchResponse"},
@@ -202,6 +210,7 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /networks/prune
 	{reflect.TypeOf(NetworksDeleteUnusedParameters{}), "NetworksDeleteUnusedParameters"},
+	{reflect.TypeOf(types.NetworksPruneReport{}), "NetworksPruneResponse"},
 
 	// GET /networks/(id)
 	{reflect.TypeOf(types.NetworkResource{}), "NetworkResponse"},
@@ -223,6 +232,10 @@ var dockerTypesToReflect = []typeDef{
 
 	// POST /volumes/create
 	{reflect.TypeOf(VolumeCreateRequest{}), "VolumesCreateParameters"},
+
+	// POST /volumes/prune
+	{reflect.TypeOf(VolumesPruneParameters{}), "VolumesPruneParameters"},
+	{reflect.TypeOf(types.VolumesPruneReport{}), "VolumesPruneResponse"},
 
 	// GET /volumes/(id)
 	{reflect.TypeOf(VolumeResponse{}), "VolumeResponse"},

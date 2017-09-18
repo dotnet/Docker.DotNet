@@ -100,8 +100,14 @@ namespace Docker.DotNet
 
         Task INetworkOperations.DeleteUnusedNetworksAsync(NetworksDeleteUnusedParameters parameters, CancellationToken cancellationToken)
         {
+            return ((INetworkOperations)this).PruneNetworksAsync(parameters, cancellationToken);
+        }
+
+        async Task<NetworksPruneResponse> INetworkOperations.PruneNetworksAsync(NetworksDeleteUnusedParameters parameters, CancellationToken cancellationToken)
+        {
             var queryParameters = parameters == null ? null : new QueryString<NetworksDeleteUnusedParameters>(parameters);
-            return this._client.MakeRequestAsync(null, HttpMethod.Post, "networks/prune", queryParameters, cancellationToken);
+            var response = await this._client.MakeRequestAsync(null, HttpMethod.Post, "networks/prune", queryParameters, cancellationToken);
+            return this._client.JsonSerializer.DeserializeObject<NetworksPruneResponse>(response.Body);
         }
     }
 }

@@ -56,9 +56,11 @@ namespace Docker.DotNet
         /// Delete unused volumes.
         /// </summary>
         /// <remarks>
+        /// HTTP POST /volumes/prune
+        ///
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<VolumesPruneResponse> PruneAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<VolumesPruneResponse> PruneAsync(VolumesPruneParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

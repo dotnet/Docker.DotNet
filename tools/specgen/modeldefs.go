@@ -170,6 +170,11 @@ type ContainerEventsParameters struct {
 	Filters Args   `rest:"query"`
 }
 
+// ContainersPruneParameters for POST /containers/prune
+type ContainersPruneParameters struct {
+	Filters Args `rest:"query"`
+}
+
 // ExecCreateParameters for POST /containers/(id)/exec
 type ExecCreateParameters struct {
 	*types.ExecConfig
@@ -198,6 +203,11 @@ type ImageListParameters struct {
 // ImageLoadParameters for POST /images/load
 type ImageLoadParameters struct {
 	Quiet bool `rest:"query,quiet,required"`
+}
+
+// ImagesPruneParameters for POST /images/prune
+type ImagesPruneParameters struct {
+	Filters Args `rest:"query"`
 }
 
 // ImageSearchParameters for GET /images/search
@@ -251,6 +261,11 @@ type VolumeCreateRequest struct {
 
 // VolumesListParameters for GET /volumes
 type VolumesListParameters struct {
+	Filters Args `rest:"query"`
+}
+
+// VolumesPruneParameters for POST /volumes/prune
+type VolumesPruneParameters struct {
 	Filters Args `rest:"query"`
 }
 
