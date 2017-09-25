@@ -16,6 +16,8 @@ namespace Docker.DotNet
         /// docker ps
         /// docker container ls
         ///
+        /// HTTP GET /containers/json
+        ///
         /// 200 - No error.
         /// 400 - Bad parameter.
         /// 500 - Server error.
@@ -23,26 +25,12 @@ namespace Docker.DotNet
         Task<IList<ContainerListResponse>> ListContainersAsync(ContainersListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Inspect a container.
-        ///
-        /// Return low-level information about a container.
-        /// </summary>
-        /// <remarks>
-        /// docker inspect
-        /// docker container inspect
-        ///
-        /// 200 - No error.
-        /// 404 - No such container.
-        /// 500 - Server error.
-        /// </remarks>
-        /// <param name="id">ID or name of the container.</param>
-        Task<ContainerInspectResponse> InspectContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
         /// Create a container
         /// </summary>
         /// <remarks>
         /// docker container create
+        ///
+        /// HTTP POST /containers/create
         ///
         /// 201 - Container created successfully.
         /// 400 - Bad parameter.
@@ -54,6 +42,24 @@ namespace Docker.DotNet
         Task<CreateContainerResponse> CreateContainerAsync(CreateContainerParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Inspect a container.
+        ///
+        /// Return low-level information about a container.
+        /// </summary>
+        /// <remarks>
+        /// docker inspect
+        /// docker container inspect
+        ///
+        /// HTTP GET /containers/(id)/json
+        ///
+        /// 200 - No error.
+        /// 404 - No such container.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID or name of the container.</param>
+        Task<ContainerInspectResponse> InspectContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// List processes running inside a container.
         ///
         /// On Unix systems, this is done by running the {ps} command. The endpoint is not supported on Windows.
@@ -62,12 +68,37 @@ namespace Docker.DotNet
         /// docker top
         /// docker container top
         ///
+        /// HTTP GET /containers/(id)/top
+        ///
         /// 200 - No error.
         /// 404 - No such container.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
         Task<ContainerProcessesResponse> ListProcessesAsync(string id, ContainerListProcessesParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get container logs.
+        ///
+        /// Get {stdout} and {stderr} logs from a container.
+        /// Note: This endpoint works only for containers with the {json-file} or {journald} logging driver.
+        /// </summary>
+        /// <remarks>
+        /// docker logs
+        /// docker container logs
+        ///
+        /// HTTP GET /containers/(id)/logs
+        ///
+        /// 101 - Logs returned as a stream.
+        /// 200 - Logs returned as a string in response body.
+        /// 404 - No such container.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID or name of the container.</param>
+        Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        [Obsolete("Use 'Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress)'")]
+        Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress);
 
         /// <summary>
         /// Get changes on a container's filesystem.
@@ -78,6 +109,8 @@ namespace Docker.DotNet
         ///     2: Deleted
         /// </summary>
         /// <remarks>
+        /// HTTP GET /containers/(id)/changes
+        ///
         /// 200 - No error.
         /// 404 - No such container.
         /// 500 - Server error.
@@ -94,6 +127,8 @@ namespace Docker.DotNet
         /// docker export
         /// docker container export
         ///
+        /// HTTP GET /containers/(id)/export
+        ///
         /// 200 - No error.
         /// 404 - No such container.
         /// 500 - Server error.
@@ -101,22 +136,43 @@ namespace Docker.DotNet
         /// <param name="id">ID or name of the container.</param>
         Task<Stream> ExportContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
+        [Obsolete("Use 'Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)'")]
+        Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken);
+
         /// <summary>
-        /// Create an exec instance.
+        /// Get container stats based on resource usage.
         ///
-        /// Runs a command inside a running container.
+        /// This endpoint returns a live stream of a container's resource usage statistics.
+        /// The {precpu_stats} is the CPU statistic of last read, which is used for calculating the CPU usage percentage. It is not the same as the
+        /// {cpu_stats} field.
         /// </summary>
         /// <remarks>
-        /// docker exec
-        /// docker container exec
+        /// docker stats
+        /// docker container stats
         ///
-        /// 201 - No error.
+        /// HTTP GET /containers/(id)/stats
+        ///
+        /// 200 - No error.
         /// 404 - No such container.
-        /// 409 - Container is paused.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Resize a container TTY.
+        ///
+        /// Resize the TTY for a container. You must restart the container for the size to take effect.
+        /// </summary>
+        /// <remarks>
+        /// HTTP POST /containers/(id)/resize
+        ///
+        /// 200 - No error.
+        /// 404 - No such container.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID or name of the container.</param>
+        Task ResizeContainerTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Start a container.
@@ -124,6 +180,8 @@ namespace Docker.DotNet
         /// <remarks>
         /// docker start
         /// docker container start
+        ///
+        /// HTTP POST /containers/(id)/start
         ///
         /// 204 - No error.
         /// 304 - Container already started.
@@ -140,6 +198,8 @@ namespace Docker.DotNet
         /// docker stop
         /// docker container stop
         ///
+        /// HTTP POST /containers/(id)/stop
+        ///
         /// 204 - No error.
         /// 304 - Container already stopped.
         /// 404 - No such container.
@@ -154,6 +214,8 @@ namespace Docker.DotNet
         /// <remarks>
         /// docker restart
         /// docker container restart
+        ///
+        /// HTTP POST /containers/(id)/restart
         ///
         /// 204 - No error.
         /// 404 - No such container.
@@ -171,6 +233,8 @@ namespace Docker.DotNet
         /// docker kill
         /// docker container kill
         ///
+        /// HTTP POST /containers/(id)/kill
+        ///
         /// 204 - No error.
         /// 304 - Container already started.
         /// 404 - No such container.
@@ -178,6 +242,23 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
         Task KillContainerAsync(string id, ContainerKillParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        // Todo: Update
+
+        /// <summary>
+        /// Rename a container
+        /// </summary>
+        /// <remarks>
+        /// HTTP POST /containers/{id}/rename
+        ///
+        /// 204 - No error.
+        /// 404 - No such container.
+        /// 409 - Name already in use.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID or name of the container.</param>
+        /// <param name="parameters">New name of the container.</param>
+        Task RenameContainerAsync(string id, ContainerRenameParameters parameters, CancellationToken cancellationToken);
 
         /// <summary>
         /// Pause a container.
@@ -190,6 +271,8 @@ namespace Docker.DotNet
         /// <remarks>
         /// docker pause
         /// docker container pause
+        ///
+        /// HTTP POST /containers/(id)/pause
         ///
         /// 204 - No error.
         /// 404 - No such container.
@@ -207,12 +290,33 @@ namespace Docker.DotNet
         /// docker unpause
         /// docker container unpause
         ///
+        /// HTTP POST /containers/(id)/unpause
+        ///
         /// 204 - No error.
         /// 404 - No such container.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
         Task UnpauseContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Attach to a container.
+        /// </summary>
+        /// <remarks>
+        /// docker attach
+        /// docker container attach
+        ///
+        /// HTTP POST /containers/(id)/attach
+        ///
+        /// 204 - No error.
+        /// 404 - No such container.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID or name of the container.</param>
+        /// <param name="tty">Is this a TTY stream.</param>
+        Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        // TODO: Attach Web Socket
 
         /// <summary>
         /// Wait for a container.
@@ -222,6 +326,8 @@ namespace Docker.DotNet
         /// <remarks>
         /// docker wait
         /// docker container wait
+        ///
+        /// HTTP POST /containers/(id)/wait
         ///
         /// 204 - No error.
         /// 404 - No such container.
@@ -237,6 +343,8 @@ namespace Docker.DotNet
         /// docker rm
         /// docker container rm
         ///
+        /// HTTP DELETE /containers/(id)
+        ///
         /// 204 - No error.
         /// 400 - Bad parameter.
         /// 404 - No such container.
@@ -246,27 +354,6 @@ namespace Docker.DotNet
         Task RemoveContainerAsync(string id, ContainerRemoveParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Get container logs.
-        ///
-        /// Get {stdout} and {stderr} logs from a container.
-        /// Note: This endpoint works only for containers with the {json-file} or {journald} logging driver.
-        /// </summary>
-        /// <remarks>
-        /// docker logs
-        /// docker container logs
-        ///
-        /// 101 - Logs returned as a stream.
-        /// 200 - Logs returned as a string in response body.
-        /// 404 - No such container.
-        /// 500 - Server error.
-        /// </remarks>
-        /// <param name="id">ID or name of the container.</param>
-        Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
-        [Obsolete("Use 'Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress)'")]
-        Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress);
-
-        /// <summary>
         /// Get information about files in a container
         ///
         /// -OR-
@@ -274,6 +361,9 @@ namespace Docker.DotNet
         /// Get an archive of a filestream resource in a container.
         /// </summary>
         /// <remarks>
+        /// HTTP HEAD /containers/(id)/archive
+        /// HTTP GET /containers/(id)/archive
+        ///
         /// 204 - No error.
         /// 400 - Bad parameter.
         /// 404 - Container or path does not exist.
@@ -289,6 +379,8 @@ namespace Docker.DotNet
         /// Upload a tar archive to be extracted to a path in the filesystem of container id.
         /// </summary>
         /// <remarks>
+        /// HTTP PUT /containers/(id)/archive
+        ///
         /// 204 - The content was extracted successfully.
         /// 400 - Bad parameter.
         /// 403 - Permission denied, the volume or container rootfs is marked as read-only.
@@ -299,32 +391,36 @@ namespace Docker.DotNet
         Task ExtractArchiveToContainerAsync(string id, ContainerPathStatParameters parameters, Stream stream, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Attach to a container.
+        /// Delete stopped containers
         /// </summary>
         /// <remarks>
-        /// docker attach
-        /// docker container attach
+        /// HTTP POST /containers/prune
         ///
-        /// 204 - No error.
-        /// 404 - No such container.
+        /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        /// <param name="id">ID or name of the container.</param>
-        /// <param name="tty">Is this a TTY stream.</param>
-        Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContainersPruneResponse> PruneContainersAsync(ContainersPruneParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        //
+        // TODO: Move to IExecOperations.cs
+        // 
 
         /// <summary>
-        /// Resize a container TTY.
+        /// Create an exec instance.
         ///
-        /// Resize the TTY for a container. You must restart the container for the size to take effect.
+        /// Runs a command inside a running container.
         /// </summary>
         /// <remarks>
-        /// 200 - No error.
+        /// docker exec
+        /// docker container exec
+        ///
+        /// 201 - No error.
         /// 404 - No such container.
+        /// 409 - Container is paused.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task ResizeContainerTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Start an exec instance.
@@ -345,6 +441,19 @@ namespace Docker.DotNet
         Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ExecConfig eConfig, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Resize an exec instance.
+        ///
+        /// Resize the TTY session used by an exec instance. This endpoint only works if {tty} was specified as part of
+        /// creating and starting the exec instance.
+        /// </summary>
+        /// <remarks>
+        /// 201 - No error.
+        /// 404 - No such exec instance.
+        /// </remarks>
+        /// <param name="id">Exec instance ID.</param>
+        Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Inspect an exec instance.
         ///
         /// Return low-level information about an exec instance.
@@ -358,65 +467,5 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">Exec instance ID.</param>
         Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Resize an exec instance.
-        ///
-        /// Resize the TTY session used by an exec instance. This endpoint only works if {tty} was specified as part of
-        /// creating and starting the exec instance.
-        /// </summary>
-        /// <remarks>
-        /// 201 - No error.
-        /// 404 - No such exec instance.
-        /// </remarks>
-        /// <param name="id">Exec instance ID.</param>
-        Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
-        [Obsolete("Use 'Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)'")]
-        Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Get container stats based on resource usage.
-        ///
-        /// This endpoint returns a live stream of a container's resource usage statistics.
-        /// The {precpu_stats} is the CPU statistic of last read, which is used for calculating the CPU usage percentage. It is not the same as the
-        /// {cpu_stats} field.
-        /// </summary>
-        /// <remarks>
-        /// docker stats
-        /// docker container stats
-        ///
-        /// 200 - No error.
-        /// 404 - No such container.
-        /// 500 - Server error.
-        /// </remarks>
-        /// <param name="id">ID or name of the container.</param>
-        Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Rename a container
-        /// </summary>
-        /// <remarks>
-        /// POST /containers/{id}/rename
-        ///
-        /// 204 - No error.
-        /// 404 - No such container.
-        /// 409 - Name already in use.
-        /// 500 - Server error.
-        /// </remarks>
-        /// <param name="id">ID or name of the container.</param>
-        /// <param name="parameters">New name of the container.</param>
-        Task RenameContainerAsync(string id, ContainerRenameParameters parameters, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Delete stopped containers
-        /// </summary>
-        /// <remarks>
-        /// HTTP POST /containers/prune
-        ///
-        /// 200 - No error.
-        /// 500 - Server error.
-        /// </remarks>
-        Task<ContainersPruneResponse> PruneContainersAsync(ContainersPruneParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
