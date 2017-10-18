@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
@@ -111,6 +112,24 @@ namespace Docker.DotNet
                 Count = read,
                 Target = _target
             };
+        }
+
+        public async Task<(string stdout, string stderr)> ReadOutputToEndAsync(CancellationToken cancellationToken)
+        {
+            using (MemoryStream outMem = new MemoryStream(), outErr = new MemoryStream())
+            {
+                await CopyOutputToAsync(Stream.Null, outMem, outErr, cancellationToken);
+
+                outMem.Seek(0, SeekOrigin.Begin);
+                outErr.Seek(0, SeekOrigin.Begin);
+
+                using (StreamReader outRdr = new StreamReader(outMem), errRdr = new StreamReader(outErr))
+                {
+                    var stdout = outRdr.ReadToEnd();
+                    var stderr = errRdr.ReadToEnd();
+                    return (stdout, stderr);
+                }
+            }
         }
 
         public async Task CopyFromAsync(Stream input, CancellationToken cancellationToken)
