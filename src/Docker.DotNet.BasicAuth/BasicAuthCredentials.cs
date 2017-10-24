@@ -1,5 +1,5 @@
 ﻿using System.Net.Http;
-#if (NET45 || NET46)
+#if !NETSTANDARD1_6
 using System.Security;
 #endif
 
@@ -17,7 +17,7 @@ namespace Docker.DotNet.BasicAuth
             return new BasicAuthHandler(_username, _password, innerHandler);
         }
 
-#if (NET45 || NET46)
+#if !NETSTANDARD1_6
         public BasicAuthCredentials(SecureString username, SecureString password, bool isTls = false)
             : this(new MaybeSecureString(username), new MaybeSecureString(password), isTls)
         {
@@ -34,7 +34,7 @@ namespace Docker.DotNet.BasicAuth
             _isTls = isTls;
             _username = username;
             _password = password;
-        }      
+        }
 
         public override bool IsTlsCredentials()
         {

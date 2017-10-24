@@ -3,7 +3,7 @@
     <IsPackable>true</IsPackable>
     <PackageId>Docker.DotNet.X509</PackageId>
     <Description>Docker.DotNet.X509 is a library that allows you to use certificate authentication with a remote Docker engine programmatically in your .NET applications.</Description>
-    <TargetFrameworks>netstandard1.6;net46;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard1.6;net46;net45</TargetFrameworks>
     <AssemblyName>Docker.DotNet.X509</AssemblyName>
     <PackageIconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE</PackageLicenseUrl>
