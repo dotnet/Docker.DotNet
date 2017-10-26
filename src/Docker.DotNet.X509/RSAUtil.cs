@@ -4,7 +4,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-#if (NET45 || NET46)
+#if !NETSTANDARD1_6
 using System.Security;
 #endif
 
@@ -18,8 +18,8 @@ namespace Docker.DotNet.X509
         {
             return new X509Certificate2(pfxFilePath, password);
         }
-        
-#if (NET45 || NET46)
+
+#if !NETSTANDARD1_6
         public static X509Certificate2 GetCertFromPFXSecure(string pfxFilePath, SecureString password)
         {
             return new X509Certificate2(pfxFilePath, password);

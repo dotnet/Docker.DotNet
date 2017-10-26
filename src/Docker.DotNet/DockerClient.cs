@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
 
-#if NETSTANDARD1_6
+#if (NETSTANDARD1_6 || NETSTANDARD2_0)
 using System.Net.Sockets;
 #endif
 
@@ -101,7 +101,7 @@ namespace Docker.DotNet
                     handler = new ManagedHandler();
                     break;
 
-#if NETSTANDARD1_6
+#if (NETSTANDARD1_6 || NETSTANDARD2_0)
                 case "unix":
                     var pipeString = uri.LocalPath;
                     handler = new ManagedHandler(async (string host, int port, CancellationToken cancellationToken) =>

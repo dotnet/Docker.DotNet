@@ -3,7 +3,7 @@
     <IsPackable>true</IsPackable>
     <PackageId>Docker.DotNet</PackageId>
     <Description>Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically with fully asynchronous, non-blocking and object-oriented code in your .NET applications.</Description>
-    <TargetFrameworks>net45;net46;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>net45;net46;netstandard1.6;netstandard2.0</TargetFrameworks>
     <AssemblyName>Docker.DotNet</AssemblyName>
     <PackageIconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE</PackageLicenseUrl>
@@ -20,6 +20,9 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="System.Buffers" Version="4.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <PackageReference Include="System.Buffers" Version="4.3.0" />
