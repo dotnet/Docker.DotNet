@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/Microsoft/Docker.DotNet/tools/specgen",
 	"GoVersion": "go1.7",
-	"GodepVersion": "v74",
+	"GodepVersion": "v79",
 	"Deps": [
 		{
 			"ImportPath": "github.com/Azure/go-ansiterm",
@@ -99,6 +99,36 @@
 		{
 			"ImportPath": "golang.org/x/sys/unix",
 			"Rev": "62bee037599929a6e9146f29d10dd5208c43507d"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/vendor/github.com/docker/go-connections/nat",
+			"Comment": "v1.13.0",
+			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/vendor/github.com/docker/go-units",
+			"Comment": "v1.13.0",
+			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/vendor/github.com/Azure/go-ansiterm/winterm",
+			"Comment": "v1.13.0",
+			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/vendor/github.com/Azure/go-ansiterm",
+			"Comment": "v1.13.0",
+			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/vendor/github.com/Sirupsen/logrus",
+			"Comment": "v1.13.0",
+			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
+		},
+		{
+			"ImportPath": "github.com/docker/docker/vendor/golang.org/x/sys/unix",
+			"Comment": "v1.13.0",
+			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
 		}
 	]
 }

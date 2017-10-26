@@ -32,7 +32,7 @@ namespace Docker.DotNet.Models
         public ServiceMode Mode { get; set; }
 
         [DataMember(Name = "UpdateConfig", EmitDefaultValue = false)]
-        public UpdateConfig UpdateConfig { get; set; }
+        public SwarmUpdateConfig UpdateConfig { get; set; }
 
         [DataMember(Name = "Networks", EmitDefaultValue = false)]
         public IList<NetworkAttachmentConfig> Networks { get; set; }

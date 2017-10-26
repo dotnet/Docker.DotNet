@@ -7,7 +7,7 @@ namespace Docker.DotNet.Models
     public class ImagesPruneResponse // (types.ImagesPruneReport)
     {
         [DataMember(Name = "ImagesDeleted", EmitDefaultValue = false)]
-        public IList<ImageDelete> ImagesDeleted { get; set; }
+        public IList<ImageDeleteResponse> ImagesDeleted { get; set; }
 
         [DataMember(Name = "SpaceReclaimed", EmitDefaultValue = false)]
         public ulong SpaceReclaimed { get; set; }

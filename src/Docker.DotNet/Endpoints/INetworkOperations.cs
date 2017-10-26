@@ -17,7 +17,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<NetworkListResponse>> ListNetworksAsync(NetworksListParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<NetworkResponse>> ListNetworksAsync(NetworksListParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inspect a network.

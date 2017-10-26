@@ -222,7 +222,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task RestartContainerAsync(string id, ConatinerRestartParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task RestartContainerAsync(string id, ContainerRestartParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Kill a container.
@@ -403,7 +403,7 @@ namespace Docker.DotNet
 
         //
         // TODO: Move to IExecOperations.cs
-        // 
+        //
 
         /// <summary>
         /// Create an exec instance.
@@ -438,7 +438,7 @@ namespace Docker.DotNet
 
         Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ExecConfig eConfig, CancellationToken cancellationToken = default(CancellationToken));
+        Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ContainerExecStartParameters eConfig, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Resize an exec instance.

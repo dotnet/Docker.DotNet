@@ -26,11 +26,11 @@ namespace Docker.DotNet
             this._client = client;
         }
 
-        async Task<IList<NetworkListResponse>> INetworkOperations.ListNetworksAsync(NetworksListParameters parameters, CancellationToken cancellationToken)
+        async Task<IList<NetworkResponse>> INetworkOperations.ListNetworksAsync(NetworksListParameters parameters, CancellationToken cancellationToken)
         {
             var queryParameters = parameters == null ? null : new QueryString<NetworksListParameters>(parameters);
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "networks", queryParameters, cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<NetworkListResponse[]>(response.Body);
+            return this._client.JsonSerializer.DeserializeObject<NetworkResponse[]>(response.Body);
         }
 
         async Task<NetworkResponse> INetworkOperations.InspectNetworkAsync(string id, CancellationToken cancellationToken)

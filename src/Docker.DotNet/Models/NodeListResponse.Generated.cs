@@ -33,7 +33,7 @@ namespace Docker.DotNet.Models
         public DateTime UpdatedAt { get; set; }
 
         [DataMember(Name = "Spec", EmitDefaultValue = false)]
-        public NodeSpec Spec { get; set; }
+        public NodeUpdateParameters Spec { get; set; }
 
         [DataMember(Name = "Description", EmitDefaultValue = false)]
         public NodeDescription Description { get; set; }

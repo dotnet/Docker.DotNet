@@ -6,6 +6,6 @@ namespace Docker.DotNet.Models
     public class TaskDefaults // (swarm.TaskDefaults)
     {
         [DataMember(Name = "LogDriver", EmitDefaultValue = false)]
-        public Driver LogDriver { get; set; }
+        public SwarmDriver LogDriver { get; set; }
     }
 }

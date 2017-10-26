@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImagesCreateParameters // (main.ImageCreateParameters)
+    public class ImagesCreateParameters // (main.ImagesCreateParameters)
     {
         [QueryStringParameter("fromImage", false)]
         public string FromImage { get; set; }

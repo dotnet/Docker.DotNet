@@ -7,9 +7,9 @@ namespace Docker.DotNet.Models
     public class IPAMOptions // (swarm.IPAMOptions)
     {
         [DataMember(Name = "Driver", EmitDefaultValue = false)]
-        public Driver Driver { get; set; }
+        public SwarmDriver Driver { get; set; }
 
         [DataMember(Name = "Configs", EmitDefaultValue = false)]
-        public IList<IPAMConfig> Configs { get; set; }
+        public IList<SwarmIPAMConfig> Configs { get; set; }
     }
 }

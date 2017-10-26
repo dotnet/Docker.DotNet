@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class CreateContainerParameters // (main.ContainerCreateParameters)
+    public class CreateContainerParameters // (main.CreateContainerParameters)
     {
         public CreateContainerParameters()
         {
