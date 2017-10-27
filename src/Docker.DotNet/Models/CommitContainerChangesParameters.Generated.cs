@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class CommitContainerChangesParameters // (main.ContainerCommitParamters)
+    public class CommitContainerChangesParameters // (main.CommitContainerChangesParameters)
     {
         [QueryStringParameter("container", true)]
         public string ContainerID { get; set; }

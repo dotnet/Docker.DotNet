@@ -12,7 +12,7 @@ namespace Docker.DotNet.Models
         public Platform Platform { get; set; }
 
         [DataMember(Name = "Resources", EmitDefaultValue = false)]
-        public Resources Resources { get; set; }
+        public SwarmResources Resources { get; set; }
 
         [DataMember(Name = "Engine", EmitDefaultValue = false)]
         public EngineDescription Engine { get; set; }

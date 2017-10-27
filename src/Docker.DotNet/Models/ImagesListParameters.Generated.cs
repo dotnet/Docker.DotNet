@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImagesListParameters // (main.ImageListParameters)
+    public class ImagesListParameters // (main.ImagesListParameters)
     {
         [QueryStringParameter("filter", false)]
         public string MatchName { get; set; }

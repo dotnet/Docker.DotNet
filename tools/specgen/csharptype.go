@@ -147,6 +147,11 @@ type CSModelType struct {
 	Constructors []CSConstructor
 	Properties   []CSProperty
 	Attributes   []CSAttribute
+	// IsStarted is used to signify if the model type has started reflection
+	// yet. it is possible that given the recursive nature that it not be
+	// completed but as long as this is true we will not attempt to generate the
+	// type more than once.
+	IsStarted bool
 }
 
 // NewModel creates a new model type with valid slices

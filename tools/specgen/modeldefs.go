@@ -37,8 +37,8 @@ type ImageBuildParameters struct {
 	Labels         map[string]string `rest:"query"`
 }
 
-// ContainerCommitParamters for POST /commit
-type ContainerCommitParamters struct {
+// CommitContainerChangesParameters for POST /commit
+type CommitContainerChangesParameters struct {
 	ContainerID    string   `rest:"query,container,required"`
 	RepositoryName string   `rest:"query,repo"`
 	Tag            string   `rest:"query"`
@@ -49,16 +49,19 @@ type ContainerCommitParamters struct {
 	Config         *container.Config
 }
 
-// ContainerCreateParameters for POST /containers/create
-type ContainerCreateParameters struct {
+// CommitContainerChangesResponse for POST /commit
+type CommitContainerChangesResponse types.IDResponse
+
+// CreateContainerParameters for POST /containers/create
+type CreateContainerParameters struct {
 	Name              string `rest:"query,name"`
 	*container.Config `rest:"body"`
 	HostConfig        *container.HostConfig     `rest:"body"`
 	NetworkingConfig  *network.NetworkingConfig `rest:"body"`
 }
 
-// ContainerListParameters for GET /containers/json
-type ContainerListParameters struct {
+// ContainersListParameters for GET /containers/json
+type ContainersListParameters struct {
 	Size    bool   `rest:"query"`
 	All     bool   `rest:"query"`
 	Since   string `rest:"query"`
@@ -175,26 +178,25 @@ type ContainersPruneParameters struct {
 	Filters Args `rest:"query"`
 }
 
-// ExecCreateParameters for POST /containers/(id)/exec
-type ExecCreateParameters struct {
-	*types.ExecConfig
-}
+// ContainerExecCreateParameters for POST /containers/(id)/exec
+type ContainerExecCreateParameters types.ExecConfig
 
-// ExecStartParameters for POST /exec/(id)/start
-type ExecStartParameters struct {
-	*types.ExecConfig
-}
+// ContainerExecCreateResponse for POST /containers/(id)/exec
+type ContainerExecCreateResponse types.IDResponse
 
-// ImageCreateParameters for POST /images/create
-type ImageCreateParameters struct {
+// ContainerExecStartParameters for POST /exec/(id)/start
+type ContainerExecStartParameters types.ExecConfig
+
+// ImagesCreateParameters for POST /images/create
+type ImagesCreateParameters struct {
 	FromImage string `rest:"query,fromImage"`
 	FromSrc   string `rest:"query,fromSrc"`
 	Repo      string `rest:"query"`
 	Tag       string `rest:"query"`
 }
 
-// ImageListParameters for GET /images/json
-type ImageListParameters struct {
+// ImagesListParameters for GET /images/json
+type ImagesListParameters struct {
 	MatchName string `rest:"query,filter"`
 	All       bool   `rest:"query"`
 	Filters   Args   `rest:"query"`
@@ -210,8 +212,8 @@ type ImagesPruneParameters struct {
 	Filters Args `rest:"query"`
 }
 
-// ImageSearchParameters for GET /images/search
-type ImageSearchParameters struct {
+// ImagesSearchParameters for GET /images/search
+type ImagesSearchParameters struct {
 	Term         string `rest:"query"`
 	RegistryAuth string `rest:"headers,X-Registry-Auth"`
 }
@@ -241,8 +243,8 @@ type ImageTagParameters struct {
 	Force          bool   `rest:"query"`
 }
 
-// NetworkListParameters for GET /networks
-type NetworkListParameters struct {
+// NetworksListParameters for GET /networks
+type NetworksListParameters struct {
 	Filters Args `rest:"query"`
 }
 
@@ -251,8 +253,8 @@ type NetworksDeleteUnusedParameters struct {
 	Filters Args `rest:"query"`
 }
 
-// VolumeCreateRequest for POST /volumes/create
-type VolumeCreateRequest struct {
+// VolumesCreateParameters for POST /volumes/create
+type VolumesCreateParameters struct {
 	Name       string            // Name is the requested name of the volume
 	Driver     string            // Driver is the name of the driver that should be used to create the volume
 	DriverOpts map[string]string // DriverOpts holds the driver specific options to use for when creating the volume.
@@ -283,6 +285,9 @@ type SwarmLeaveParameters struct {
 	Force bool `rest:"query"`
 }
 
+// SwarmUnlockResponse for GET /swarm/unlockkey
+type SwarmUnlockResponse swarm.UnlockRequest
+
 // SwarmUpdateParameters for POST /swarm/update
 type SwarmUpdateParameters struct {
 	Spec                   swarm.Spec `rest:"body,spec,required"`
@@ -291,6 +296,9 @@ type SwarmUpdateParameters struct {
 	RotateManagerToken     bool       `rest:"query"`
 	RotateManagerUnlockKey bool       `rest:"query"`
 }
+
+// SwarmUnlockParameters for POST /swarm/unlock
+type SwarmUnlockParameters swarm.UnlockRequest
 
 // ServiceCreateParameters for POST /services/create
 type ServiceCreateParameters struct {

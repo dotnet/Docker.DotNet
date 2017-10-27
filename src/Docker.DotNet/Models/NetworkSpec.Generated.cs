@@ -26,7 +26,7 @@ namespace Docker.DotNet.Models
         public IDictionary<string, string> Labels { get; set; }
 
         [DataMember(Name = "DriverConfiguration", EmitDefaultValue = false)]
-        public Driver DriverConfiguration { get; set; }
+        public SwarmDriver DriverConfiguration { get; set; }
 
         [DataMember(Name = "IPv6Enabled", EmitDefaultValue = false)]
         public bool IPv6Enabled { get; set; }

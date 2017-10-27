@@ -17,81 +17,175 @@ import (
 	"github.com/docker/docker/pkg/jsonmessage"
 )
 
-var typeCustomizations = map[typeCustomizationKey]CSType{
-	{reflect.TypeOf(container.RestartPolicy{}), "Name"}:          {"", "RestartPolicyKind", false},
-	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Time"}:          {"System", "DateTime", false},
-	{reflect.TypeOf(jsonmessage.JSONMessage{}), "Aux"}:           {"", "ObjectExtensionData", false},
-	{reflect.TypeOf(types.Container{}), "Created"}:               {"System", "DateTime", false},
-	{reflect.TypeOf(types.ContainerChange{}), "Kind"}:            {"", "FileSystemChangeKind", false},
-	{reflect.TypeOf(types.ContainerJSONBase{}), "Created"}:       {"System", "DateTime", false},
-	{reflect.TypeOf(types.ImageSummary{}), "Created"}:            {"System", "DateTime", false},
-	{reflect.TypeOf(types.ImageHistory{}), "Created"}:            {"System", "DateTime", false},
-	{reflect.TypeOf(types.ImageInspect{}), "Created"}:            {"System", "DateTime", false},
-	{reflect.TypeOf(container.Config{}), "StopTimeout"}:          {"System", "TimeSpan", true},
-	{reflect.TypeOf(container.HealthConfig{}), "Interval"}:       {"System", "TimeSpan", true},
-	{reflect.TypeOf(container.HealthConfig{}), "Timeout"}:        {"System", "TimeSpan", true},
-	{reflect.TypeOf(ContainerCreateParameters{}), "StopTimeout"}: {"System", "TimeSpan", true},
-	{reflect.TypeOf(swarm.Task{}), "DesiredState"}:               {"", "TaskState", false},
-	{reflect.TypeOf(swarm.TaskStatus{}), "State"}:                {"", "TaskState", false},
+var reflectedTypes = map[string]*CSModelType{}
+
+func typeToKey(t reflect.Type) string {
+	return t.String()
 }
 
-var customTypeAttribtues = map[typeCustomizationKey]CSAttribute{
-	{reflect.TypeOf(container.Config{}), "StopTimeout"}:          {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}},
-	{reflect.TypeOf(container.HealthConfig{}), "Interval"}:       {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}},
-	{reflect.TypeOf(container.HealthConfig{}), "Timeout"}:        {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}},
-	{reflect.TypeOf(ContainerCreateParameters{}), "StopTimeout"}: {Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}},
+var typesToDisambiguate = map[string]*CSModelType{
+	typeToKey(reflect.TypeOf(container.Config{})): {
+		Properties: []CSProperty{
+			CSProperty{
+				Name:       "StopTimeout",
+				Type:       CSType{"System", "TimeSpan", true},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+			},
+		},
+	},
+	typeToKey(reflect.TypeOf(container.ContainerCreateCreatedBody{})): {Name: "CreateContainerResponse"},
+	typeToKey(reflect.TypeOf(container.HealthConfig{})): {
+		Properties: []CSProperty{
+			CSProperty{
+				Name:       "Interval",
+				Type:       CSType{"System", "TimeSpan", true},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
+			},
+			CSProperty{
+				Name:       "Timeout",
+				Type:       CSType{"System", "TimeSpan", true},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+			},
+		},
+	},
+	typeToKey(reflect.TypeOf(container.RestartPolicy{})): {
+		Properties: []CSProperty{CSProperty{Name: "Name", Type: CSType{"", "RestartPolicyKind", false}}},
+	},
+	typeToKey(reflect.TypeOf(jsonmessage.JSONMessage{})): {
+		Properties: []CSProperty{
+			CSProperty{Name: "Time", Type: CSType{"System", "DateTime", false}},
+			CSProperty{Name: "Aux", Type: CSType{"", "ObjectExtensionData", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(CreateContainerParameters{})): {
+		Properties: []CSProperty{
+			CSProperty{
+				Name:       "StopTimeout",
+				Type:       CSType{"System", "TimeSpan", true},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+			},
+		},
+	},
+	typeToKey(reflect.TypeOf(registry.AuthenticateOKBody{})): {Name: "AuthResponse"},
+	typeToKey(reflect.TypeOf(registry.SearchResult{})):       {Name: "ImageSearchResponse"},
+	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
+	typeToKey(reflect.TypeOf(swarm.InitRequest{})):           {Name: "SwarmInitParameters"},
+	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
+	typeToKey(reflect.TypeOf(swarm.IPAMConfig{})):            {Name: "SwarmIPAMConfig"},
+	typeToKey(reflect.TypeOf(swarm.Node{})):                  {Name: "NodeListResponse"},
+	typeToKey(reflect.TypeOf(swarm.NodeSpec{})):              {Name: "NodeUpdateParameters"},
+	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
+	typeToKey(reflect.TypeOf(swarm.Resources{})):             {Name: "SwarmResources"},
+	typeToKey(reflect.TypeOf(swarm.Service{})):               {Name: "SwarmService"},
+	typeToKey(reflect.TypeOf(swarm.Swarm{})):                 {Name: "SwarmInspectResponse"},
+	typeToKey(reflect.TypeOf(swarm.Task{})): {
+		Name: "TaskResponse",
+		Properties: []CSProperty{
+			CSProperty{Name: "DesiredState", Type: CSType{"", "TaskState", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(swarm.TaskStatus{})): {
+		Properties: []CSProperty{
+			CSProperty{Name: "State", Type: CSType{"", "TaskState", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})): {Name: "SwarmUpdateConfig"},
+	typeToKey(reflect.TypeOf(types.Container{})): {
+		Name: "ContainerListResponse",
+		Properties: []CSProperty{
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(types.ContainerChange{})): {
+		Name: "ContainerFileSystemChangeResponse",
+		Properties: []CSProperty{
+			CSProperty{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(types.ContainerExecInspect{})): {Name: "ContainerExecInspectResponse"},
+	typeToKey(reflect.TypeOf(types.ContainerJSON{})):        {Name: "ContainerInspectResponse"},
+	typeToKey(reflect.TypeOf(types.ContainerJSONBase{})): {
+		Properties: []CSProperty{
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):     {Name: "ContainerPathStatResponse"},
+	typeToKey(reflect.TypeOf(types.ContainerProcessList{})):  {Name: "ContainerProcessesResponse"},
+	typeToKey(reflect.TypeOf(types.ContainersPruneReport{})): {Name: "ContainersPruneResponse"},
+	typeToKey(reflect.TypeOf(types.ImageDelete{})):           {Name: "ImageDeleteResponse"},
+	typeToKey(reflect.TypeOf(types.ImageHistory{})): {
+		Name: "ImageHistoryResponse",
+		Properties: []CSProperty{
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(types.ImageInspect{})): {
+		Name: "ImageInspectResponse",
+		Properties: []CSProperty{
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(types.ImageLoadResponse{})): {Name: "ImagesLoadResponse"},
+	typeToKey(reflect.TypeOf(types.ImagesPruneReport{})): {Name: "ImagesPruneResponse"},
+	typeToKey(reflect.TypeOf(types.ImageSummary{})): {
+		Name: "ImagesListResponse",
+		Properties: []CSProperty{
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+		},
+	},
+	typeToKey(reflect.TypeOf(types.Info{})):                  {Name: "SystemInfoResponse"},
+	typeToKey(reflect.TypeOf(types.NetworkConnect{})):        {Name: "NetworkConnectParameters"},
+	typeToKey(reflect.TypeOf(types.NetworkCreateRequest{})):  {Name: "NetworksCreateParameters"},
+	typeToKey(reflect.TypeOf(types.NetworkCreateResponse{})): {Name: "NetworksCreateResponse"},
+	typeToKey(reflect.TypeOf(types.NetworkDisconnect{})):     {Name: "NetworkDisconnectParameters"},
+	typeToKey(reflect.TypeOf(types.NetworksPruneReport{})):   {Name: "NetworksPruneResponse"},
+	typeToKey(reflect.TypeOf(types.NetworkResource{})):       {Name: "NetworkResponse"},
+	typeToKey(reflect.TypeOf(types.StatsJSON{})):             {Name: "ContainerStatsResponse"},
+	typeToKey(reflect.TypeOf(types.Version{})):               {Name: "VersionResponse"},
+	typeToKey(reflect.TypeOf(types.VolumesPruneReport{})):    {Name: "VolumesPruneResponse"},
+	typeToKey(reflect.TypeOf(VolumeResponse{})):              {Name: "VolumeResponse"},
 }
 
-type typeCustomizationKey struct {
-	Type         reflect.Type
-	PropertyName string
-}
-
-type typeDef struct {
-	Type   reflect.Type
-	CsName string
-}
-
-var dockerTypesToReflect = []typeDef{
+var dockerTypesToReflect = []reflect.Type{
 
 	// POST /auth
-	{reflect.TypeOf(types.AuthConfig{}), "AuthConfig"},
-	{reflect.TypeOf(registry.AuthenticateOKBody{}), "AuthResponse"},
+	reflect.TypeOf(types.AuthConfig{}),
+	reflect.TypeOf(registry.AuthenticateOKBody{}),
 
 	// POST /build
-	{reflect.TypeOf(ImageBuildParameters{}), "ImageBuildParameters"},
-	{reflect.TypeOf(types.ImageBuildResponse{}), "ImageBuildResponse"},
+	reflect.TypeOf(ImageBuildParameters{}),
+	reflect.TypeOf(types.ImageBuildResponse{}),
 
 	// POST /commit
-	{reflect.TypeOf(ContainerCommitParamters{}), "CommitContainerChangesParameters"},
-	{reflect.TypeOf(types.IDResponse{}), "CommitContainerChangesResponse"},
+	reflect.TypeOf(CommitContainerChangesParameters{}),
+	reflect.TypeOf(CommitContainerChangesResponse{}),
 
 	// POST /containers/create
-	{reflect.TypeOf(ContainerCreateParameters{}), "CreateContainerParameters"},
-	{reflect.TypeOf(container.ContainerCreateCreatedBody{}), "CreateContainerResponse"},
+	reflect.TypeOf(CreateContainerParameters{}),
+	reflect.TypeOf(container.ContainerCreateCreatedBody{}),
 
 	// GET /containers/json
-	{reflect.TypeOf(ContainerListParameters{}), "ContainersListParameters"},
-	{reflect.TypeOf(types.Container{}), "ContainerListResponse"},
+	reflect.TypeOf(ContainersListParameters{}),
+	reflect.TypeOf(types.Container{}),
 
 	// POST /containers/prune
-	{reflect.TypeOf(ContainersPruneParameters{}), "ContainersPruneParameters"},
-	{reflect.TypeOf(types.ContainersPruneReport{}), "ContainersPruneResponse"},
+	reflect.TypeOf(ContainersPruneParameters{}),
+	reflect.TypeOf(types.ContainersPruneReport{}),
 
 	// DELETE /containers/(id)
-	{reflect.TypeOf(ContainerRemoveParameters{}), "ContainerRemoveParameters"},
+	reflect.TypeOf(ContainerRemoveParameters{}),
 
 	// GET /containers/(id)/archive
-	{reflect.TypeOf(ContainerPathStatParameters{}), "ContainerPathStatParameters"},
-	{reflect.TypeOf(types.ContainerPathStat{}), "ContainerPathStatResponse"},
+	reflect.TypeOf(ContainerPathStatParameters{}),
+	reflect.TypeOf(types.ContainerPathStat{}),
 
 	// POST /containers/(id)/attach
-	{reflect.TypeOf(ContainerAttachParameters{}), "ContainerAttachParameters"},
+	reflect.TypeOf(ContainerAttachParameters{}),
 
 	// POST /containers/(id)/attach/ws
 
 	// GET /containers/(id)/changes
-	{reflect.TypeOf(types.ContainerChange{}), "ContainerFileSystemChangeResponse"},
+	reflect.TypeOf(types.ContainerChange{}),
 
 	// OBSOLETE - POST /containers/(id)/copy
 
@@ -99,146 +193,146 @@ var dockerTypesToReflect = []typeDef{
 	// TODO: TAR Stream
 
 	// POST /containers/(id)/exec
-	{reflect.TypeOf(ExecCreateParameters{}), "ContainerExecCreateParameters"},
-	{reflect.TypeOf(types.IDResponse{}), "ContainerExecCreateResponse"},
+	reflect.TypeOf(ContainerExecCreateParameters{}),
+	reflect.TypeOf(ContainerExecCreateResponse{}),
 
 	// GET /containers/(id)/json
-	{reflect.TypeOf(ContainerInspectParameters{}), "ContainerInspectParameters"},
-	{reflect.TypeOf(types.ContainerJSON{}), "ContainerInspectResponse"},
+	reflect.TypeOf(ContainerInspectParameters{}),
+	reflect.TypeOf(types.ContainerJSON{}),
 
 	// POST /containers/(id)/kill
-	{reflect.TypeOf(ContainerKillParameters{}), "ContainerKillParameters"},
+	reflect.TypeOf(ContainerKillParameters{}),
 
 	// GET /containers/(id)/logs
-	{reflect.TypeOf(ContainerLogsParameters{}), "ContainerLogsParameters"},
+	reflect.TypeOf(ContainerLogsParameters{}),
 
 	// POST /containers/(id)/pause
 
 	// POST /containers/(id)/rename
-	{reflect.TypeOf(ContainerRenameParameters{}), "ContainerRenameParameters"},
+	reflect.TypeOf(ContainerRenameParameters{}),
 
 	// POST /containers/(id)/resize
 	// POST /exec/(id)/resize
-	{reflect.TypeOf(ContainerResizeParameters{}), "ContainerResizeParameters"},
+	reflect.TypeOf(ContainerResizeParameters{}),
 
 	// POST /containers/(id)/restart
-	{reflect.TypeOf(ContainerRestartParameters{}), "ConatinerRestartParameters"},
+	reflect.TypeOf(ContainerRestartParameters{}),
 
 	// POST /containers/(id)/start
-	{reflect.TypeOf(ContainerStartParameters{}), "ContainerStartParameters"},
+	reflect.TypeOf(ContainerStartParameters{}),
 
 	// POST /containers/(id)/stop
-	{reflect.TypeOf(ContainerStopParameters{}), "ContainerStopParameters"},
+	reflect.TypeOf(ContainerStopParameters{}),
 
 	// GET /containers/(id)/stats
-	{reflect.TypeOf(ContainerStatsParameters{}), "ContainerStatsParameters"},
-	{reflect.TypeOf(types.StatsJSON{}), "ContainerStatsResponse"},
+	reflect.TypeOf(ContainerStatsParameters{}),
+	reflect.TypeOf(types.StatsJSON{}),
 
 	// GET /containers/(id)/top
-	{reflect.TypeOf(ContainerListProcessesParameters{}), "ContainerListProcessesParameters"},
-	{reflect.TypeOf(types.ContainerProcessList{}), "ContainerProcessesResponse"},
+	reflect.TypeOf(ContainerListProcessesParameters{}),
+	reflect.TypeOf(types.ContainerProcessList{}),
 
 	// POST /containers/(id)/unpause
 
 	// POST /containers/(id)/update
-	{reflect.TypeOf(ContainerUpdateParameters{}), "ContainerUpdateParameters"},
-	{reflect.TypeOf(ContainerUpdateResponse{}), "ContainerUpdateResponse"},
+	reflect.TypeOf(ContainerUpdateParameters{}),
+	reflect.TypeOf(ContainerUpdateResponse{}),
 
 	// POST /containers/(id)/wait
-	{reflect.TypeOf(ContainerWaitResponse{}), "ContainerWaitResponse"},
+	reflect.TypeOf(ContainerWaitResponse{}),
 
 	// POST /exec/(id)/start
-	{reflect.TypeOf(ExecStartParameters{}), "ContainerExecStartParameters"},
+	reflect.TypeOf(ContainerExecStartParameters{}),
 
 	// GET /exec/(id)/json
-	{reflect.TypeOf(types.ContainerExecInspect{}), "ContainerExecInspectResponse"},
+	reflect.TypeOf(types.ContainerExecInspect{}),
 
 	// GET /events
-	{reflect.TypeOf(ContainerEventsParameters{}), "ContainerEventsParameters"},
-	{reflect.TypeOf(jsonmessage.JSONMessage{}), "JSONMessage"},
+	reflect.TypeOf(ContainerEventsParameters{}),
+	reflect.TypeOf(jsonmessage.JSONMessage{}),
 
 	// POST /images/create
-	{reflect.TypeOf(ImageCreateParameters{}), "ImagesCreateParameters"},
+	reflect.TypeOf(ImagesCreateParameters{}),
 
 	// GET /images/get
 	// TODO: stream
 
 	// GET /images/json
-	{reflect.TypeOf(ImageListParameters{}), "ImagesListParameters"},
-	{reflect.TypeOf(types.ImageSummary{}), "ImagesListResponse"},
+	reflect.TypeOf(ImagesListParameters{}),
+	reflect.TypeOf(types.ImageSummary{}),
 
 	// POST /images/load
 	// TODO: headers: application/x-tar body.
-	{reflect.TypeOf(ImageLoadParameters{}), "ImageLoadParameters"},
-	{reflect.TypeOf(types.ImageLoadResponse{}), "ImagesLoadResponse"},
+	reflect.TypeOf(ImageLoadParameters{}),
+	reflect.TypeOf(types.ImageLoadResponse{}),
 
 	// POST /images/prune
-	{reflect.TypeOf(ImagesPruneParameters{}), "ImagesPruneParameters"},
-	{reflect.TypeOf(types.ImagesPruneReport{}), "ImagesPruneResponse"},
+	reflect.TypeOf(ImagesPruneParameters{}),
+	reflect.TypeOf(types.ImagesPruneReport{}),
 
 	// GET /images/search
-	{reflect.TypeOf(ImageSearchParameters{}), "ImagesSearchParameters"},
-	{reflect.TypeOf(registry.SearchResult{}), "ImageSearchResponse"},
+	reflect.TypeOf(ImagesSearchParameters{}),
+	reflect.TypeOf(registry.SearchResult{}),
 
 	// DELETE /images/(id)
-	{reflect.TypeOf(ImageDeleteParameters{}), "ImageDeleteParameters"},
-	{reflect.TypeOf(types.ImageDelete{}), "ImageDeleteResponse"},
+	reflect.TypeOf(ImageDeleteParameters{}),
+	reflect.TypeOf(types.ImageDelete{}),
 
 	// GET /images/(id)/history
-	{reflect.TypeOf(types.ImageHistory{}), "ImageHistoryResponse"},
+	reflect.TypeOf(types.ImageHistory{}),
 
 	// GET /images/(id)/json
-	{reflect.TypeOf(ImageInspectParameters{}), "ImageInspectParameters"},
-	{reflect.TypeOf(types.ImageInspect{}), "ImageInspectResponse"},
+	reflect.TypeOf(ImageInspectParameters{}),
+	reflect.TypeOf(types.ImageInspect{}),
 
 	// POST /images/(id)/push
-	{reflect.TypeOf(ImagePushParameters{}), "ImagePushParameters"},
+	reflect.TypeOf(ImagePushParameters{}),
 
 	// POST /images/(id)/tag
-	{reflect.TypeOf(ImageTagParameters{}), "ImageTagParameters"},
+	reflect.TypeOf(ImageTagParameters{}),
 
 	// GET /info
-	{reflect.TypeOf(types.Info{}), "SystemInfoResponse"},
+	reflect.TypeOf(types.Info{}),
 
 	// GET /networks
-	{reflect.TypeOf(NetworkListParameters{}), "NetworksListParameters"},
-	{reflect.TypeOf(types.NetworkResource{}), "NetworkListResponse"},
+	reflect.TypeOf(NetworksListParameters{}),
+	reflect.TypeOf(types.NetworkResource{}),
 
 	// POST /networks/create
-	{reflect.TypeOf(types.NetworkCreateRequest{}), "NetworksCreateParameters"},
-	{reflect.TypeOf(types.NetworkCreateResponse{}), "NetworksCreateResponse"},
+	reflect.TypeOf(types.NetworkCreateRequest{}),
+	reflect.TypeOf(types.NetworkCreateResponse{}),
 
 	// POST /networks/prune
-	{reflect.TypeOf(NetworksDeleteUnusedParameters{}), "NetworksDeleteUnusedParameters"},
-	{reflect.TypeOf(types.NetworksPruneReport{}), "NetworksPruneResponse"},
+	reflect.TypeOf(NetworksDeleteUnusedParameters{}),
+	reflect.TypeOf(types.NetworksPruneReport{}),
 
 	// GET /networks/(id)
-	{reflect.TypeOf(types.NetworkResource{}), "NetworkResponse"},
+	// []NetworkResponse reflected above in GET /networks
 
 	// DELETE /networks/(id)
 
 	// POST /networks/(id)/connect
-	{reflect.TypeOf(types.NetworkConnect{}), "NetworkConnectParameters"},
+	reflect.TypeOf(types.NetworkConnect{}),
 
 	// POST /networks/(id)/disconnect
-	{reflect.TypeOf(types.NetworkDisconnect{}), "NetworkDisconnectParameters"},
+	reflect.TypeOf(types.NetworkDisconnect{}),
 
 	// GET /version
-	{reflect.TypeOf(types.Version{}), "VersionResponse"},
+	reflect.TypeOf(types.Version{}),
 
 	// GET /volumes
-	{reflect.TypeOf(VolumesListParameters{}), "VolumesListParameters"},
-	{reflect.TypeOf(VolumesListResponse{}), "VolumesListResponse"},
+	reflect.TypeOf(VolumesListParameters{}),
+	reflect.TypeOf(VolumesListResponse{}),
 
 	// POST /volumes/create
-	{reflect.TypeOf(VolumeCreateRequest{}), "VolumesCreateParameters"},
+	reflect.TypeOf(VolumesCreateParameters{}),
 
 	// POST /volumes/prune
-	{reflect.TypeOf(VolumesPruneParameters{}), "VolumesPruneParameters"},
-	{reflect.TypeOf(types.VolumesPruneReport{}), "VolumesPruneResponse"},
+	reflect.TypeOf(VolumesPruneParameters{}),
+	reflect.TypeOf(types.VolumesPruneReport{}),
 
 	// GET /volumes/(id)
-	{reflect.TypeOf(VolumeResponse{}), "VolumeResponse"},
+	reflect.TypeOf(VolumeResponse{}),
 
 	// DELETE /volumes/(id)
 
@@ -247,25 +341,25 @@ var dockerTypesToReflect = []typeDef{
 	//
 
 	// POST /swarm/init
-	{reflect.TypeOf(swarm.InitRequest{}), "SwarmInitParameters"},
+	reflect.TypeOf(swarm.InitRequest{}),
 
 	// POST /swarm/join
-	{reflect.TypeOf(swarm.JoinRequest{}), "SwarmJoinParameters"},
+	reflect.TypeOf(swarm.JoinRequest{}),
 
 	// POST /swarm/leave
-	{reflect.TypeOf(SwarmLeaveParameters{}), "SwarmLeaveParameters"},
+	reflect.TypeOf(SwarmLeaveParameters{}),
 
 	// GET /swarm
-	{reflect.TypeOf(swarm.Swarm{}), "SwarmInspectResponse"},
+	reflect.TypeOf(swarm.Swarm{}),
 
 	// GET /swarm/unlockkey
-	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockResponse"},
+	reflect.TypeOf(SwarmUnlockResponse{}),
 
 	// POST /swarm/update
-	{reflect.TypeOf(SwarmUpdateParameters{}), "SwarmUpdateParameters"},
+	reflect.TypeOf(SwarmUpdateParameters{}),
 
 	// POST /swarm/unlock
-	{reflect.TypeOf(swarm.UnlockRequest{}), "SwarmUnlockParameters"},
+	reflect.TypeOf(SwarmUnlockParameters{}),
 
 	//
 	// Secrets API (swarm)
@@ -273,38 +367,36 @@ var dockerTypesToReflect = []typeDef{
 
 	// GET /secrets
 	// GET /secrets/(id)
-	{reflect.TypeOf(swarm.Secret{}), "Secret"},
+	reflect.TypeOf(swarm.Secret{}),
 
 	// POST /secrets/create
-	{reflect.TypeOf(SecretCreateResponse{}), "SecretCreateResponse"},
+	reflect.TypeOf(SecretCreateResponse{}),
 
 	// GET /services
-	// {reflect.TypeOf([]swarm.Service{}), "SwarmServices"},
-
 	// GET /services/(id)
-	{reflect.TypeOf(swarm.Service{}), "SwarmService"},
+	reflect.TypeOf(swarm.Service{}),
 
 	// POST /services/create
-	{reflect.TypeOf(ServiceCreateParameters{}), "ServiceCreateParameters"},
-	{reflect.TypeOf(types.ServiceCreateResponse{}), "ServiceCreateResponse"},
+	reflect.TypeOf(ServiceCreateParameters{}),
+	reflect.TypeOf(types.ServiceCreateResponse{}),
 
 	// POST /services/(id)/update
-	{reflect.TypeOf(ServiceUpdateParameters{}), "ServiceUpdateParameters"},
-	{reflect.TypeOf(types.ServiceUpdateResponse{}), "ServiceUpdateResponse"},
+	reflect.TypeOf(ServiceUpdateParameters{}),
+	reflect.TypeOf(types.ServiceUpdateResponse{}),
 
 	// DELETE /services/(id)
 
 	// GET /tasks
-	{reflect.TypeOf(swarm.Task{}), "TaskResponse"},
+	reflect.TypeOf(swarm.Task{}),
 
 	// GET /nodes
 	// GET /nodes/(id)
-	{reflect.TypeOf(swarm.Node{}), "NodeListResponse"},
+	reflect.TypeOf(swarm.Node{}),
 
 	// DELETE /nodes/(id)
 
 	// POST /nodes/(id)/update
-	{reflect.TypeOf(swarm.NodeSpec{}), "NodeUpdateParameters"},
+	reflect.TypeOf(swarm.NodeSpec{}),
 }
 
 func csType(t reflect.Type, opt bool) CSType {
@@ -331,6 +423,10 @@ func csType(t reflect.Type, opt bool) CSType {
 	case reflect.Ptr:
 		return csType(t.Elem(), true)
 	case reflect.Struct:
+		if m, ok := reflectedTypes[typeToKey(t)]; ok {
+			// We have aliased this type. Return it as a reference.
+			return CSType{"", m.Name, false}
+		}
 		return CSType{"", t.Name(), false}
 	case reflect.Interface:
 		return CSType{"", "object", false}
@@ -350,7 +446,7 @@ func ultimateType(t reflect.Type) reflect.Type {
 	}
 }
 
-func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[string]*CSModelType) {
+func reflectTypeMembers(t reflect.Type, m *CSModelType) {
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
 
@@ -373,8 +469,12 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 			}
 
 			ut := ultimateType(f.Type)
-			reflectType(ut.Name(), ut, reflectedTypes)
-			newType := reflectedTypes[ut.Name()]
+			reflectType(ut)
+			newType := reflectedTypes[typeToKey(ut)]
+			if newType == nil {
+				panic(fmt.Sprintf("Failed to reflect ultimate type (%s) for anonymous member (%s) on type (%s)", ut, f.Name, t))
+			}
+
 			m.Constructors[1].Parameters = append(m.Constructors[1].Parameters, CSParameter{newType, f.Name})
 
 			// Now we need to add in all of the inherited types parameters
@@ -386,10 +486,14 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 			if ut := ultimateType(f.Type); ut.Kind() == reflect.Struct {
 				if _, ok := CSInboxTypesMap[f.Type.Kind()]; !ok {
 					if _, ok := CSCustomTypeMap[f.Type]; !ok {
-						reflectType(ut.Name(), ut, reflectedTypes)
+						reflectType(ut)
 					}
 				}
 			}
+
+			var typeCustomizations *CSModelType
+			var hasTypeCustomizations bool
+			typeCustomizations, hasTypeCustomizations = typesToDisambiguate[typeToKey(t)]
 
 			// If the json tag says to omit we skip generation.
 			jsonTag := strings.Split(f.Tag.Get("json"), ",")
@@ -405,9 +509,14 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 				jsonName = jsonTag[0]
 			}
 
-			if ft, ok := typeCustomizations[typeCustomizationKey{t, f.Name}]; ok {
-				// We have a custom modification. Change the type.
-				csProp.Type = ft
+			if hasTypeCustomizations {
+				for _, p := range typeCustomizations.Properties {
+					if f.Name == p.Name {
+						// We have a custom property modification. Change the property.
+						csProp.Type = p.Type
+						break
+					}
+				}
 			}
 
 			if restTag, err := RestTagFromString(f.Tag.Get("rest")); err == nil && restTag.In != body {
@@ -444,9 +553,16 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 				csProp.Attributes = append(csProp.Attributes, a)
 			}
 
-			if ca, ok := customTypeAttribtues[typeCustomizationKey{t, f.Name}]; ok {
-				// We have a custom modification. Change the type.
-				csProp.Attributes = append(csProp.Attributes, ca)
+			if hasTypeCustomizations {
+				for _, p := range typeCustomizations.Properties {
+					if f.Name == p.Name {
+						for _, ca := range p.Attributes {
+							// We have a custom property attribute. Append it.
+							csProp.Attributes = append(csProp.Attributes, ca)
+						}
+						break
+					}
+				}
 			}
 
 			// Lastly assign the property to our type.
@@ -455,33 +571,40 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType, reflectedTypes map[strin
 	}
 }
 
-func reflectType(name string, t reflect.Type, reflectedTypes map[string]*CSModelType) {
-	if _, ok := reflectedTypes[name]; ok {
-		return
-	} else if name == "" {
-		return
+func reflectType(t reflect.Type) {
+	k := typeToKey(t)
+	var activeType *CSModelType
+	var alreadyInserted bool
+	if activeType, alreadyInserted = reflectedTypes[k]; alreadyInserted {
+		if activeType.IsStarted {
+			return
+		}
 	} else if _, ok := CSCustomTypeMap[t]; ok {
 		return
 	}
 
-	m := NewModel(name, fmt.Sprintf("%s", t))
-	reflectedTypes[name] = m
-
-	reflectTypeMembers(t, m, reflectedTypes)
-}
-
-func reflectDockerType(t typeDef, reflectedTypes map[string]*CSModelType) {
-	reflectType(t.CsName, t.Type, reflectedTypes)
-}
-
-func reflectDockerTypes() map[string]*CSModelType {
-	reflectedTypes := make(map[string]*CSModelType)
-
-	for _, t := range dockerTypesToReflect {
-		reflectDockerType(t, reflectedTypes)
+	if t.Name() == "" {
+		panic("Unable to reflect a type with no name")
 	}
 
-	return reflectedTypes
+	name := t.Name()
+	if n, ok := typesToDisambiguate[k]; ok {
+		if n.Name != "" {
+			name = n.Name
+		}
+	}
+
+	if activeType == nil {
+		activeType = NewModel(name, t.String())
+	}
+
+	activeType.IsStarted = true
+
+	if !alreadyInserted {
+		reflectedTypes[k] = activeType
+	}
+
+	reflectTypeMembers(t, activeType)
 }
 
 func main() {
@@ -512,9 +635,16 @@ func main() {
 		}
 	}
 
-	csTypes := reflectDockerTypes()
+	// Reflect the specific docker types we are about and their dependencies.
+	for _, t := range dockerTypesToReflect {
+		reflectType(t)
+	}
 
-	for k, v := range csTypes {
+	for k, v := range reflectedTypes {
+		if _, e := os.Stat(path.Join(sourcePath, v.Name+".Generated.cs")); e == nil {
+			panic(fmt.Sprintf("File: (%s.Generated.cs) already exists. Failed to write key same name for key: (%s) type: (%s).", v.Name, k, v.SourceName))
+		}
+
 		f, err := ioutil.TempFile(sourcePath, "ser")
 		if err != nil {
 			panic(err)
@@ -531,6 +661,6 @@ func main() {
 		}
 
 		f.Close()
-		os.Rename(f.Name(), path.Join(sourcePath, k+".Generated.cs"))
+		os.Rename(f.Name(), path.Join(sourcePath, v.Name+".Generated.cs"))
 	}
 }

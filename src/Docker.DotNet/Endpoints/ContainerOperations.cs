@@ -157,7 +157,7 @@ namespace Docker.DotNet
                 cancellationToken,
                 progress);
         }
-        
+
         public Task ResizeContainerTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(id))
@@ -205,7 +205,7 @@ namespace Docker.DotNet
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
-        public Task RestartContainerAsync(string id, ConatinerRestartParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task RestartContainerAsync(string id, ContainerRestartParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -218,7 +218,7 @@ namespace Docker.DotNet
             }
 
 
-            IQueryString queryParameters = new QueryString<ConatinerRestartParameters>(parameters);
+            IQueryString queryParameters = new QueryString<ContainerRestartParameters>(parameters);
             // since specified wait timespan can be greater than HttpClient's default, we set the
             // client timeout to infinite and provide a cancellation token.
             return this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/restart", queryParameters, null, null, TimeSpan.FromMilliseconds(Timeout.Infinite), cancellationToken);
@@ -379,7 +379,7 @@ namespace Docker.DotNet
 
         //
         // Move to ExecOperations.cs
-        // 
+        //
         public async Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(id))
@@ -418,17 +418,17 @@ namespace Docker.DotNet
         // connected, and optionally using terminal emulation if tty is true.
         public async Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken)
         {
-            return await StartWithConfigContainerExecAsync(id, new ExecConfig() { AttachStdin = true, AttachStderr = true, AttachStdout = true, Tty = tty }, cancellationToken);
+            return await StartWithConfigContainerExecAsync(id, new ContainerExecStartParameters() { AttachStdin = true, AttachStderr = true, AttachStdout = true, Tty = tty }, cancellationToken);
         }
 
-        public async Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ExecConfig eConfig, CancellationToken cancellationToken)
+        public async Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ContainerExecStartParameters eConfig, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var data = new JsonRequestContent<ContainerExecStartParameters>(new ContainerExecStartParameters(eConfig), this._client.JsonSerializer);
+            var data = new JsonRequestContent<ContainerExecStartParameters>(eConfig, this._client.JsonSerializer);
             var stream = await this._client.MakeRequestForHijackedStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"exec/{id}/start", null, data, null, cancellationToken).ConfigureAwait(false);
             if (!stream.CanCloseWrite)
             {

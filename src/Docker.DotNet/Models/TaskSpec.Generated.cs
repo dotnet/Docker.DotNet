@@ -13,7 +13,7 @@ namespace Docker.DotNet.Models
         public ResourceRequirements Resources { get; set; }
 
         [DataMember(Name = "RestartPolicy", EmitDefaultValue = false)]
-        public RestartPolicy RestartPolicy { get; set; }
+        public SwarmRestartPolicy RestartPolicy { get; set; }
 
         [DataMember(Name = "Placement", EmitDefaultValue = false)]
         public Placement Placement { get; set; }
@@ -22,7 +22,7 @@ namespace Docker.DotNet.Models
         public IList<NetworkAttachmentConfig> Networks { get; set; }
 
         [DataMember(Name = "LogDriver", EmitDefaultValue = false)]
-        public Driver LogDriver { get; set; }
+        public SwarmDriver LogDriver { get; set; }
 
         [DataMember(Name = "ForceUpdate", EmitDefaultValue = false)]
         public ulong ForceUpdate { get; set; }

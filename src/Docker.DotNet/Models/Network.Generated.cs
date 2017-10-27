@@ -36,7 +36,7 @@ namespace Docker.DotNet.Models
         public NetworkSpec Spec { get; set; }
 
         [DataMember(Name = "DriverState", EmitDefaultValue = false)]
-        public Driver DriverState { get; set; }
+        public SwarmDriver DriverState { get; set; }
 
         [DataMember(Name = "IPAMOptions", EmitDefaultValue = false)]
         public IPAMOptions IPAMOptions { get; set; }
