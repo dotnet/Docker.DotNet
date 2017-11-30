@@ -149,7 +149,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/stats", queryParameters, null, null, cancellationToken);
         }
 
-        public Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<ContainerStatsResponse> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             return StreamUtil.MonitorStreamForMessagesAsync(
                 GetContainerStatsAsync(id, parameters, cancellationToken),
