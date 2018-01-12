@@ -173,6 +173,10 @@ namespace Docker.DotNet.X509
                     index = 0;
                     while ((c = rdr.ReadChar()) != delim)
                     {
+                        if(c == '\r')
+                        {
+                            continue;
+                        }
                         line[index] = c;
                         index++;
                     }
