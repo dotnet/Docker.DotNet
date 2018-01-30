@@ -284,7 +284,7 @@ namespace Microsoft.Net.Http.Client
 
             try
             {
-                if (!UseProxy || Proxy.IsBypassed(request.RequestUri))
+                if (!UseProxy || (Proxy == null) || Proxy.IsBypassed(request.RequestUri))
                 {
                     return ProxyMode.None;
                 }
