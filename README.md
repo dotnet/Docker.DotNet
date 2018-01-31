@@ -1,6 +1,6 @@
 ﻿# .NET Client for Docker Remote API
 
-This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications. 
+This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications.
 
 It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically.
 
@@ -8,22 +8,29 @@ It is fully asynchronous, designed to be non-blocking and object-oriented way to
 
 ## Installation
 
-You can add this library to your project using [NuGet][nuget]. This is the only method this library is currently distributed unless
-you choose to build your own binaries using source code.
+You can add this library to your project using [NuGet][nuget].
 
- **Package Manager Console**   
+ **Package Manager Console**
 Run the following command in the “Package Manager Console”:
 
     PM> Install-Package Docker.DotNet
 
-**Visual Studio**   
+**Visual Studio**
 Right click to your project in Visual Studio, choose “Manage NuGet Packages” and search for ‘Docker.DotNet’ and click ‘Install’.
 ([see NuGet Gallery][nuget-gallery].)
 
-**.NET Core Command Line Interface**   
+**.NET Core Command Line Interface**
 Run the following command from your favourite shell or terminal:
 
     dotnet add package Docker.DotNet
+
+**Development Builds**
+
+![](https://ci.appveyor.com/api/projects/status/github/Microsoft/Docker.DotNet?branch=master&svg=true)
+
+If you intend to use development builds of Docker.DotNet and don't want to compile the code yourself you can add the package source below to Visual Studio or your Nuget.Config.
+
+> https://ci.appveyor.com/nuget/docker-dotnet-hojfmn6hoed7
 
 ## Usage
 
@@ -93,7 +100,7 @@ killing it. If you like to cancel the waiting, you can use the CancellationToken
 
 #### Example: Dealing with Stream responses
 
-Some Docker API endpoints are designed to return stream responses. For example 
+Some Docker API endpoints are designed to return stream responses. For example
 [Monitoring Docker events](https://docs.docker.com/engine/reference/api/docker_remote_api_v1.24/#/monitor-docker-s-events)
 continuously streams the status in a format like :
 
@@ -135,7 +142,21 @@ The `CertFile` in the example above should be a .pfx file (PKCS12 format), if yo
 
     openssl pkcs12 -export -inkey key.pem -in cert.pem -out key.pfx
 
-(Here, your private key is key.pem, public key is cert.pem and output file is named key.pfx.) This will prompt a password for PFX file and then you can use this PFX file on Windows. If the certificate is self-signed, your application may reject the server certificate, in this case you might want to disable server certificate validation: `ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;`
+(Here, your private key is key.pem, public key is cert.pem and output file is named key.pfx.) This will prompt a password for PFX file and then you can use this PFX file on Windows. If the certificate is self-signed, your application may reject the server certificate, in this case you might want to disable server certificate validation:
+```c#
+//
+// There are two options to do this.
+//
+
+// You can do this globally for all certificates:
+// (Note: This is not available on netstandard1.6)
+ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
+
+// Or you can do this on a credential by credential basis:
+var creds = new CertificateCredentials(...);
+creds.ServerCertificateValidationCallback += (o, c, ch, er) => true;
+
+```
 
 #### Example: Basic HTTP Authentication to Docker
 
@@ -163,13 +184,13 @@ DockerClient client = config.CreateClient(new Version(1, 16));
 ```
 
 ### Error Handling
-	
+
 Here are typical exceptions thrown from the client library:
 
 * **`DockerApiException`** is thrown when Docker API responds with a non-success result. Subclasses:
     * **``DockerContainerNotFoundException``**
     * **``DockerImageNotFoundException``**
-* **`TaskCanceledException`** is thrown from `System.Net.Http.HttpClient` library by design. It is not a friendly exception, but it indicates your request has timed out. (default request timeout is 100 seconds.) 
+* **`TaskCanceledException`** is thrown from `System.Net.Http.HttpClient` library by design. It is not a friendly exception, but it indicates your request has timed out. (default request timeout is 100 seconds.)
     * Long-running methods (e.g. `WaitContainerAsync`, `StopContainerAsync`) and methods that return Stream (e.g. `CreateImageAsync`, `GetContainerLogsAsync`) have timeout value overridden with infinite timespan by this library.
 * **`ArgumentNullException`** is thrown when one of the required parameters are missing/empty.
     * Consider reading the [Docker Remote API reference][docker-remote-api] and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
