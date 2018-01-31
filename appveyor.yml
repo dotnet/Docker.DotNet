@@ -1,4 +1,4 @@
-version: 3.125.0.{build}
+version: 3.125.1.{build}
 pull_requests:
   do_not_increment_build_number: true
 init:
@@ -8,3 +8,5 @@ build_script:
 - ps: dotnet restore --no-cache
 - ps: dotnet pack -c Release -o $pwd --version-suffix $($env:appveyor_build_number)
 test: off
+artifacts:
+- path: '*.nupkg'
