@@ -12,7 +12,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Microsoft/Docker.DotNet/tree/master/Docker.DotNet.BasicAuth</RepositoryUrl>
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard1.6' ">1.6.1</NetStandardImplicitPackageVersion>
-    <VersionPrefix>3.125.0</VersionPrefix>
+    <VersionPrefix>3.125.1</VersionPrefix>
   </PropertyGroup>
   <PropertyGroup Condition="'$(VersionSuffix)' != ''">
     <Version>$(VersionPrefix).$(VersionSuffix)</Version>
