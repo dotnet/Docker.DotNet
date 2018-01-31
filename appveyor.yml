@@ -8,3 +8,5 @@ build_script:
 - ps: dotnet restore --no-cache
 - ps: dotnet pack -c Release -o $pwd --version-suffix $($env:appveyor_build_number)
 test: off
+artifacts:
+- path: '*.nupkg'
