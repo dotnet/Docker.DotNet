@@ -41,6 +41,12 @@ namespace Docker.DotNet.Models
         Failed,
 
         [EnumMember(Value = "rejected")]
-        Rejected
+        Rejected,
+
+        [EnumMember(Value = "remove")]
+        Remove,
+
+        [EnumMember(Value = "orphaned")]
+        Orphaned
     }
 }
