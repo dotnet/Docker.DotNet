@@ -157,7 +157,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+        Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<ContainerStatsResponse> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Resize a container TTY.
