@@ -9,6 +9,9 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("t", false, typeof(EnumerableQueryStringConverter))]
         public IList<string> Tags { get; set; }
 
+        [QueryStringParameter("networkmode", false, typeof(EnumerableQueryStringConverter))]
+        public IList<string> Network { get; set; }
+
         [QueryStringParameter("q", false, typeof(BoolQueryStringConverter))]
         public bool? SuppressOutput { get; set; }
 
