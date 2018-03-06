@@ -29,12 +29,20 @@ type ImageBuildParameters struct {
 	Memory         int64             `rest:"query"`
 	MemorySwap     int64             `rest:"query,memswap"`
 	CgroupParent   string            `rest:"query"`
+	NetworkMode    string            `rest:"query"`
 	ShmSize        int64             `rest:"query"`
 	Dockerfile     string            `rest:"query"`
 	Ulimits        []*units.Ulimit   `rest:"query"`
 	BuildArgs      map[string]string `rest:"query"`
 	AuthConfigs    map[string]types.AuthConfig
 	Labels         map[string]string `rest:"query"`
+	Squash         bool              `rest:"query"`
+	CacheFrom      []string          `rest:"query"`
+	SecurityOpt    []string          `rest:"query"`
+	ExtraHosts     []string          `rest:"query"`
+	Target         string            `rest:"query"`
+	SessionID      string            `rest:"query,session"`
+	Platform       string            `rest:"query"`
 }
 
 // CommitContainerChangesParameters for POST /commit
