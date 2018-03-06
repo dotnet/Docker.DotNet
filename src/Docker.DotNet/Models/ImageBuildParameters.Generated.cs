@@ -54,6 +54,9 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("cgroupparent", false)]
         public string CgroupParent { get; set; }
 
+        [QueryStringParameter("networkmode", false)]
+        public string NetworkMode { get; set; }
+
         [QueryStringParameter("shmsize", false)]
         public long? ShmSize { get; set; }
 
@@ -71,5 +74,26 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("labels", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, string> Labels { get; set; }
+
+        [QueryStringParameter("squash", false, typeof(BoolQueryStringConverter))]
+        public bool? Squash { get; set; }
+
+        [QueryStringParameter("cachefrom", false, typeof(EnumerableQueryStringConverter))]
+        public IList<string> CacheFrom { get; set; }
+
+        [QueryStringParameter("securityopt", false, typeof(EnumerableQueryStringConverter))]
+        public IList<string> SecurityOpt { get; set; }
+
+        [QueryStringParameter("extrahosts", false, typeof(EnumerableQueryStringConverter))]
+        public IList<string> ExtraHosts { get; set; }
+
+        [QueryStringParameter("target", false)]
+        public string Target { get; set; }
+
+        [QueryStringParameter("session", false)]
+        public string SessionID { get; set; }
+
+        [QueryStringParameter("platform", false)]
+        public string Platform { get; set; }
     }
 }
