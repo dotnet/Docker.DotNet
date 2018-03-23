@@ -26,6 +26,8 @@ namespace Docker.DotNet
 
         ISystemOperations System { get; }
 
+        IPluginOperations Plugin { get; }
+
         #endregion Endpoints
     }
 }
