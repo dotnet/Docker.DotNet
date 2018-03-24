@@ -16,6 +16,15 @@ namespace Docker.DotNet.Tests
         }
 
         [Fact]
+        public void DockerService_IsRunning()
+        {
+            using (var sc = new System.ServiceProcess.ServiceController("Docker"))
+            {
+                Assert.Equal(System.ServiceProcess.ServiceControllerStatus.Running, sc.Status);
+            }
+        }
+
+        [Fact]
         public async Task GetVersionAsync_Succeeds()
         {
             var version = await _client.System.GetVersionAsync();
