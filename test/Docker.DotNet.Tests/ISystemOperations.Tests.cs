@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ServiceProcess;
 using Docker.DotNet.Models;
 using Xunit;
 
@@ -13,6 +15,17 @@ namespace Docker.DotNet.Tests
         public ISystemOperationsTests()
         {
             _client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+        }
+
+        [Fact]
+        public void DockerService_IsRunning()
+        {
+            var services = ServiceController.GetServices();
+            using (var dockerService = services.SingleOrDefault(service => service.ServiceName == "docker"))
+            { 
+                Assert.NotNull(dockerService); // docker is not running
+                Assert.Equal(ServiceControllerStatus.Running, dockerService.Status);
+            }
         }
 
         [Fact]
