@@ -107,7 +107,7 @@ namespace Docker.DotNet
             throw new NotImplementedException();
         }
 
-        public Task<IList<PluginPrivilegesParameters>> GetPluginPrivilegesAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IList<PluginPrivilegesResponse>> GetPluginPrivilegesAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }

@@ -103,6 +103,6 @@ namespace Docker.DotNet
         /// 404 - plugin is not installed.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<PluginPrivilegesParameters>> GetPluginPrivilegesAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<PluginPrivilegesResponse>> GetPluginPrivilegesAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
