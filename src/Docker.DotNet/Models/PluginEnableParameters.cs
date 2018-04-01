@@ -6,6 +6,6 @@ namespace Docker.DotNet.Models
     public class PluginEnableParameters
     {
         [QueryStringParameter("timeout", false)]
-        public string Timeout { get; set; }
+        public string TimeoutSeconds { get; set; }
     }
 }

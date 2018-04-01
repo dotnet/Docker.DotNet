@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
@@ -10,5 +11,7 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("remote", false)]
         public string Remote { get; set; }
+        
+        public IList<PluginPrivilegesParameters> RequestBody { get; set; }
     }
 }

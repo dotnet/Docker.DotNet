@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class PluginInstallRequestBodyParameters
+    public class PluginPrivilegesParameters
     {
         [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }

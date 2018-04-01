@@ -20,7 +20,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<PluginListResponse>> ListPluginsAsync(PluginListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<Plugin>> ListPluginsAsync(PluginListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
         
         /// <summary>
         /// Install a plugin.
@@ -33,7 +33,7 @@ namespace Docker.DotNet
         /// 204 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task InstallPluginAsync(IList<PluginInstallRequestBodyParameters> body, PluginInstallParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+        Task InstallPluginAsync(PluginInstallParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inspect a plugin.
@@ -47,7 +47,7 @@ namespace Docker.DotNet
         /// 404 - plugin is not installed.
         /// 500 - Server error.
         /// </remarks>
-        //Task<PluginInspectResponse> InspectPluginAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Plugin> InspectPluginAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Remove a plugin.
@@ -90,5 +90,19 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         Task DisablePluginAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get plugin privileges.
+        /// </summary>
+        /// <remarks>
+        /// docker plugin privileges
+        ///
+        /// HTTP POST /plugins/{name}/disable
+        ///
+        /// 200 - No error.
+        /// 404 - plugin is not installed.
+        /// 500 - Server error.
+        /// </remarks>
+        Task<IList<PluginPrivilegesParameters>> GetPluginPrivilegesAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

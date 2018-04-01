@@ -134,6 +134,12 @@ var typesToDisambiguate = map[string]*CSModelType{
 		},
 	},
 	typeToKey(reflect.TypeOf(types.Info{})):                  {Name: "SystemInfoResponse"},
+	typeToKey(reflect.TypeOf(types.PluginConfigInterface{})): {
+		Name: "PluginConfigInterface",
+		Properties: []CSProperty{
+			CSPropertyName{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
+		},
+	},
 	typeToKey(reflect.TypeOf(types.NetworkConnect{})):        {Name: "NetworkConnectParameters"},
 	typeToKey(reflect.TypeOf(types.NetworkCreateRequest{})):  {Name: "NetworksCreateParameters"},
 	typeToKey(reflect.TypeOf(types.NetworkCreateResponse{})): {Name: "NetworksCreateResponse"},
