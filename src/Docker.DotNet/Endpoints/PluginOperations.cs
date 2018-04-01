@@ -102,7 +102,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/disable", cancellationToken);
         }
 
-        Task<Plugin> IPluginOperations.InspectPluginAsync(string id, CancellationToken cancellationToken)
+        public Task<Plugin> InspectPluginAsync(string id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
