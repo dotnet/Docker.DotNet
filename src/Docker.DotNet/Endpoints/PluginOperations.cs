@@ -50,12 +50,7 @@ namespace Docker.DotNet
 
         public async Task<IList<Plugin>> ListPluginsAsync(PluginListParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            IQueryString queryParameters = new QueryString<PluginListParameters>(parameters);
+            IQueryString queryParameters = parameters == null ? null : new QueryString<PluginListParameters>(parameters);
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "plugins", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<Plugin[]>(response.Body);
         }
@@ -67,12 +62,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(name));
             }
 
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            IQueryString queryParameters = new QueryString<PluginRemoveParameters>(parameters);
+            IQueryString queryParameters = parameters == null ? null : new QueryString<PluginRemoveParameters>(parameters);
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Delete, $"plugins/{name}", queryParameters, cancellationToken);
         }
 
@@ -83,12 +73,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(name));
             }
 
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            IQueryString queryParameters = new QueryString<PluginEnableParameters>(parameters);
+            IQueryString queryParameters = parameters == null ? null : new QueryString<PluginEnableParameters>(parameters);
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/enable", queryParameters, cancellationToken);
         }
 
