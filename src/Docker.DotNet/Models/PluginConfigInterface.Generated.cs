@@ -10,6 +10,6 @@ namespace Docker.DotNet.Models
         public string Socket { get; set; }
 
         [DataMember(Name = "Types", EmitDefaultValue = false)]
-        public IList<PluginInterfaceType> Types { get; set; }
+        public IList<string> Types { get; set; }
     }
 }

@@ -143,7 +143,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(types.PluginConfigInterface{})): {
 		Name: "PluginConfigInterface",
 		Properties: []CSProperty{
-			CSPropertyName{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
+			CSProperty{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.StatsJSON{})):             {Name: "ContainerStatsResponse"},
