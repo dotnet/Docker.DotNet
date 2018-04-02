@@ -13,36 +13,36 @@ type Args map[string]map[string]bool
 
 // ImageBuildParameters for POST /build
 type ImageBuildParameters struct {
-	Tags           []string          `rest:"query,t"`
-	SuppressOutput bool              `rest:"query,q"`
-	RemoteContext  string            `rest:"query,remote"`
-	NoCache        bool              `rest:"query"`
-	Remove         bool              `rest:"query,rm"`
-	ForceRemove    bool              `rest:"query,forcerm"`
-	PullParent     bool              `rest:"query"`
-	Isolation      string            `rest:"query"`
-	CPUSetCPUs     string            `rest:"query"`
-	CPUSetMems     string            `rest:"query"`
-	CPUShares      int64             `rest:"query"`
-	CPUQuota       int64             `rest:"query"`
-	CPUPeriod      int64             `rest:"query"`
-	Memory         int64             `rest:"query"`
-	MemorySwap     int64             `rest:"query,memswap"`
-	CgroupParent   string            `rest:"query"`
-	NetworkMode    string            `rest:"query"`
-	ShmSize        int64             `rest:"query"`
-	Dockerfile     string            `rest:"query"`
-	Ulimits        []*units.Ulimit   `rest:"query"`
-	BuildArgs      map[string]string `rest:"query"`
-	AuthConfigs    map[string]types.AuthConfig
-	Labels         map[string]string `rest:"query"`
-	Squash         bool              `rest:"query"`
-	CacheFrom      []string          `rest:"query"`
-	SecurityOpt    []string          `rest:"query"`
-	ExtraHosts     []string          `rest:"query"`
-	Target         string            `rest:"query"`
-	SessionID      string            `rest:"query,session"`
-	Platform       string            `rest:"query"`
+	Tags           []string                    `rest:"query,t"`
+	SuppressOutput bool                        `rest:"query,q"`
+	RemoteContext  string                      `rest:"query,remote"`
+	NoCache        bool                        `rest:"query"`
+	Remove         bool                        `rest:"query,rm"`
+	ForceRemove    bool                        `rest:"query,forcerm"`
+	PullParent     bool                        `rest:"query"`
+	Isolation      string                      `rest:"query"`
+	CPUSetCPUs     string                      `rest:"query"`
+	CPUSetMems     string                      `rest:"query"`
+	CPUShares      int64                       `rest:"query"`
+	CPUQuota       int64                       `rest:"query"`
+	CPUPeriod      int64                       `rest:"query"`
+	Memory         int64                       `rest:"query"`
+	MemorySwap     int64                       `rest:"query,memswap"`
+	CgroupParent   string                      `rest:"query"`
+	NetworkMode    string                      `rest:"query"`
+	ShmSize        int64                       `rest:"query"`
+	Dockerfile     string                      `rest:"query"`
+	Ulimits        []*units.Ulimit             `rest:"query"`
+	BuildArgs      map[string]string           `rest:"query"`
+	AuthConfigs    map[string]types.AuthConfig `rest:"headers,X-Registry-Auth"`
+	Labels         map[string]string           `rest:"query"`
+	Squash         bool                        `rest:"query"`
+	CacheFrom      []string                    `rest:"query"`
+	SecurityOpt    []string                    `rest:"query"`
+	ExtraHosts     []string                    `rest:"query"`
+	Target         string                      `rest:"query"`
+	SessionID      string                      `rest:"query,session"`
+	Platform       string                      `rest:"query"`
 }
 
 // CommitContainerChangesParameters for POST /commit
@@ -222,8 +222,8 @@ type ImagesPruneParameters struct {
 
 // ImagesSearchParameters for GET /images/search
 type ImagesSearchParameters struct {
-	Term         string `rest:"query"`
-	RegistryAuth string `rest:"headers,X-Registry-Auth"`
+	Term         string           `rest:"query"`
+	RegistryAuth types.AuthConfig `rest:"headers,X-Registry-Auth"`
 }
 
 // ImageDeleteParameters for DELETE /images/(id)
@@ -239,9 +239,9 @@ type ImageInspectParameters struct {
 
 // ImagePushParameters for POST /images/(id)/push
 type ImagePushParameters struct {
-	ImageID      string `rest:"query,fromImage"`
-	Tag          string `rest:"query"`
-	RegistryAuth string `rest:"headers,X-Registry-Auth"`
+	ImageID      string           `rest:"query,fromImage"`
+	Tag          string           `rest:"query"`
+	RegistryAuth types.AuthConfig `rest:"headers,X-Registry-Auth"`
 }
 
 // ImageTagParameters for POST /images/(id)/tag
@@ -259,6 +259,57 @@ type NetworksListParameters struct {
 // NetworksDeleteUnusedParameters for POST /networks/prune
 type NetworksDeleteUnusedParameters struct {
 	Filters Args `rest:"query"`
+}
+
+// PluginListParameters for GET /plugins
+type PluginListParameters struct {
+	Filters Args `rest:"query"`
+}
+
+// PluginGetPrivilegeParameters for POST /plugins/privileges
+type PluginGetPrivilegeParameters struct {
+	Remote       string           `rest:"query,remote,required"`
+	RegistryAuth types.AuthConfig `rest:"headers,X-Registry-Auth"`
+}
+
+// PluginInstallParameters for POST /plugins/pull
+type PluginInstallParameters struct {
+	Remote       string                 `rest:"query,remote,required"`
+	Name         string                 `rest:"query"`
+	RegistryAuth types.AuthConfig       `rest:"headers,X-Registry-Auth"`
+	Privileges   types.PluginPrivileges `rest:"body,,required"`
+}
+
+// PluginRemoveParameters for DELETE /plugins/(name)/json
+type PluginRemoveParameters struct {
+	Force bool `rest:"query"`
+}
+
+// PluginEnableParameters for POST /plugins/(name)/enable
+type PluginEnableParameters struct {
+	Timeout int `rest:"query"`
+}
+
+// PluginDisableParameters for POST /plugins/(name)/disable
+type PluginDisableParameters struct {
+	Force bool `rest:"query"`
+}
+
+// PluginUpgradeParameters for POST /plugins/(name)/upgrade
+type PluginUpgradeParameters struct {
+	Remote       string                 `rest:"query,remote,required"`
+	RegistryAuth types.AuthConfig       `rest:"headers,X-Registry-Auth"`
+	Privileges   types.PluginPrivileges `rest:"body,,required"`
+}
+
+// PluginCreateParameters for POST /plugins/create
+type PluginCreateParameters struct {
+	Name string `rest:"query,name,required"`
+}
+
+// PluginConfigureParameters for POST /plugins/(name)/set
+type PluginConfigureParameters struct {
+	Args []string `rest:"body,,required"`
 }
 
 // VolumesCreateParameters for POST /volumes/create

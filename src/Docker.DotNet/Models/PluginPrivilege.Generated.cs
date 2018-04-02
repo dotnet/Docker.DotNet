@@ -4,15 +4,15 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class PluginPrivilege // (runtime.PluginPrivilege)
+    public class PluginPrivilege // (types.PluginPrivilege)
     {
-        [DataMember(Name = "name", EmitDefaultValue = false)]
+        [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }
 
-        [DataMember(Name = "description", EmitDefaultValue = false)]
+        [DataMember(Name = "Description", EmitDefaultValue = false)]
         public string Description { get; set; }
 
-        [DataMember(Name = "value", EmitDefaultValue = false)]
+        [DataMember(Name = "Value", EmitDefaultValue = false)]
         public IList<string> Value { get; set; }
     }
 }
