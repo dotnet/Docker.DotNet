@@ -12,6 +12,6 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("remote", false)]
         public string Remote { get; set; }
         
-        public IList<PluginPrivilegesParameters> RequestBody { get; set; }
+        public IList<PluginPrivilege> RequestBody { get; set; }
     }
 }

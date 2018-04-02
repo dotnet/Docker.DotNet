@@ -38,7 +38,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters.RequestBody));
             }
 
-            var data = new JsonRequestContent<IList<PluginPrivilegesParameters>>(parameters.RequestBody, this._client.JsonSerializer);
+            var data = new JsonRequestContent<IList<PluginPrivilege>>(parameters.RequestBody, this._client.JsonSerializer);
             
             IQueryString queryParameters = new QueryString<PluginInstallParameters>(parameters);
             return StreamUtil.MonitorStreamForMessagesAsync(
@@ -92,7 +92,7 @@ namespace Docker.DotNet
             throw new NotImplementedException();
         }
 
-        public Task<IList<PluginPrivilegesResponse>> GetPluginPrivilegesAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IList<PluginPrivilege>> GetPluginPrivilegesAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             throw new NotImplementedException();
         }
