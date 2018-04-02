@@ -12,6 +12,6 @@ namespace Docker.DotNet.Models
         public string Tag { get; set; }
 
         [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
-        public string RegistryAuth { get; set; }
+        public AuthConfig RegistryAuth { get; set; }
     }
 }

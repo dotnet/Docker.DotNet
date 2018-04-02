@@ -146,10 +146,10 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(types.StatsJSON{})):             {Name: "ContainerStatsResponse"},
-	typeToKey(reflect.TypeOf(types.Version{})):               {Name: "VersionResponse"},
-	typeToKey(reflect.TypeOf(types.VolumesPruneReport{})):    {Name: "VolumesPruneResponse"},
-	typeToKey(reflect.TypeOf(VolumeResponse{})):              {Name: "VolumeResponse"},
+	typeToKey(reflect.TypeOf(types.StatsJSON{})):          {Name: "ContainerStatsResponse"},
+	typeToKey(reflect.TypeOf(types.Version{})):            {Name: "VersionResponse"},
+	typeToKey(reflect.TypeOf(types.VolumesPruneReport{})): {Name: "VolumesPruneResponse"},
+	typeToKey(reflect.TypeOf(VolumeResponse{})):           {Name: "VolumeResponse"},
 }
 
 var dockerTypesToReflect = []reflect.Type{
@@ -325,32 +325,41 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /plugins
 	// []Plugin
+	reflect.TypeOf(PluginListParameters{}),
 	reflect.TypeOf(types.Plugin{}),
 
 	// GET /plugins/privileges
-	// []PluginConfigArgs
-	reflect.TypeOf(types.PluginConfigArgs{}),
+	// []PluginPrivilege
+	reflect.TypeOf(PluginGetPrivilegeParameters{}),
+	reflect.TypeOf(types.PluginPrivilege{}),
 
 	// POST /plugins/pull
 	// []PluginConfigArgs
+	reflect.TypeOf(PluginInstallParameters{}),
 
 	// GET /plugins/{name}/json
 	// Plugin
 
 	// DELETE /plugins/{name}
+	reflect.TypeOf(PluginRemoveParameters{}),
 
 	// POST /plugins/{name}/enable
+	reflect.TypeOf(PluginEnableParameters{}),
 
 	// POST /plugins/{name}/disable
+	reflect.TypeOf(PluginDisableParameters{}),
 
 	// POST /plugins/{name}/upgrade
 	// []PluginConfigArgs
+	reflect.TypeOf(PluginUpgradeParameters{}),
 
 	// POST /plugins/create
+	reflect.TypeOf(PluginCreateParameters{}),
 
 	// POST /plugins/{name}/push
 
 	// POST /plugins/{name}/set
+	reflect.TypeOf(PluginConfigureParameters{}),
 
 	// GET /version
 	reflect.TypeOf(types.Version{}),
