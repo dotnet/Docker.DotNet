@@ -42,6 +42,7 @@ namespace Docker.DotNet
             Swarm = new SwarmOperations(this);
             Tasks = new TasksOperations(this);
             Volumes = new VolumeOperations(this);
+            Plugin = new PluginOperations(this);
 
             ManagedHandler handler;
             var uri = Configuration.EndpointBaseUri;
@@ -144,6 +145,8 @@ namespace Docker.DotNet
         public ITasksOperations Tasks { get; }
 
         public ISystemOperations System { get; }
+
+        public IPluginOperations Plugin { get; }
 
         internal JsonSerializer JsonSerializer { get; }
 

@@ -140,6 +140,12 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(types.NetworkDisconnect{})):     {Name: "NetworkDisconnectParameters"},
 	typeToKey(reflect.TypeOf(types.NetworksPruneReport{})):   {Name: "NetworksPruneResponse"},
 	typeToKey(reflect.TypeOf(types.NetworkResource{})):       {Name: "NetworkResponse"},
+	typeToKey(reflect.TypeOf(types.PluginConfigInterface{})): {
+		Name: "PluginConfigInterface",
+		Properties: []CSProperty{
+			CSProperty{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
+		},
+	},
 	typeToKey(reflect.TypeOf(types.StatsJSON{})):             {Name: "ContainerStatsResponse"},
 	typeToKey(reflect.TypeOf(types.Version{})):               {Name: "VersionResponse"},
 	typeToKey(reflect.TypeOf(types.VolumesPruneReport{})):    {Name: "VolumesPruneResponse"},
@@ -316,6 +322,35 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// POST /networks/(id)/disconnect
 	reflect.TypeOf(types.NetworkDisconnect{}),
+
+	// GET /plugins
+	// []Plugin
+	reflect.TypeOf(types.Plugin{}),
+
+	// GET /plugins/privileges
+	// []PluginConfigArgs
+	reflect.TypeOf(types.PluginConfigArgs{}),
+
+	// POST /plugins/pull
+	// []PluginConfigArgs
+
+	// GET /plugins/{name}/json
+	// Plugin
+
+	// DELETE /plugins/{name}
+
+	// POST /plugins/{name}/enable
+
+	// POST /plugins/{name}/disable
+
+	// POST /plugins/{name}/upgrade
+	// []PluginConfigArgs
+
+	// POST /plugins/create
+
+	// POST /plugins/{name}/push
+
+	// POST /plugins/{name}/set
 
 	// GET /version
 	reflect.TypeOf(types.Version{}),
