@@ -178,9 +178,8 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters.Args));
             }
 
-            var query = new QueryString<PluginConfigureParameters>(parameters);
             var body = new JsonRequestContent<IList<string>>(parameters.Args, this._client.JsonSerializer);
-            return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/set", query, cancellationToken);
+            return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/set", null, body, cancellationToken);
         }
     }
 }
