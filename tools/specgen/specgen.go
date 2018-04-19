@@ -66,6 +66,11 @@ var typesToDisambiguate = map[string]*CSModelType{
 			},
 		},
 	},
+	typeToKey(reflect.TypeOf(PluginEnableParameters{})): {
+		Properties: []CSProperty{
+			CSProperty{Name: "Timeout", Type: CSType{"System", "string", false}},
+		},
+	},
 	typeToKey(reflect.TypeOf(registry.AuthenticateOKBody{})): {Name: "AuthResponse"},
 	typeToKey(reflect.TypeOf(registry.SearchResult{})):       {Name: "ImageSearchResponse"},
 	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
