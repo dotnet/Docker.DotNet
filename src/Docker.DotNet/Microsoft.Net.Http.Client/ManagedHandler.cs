@@ -329,7 +329,7 @@ namespace Microsoft.Net.Http.Client
             Exception lastException = null;
             foreach (var address in addresses)
             {
-                var s = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                var s = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
 #if (NETSTANDARD1_3 || NETSTANDARD1_6 || NETSTANDARD2_0)
