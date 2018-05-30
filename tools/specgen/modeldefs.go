@@ -229,7 +229,7 @@ type ImagesSearchParameters struct {
 // ImageDeleteParameters for DELETE /images/(id)
 type ImageDeleteParameters struct {
 	Force         bool `rest:"query"`
-	PruneChildren bool `rest:"query,noprune"`
+	NoPrune       bool `rest:"query,noprune"`
 }
 
 // ImageInspectParameters for GET /images/(id)/json
