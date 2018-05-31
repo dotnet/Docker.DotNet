@@ -9,6 +9,6 @@ namespace Docker.DotNet.Models
         public bool? Force { get; set; }
 
         [QueryStringParameter("noprune", false, typeof(BoolQueryStringConverter))]
-        public bool? PruneChildren { get; set; }
+        public bool? NoPrune { get; set; }
     }
 }
