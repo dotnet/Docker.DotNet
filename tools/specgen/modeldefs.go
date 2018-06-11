@@ -377,3 +377,8 @@ type ServiceUpdateParameters struct {
 type SecretCreateResponse struct {
 	ID string
 }
+
+// TasksListParameters for GET /tasks
+type TasksListParameters struct {
+	Filters Args   `rest:"query"`
+}

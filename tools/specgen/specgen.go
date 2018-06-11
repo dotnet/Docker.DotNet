@@ -431,6 +431,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// DELETE /services/(id)
 
 	// GET /tasks
+	reflect.TypeOf(TasksListParameters{}),
 	reflect.TypeOf(swarm.Task{}),
 
 	// GET /nodes
