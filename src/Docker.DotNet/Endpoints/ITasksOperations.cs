@@ -14,15 +14,30 @@ namespace Docker.DotNet
         /// List tasks
         /// </summary>
         /// <remarks>
+        /// HTTP GET /tasks
+        ///
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
         Task<IList<TaskResponse>> ListAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// List tasks
+        /// </summary>
+        /// <remarks>
+        /// HTTP GET /tasks
+        ///
+        /// 200 - No error.
+        /// 500 - Server error.
+        /// </remarks>
+        Task<IList<TaskResponse>> ListAsync(TasksListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Inspect a task
         /// </summary>
         /// <remarks>
+        /// HTTP GET /tasks/{id}
+        ///
         /// 200 - No error.
         /// 404 - No such task.
         /// 500 - Server error.
