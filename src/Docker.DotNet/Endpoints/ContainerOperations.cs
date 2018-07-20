@@ -465,5 +465,22 @@ namespace Docker.DotNet
             var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"exec/{id}/json", null, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ContainerExecInspectResponse>(response.Body);
         }
+
+        public async Task<ContainerUpdateResponse> UpdateContainerAsync(string id, ContainerUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var data = new JsonRequestContent<ContainerUpdateParameters>(parameters, this._client.JsonSerializer);
+            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/update", null, data, cancellationToken);
+            return this._client.JsonSerializer.DeserializeObject<ContainerUpdateResponse>(response.Body);
+        }
     }
 }

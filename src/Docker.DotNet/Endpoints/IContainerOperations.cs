@@ -243,8 +243,6 @@ namespace Docker.DotNet
         /// <param name="id">ID or name of the container.</param>
         Task KillContainerAsync(string id, ContainerKillParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
-        // Todo: Update
-
         /// <summary>
         /// Rename a container
         /// </summary>
@@ -467,5 +465,21 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">Exec instance ID.</param>
         Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Update configuration of a container.
+        /// </summary>
+        /// <remarks>
+        /// docker update
+        /// 
+        /// HTTP POST /containers/(id)/update
+        /// 
+        /// 200 - No error.
+        /// 400 - Bad parameter.
+        /// 404 - No such container.
+        /// 500 - Server error
+        /// </remarks>
+        /// <param name="id">ID or name of the container.</param>
+        Task<ContainerUpdateResponse> UpdateContainerAsync(string id, ContainerUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
