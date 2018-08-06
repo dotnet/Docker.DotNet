@@ -1,4 +1,4 @@
-version: 3.125.2.{build}
+version: 3.125.3.{build}
 pull_requests:
   do_not_increment_build_number: true
 init:
