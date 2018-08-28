@@ -41,7 +41,7 @@ using Docker.DotNet;
 DockerClient client = new DockerClientConfiguration(new Uri("http://ubuntu-docker.cloudapp.net:4243"))
      .CreateClient();
 ```
-or to connect to your local [Docker for Windows](https://docs.docker.com/docker-for-windows/) deamon using named pipes:
+or to connect to your local [Docker for Windows](https://docs.docker.com/docker-for-windows/) daemon using named pipes:
 
 ```csharp
 using Docker.DotNet;
@@ -49,7 +49,7 @@ DockerClient client = new DockerClientConfiguration(new Uri("npipe://./pipe/dock
      .CreateClient();
 ```
 
-or to connect to your local [Docker for Mac](https://docs.docker.com/docker-for-mac/) deamon using Unix sockets:
+or to connect to your local [Docker for Mac](https://docs.docker.com/docker-for-mac/) daemon using Unix sockets:
 
 ```csharp
 using Docker.DotNet;
