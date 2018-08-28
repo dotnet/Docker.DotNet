@@ -49,6 +49,14 @@ DockerClient client = new DockerClientConfiguration(new Uri("npipe://./pipe/dock
      .CreateClient();
 ```
 
+or to connect to your local [Docker for Mac](https://docs.docker.com/docker-for-mac/) deamon using Unix sockets:
+
+```csharp
+using Docker.DotNet;
+DockerClient client = new DockerClientConfiguration(new Uri("unix:/var/run/docker.sock"))
+     .CreateClient();
+```
+
 #### Example: List containers
 
 ```csharp
