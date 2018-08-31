@@ -17,7 +17,7 @@ namespace Docker.DotNet.Tests
             _client = new DockerClientConfiguration().CreateClient();
         }
 
-        [Fact]
+        [SupportedOSPlatformsFact(Platform.Windows)]
         public void DockerService_IsRunning()
         {
             var services = ServiceController.GetServices();
