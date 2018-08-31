@@ -14,7 +14,7 @@ namespace Docker.DotNet.Tests
 
         public ISystemOperationsTests()
         {
-            _client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+            _client = new DockerClientConfiguration().CreateClient();
         }
 
         [Fact]
