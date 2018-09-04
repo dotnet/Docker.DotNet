@@ -41,21 +41,15 @@ using Docker.DotNet;
 DockerClient client = new DockerClientConfiguration(new Uri("http://ubuntu-docker.cloudapp.net:4243"))
      .CreateClient();
 ```
-or to connect to your local [Docker for Windows](https://docs.docker.com/docker-for-windows/) daemon using named pipes:
+or to connect to your local [Docker for Windows](https://docs.docker.com/docker-for-windows/) daemon using named pipes or your local [Docker for Mac](https://docs.docker.com/docker-for-mac/) daemon using Unix sockets:
 
 ```csharp
 using Docker.DotNet;
-DockerClient client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine"))
+DockerClient client = new DockerClientConfiguration()
      .CreateClient();
 ```
 
-or to connect to your local [Docker for Mac](https://docs.docker.com/docker-for-mac/) daemon using Unix sockets:
-
-```csharp
-using Docker.DotNet;
-DockerClient client = new DockerClientConfiguration(new Uri("unix:/var/run/docker.sock"))
-     .CreateClient();
-```
+For a custom endpoint, you can also pass a named pipe or a Unix socket to the `DockerClientConfiguration` constructor. For example: `new Uri("npipe://./pipe/docker_engine")` or `new Uri("unix:/var/run/docker.sock")`
 
 #### Example: List containers
 
