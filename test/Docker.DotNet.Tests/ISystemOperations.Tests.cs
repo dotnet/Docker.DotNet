@@ -90,6 +90,17 @@ namespace Docker.DotNet.Tests
             await _client.Images.DeleteImageAsync($"{repository}:{tag}", new ImageDeleteParameters());
         }
 
+        [Fact]
+        public async Task MonitorEventsAsync_EmptyContainersList_CanBeCancelled()
+        {
+            var cts = new CancellationTokenSource();
+
+            cts.CancelAfter(1000);
+            var task = _client.System.MonitorEventsAsync(new ContainerEventsParameters(), new Progress(), cts.Token);
+
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
+        }
+
         class Progress : IProgress<JSONMessage>
         {
             internal Action<JSONMessage> _onCalled;

@@ -19,7 +19,7 @@ namespace Docker.DotNet.Models
                     using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
                     {
                         string line;
-                        while ((line = await reader.ReadLineAsync()) != null)
+                        while ((line = await reader.ReadLineAsync().WithCancellation(cancel)) != null)
                         {
                             progress.Report(line);
                         }
@@ -40,7 +40,7 @@ namespace Docker.DotNet.Models
                         string line;
                         try
                         {
-                            while ((line = await reader.ReadLineAsync()) != null)
+                            while ((line = await reader.ReadLineAsync().WithCancellation(cancel)) != null)
                             {
                                 var prog = client.JsonSerializer.DeserializeObject<T>(line);
                                 if (prog == null) continue;
@@ -56,6 +56,20 @@ namespace Docker.DotNet.Models
                     }
                 }
             }
+        }
+
+        private static async Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
+            {
+                if (task != await Task.WhenAny(task, tcs.Task))
+                {
+                    throw new OperationCanceledException(cancellationToken);
+                }
+            }
+
+            return await task;
         }
     }
 }
