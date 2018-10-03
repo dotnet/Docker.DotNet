@@ -65,6 +65,11 @@ namespace Docker.DotNet
             return CreateImageAsync(parameters, null, authConfig, progress, cancellationToken);
         }
 
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return CreateImageAsync(parameters, null, authConfig, headers, progress, cancellationToken);
+        }
+
         public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (parameters == null)
@@ -84,6 +89,40 @@ namespace Docker.DotNet
 
             return StreamUtil.MonitorStreamForMessagesAsync(
                 this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken),
+                this._client,
+                cancellationToken,
+                progress);
+        }
+        
+        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            HttpMethod httpMethod = HttpMethod.Post;
+            BinaryRequestContent content = null;
+            if (imageStream != null)
+            {
+                content = new BinaryRequestContent(imageStream, TarContentType);
+                parameters.FromSrc = ImportFromBodySource;
+            }
+
+            IQueryString queryParameters = new QueryString<ImagesCreateParameters>(parameters);
+            
+            Dictionary<string, string> customHeaders = RegistryAuthHeaders(authConfig);
+
+            if(headers != null)
+            {
+                foreach(string key in headers.Keys)
+                {
+                    customHeaders[key] = headers[key];
+                }
+            }
+
+            return StreamUtil.MonitorStreamForMessagesAsync(
+                this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, customHeaders, cancellationToken),
                 this._client,
                 cancellationToken,
                 progress);

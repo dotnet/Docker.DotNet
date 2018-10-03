@@ -75,6 +75,21 @@ namespace Docker.DotNet
         /// <remarks>
         /// docker pull
         /// docker image pull
+        ///
+        /// 200 - No error.
+        /// 404 - Repository does not exist or no read access.
+        /// 500 - Server error.
+        /// </remarks>
+        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Create an image.
+        /// 
+        /// Create an image by either pulling it from a registry or importing it.
+        /// </summary>
+        /// <remarks>
+        /// docker pull
+        /// docker image pull
         /// docker import
         /// 
         /// HTTP POST /images/create
@@ -84,6 +99,24 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+        
+        /// <summary>
+        /// Create an image.
+        /// 
+        /// Create an image by either pulling it from a registry or importing it.
+        /// </summary>
+        /// <remarks>
+        /// docker pull
+        /// docker image pull
+        /// docker import
+        /// 
+        /// HTTP POST /images/create
+        ///
+        /// 200 - No error.
+        /// 404 - Repository does not exist or no read access.
+        /// 500 - Server error.
+        /// </remarks>
+        Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inspect an image.
