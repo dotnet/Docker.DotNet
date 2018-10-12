@@ -8,36 +8,31 @@ namespace Docker.DotNet
     /// </summary>
     internal class JsonSerializer
     {
-        private JsonConverter[] Converters { get; }
-
-        static JsonSerializer()
+        private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore                
-            };
-        }
-
-        public JsonSerializer()
-        {
-            this.Converters = new JsonConverter[]
+            NullValueHandling = NullValueHandling.Ignore,
+            Converters = new JsonConverter[]
             {
                 new JsonIso8601AndUnixEpochDateConverter(),
                 new JsonVersionConverter(),
                 new StringEnumConverter(),
                 new TimeSpanSecondsConverter(),
                 new TimeSpanNanosecondsConverter()
-            };
+            }
+        };
+
+        public JsonSerializer()
+        {
         }
 
         public T DeserializeObject<T>(string json)
         {
-            return JsonConvert.DeserializeObject<T>(json, this.Converters);
+            return JsonConvert.DeserializeObject<T>(json, this._settings);
         }
 
         public string SerializeObject<T>(T value)
         {
-            return JsonConvert.SerializeObject(value, this.Converters);
+            return JsonConvert.SerializeObject(value, this._settings);
         }
     }
 }
