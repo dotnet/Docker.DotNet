@@ -129,6 +129,16 @@ namespace Docker.DotNet
         Task<IEnumerable<SwarmService>> ListServicesAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// List services with optional filters.
+        /// </summary>
+        /// <remarks>
+        /// 200 - No error.
+        /// 500 - Server error.
+        /// 503 - Node is not part of a swarm.
+        /// </remarks>
+        Task<IEnumerable<SwarmService>> ListServicesAsync(FilterServiceParameters filters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Update a service.
         /// </summary>
         /// <remarks>

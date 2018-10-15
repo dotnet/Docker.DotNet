@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Docker.DotNet.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Docker.DotNet
 {
@@ -149,6 +152,42 @@ namespace Docker.DotNet
             return string.Join("&",
                         _data.Select(
                             v => $"{Uri.EscapeUriString(_key)}={Uri.EscapeDataString(v)}"));
+        }
+    }
+
+    internal class FilterServiceQueryString : IQueryString
+    {
+        private readonly Filter internalFilter_;
+        private bool _invalidState = true;
+
+        public FilterServiceQueryString(FilterServiceParameters filters)
+        {
+            if (!string.IsNullOrWhiteSpace(filters.Mode) && filters.Mode != "global" && filters.Mode != "replicated")
+                throw new Exception("Invalid filter specified. 'Mode' should be 'global' or 'replicated'");
+
+            internalFilter_ = new Filter()
+                .AddFilter(nameof(filters.Id), filters.Id)
+                .AddFilter(nameof(filters.Name), filters.Name)
+                .AddFilter(nameof(filters.Label), filters.Label)
+                .AddFilter(nameof(filters.Mode), filters.Mode);
+        }
+
+        public string GetQueryString()
+        {
+            return $"filters={JsonConvert.SerializeObject(internalFilter_)}";
+        }
+
+        private class Filter : JObject
+        {
+            public Filter AddFilter(string name, string value)
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    var innerFilter = new JObject { { Uri.EscapeUriString(value), true } };
+                    Add(name.ToLower(), innerFilter);
+                }
+                return this;
+            }
         }
     }
 }

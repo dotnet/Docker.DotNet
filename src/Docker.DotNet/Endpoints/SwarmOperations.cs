@@ -1,4 +1,8 @@
 
+using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Docker.DotNet
 {
     using System;
@@ -127,6 +131,14 @@ namespace Docker.DotNet
         async Task<IEnumerable<SwarmService>> ISwarmOperations.ListServicesAsync(CancellationToken cancellationToken)
         {
             var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services", cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<SwarmService[]>(response.Body);
+        }
+
+        async Task<IEnumerable<SwarmService>> ISwarmOperations.ListServicesAsync(FilterServiceParameters filters, CancellationToken cancellationToken)
+        {
+            var response = await this._client
+                .MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services", new FilterServiceQueryString(filters), cancellationToken)
+                .ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<SwarmService[]>(response.Body);
         }
 
