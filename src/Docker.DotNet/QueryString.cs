@@ -157,37 +157,29 @@ namespace Docker.DotNet
 
     internal class FilterServiceQueryString : IQueryString
     {
-        private readonly Filter internalFilter_;
-        private bool _invalidState = true;
+        private readonly ServiceFilter _serviceFilters;
 
-        public FilterServiceQueryString(FilterServiceParameters filters)
+        public FilterServiceQueryString(ServiceFilter serviceFilters)
         {
-            if (!string.IsNullOrWhiteSpace(filters.Mode) && filters.Mode != "global" && filters.Mode != "replicated")
-                throw new Exception("Invalid filter specified. 'Mode' should be 'global' or 'replicated'");
-
-            internalFilter_ = new Filter()
-                .AddFilter(nameof(filters.Id), filters.Id)
-                .AddFilter(nameof(filters.Name), filters.Name)
-                .AddFilter(nameof(filters.Label), filters.Label)
-                .AddFilter(nameof(filters.Mode), filters.Mode);
+            _serviceFilters = serviceFilters;
         }
 
         public string GetQueryString()
         {
-            return $"filters={JsonConvert.SerializeObject(internalFilter_)}";
-        }
+            if (_serviceFilters == null)
+                return string.Empty;
 
-        private class Filter : JObject
-        {
-            public Filter AddFilter(string name, string value)
+            var tempJObject = new JObject();
+            foreach (var key in _serviceFilters.Keys)
             {
+                var value = _serviceFilters[key];
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     var innerFilter = new JObject { { Uri.EscapeUriString(value), true } };
-                    Add(name.ToLower(), innerFilter);
+                    tempJObject.Add(key.ToLower(), innerFilter);
                 }
-                return this;
             }
+            return $"filters={JsonConvert.SerializeObject(tempJObject)}";
         }
     }
 }
