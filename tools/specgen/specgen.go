@@ -12,6 +12,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/pkg/jsonmessage"
@@ -255,10 +256,11 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /events
 	reflect.TypeOf(ContainerEventsParameters{}),
-	reflect.TypeOf(jsonmessage.JSONMessage{}),
+	reflect.TypeOf(events.Message{}),
 
 	// POST /images/create
 	reflect.TypeOf(ImagesCreateParameters{}),
+	reflect.TypeOf(jsonmessage.JSONMessage{}),
 
 	// GET /images/get
 	// TODO: stream

@@ -27,6 +27,11 @@
 			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
 		},
 		{
+			"ImportPath": "github.com/docker/docker/api/types/events",
+			"Comment": "v1.13.0",
+			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"
+		},
+		{
 			"ImportPath": "github.com/docker/docker/api/types/container",
 			"Comment": "v1.13.0",
 			"Rev": "49bf474f9ed7ce7143a59d1964ff7b7fd9b52178"

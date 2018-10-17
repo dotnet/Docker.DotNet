@@ -90,11 +90,11 @@ namespace Docker.DotNet.Tests
             await _client.Images.DeleteImageAsync($"{repository}:{tag}", new ImageDeleteParameters());
         }
 
-        class Progress : IProgress<JSONMessage>
+        class Progress : IProgress<Message>
         {
-            internal Action<JSONMessage> _onCalled;
+            internal Action<Message> _onCalled;
 
-            void IProgress<JSONMessage>.Report(JSONMessage value)
+            void IProgress<Message>.Report(Message value)
             {
                 _onCalled(value);
             }
