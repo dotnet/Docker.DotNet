@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Docker.DotNet.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Docker.DotNet
 {
@@ -155,31 +152,31 @@ namespace Docker.DotNet
         }
     }
 
-    internal class FilterServiceQueryString : IQueryString
-    {
-        private readonly ServiceFilter _serviceFilters;
+    //internal class FilterServiceQueryString : IQueryString
+    //{
+    //    private readonly ServiceFilter _serviceFilters;
 
-        public FilterServiceQueryString(ServiceFilter serviceFilters)
-        {
-            _serviceFilters = serviceFilters;
-        }
+    //    public FilterServiceQueryString(ServiceFilter serviceFilters)
+    //    {
+    //        _serviceFilters = serviceFilters;
+    //    }
 
-        public string GetQueryString()
-        {
-            if (_serviceFilters == null)
-                return string.Empty;
+    //    public string GetQueryString()
+    //    {
+    //        if (_serviceFilters == null)
+    //            return string.Empty;
 
-            var tempJObject = new JObject();
-            foreach (var key in _serviceFilters.Keys)
-            {
-                var value = _serviceFilters[key];
-                if (!string.IsNullOrWhiteSpace(value))
-                {
-                    var innerFilter = new JObject { { Uri.EscapeUriString(value), true } };
-                    tempJObject.Add(key.ToLower(), innerFilter);
-                }
-            }
-            return $"filters={JsonConvert.SerializeObject(tempJObject)}";
-        }
-    }
+    //        var tempJObject = new JObject();
+    //        foreach (var key in _serviceFilters.Keys)
+    //        {
+    //            var value = _serviceFilters[key];
+    //            if (!string.IsNullOrWhiteSpace(value))
+    //            {
+    //                var innerFilter = new JObject { { Uri.EscapeUriString(value), true } };
+    //                tempJObject.Add(key.ToLower(), innerFilter);
+    //            }
+    //        }
+    //        return $"filters={JsonConvert.SerializeObject(tempJObject)}";
+    //    }
+    //}
 }
