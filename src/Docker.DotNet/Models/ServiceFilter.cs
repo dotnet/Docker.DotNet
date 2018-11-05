@@ -43,10 +43,11 @@ namespace Docker.DotNet.Models
             set => this["name"] = value;
         }
 
-        private enum ServiceCreationMode
-        {
-            Replicated,
-            Global
-        }
+    }
+
+    public enum ServiceCreationMode
+    {
+        Replicated,
+        Global
     }
 }
