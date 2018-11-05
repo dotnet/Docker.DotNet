@@ -90,18 +90,7 @@ namespace Docker.DotNet.Tests
             await _client.Images.DeleteImageAsync($"{repository}:{tag}", new ImageDeleteParameters());
         }
 
-        [Fact]
-        public async Task GetServicesAsync_Succeeds()
-        {
-            var services = await _client.Swarm.ListServicesAsync(CancellationToken.None);
-            Assert.Equal(2, services.Count());
-        }
-        [Fact]
-        public async Task GetFilteredServicesAsync_Succeeds()
-        {
-            var services = await _client.Swarm.ListServicesAsync(new ServicesListParameters { Filters = new ServiceFilter { Id = "pr6264hhb836" } }, CancellationToken.None);
-            Assert.Single(services);
-        }
+        
 
         class Progress : IProgress<Message>
         {
