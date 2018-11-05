@@ -151,32 +151,4 @@ namespace Docker.DotNet
                             v => $"{Uri.EscapeUriString(_key)}={Uri.EscapeDataString(v)}"));
         }
     }
-
-    //internal class FilterServiceQueryString : IQueryString
-    //{
-    //    private readonly ServiceFilter _serviceFilters;
-
-    //    public FilterServiceQueryString(ServiceFilter serviceFilters)
-    //    {
-    //        _serviceFilters = serviceFilters;
-    //    }
-
-    //    public string GetQueryString()
-    //    {
-    //        if (_serviceFilters == null)
-    //            return string.Empty;
-
-    //        var tempJObject = new JObject();
-    //        foreach (var key in _serviceFilters.Keys)
-    //        {
-    //            var value = _serviceFilters[key];
-    //            if (!string.IsNullOrWhiteSpace(value))
-    //            {
-    //                var innerFilter = new JObject { { Uri.EscapeUriString(value), true } };
-    //                tempJObject.Add(key.ToLower(), innerFilter);
-    //            }
-    //        }
-    //        return $"filters={JsonConvert.SerializeObject(tempJObject)}";
-    //    }
-    //}
 }
