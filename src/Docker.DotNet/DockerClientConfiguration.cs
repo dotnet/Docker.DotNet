@@ -12,6 +12,10 @@ namespace Docker.DotNet
 
         public TimeSpan DefaultTimeout { get; internal set; } = TimeSpan.FromSeconds(100);
 
+        // NamedPipeClientStream handles file not found by polling until the server arrives. Use a short
+        // timeout so that the user doesn't get stuck waiting for a dockerd instance that is not running.
+        public TimeSpan NamedPipeConnectTimeout { get; set; } = TimeSpan.FromMilliseconds(100);
+
         private static Uri LocalDockerUri()
         {
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
