@@ -12,6 +12,8 @@ namespace Docker.DotNet
 
         public TimeSpan DefaultTimeout { get; internal set; } = TimeSpan.FromSeconds(100);
 
+        public TimeSpan NamedPipeConnectTimeout { get; set; } = TimeSpan.FromMilliseconds(100);
+
         private static Uri LocalDockerUri()
         {
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);

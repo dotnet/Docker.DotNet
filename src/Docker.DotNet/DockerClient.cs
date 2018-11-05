@@ -72,10 +72,8 @@ namespace Docker.DotNet
                     uri = new UriBuilder("http", pipeName).Uri;
                     handler = new ManagedHandler(async (host, port, cancellationToken) =>
                     {
-                        // NamedPipeClientStream handles file not found by polling until the server arrives. Use a short
-                        // timeout so that the user doesn't get stuck waiting for a dockerd instance that is not running.
-                        var timeout = 100; // 100ms
-                        var stream = new NamedPipeClientStream(serverName, pipeName);
+                        int timeout = this.Configuration.NamedPipeConnectTimeout.Milliseconds;
+                        var stream = new NamedPipeClientStream(serverName, pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
                         var dockerStream = new DockerPipeStream(stream);
 
 #if NET45
