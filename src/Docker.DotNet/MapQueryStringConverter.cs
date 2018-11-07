@@ -10,14 +10,14 @@ namespace Docker.DotNet
     {
         public bool CanConvert(Type t)
         {
-            return typeof (IList).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()) || typeof (IDictionary).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo());
+            return typeof(IList).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()) || typeof(IDictionary).GetTypeInfo().IsAssignableFrom(t.GetTypeInfo());
         }
 
         public string[] Convert(object o)
         {
             Debug.Assert(o != null);
 
-            return new [] {JsonConvert.SerializeObject(o)};
+            return new[] { JsonConvert.SerializeObject(o) };
         }
     }
 }

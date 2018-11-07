@@ -22,7 +22,7 @@ namespace Docker.DotNet.Tests
         {
             var services = ServiceController.GetServices();
             using (var dockerService = services.SingleOrDefault(service => service.ServiceName == "docker"))
-            { 
+            {
                 Assert.NotNull(dockerService); // docker is not running
                 Assert.Equal(ServiceControllerStatus.Running, dockerService.Status);
             }
@@ -89,6 +89,8 @@ namespace Docker.DotNet.Tests
 
             await _client.Images.DeleteImageAsync($"{repository}:{tag}", new ImageDeleteParameters());
         }
+
+        
 
         class Progress : IProgress<Message>
         {
