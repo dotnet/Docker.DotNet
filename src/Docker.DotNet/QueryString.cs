@@ -42,7 +42,7 @@ namespace Docker.DotNet
                 }
 
                 // Serialize
-                if (attribute.IsRequired || !IsDefaultOfType(value))
+                if (value != null)
                 {
                     var keyStr = attribute.Name;
                     string[] valueStr;
@@ -112,16 +112,6 @@ namespace Docker.DotNet
 
             return attributedPublicProperties.Select(pi =>
                 new Tuple<PropertyInfo, TAttribType>(pi, pi.GetCustomAttribute<TAttribType>())).ToArray();
-        }
-
-        private static bool IsDefaultOfType(object o)
-        {
-            if (o is ValueType)
-            {
-                return o.Equals(Activator.CreateInstance(o.GetType()));
-            }
-
-            return o == null;
         }
     }
 
