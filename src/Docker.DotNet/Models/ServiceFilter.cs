@@ -22,20 +22,10 @@ namespace Docker.DotNet.Models
             get => this["label"];
             set => this["label"] = value;
         }
-        /// <summary> "replicated"|"global" </summary>
-        public string Mode
+        public ServiceCreationMode Mode
         {
-            get => this["mode"];
-            set
-            {
-                if (!Enum.TryParse(value, true, out ServiceCreationMode _))
-                {
-                    var validValues = Enum.GetValues(typeof(ServiceCreationMode)).OfType<ServiceCreationMode>();
-                    throw new Exception($"Invalid filter specified. 'Mode' should be on of '{string.Join(", ", validValues.Select(i => i.ToString()))}'");
-                }
-
-                this["mode"] = value;
-            }
+            get => !Enum.TryParse(this["mode"], out ServiceCreationMode mode) ? ServiceCreationMode.Replicated : mode;
+            set => this["mode"] = value.ToString();
         }
         public string Name
         {
