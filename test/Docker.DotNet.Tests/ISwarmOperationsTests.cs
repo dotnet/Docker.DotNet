@@ -20,7 +20,6 @@ namespace Docker.DotNet.Tests
 
             _testServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters()
             {
-
                 Service = new ServiceSpec
                 {
                     Name = _testServiceName,
@@ -50,9 +49,8 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task CreateServiceAsync_FaultyNetwork_Throws()
         {
-            await Assert.ThrowsAsync<DockerApiException>(() => _client.Swarm.CreateServiceAsync(new ServiceCreateParameters()
+            await Assert.ThrowsAsync<DockerSwarmException>(() => _client.Swarm.CreateServiceAsync(new ServiceCreateParameters()
             {
-                
                 Service = new ServiceSpec
                 {
                     Name = $"{_testServiceName}2",

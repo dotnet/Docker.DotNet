@@ -26,19 +26,12 @@ namespace Docker.DotNet.Models
         {
             get
             {
-                if (this["mode"].Length == 0)
+                var lst = new ServiceCreationMode[this["mode"].Length];
+                for(int i = 0; i< this["mode"].Length; i++)
                 {
-                    return new ServiceCreationMode[] { ServiceCreationMode.Replicated };
+                    lst[i] = (ServiceCreationMode)Enum.Parse(typeof(ServiceCreationMode), this["mode"][i]);
                 }
-                else
-                {
-                    var lst = new ServiceCreationMode[this["mode"].Length];
-                    for(int i = 0; i< this["mode"].Length; i++)
-                    {
-                        lst[i] = (ServiceCreationMode)Enum.Parse(typeof(ServiceCreationMode), this["mode"][i]);
-                    }
-                    return lst;
-                }
+                return lst;   
             }
             set => this["mode"] = value.Select(m => m.ToString()).ToArray();
         }

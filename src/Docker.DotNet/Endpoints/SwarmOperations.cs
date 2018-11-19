@@ -15,7 +15,8 @@ namespace Docker.DotNet
         {
             if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
             {
-                throw new DockerApiException(statusCode, responseBody);
+                var deserializedBody = new JsonSerializer().DeserializeObject<JSONError>(responseBody);
+                throw new DockerSwarmException(statusCode, responseBody, deserializedBody.Message);
             }
         };
 
