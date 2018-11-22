@@ -24,23 +24,14 @@ namespace Docker.DotNet.Models
         }
         public ServiceCreationMode[] Mode
         {
-            get
-            {
-                var lst = new ServiceCreationMode[this["mode"].Length];
-                for(int i = 0; i< this["mode"].Length; i++)
-                {
-                    lst[i] = (ServiceCreationMode)Enum.Parse(typeof(ServiceCreationMode), this["mode"][i]);
-                }
-                return lst;   
-            }
-            set => this["mode"] = value.Select(m => m.ToString()).ToArray();
+            get => this["mode"]?.ToList().Select(m => (ServiceCreationMode)Enum.Parse(typeof(ServiceCreationMode), m)).ToArray();
+            set => this["mode"] = value?.Select(m => m.ToString()).ToArray();
         }
         public string[] Name
         {
             get => this["name"];
             set => this["name"] = value;
         }
-
     }
 
     public enum ServiceCreationMode
