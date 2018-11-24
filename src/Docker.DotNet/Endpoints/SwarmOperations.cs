@@ -11,20 +11,23 @@ namespace Docker.DotNet
 
     internal class SwarmOperations : ISwarmOperations
     {
-        internal static readonly ApiResponseErrorHandlingDelegate SwarmResponseHandler = (statusCode, responseBody) =>
+        internal readonly ApiResponseErrorHandlingDelegate SwarmResponseHandler;
+
+        private readonly DockerClient _client;
+
+        internal void ErrorHandler(HttpStatusCode statusCode, string responseBody)
         {
             if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
             {
-                var deserializedBody = new JsonSerializer().DeserializeObject<JSONError>(responseBody);
+                var deserializedBody = this._client.JsonSerializer.DeserializeObject<JSONError>(responseBody);
                 throw new DockerSwarmException(statusCode, responseBody, deserializedBody.Message);
             }
-        };
-
-        private readonly DockerClient _client;
+        }
 
         internal SwarmOperations(DockerClient client)
         {
             this._client = client;
+            SwarmResponseHandler = new ApiResponseErrorHandlingDelegate(ErrorHandler);
         }
 
         async Task<ServiceCreateResponse> ISwarmOperations.CreateServiceAsync(ServiceCreateParameters parameters, CancellationToken cancellationToken)
