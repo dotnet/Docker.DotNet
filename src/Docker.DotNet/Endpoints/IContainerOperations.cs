@@ -98,7 +98,19 @@ namespace Docker.DotNet
         [Obsolete("The stream returned by this method won't be demultiplexed properly if the container was created without a TTY. Use GetContainerLogsAsync(string, bool, ContainerLogsParameters, CancellationToken) instead")]
         Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
-        [Obsolete("The strings reported by this method will contain junk if the container was created without a TTY. Use GetContainerLogsAsync(string, bool, ContainerLogsParameters, CancellationToken) instead")]
+        /// <summary>
+        /// Gets the logs from a container.
+        /// This method is only suited for containers created with a TTY. For containers created without a TTY, use
+        /// <see cref="GetContainerLogsAsync(string, bool, ContainerLogsParameters, CancellationToken)"/> instead.
+        /// </summary>
+        /// <param name="id">ID or name of the container.</param>
+        /// <param name="parameters">The parameters used to retrieve the logs.</param>
+        /// <param name="cancellationToken">A token used to cancel this operation.</param>
+        /// <param name="progress">
+        /// The class that will receive the log lines.
+        /// Every reported string represents one log line, with its terminating newline removed.
+        /// </param>
+        /// <returns>A Task that will complete once all log lines have been read, or once the container has exited if Follow is set to <see langword="true"/>.</returns>
         Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress);
 
         /// <summary>
