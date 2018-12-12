@@ -60,12 +60,12 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             return CreateImageAsync(parameters, null, authConfig, progress, cancellationToken);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (parameters == null)
             {
