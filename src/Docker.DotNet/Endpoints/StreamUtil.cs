@@ -45,7 +45,8 @@ namespace Docker.DotNet.Models
                                 var prog = client.JsonSerializer.DeserializeObject<T>(line);
                                 if (prog == null) continue;
 
-                                progress.Report(prog);
+                                if(progress!= null)
+                                    progress.Report(prog);
                             }
                         }
                         catch (ObjectDisposedException)
