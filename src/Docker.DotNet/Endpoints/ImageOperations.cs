@@ -72,26 +72,7 @@ namespace Docker.DotNet
 
         public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            HttpMethod httpMethod = HttpMethod.Post;
-            BinaryRequestContent content = null;
-            if (imageStream != null)
-            {
-                content = new BinaryRequestContent(imageStream, TarContentType);
-                parameters.FromSrc = ImportFromBodySource;
-            }
-
-            IQueryString queryParameters = new QueryString<ImagesCreateParameters>(parameters);
-
-            return StreamUtil.MonitorStreamForMessagesAsync(
-                this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, RegistryAuthHeaders(authConfig), cancellationToken),
-                this._client,
-                cancellationToken,
-                progress);
+            return CreateImageAsync(parameters, imageStream, authConfig, null, progress, cancellationToken);
         }
         
         public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
