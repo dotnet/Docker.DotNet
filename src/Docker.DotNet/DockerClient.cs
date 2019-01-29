@@ -43,6 +43,7 @@ namespace Docker.DotNet
             Tasks = new TasksOperations(this);
             Volumes = new VolumeOperations(this);
             Plugin = new PluginOperations(this);
+            Exec = new ExecOperations(this);
 
             ManagedHandler handler;
             var uri = Configuration.EndpointBaseUri;
@@ -145,6 +146,8 @@ namespace Docker.DotNet
         public ISystemOperations System { get; }
 
         public IPluginOperations Plugin { get; }
+
+        public IExecOperations Exec { get; }
 
         internal JsonSerializer JsonSerializer { get; }
 
