@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Docker.DotNet.Endpoints
+namespace Docker.DotNet
 {
     internal class ExecOperations : IExecOperations
     {
