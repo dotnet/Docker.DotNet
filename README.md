@@ -78,7 +78,7 @@ For a custom endpoint, you can also pass a named pipe or a Unix socket to the `D
 // Default Docker Engine on Windows
 using Docker.DotNet;
 DockerClient client = new DockerClientConfiguration(
-    new Uri("npipe://./pipe/docker"))
+    new Uri("npipe://./pipe/docker_engine"))
      .CreateClient();
 // Default Docker Engine on Linux
 using Docker.DotNet;
