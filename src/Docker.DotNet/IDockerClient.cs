@@ -28,6 +28,8 @@ namespace Docker.DotNet
 
         IPluginOperations Plugin { get; }
 
+        IExecOperations Exec { get; }
+
         #endregion Endpoints
     }
 }
