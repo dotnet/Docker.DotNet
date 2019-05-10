@@ -45,7 +45,7 @@ namespace Docker.DotNet
         private static extern int GetOverlappedResult(SafeHandle handle, ref NativeOverlapped overlapped, out int numBytesWritten, int wait);
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool PeekNamedPipe(SafeHandle handle, byte[] buffer, uint nBufferSize, ref uint bytesRead, ref uint bytesAvail, ref uint BytesLeftThisMessage);
+        private static extern bool PeekNamedPipe(SafeHandle handle, byte[] buffer, uint nBufferSize, ref uint bytesRead, ref uint bytesAvail, ref uint BytesLeftThisMessage);
 
         public override void CloseWrite()
         {
