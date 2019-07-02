@@ -14,15 +14,15 @@ namespace Docker.DotNet.Tests
 
         public ISystemOperationsTests()
         {
-            _client = new DockerClientConfiguration(new Uri("npipe://./pipe/docker_engine")).CreateClient();
+            _client = new DockerClientConfiguration().CreateClient();
         }
 
-        [Fact]
+        [SupportedOSPlatformsFact(Platform.Windows)]
         public void DockerService_IsRunning()
         {
             var services = ServiceController.GetServices();
             using (var dockerService = services.SingleOrDefault(service => service.ServiceName == "docker"))
-            { 
+            {
                 Assert.NotNull(dockerService); // docker is not running
                 Assert.Equal(ServiceControllerStatus.Running, dockerService.Status);
             }
@@ -90,11 +90,13 @@ namespace Docker.DotNet.Tests
             await _client.Images.DeleteImageAsync($"{repository}:{tag}", new ImageDeleteParameters());
         }
 
-        class Progress : IProgress<JSONMessage>
-        {
-            internal Action<JSONMessage> _onCalled;
+        
 
-            void IProgress<JSONMessage>.Report(JSONMessage value)
+        class Progress : IProgress<Message>
+        {
+            internal Action<Message> _onCalled;
+
+            void IProgress<Message>.Report(Message value)
             {
                 _onCalled(value);
             }

@@ -119,14 +119,14 @@ namespace Docker.DotNet
         Task<SwarmService> InspectServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// List services.
+        /// List services with optional serviceFilters.
         /// </summary>
         /// <remarks>
         /// 200 - No error.
         /// 500 - Server error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<IEnumerable<SwarmService>> ListServicesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<SwarmService>> ListServicesAsync(ServicesListParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a service.
