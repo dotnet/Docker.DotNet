@@ -91,19 +91,20 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImagesCreateParameters>(parameters);
-            
+
             Dictionary<string, string> customHeaders = RegistryAuthHeaders(authConfig);
 
-            if(headers != null)
+            if (headers != null)
             {
-                foreach(string key in headers.Keys)
+                foreach (string key in headers.Keys)
                 {
                     customHeaders[key] = headers[key];
                 }
             }
 
-            return StreamUtil.MonitorStreamForMessagesAsync(
-                this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, customHeaders, cancellationToken),
+            return StreamUtil.MonitorResponseForMessagesAsync(
+                this._client.MakeRequestForRawResponseAsync(httpMethod,
+                "images/create", queryParameters, content, customHeaders, cancellationToken),
                 this._client,
                 cancellationToken,
                 progress);
