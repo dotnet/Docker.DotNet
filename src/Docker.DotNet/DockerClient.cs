@@ -273,6 +273,18 @@ namespace Docker.DotNet
             return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         }
 
+        internal async Task<HttpResponseMessage> MakeRequestForRawResponseAsync(
+            HttpMethod method,
+            string path,
+            IQueryString queryString,
+            IRequestContent body,
+            IDictionary<string, string> headers,
+            CancellationToken token)
+        {
+            var response = await PrivateMakeRequestAsync(s_InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, body, token).ConfigureAwait(false);
+            return response;
+        }
+
         internal async Task<DockerApiStreamedResponse> MakeRequestForStreamedResponseAsync(
             IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
             HttpMethod method,
@@ -373,6 +385,27 @@ namespace Docker.DotNet
                 {
                     handler(statusCode, responseBody);
                 }
+            }
+
+            // No custom handler was fired. Default the response for generic success/failures.
+            if (isErrorResponse)
+            {
+                throw new DockerApiException(statusCode, responseBody);
+            }
+        }
+
+        public async Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response)
+        {
+            bool isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
+
+            string responseBody = null;
+
+            if (isErrorResponse)
+            {
+                // If it is not an error response, we do not read the response body because the caller may wish to consume it.
+                // If it is an error response, we do because there is nothing else going to be done with it anyway and
+                // we want to report the response body in the error message as it contains potentially useful info.
+                responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
             // No custom handler was fired. Default the response for generic success/failures.
