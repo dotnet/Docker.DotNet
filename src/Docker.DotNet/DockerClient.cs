@@ -73,7 +73,7 @@ namespace Docker.DotNet
                     uri = new UriBuilder("http", pipeName).Uri;
                     handler = new ManagedHandler(async (host, port, cancellationToken) =>
                     {
-                        int timeout = this.Configuration.NamedPipeConnectTimeout.Milliseconds;
+                        int timeout = (int)this.Configuration.NamedPipeConnectTimeout.TotalMilliseconds;
                         var stream = new NamedPipeClientStream(serverName, pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
                         var dockerStream = new DockerPipeStream(stream);
 
