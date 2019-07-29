@@ -417,7 +417,7 @@ namespace Docker.DotNet
 
         internal HttpRequestMessage PrepareRequest(HttpMethod method, string path, IQueryString queryString, IDictionary<string, string> headers, IRequestContent data)
         {
-            if (string.IsNullOrEmpty("path"))
+            if (string.IsNullOrEmpty(path))
             {
                 throw new ArgumentNullException(nameof(path));
             }
