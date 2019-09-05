@@ -95,10 +95,34 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        [Obsolete("Use 'Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress)'")]
+        [Obsolete("The stream returned by this method won't be demultiplexed properly if the container was created without a TTY. Use GetContainerLogsAsync(string, bool, ContainerLogsParameters, CancellationToken) instead")]
         Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
+        /// <summary>
+        /// Gets the logs from a container.
+        /// This method is only suited for containers created with a TTY. For containers created without a TTY, use
+        /// <see cref="GetContainerLogsAsync(string, bool, ContainerLogsParameters, CancellationToken)"/> instead.
+        /// </summary>
+        /// <param name="id">ID or name of the container.</param>
+        /// <param name="parameters">The parameters used to retrieve the logs.</param>
+        /// <param name="cancellationToken">A token used to cancel this operation.</param>
+        /// <param name="progress">
+        /// The class that will receive the log lines.
+        /// Every reported string represents one log line, with its terminating newline removed.
+        /// </param>
+        /// <returns>A Task that will complete once all log lines have been read, or once the container has exited if Follow is set to <see langword="true"/>.</returns>
         Task GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken, IProgress<string> progress);
+
+        /// <summary>
+        /// Gets the <code>stdout</code> and <code>stderr</code> logs from a container.
+        /// This endpoint works only for containers with the <code>json-file</code> or <code>journald</code> logging driver.
+        /// </summary>
+        /// <param name="id">ID or name of the container.</param>
+        /// <param name="tty">If the container was created with a TTY or not. If <see langword="false" />, the returned stream is multiplexed.</param>
+        /// <param name="parameters">The parameters used to retrieve the logs.</param>
+        /// <param name="cancellationToken">A token used to cancel this operation.</param>
+        /// <returns>A stream with the retrieved logs. If the container wasn't created with a TTY, this stream is multiplexed.</returns>
+        Task<MultiplexedStream> GetContainerLogsAsync(string id, bool tty, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get changes on a container's filesystem.

@@ -13,7 +13,7 @@ namespace Docker.DotNet
 {
     public class MultiplexedStream : IDisposable, IPeekableStream
     {
-        private readonly WriteClosableStream _stream;
+        private readonly Stream _stream;
         private TargetStream _target;
         private int _remaining;
         private readonly byte[] _header = new byte[8];
@@ -21,7 +21,7 @@ namespace Docker.DotNet
 
         const int BufferSize = 81920;
 
-        public MultiplexedStream(WriteClosableStream stream, bool multiplexed)
+        public MultiplexedStream(Stream stream, bool multiplexed)
         {
             _stream = stream;
             _multiplexed = multiplexed;
@@ -43,7 +43,10 @@ namespace Docker.DotNet
 
         public void CloseWrite()
         {
-            _stream.CloseWrite();
+            if (_stream is WriteClosableStream closable)
+            {
+                closable.CloseWrite();
+            }
         }
 
         public Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
