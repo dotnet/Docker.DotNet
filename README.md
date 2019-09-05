@@ -164,7 +164,7 @@ To obtain this stream you can use:
 
 ```csharp
 CancellationTokenSource cancellation = new CancellationTokenSource();
-Stream stream = await client.Miscellaneous.MonitorEventsAsync(new ContainerEventsParameters(), cancellation.Token);
+Stream stream = await client.System.MonitorEventsAsync(new ContainerEventsParameters(), new Progress<JSONMessage>(), cancellation.Token);
 // Initialize a StreamReader...
 ```
 

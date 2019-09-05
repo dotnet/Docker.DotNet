@@ -102,8 +102,9 @@ namespace Docker.DotNet
                 }
             }
 
-            return StreamUtil.MonitorStreamForMessagesAsync(
-                this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, httpMethod, "images/create", queryParameters, content, customHeaders, cancellationToken),
+            return StreamUtil.MonitorResponseForMessagesAsync(
+                this._client.MakeRequestForRawResponseAsync(httpMethod,
+                "images/create", queryParameters, content, customHeaders, cancellationToken),
                 this._client,
                 cancellationToken,
                 progress);

@@ -112,6 +112,25 @@ namespace Docker.DotNet
                 progress);
         }
 
+        public async Task<MultiplexedStream> GetContainerLogsAsync(string id, bool tty, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            IQueryString queryParameters = new QueryString<ContainerLogsParameters>(parameters);
+
+            Stream result = await this._client.MakeRequestForStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"containers/{id}/logs", queryParameters, cancellationToken).ConfigureAwait(false);
+
+            return new MultiplexedStream(result, !tty);
+        }
+
         public async Task<IList<ContainerFileSystemChangeResponse>> InspectChangesAsync(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(id))
