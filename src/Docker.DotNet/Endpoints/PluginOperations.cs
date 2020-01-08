@@ -42,7 +42,7 @@ namespace Docker.DotNet
             }
 
             var query = new QueryString<PluginGetPrivilegeParameters>(parameters);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "plugins/privileges", query, cancellationToken).ConfigureAwait(false);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "plugins/privileges", query, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<PluginPrivilege[]>(response.Body);
         }
 
