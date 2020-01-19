@@ -31,8 +31,10 @@ namespace Docker.DotNet.Models
                 this.CpusetCpus = Resources.CpusetCpus;
                 this.CpusetMems = Resources.CpusetMems;
                 this.Devices = Resources.Devices;
-                this.DiskQuota = Resources.DiskQuota;
+                this.DeviceCgroupRules = Resources.DeviceCgroupRules;
+                this.DeviceRequests = Resources.DeviceRequests;
                 this.KernelMemory = Resources.KernelMemory;
+                this.KernelMemoryTCP = Resources.KernelMemoryTCP;
                 this.MemoryReservation = Resources.MemoryReservation;
                 this.MemorySwap = Resources.MemorySwap;
                 this.MemorySwappiness = Resources.MemorySwappiness;
@@ -78,6 +80,12 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "CapDrop", EmitDefaultValue = false)]
         public IList<string> CapDrop { get; set; }
+
+        [DataMember(Name = "Capabilities", EmitDefaultValue = false)]
+        public IList<string> Capabilities { get; set; }
+
+        [DataMember(Name = "CgroupnsMode", EmitDefaultValue = false)]
+        public string CgroupnsMode { get; set; }
 
         [DataMember(Name = "Dns", EmitDefaultValue = false)]
         public IList<string> DNS { get; set; }
@@ -199,11 +207,17 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Devices", EmitDefaultValue = false)]
         public IList<DeviceMapping> Devices { get; set; }
 
-        [DataMember(Name = "DiskQuota", EmitDefaultValue = false)]
-        public long DiskQuota { get; set; }
+        [DataMember(Name = "DeviceCgroupRules", EmitDefaultValue = false)]
+        public IList<string> DeviceCgroupRules { get; set; }
+
+        [DataMember(Name = "DeviceRequests", EmitDefaultValue = false)]
+        public IList<DeviceRequest> DeviceRequests { get; set; }
 
         [DataMember(Name = "KernelMemory", EmitDefaultValue = false)]
         public long KernelMemory { get; set; }
+
+        [DataMember(Name = "KernelMemoryTCP", EmitDefaultValue = false)]
+        public long KernelMemoryTCP { get; set; }
 
         [DataMember(Name = "MemoryReservation", EmitDefaultValue = false)]
         public long MemoryReservation { get; set; }
@@ -218,7 +232,7 @@ namespace Docker.DotNet.Models
         public bool? OomKillDisable { get; set; }
 
         [DataMember(Name = "PidsLimit", EmitDefaultValue = false)]
-        public long PidsLimit { get; set; }
+        public long? PidsLimit { get; set; }
 
         [DataMember(Name = "Ulimits", EmitDefaultValue = false)]
         public IList<Ulimit> Ulimits { get; set; }
@@ -238,10 +252,13 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Mounts", EmitDefaultValue = false)]
         public IList<Mount> Mounts { get; set; }
 
+        [DataMember(Name = "MaskedPaths", EmitDefaultValue = false)]
+        public IList<string> MaskedPaths { get; set; }
+
+        [DataMember(Name = "ReadonlyPaths", EmitDefaultValue = false)]
+        public IList<string> ReadonlyPaths { get; set; }
+
         [DataMember(Name = "Init", EmitDefaultValue = false)]
         public bool? Init { get; set; }
-
-        [DataMember(Name = "InitPath", EmitDefaultValue = false)]
-        public string InitPath { get; set; }
     }
 }

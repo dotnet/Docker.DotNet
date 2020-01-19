@@ -57,11 +57,17 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Devices", EmitDefaultValue = false)]
         public IList<DeviceMapping> Devices { get; set; }
 
-        [DataMember(Name = "DiskQuota", EmitDefaultValue = false)]
-        public long DiskQuota { get; set; }
+        [DataMember(Name = "DeviceCgroupRules", EmitDefaultValue = false)]
+        public IList<string> DeviceCgroupRules { get; set; }
+
+        [DataMember(Name = "DeviceRequests", EmitDefaultValue = false)]
+        public IList<DeviceRequest> DeviceRequests { get; set; }
 
         [DataMember(Name = "KernelMemory", EmitDefaultValue = false)]
         public long KernelMemory { get; set; }
+
+        [DataMember(Name = "KernelMemoryTCP", EmitDefaultValue = false)]
+        public long KernelMemoryTCP { get; set; }
 
         [DataMember(Name = "MemoryReservation", EmitDefaultValue = false)]
         public long MemoryReservation { get; set; }
@@ -76,7 +82,7 @@ namespace Docker.DotNet.Models
         public bool? OomKillDisable { get; set; }
 
         [DataMember(Name = "PidsLimit", EmitDefaultValue = false)]
-        public long PidsLimit { get; set; }
+        public long? PidsLimit { get; set; }
 
         [DataMember(Name = "Ulimits", EmitDefaultValue = false)]
         public IList<Ulimit> Ulimits { get; set; }

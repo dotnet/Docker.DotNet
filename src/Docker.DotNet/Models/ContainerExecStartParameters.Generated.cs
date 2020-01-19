@@ -33,6 +33,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Env", EmitDefaultValue = false)]
         public IList<string> Env { get; set; }
 
+        [DataMember(Name = "WorkingDir", EmitDefaultValue = false)]
+        public string WorkingDir { get; set; }
+
         [DataMember(Name = "Cmd", EmitDefaultValue = false)]
         public IList<string> Cmd { get; set; }
     }

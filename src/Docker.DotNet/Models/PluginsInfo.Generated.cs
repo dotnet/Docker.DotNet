@@ -14,5 +14,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Authorization", EmitDefaultValue = false)]
         public IList<string> Authorization { get; set; }
+
+        [DataMember(Name = "Log", EmitDefaultValue = false)]
+        public IList<string> Log { get; set; }
     }
 }

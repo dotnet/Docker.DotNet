@@ -17,6 +17,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ReadOnly", EmitDefaultValue = false)]
         public bool ReadOnly { get; set; }
 
+        [DataMember(Name = "Consistency", EmitDefaultValue = false)]
+        public string Consistency { get; set; }
+
         [DataMember(Name = "BindOptions", EmitDefaultValue = false)]
         public BindOptions BindOptions { get; set; }
 

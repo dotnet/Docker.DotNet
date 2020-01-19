@@ -11,6 +11,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "system_cpu_usage", EmitDefaultValue = false)]
         public ulong SystemUsage { get; set; }
 
+        [DataMember(Name = "online_cpus", EmitDefaultValue = false)]
+        public uint OnlineCPUs { get; set; }
+
         [DataMember(Name = "throttling_data", EmitDefaultValue = false)]
         public ThrottlingData ThrottlingData { get; set; }
     }

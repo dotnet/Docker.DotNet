@@ -14,5 +14,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Options", EmitDefaultValue = false)]
         public IDictionary<string, string> Options { get; set; }
+
+        [DataMember(Name = "CACert", EmitDefaultValue = false)]
+        public string CACert { get; set; }
     }
 }

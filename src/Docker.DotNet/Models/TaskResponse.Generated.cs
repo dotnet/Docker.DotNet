@@ -65,5 +65,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "NetworksAttachments", EmitDefaultValue = false)]
         public IList<NetworkAttachment> NetworksAttachments { get; set; }
+
+        [DataMember(Name = "GenericResources", EmitDefaultValue = false)]
+        public IList<GenericResource> GenericResources { get; set; }
     }
 }

@@ -12,6 +12,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Description", EmitDefaultValue = false)]
         public string Description { get; set; }
 
+        [DataMember(Name = "DockerVersion", EmitDefaultValue = false)]
+        public string DockerVersion { get; set; }
+
         [DataMember(Name = "Documentation", EmitDefaultValue = false)]
         public string Documentation { get; set; }
 
@@ -24,6 +27,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Interface", EmitDefaultValue = false)]
         public PluginConfigInterface Interface { get; set; }
 
+        [DataMember(Name = "IpcHost", EmitDefaultValue = false)]
+        public bool IpcHost { get; set; }
+
         [DataMember(Name = "Linux", EmitDefaultValue = false)]
         public PluginConfigLinux Linux { get; set; }
 
@@ -32,6 +38,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Network", EmitDefaultValue = false)]
         public PluginConfigNetwork Network { get; set; }
+
+        [DataMember(Name = "PidHost", EmitDefaultValue = false)]
+        public bool PidHost { get; set; }
 
         [DataMember(Name = "PropagatedMount", EmitDefaultValue = false)]
         public string PropagatedMount { get; set; }

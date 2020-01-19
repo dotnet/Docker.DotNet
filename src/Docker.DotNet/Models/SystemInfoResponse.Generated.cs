@@ -45,6 +45,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "KernelMemory", EmitDefaultValue = false)]
         public bool KernelMemory { get; set; }
 
+        [DataMember(Name = "KernelMemoryTCP", EmitDefaultValue = false)]
+        public bool KernelMemoryTCP { get; set; }
+
         [DataMember(Name = "CpuCfsPeriod", EmitDefaultValue = false)]
         public bool CPUCfsPeriod { get; set; }
 
@@ -56,6 +59,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "CPUSet", EmitDefaultValue = false)]
         public bool CPUSet { get; set; }
+
+        [DataMember(Name = "PidsLimit", EmitDefaultValue = false)]
+        public bool PidsLimit { get; set; }
 
         [DataMember(Name = "IPv4Forwarding", EmitDefaultValue = false)]
         public bool IPv4Forwarding { get; set; }
@@ -96,6 +102,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "OperatingSystem", EmitDefaultValue = false)]
         public string OperatingSystem { get; set; }
 
+        [DataMember(Name = "OSVersion", EmitDefaultValue = false)]
+        public string OSVersion { get; set; }
+
         [DataMember(Name = "OSType", EmitDefaultValue = false)]
         public string OSType { get; set; }
 
@@ -113,6 +122,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "MemTotal", EmitDefaultValue = false)]
         public long MemTotal { get; set; }
+
+        [DataMember(Name = "GenericResources", EmitDefaultValue = false)]
+        public IList<GenericResource> GenericResources { get; set; }
 
         [DataMember(Name = "DockerRootDir", EmitDefaultValue = false)]
         public string DockerRootDir { get; set; }
@@ -173,5 +185,11 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "SecurityOptions", EmitDefaultValue = false)]
         public IList<string> SecurityOptions { get; set; }
+
+        [DataMember(Name = "ProductLicense", EmitDefaultValue = false)]
+        public string ProductLicense { get; set; }
+
+        [DataMember(Name = "Warnings", EmitDefaultValue = false)]
+        public IList<string> Warnings { get; set; }
     }
 }

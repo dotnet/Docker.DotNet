@@ -11,5 +11,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Aliases", EmitDefaultValue = false)]
         public IList<string> Aliases { get; set; }
+
+        [DataMember(Name = "DriverOpts", EmitDefaultValue = false)]
+        public IDictionary<string, string> DriverOpts { get; set; }
     }
 }

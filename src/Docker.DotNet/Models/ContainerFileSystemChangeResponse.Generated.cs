@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerFileSystemChangeResponse // (types.ContainerChange)
+    public class ContainerFileSystemChangeResponse // (container.ContainerChangeResponseItem)
     {
         [DataMember(Name = "Kind", EmitDefaultValue = false)]
         public FileSystemChangeKind Kind { get; set; }

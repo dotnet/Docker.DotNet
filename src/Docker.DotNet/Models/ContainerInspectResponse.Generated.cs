@@ -29,6 +29,7 @@ namespace Docker.DotNet.Models
                 this.Name = ContainerJSONBase.Name;
                 this.RestartCount = ContainerJSONBase.RestartCount;
                 this.Driver = ContainerJSONBase.Driver;
+                this.Platform = ContainerJSONBase.Platform;
                 this.MountLabel = ContainerJSONBase.MountLabel;
                 this.ProcessLabel = ContainerJSONBase.ProcessLabel;
                 this.AppArmorProfile = ContainerJSONBase.AppArmorProfile;
@@ -81,6 +82,9 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public string Driver { get; set; }
+
+        [DataMember(Name = "Platform", EmitDefaultValue = false)]
+        public string Platform { get; set; }
 
         [DataMember(Name = "MountLabel", EmitDefaultValue = false)]
         public string MountLabel { get; set; }

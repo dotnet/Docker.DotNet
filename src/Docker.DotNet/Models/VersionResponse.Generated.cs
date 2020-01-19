@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -5,6 +6,9 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class VersionResponse // (types.Version)
     {
+        [DataMember(Name = "Components", EmitDefaultValue = false)]
+        public IList<ComponentVersion> Components { get; set; }
+
         [DataMember(Name = "Version", EmitDefaultValue = false)]
         public string Version { get; set; }
 

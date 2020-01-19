@@ -34,6 +34,15 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Attachable", EmitDefaultValue = false)]
         public bool Attachable { get; set; }
 
+        [DataMember(Name = "Ingress", EmitDefaultValue = false)]
+        public bool Ingress { get; set; }
+
+        [DataMember(Name = "ConfigFrom", EmitDefaultValue = false)]
+        public ConfigReference ConfigFrom { get; set; }
+
+        [DataMember(Name = "ConfigOnly", EmitDefaultValue = false)]
+        public bool ConfigOnly { get; set; }
+
         [DataMember(Name = "Containers", EmitDefaultValue = false)]
         public IDictionary<string, EndpointResource> Containers { get; set; }
 
@@ -45,5 +54,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Peers", EmitDefaultValue = false)]
         public IList<PeerInfo> Peers { get; set; }
+
+        [DataMember(Name = "Services", EmitDefaultValue = false)]
+        public IDictionary<string, ServiceInfo> Services { get; set; }
     }
 }

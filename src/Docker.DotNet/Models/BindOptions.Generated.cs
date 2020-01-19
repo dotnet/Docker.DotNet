@@ -7,5 +7,8 @@ namespace Docker.DotNet.Models
     {
         [DataMember(Name = "Propagation", EmitDefaultValue = false)]
         public string Propagation { get; set; }
+
+        [DataMember(Name = "NonRecursive", EmitDefaultValue = false)]
+        public bool NonRecursive { get; set; }
     }
 }

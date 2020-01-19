@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ContainerProcessesResponse // (types.ContainerProcessList)
+    public class ContainerProcessesResponse // (container.ContainerTopOKBody)
     {
         [DataMember(Name = "Processes", EmitDefaultValue = false)]
         public IList<IList<string>> Processes { get; set; }

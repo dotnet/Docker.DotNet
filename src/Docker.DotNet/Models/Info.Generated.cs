@@ -32,5 +32,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Cluster", EmitDefaultValue = false)]
         public ClusterInfo Cluster { get; set; }
+
+        [DataMember(Name = "Warnings", EmitDefaultValue = false)]
+        public IList<string> Warnings { get; set; }
     }
 }
