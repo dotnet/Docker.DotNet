@@ -424,7 +424,7 @@ namespace Docker.DotNet
 
             var request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, this._requestedApiVersion, path, queryString));
 
-            request.Version = new Version(1, 11);
+            request.Version = new Version(1, 1);
 
             request.Headers.Add("User-Agent", UserAgent);
 
