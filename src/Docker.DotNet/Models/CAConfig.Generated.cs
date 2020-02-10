@@ -11,5 +11,14 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "ExternalCAs", EmitDefaultValue = false)]
         public IList<ExternalCA> ExternalCAs { get; set; }
+
+        [DataMember(Name = "SigningCACert", EmitDefaultValue = false)]
+        public string SigningCACert { get; set; }
+
+        [DataMember(Name = "SigningCAKey", EmitDefaultValue = false)]
+        public string SigningCAKey { get; set; }
+
+        [DataMember(Name = "ForceRotate", EmitDefaultValue = false)]
+        public ulong ForceRotate { get; set; }
     }
 }

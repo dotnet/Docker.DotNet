@@ -41,5 +41,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "MacAddress", EmitDefaultValue = false)]
         public string MacAddress { get; set; }
+
+        [DataMember(Name = "DriverOpts", EmitDefaultValue = false)]
+        public IDictionary<string, string> DriverOpts { get; set; }
     }
 }

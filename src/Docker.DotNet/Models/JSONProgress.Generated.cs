@@ -13,5 +13,14 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "start", EmitDefaultValue = false)]
         public long Start { get; set; }
+
+        [DataMember(Name = "hidecounts", EmitDefaultValue = false)]
+        public bool HideCounts { get; set; }
+
+        [DataMember(Name = "units", EmitDefaultValue = false)]
+        public string Units { get; set; }
+
+        [DataMember(Name = "winSize", EmitDefaultValue = false)]
+        public long winSize { get; set; }
     }
 }

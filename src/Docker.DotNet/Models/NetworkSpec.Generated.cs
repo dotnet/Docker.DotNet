@@ -37,7 +37,16 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Attachable", EmitDefaultValue = false)]
         public bool Attachable { get; set; }
 
+        [DataMember(Name = "Ingress", EmitDefaultValue = false)]
+        public bool Ingress { get; set; }
+
         [DataMember(Name = "IPAMOptions", EmitDefaultValue = false)]
         public IPAMOptions IPAMOptions { get; set; }
+
+        [DataMember(Name = "ConfigFrom", EmitDefaultValue = false)]
+        public ConfigReference ConfigFrom { get; set; }
+
+        [DataMember(Name = "Scope", EmitDefaultValue = false)]
+        public string Scope { get; set; }
     }
 }

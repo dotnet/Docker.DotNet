@@ -6,6 +6,9 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class PluginConfigInterface // (types.PluginConfigInterface)
     {
+        [DataMember(Name = "ProtocolScheme", EmitDefaultValue = false)]
+        public string ProtocolScheme { get; set; }
+
         [DataMember(Name = "Socket", EmitDefaultValue = false)]
         public string Socket { get; set; }
 

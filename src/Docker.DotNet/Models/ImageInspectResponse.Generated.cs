@@ -43,6 +43,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Architecture", EmitDefaultValue = false)]
         public string Architecture { get; set; }
 
+        [DataMember(Name = "Variant", EmitDefaultValue = false)]
+        public string Variant { get; set; }
+
         [DataMember(Name = "Os", EmitDefaultValue = false)]
         public string Os { get; set; }
 
@@ -60,5 +63,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "RootFS", EmitDefaultValue = false)]
         public RootFS RootFS { get; set; }
+
+        [DataMember(Name = "Metadata", EmitDefaultValue = false)]
+        public ImageMetadata Metadata { get; set; }
     }
 }

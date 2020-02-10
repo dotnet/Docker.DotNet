@@ -16,5 +16,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Engine", EmitDefaultValue = false)]
         public EngineDescription Engine { get; set; }
+
+        [DataMember(Name = "TLSInfo", EmitDefaultValue = false)]
+        public TLSInfo TLSInfo { get; set; }
     }
 }

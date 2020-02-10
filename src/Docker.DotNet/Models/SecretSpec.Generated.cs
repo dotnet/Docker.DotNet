@@ -27,5 +27,11 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Data", EmitDefaultValue = false)]
         public IList<byte> Data { get; set; }
+
+        [DataMember(Name = "Driver", EmitDefaultValue = false)]
+        public SwarmDriver Driver { get; set; }
+
+        [DataMember(Name = "Templating", EmitDefaultValue = false)]
+        public SwarmDriver Templating { get; set; }
     }
 }

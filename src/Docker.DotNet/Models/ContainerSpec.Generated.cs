@@ -33,11 +33,23 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Groups", EmitDefaultValue = false)]
         public IList<string> Groups { get; set; }
 
+        [DataMember(Name = "Privileges", EmitDefaultValue = false)]
+        public Privileges Privileges { get; set; }
+
+        [DataMember(Name = "Init", EmitDefaultValue = false)]
+        public bool? Init { get; set; }
+
+        [DataMember(Name = "StopSignal", EmitDefaultValue = false)]
+        public string StopSignal { get; set; }
+
         [DataMember(Name = "TTY", EmitDefaultValue = false)]
         public bool TTY { get; set; }
 
         [DataMember(Name = "OpenStdin", EmitDefaultValue = false)]
         public bool OpenStdin { get; set; }
+
+        [DataMember(Name = "ReadOnly", EmitDefaultValue = false)]
+        public bool ReadOnly { get; set; }
 
         [DataMember(Name = "Mounts", EmitDefaultValue = false)]
         public IList<Mount> Mounts { get; set; }
@@ -56,5 +68,17 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Secrets", EmitDefaultValue = false)]
         public IList<SecretReference> Secrets { get; set; }
+
+        [DataMember(Name = "Configs", EmitDefaultValue = false)]
+        public IList<SwarmConfigReference> Configs { get; set; }
+
+        [DataMember(Name = "Isolation", EmitDefaultValue = false)]
+        public string Isolation { get; set; }
+
+        [DataMember(Name = "Sysctls", EmitDefaultValue = false)]
+        public IDictionary<string, string> Sysctls { get; set; }
+
+        [DataMember(Name = "Capabilities", EmitDefaultValue = false)]
+        public IList<string> Capabilities { get; set; }
     }
 }

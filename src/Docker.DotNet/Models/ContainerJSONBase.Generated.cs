@@ -49,6 +49,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public string Driver { get; set; }
 
+        [DataMember(Name = "Platform", EmitDefaultValue = false)]
+        public string Platform { get; set; }
+
         [DataMember(Name = "MountLabel", EmitDefaultValue = false)]
         public string MountLabel { get; set; }
 

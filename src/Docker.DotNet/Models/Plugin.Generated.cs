@@ -17,6 +17,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Name", EmitDefaultValue = false)]
         public string Name { get; set; }
 
+        [DataMember(Name = "PluginReference", EmitDefaultValue = false)]
+        public string PluginReference { get; set; }
+
         [DataMember(Name = "Settings", EmitDefaultValue = false)]
         public PluginSettings Settings { get; set; }
     }

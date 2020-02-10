@@ -12,10 +12,16 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "AdvertiseAddr", EmitDefaultValue = false)]
         public string AdvertiseAddr { get; set; }
 
+        [DataMember(Name = "DataPathAddr", EmitDefaultValue = false)]
+        public string DataPathAddr { get; set; }
+
         [DataMember(Name = "RemoteAddrs", EmitDefaultValue = false)]
         public IList<string> RemoteAddrs { get; set; }
 
         [DataMember(Name = "JoinToken", EmitDefaultValue = false)]
         public string JoinToken { get; set; }
+
+        [DataMember(Name = "Availability", EmitDefaultValue = false)]
+        public string Availability { get; set; }
     }
 }

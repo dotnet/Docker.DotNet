@@ -9,6 +9,12 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ContainerSpec", EmitDefaultValue = false)]
         public ContainerSpec ContainerSpec { get; set; }
 
+        [DataMember(Name = "PluginSpec", EmitDefaultValue = false)]
+        public PluginSpec PluginSpec { get; set; }
+
+        [DataMember(Name = "NetworkAttachmentSpec", EmitDefaultValue = false)]
+        public NetworkAttachmentSpec NetworkAttachmentSpec { get; set; }
+
         [DataMember(Name = "Resources", EmitDefaultValue = false)]
         public ResourceRequirements Resources { get; set; }
 
@@ -26,5 +32,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "ForceUpdate", EmitDefaultValue = false)]
         public ulong ForceUpdate { get; set; }
+
+        [DataMember(Name = "Runtime", EmitDefaultValue = false)]
+        public string Runtime { get; set; }
     }
 }

@@ -19,6 +19,9 @@ namespace Docker.DotNet.Models
         [JsonConverter(typeof(TimeSpanSecondsConverter))]
         public TimeSpan Timeout { get; set; }
 
+        [DataMember(Name = "StartPeriod", EmitDefaultValue = false)]
+        public long StartPeriod { get; set; }
+
         [DataMember(Name = "Retries", EmitDefaultValue = false)]
         public long Retries { get; set; }
     }

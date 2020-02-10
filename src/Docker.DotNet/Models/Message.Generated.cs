@@ -23,6 +23,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Actor", EmitDefaultValue = false)]
         public Actor Actor { get; set; }
 
+        [DataMember(Name = "scope", EmitDefaultValue = false)]
+        public string Scope { get; set; }
+
         [DataMember(Name = "time", EmitDefaultValue = false)]
         public long Time { get; set; }
 

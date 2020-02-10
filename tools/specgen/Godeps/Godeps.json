@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/Microsoft/Docker.DotNet/tools/specgen",
-	"GoVersion": "go1.7",
-	"GodepVersion": "v79",
+	"GoVersion": "go1.13",
+	"GodepVersion": "v80",
 	"Deps": [
 		{
 			"ImportPath": "github.com/Azure/go-ansiterm",

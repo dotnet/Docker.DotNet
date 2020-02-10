@@ -6,6 +6,9 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class VolumeResponse // (main.VolumeResponse)
     {
+        [DataMember(Name = "CreatedAt", EmitDefaultValue = false)]
+        public string CreatedAt { get; set; }
+
         [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public string Driver { get; set; }
 

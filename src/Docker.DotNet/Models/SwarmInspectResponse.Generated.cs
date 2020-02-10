@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -19,6 +20,11 @@ namespace Docker.DotNet.Models
                 this.CreatedAt = ClusterInfo.CreatedAt;
                 this.UpdatedAt = ClusterInfo.UpdatedAt;
                 this.Spec = ClusterInfo.Spec;
+                this.TLSInfo = ClusterInfo.TLSInfo;
+                this.RootRotationInProgress = ClusterInfo.RootRotationInProgress;
+                this.DefaultAddrPool = ClusterInfo.DefaultAddrPool;
+                this.SubnetSize = ClusterInfo.SubnetSize;
+                this.DataPathPort = ClusterInfo.DataPathPort;
             }
         }
 
@@ -36,6 +42,21 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Spec", EmitDefaultValue = false)]
         public Spec Spec { get; set; }
+
+        [DataMember(Name = "TLSInfo", EmitDefaultValue = false)]
+        public TLSInfo TLSInfo { get; set; }
+
+        [DataMember(Name = "RootRotationInProgress", EmitDefaultValue = false)]
+        public bool RootRotationInProgress { get; set; }
+
+        [DataMember(Name = "DefaultAddrPool", EmitDefaultValue = false)]
+        public IList<string> DefaultAddrPool { get; set; }
+
+        [DataMember(Name = "SubnetSize", EmitDefaultValue = false)]
+        public uint SubnetSize { get; set; }
+
+        [DataMember(Name = "DataPathPort", EmitDefaultValue = false)]
+        public uint DataPathPort { get; set; }
 
         [DataMember(Name = "JoinTokens", EmitDefaultValue = false)]
         public JoinTokens JoinTokens { get; set; }
