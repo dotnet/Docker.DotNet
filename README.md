@@ -4,20 +4,6 @@ This library allows you to interact with [Docker Remote API][docker-remote-api] 
 
 It is fully asynchronous, designed to be non-blocking and object-oriented way to interact with your Docker daemon programmatically.
 
-## Contributing
-
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
 ## Versioning
 
 Version of this package uses [SemVer](https://semver.org/) format: `MAJOR.MINOR.PATCH`. `MINOR` segment indicates
@@ -243,19 +229,36 @@ Here are typical exceptions thrown from the client library:
 * **`ArgumentNullException`** is thrown when one of the required parameters are missing/empty.
     * Consider reading the [Docker Remote API reference][docker-remote-api] and source code of the corresponding method you are going to use in from this library. This way you can easily find out which parameters are required and their format.
 
-## Reporting Security Issues
+## .NET Foundation
 
-Security issues and bugs should be reported privately, via email, to the Microsoft Security
-Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should
-receive a response within 24 hours. If for some reason you do not, please follow up via
-email to ensure we received your original message. Further information, including the
-[MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in
-the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
+Docker.DotNet is a [.NET Foundation](https://www.dotnetfoundation.org/projects) project.
 
-For additional details, see [Report a Computer Security Vulnerability](https://technet.microsoft.com/en-us/security/ff852094.aspx) on Technet
+There are many .NET related projects on GitHub.
+
+- [.NET home repo](https://github.com/Microsoft/dotnet) - links to 100s of .NET projects, from Microsoft and the community.
+- [ASP.NET Core home](https://docs.microsoft.com/aspnet/core/?view=aspnetcore-3.1) - the best place to start learning about ASP.NET Core.
+
+This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community. For more information, see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
+
+General .NET OSS discussions: [.NET Foundation forums](https://forums.dotnetfoundation.org)
+
+## Contributing
+
+This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
+the rights to use your contribution. For details, visit https://cla.dotnetfoundation.org.
+
+When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
+a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
+provided by the bot. You will only need to do this once across all repos using our CLA.
+
+
+## License
+
+Docker.DotNet is licensed under the [MIT](LICENSE) license.
 
 ---------------
-Copyright (c) 2018 Microsoft Corp.  All rights reserved.
+Copyright (c) .NET Foundation and Contributors
 
 [docker-remote-api]: https://docs.docker.com/engine/reference/api/docker_remote_api/
 [docker-tls]: https://docs.docker.com/articles/https/

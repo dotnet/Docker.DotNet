@@ -7,7 +7,7 @@
     <AssemblyName>Docker.DotNet</AssemblyName>
     <PackageIconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/Microsoft/Docker.DotNet/blob/master/LICENSE</PackageLicenseUrl>
-    <Copyright>Copyright Microsoft 2015</Copyright>
+    <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
     <PackageTags>Docker Container C# .NET</PackageTags>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/Microsoft/Docker.DotNet</RepositoryUrl>
