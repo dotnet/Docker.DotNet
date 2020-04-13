@@ -8,7 +8,7 @@ using Microsoft.Net.Http.Client;
 
 namespace Docker.DotNet
 {
-    internal class DockerPipeStream : WriteClosableStream
+    internal class DockerPipeStream : WriteClosableStream, IPeekableStream
     {
         private readonly PipeStream _stream;
         private readonly EventWaitHandle _event = new EventWaitHandle(false, EventResetMode.AutoReset);
@@ -43,6 +43,9 @@ namespace Docker.DotNet
 
         [DllImport("api-ms-win-core-io-l1-1-0.dll", SetLastError = true)]
         private static extern int GetOverlappedResult(SafeHandle handle, ref NativeOverlapped overlapped, out int numBytesWritten, int wait);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool PeekNamedPipe(SafeHandle handle, byte[] buffer, uint nBufferSize, ref uint bytesRead, ref uint bytesAvail, ref uint BytesLeftThisMessage);
 
         public override void CloseWrite()
         {
@@ -90,6 +93,27 @@ namespace Docker.DotNet
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             return _stream.ReadAsync(buffer, offset, count, cancellationToken);
+        }
+
+        public bool Peek(byte[] buffer, uint toPeek, out uint peeked, out uint available, out uint remaining)
+        {
+            peeked = 0;
+            available = 0;
+            remaining = 0;
+
+            bool aPeekedSuccess = PeekNamedPipe(
+                _stream.SafePipeHandle,
+                buffer, toPeek,
+                ref peeked, ref available, ref remaining);
+
+            var error = Marshal.GetLastWin32Error();
+
+            if (error == 0 && aPeekedSuccess)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public override long Seek(long offset, SeekOrigin origin)

@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet;
 
 #if !NET45
 using System.Buffers;
@@ -11,7 +12,7 @@ using System.Buffers;
 
 namespace Microsoft.Net.Http.Client
 {
-    internal class BufferedReadStream : WriteClosableStream
+    internal class BufferedReadStream : WriteClosableStream, IPeekableStream
     {
         private const char CR = '\r';
         private const char LF = '\n';
@@ -145,6 +146,22 @@ namespace Microsoft.Net.Http.Client
             return _inner.ReadAsync(buffer, offset, count, cancellationToken);
         }
 
+        public bool Peek(byte[] buffer, uint toPeek, out uint peeked, out uint available, out uint remaining)
+        {
+            int read = PeekBuffer(buffer, toPeek, out peeked, out available, out remaining);
+            if (read > 0)
+            {
+                return true;
+            }
+
+            if (_inner is IPeekableStream peekableStream)
+            {
+                return peekableStream.Peek(buffer, toPeek, out peeked, out available, out remaining);
+            }
+
+            throw new NotSupportedException("_inner stream isn't a peekable stream");
+        }
+
         private int ReadBuffer(byte[] buffer, int offset, int count)
         {
             if (_bufferCount > 0)
@@ -156,6 +173,24 @@ namespace Microsoft.Net.Http.Client
                 return toCopy;
             }
 
+            return 0;
+        }
+
+        private int PeekBuffer(byte[] buffer, uint toPeek, out uint peeked, out uint available, out uint remaining)
+        {
+            if (_bufferCount > 0)
+            {
+                int toCopy = Math.Min(_bufferCount, (int)toPeek);
+                Buffer.BlockCopy(_buffer, _bufferOffset, buffer, 0, toCopy);
+                peeked = (uint) toCopy;
+                available = (uint)_bufferCount;
+                remaining = available - peeked;
+                return toCopy;
+            }
+
+            peeked = 0;
+            available = 0;
+            remaining = 0;
             return 0;
         }
 
