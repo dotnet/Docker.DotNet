@@ -16,6 +16,8 @@ or non-breaking feature additions.
 
 ## Installation
 
+[![NuGet latest release](https://img.shields.io/nuget/v/Docker.DotNet.svg)](https://www.nuget.org/packages/Docker.DotNet)
+
 You can add this library to your project using [NuGet][nuget].
 
 **Package Manager Console**
