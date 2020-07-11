@@ -1,20 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <IsPackable>true</IsPackable>
+  <PropertyGroup>    
     <PackageId>Docker.DotNet.BasicAuth</PackageId>
     <Description>Docker.DotNet.BasicAuth is a library that allows you to use basic authentication with a remote Docker engine programmatically in your .NET applications.</Description>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>Docker.DotNet.BasicAuth</AssemblyName>
-    <PackageIconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</PackageIconUrl>
-    <PackageLicenseUrl>https://github.com/dotnet/Docker.DotNet/blob/master/LICENSE</PackageLicenseUrl>
-    <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
-    <PackageTags>Docker Container C# .NET</PackageTags>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/Microsoft/Docker.DotNet/tree/master/Docker.DotNet.BasicAuth</RepositoryUrl>
-    <VersionPrefix>3.125.4</VersionPrefix>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(VersionSuffix)' != ''">
-    <Version>$(VersionPrefix).$(VersionSuffix)</Version>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Docker.DotNet\Docker.DotNet.csproj" />
