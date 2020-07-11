@@ -1,0 +1,44 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.301
+      - name: Install SignClient tool
+        run: dotnet tool install --tool-path . SignClient
+      - name: Install NBGV tool
+        run: dotnet tool install --tool-path . nbgv
+      - name: Set Version
+        run: ./nbgv cloud
+      - name: Create Packages 
+        run: dotnet pack -c Release -o packages
+      - name: Sign Packages
+        run: |
+          echo $DNF_CODESIGN_CONFIG > ./packages/sign.json
+          ./SignClient sign --config "./packages/sign.json" --input "./packages/**/*.nupkg" --name "Docker.DotNet" --user "$DNF_CODESIGN_USER" --secret "$DNF_CODESIGN_SECRET" --Description "Docker.Net" --descriptionUrl "https://github.com/dotnet/Docker.DotNet"
+          rm packages/sign.json
+        env:
+          DNF_CODESIGN_CONFIG: ${{secrets.DNF_CODESIGN_CONFIG}}
+          DNF_CODESIGN_USER: ${{secrets.DNF_CODESIGN_USER}}
+          DNF_CODESIGN_SECRET: ${{secrets.DNF_CODESIGN_SECRET}}
+      - name: Push packages to NuGet.org
+        run: |
+          dotnet nuget push ./packages/Docker.DotNet.*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
+      - name: Create Release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
