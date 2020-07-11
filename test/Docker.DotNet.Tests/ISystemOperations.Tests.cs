@@ -63,7 +63,13 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task MonitorEventsAsync_Succeeds()
         {
-            const string repository = "microsoft/nanoserver";
+            const string repository = "alpine";
+            await _client.Images.CreateImageAsync(
+                new ImagesCreateParameters
+                {
+                    Repo = repository,
+                    Tag = "latest"
+                }, null, null);
             const string tag = "MonitorTests";
 
             var wasProgressCalled = false;
@@ -90,7 +96,7 @@ namespace Docker.DotNet.Tests
             await _client.Images.DeleteImageAsync($"{repository}:{tag}", new ImageDeleteParameters());
         }
 
-        
+
 
         class Progress : IProgress<Message>
         {
