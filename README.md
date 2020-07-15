@@ -54,9 +54,10 @@ or to connect to your local [Docker for Windows](https://docs.docker.com/docker-
 
 ```csharp
 using Docker.DotNet;
-DockerClient client = new DockerClientConfiguration()
+DockerClient client = new DockerClientConfiguration(new Uri("tcp://localhost:2375"))
      .CreateClient();
 ```
+Where tcp://localhost:2375 is docker desktop url which is running locally on my windows PC. To get this url, navigate to running docker settings and Expose daemon on tcp://localhost:2375 without TLS option. 
 
 For a custom endpoint, you can also pass a named pipe or a Unix socket to the `DockerClientConfiguration` constructor. For example:
 
