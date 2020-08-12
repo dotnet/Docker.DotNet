@@ -187,3 +187,4 @@ packages/
 .store
 SignClient
 nbgv
+.vscode
