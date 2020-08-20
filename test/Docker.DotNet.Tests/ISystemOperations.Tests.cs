@@ -21,7 +21,7 @@ namespace Docker.DotNet.Tests
         public void DockerService_IsRunning()
         {
             var services = ServiceController.GetServices();
-            using (var dockerService = services.SingleOrDefault(service => service.ServiceName == "docker"))
+            using (var dockerService = services.SingleOrDefault(service => service.ServiceName == "docker" || service.ServiceName == "com.docker.service"))
             {
                 Assert.NotNull(dockerService); // docker is not running
                 Assert.Equal(ServiceControllerStatus.Running, dockerService.Status);

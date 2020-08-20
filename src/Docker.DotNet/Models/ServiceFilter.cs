@@ -10,29 +10,28 @@ namespace Docker.DotNet.Models
         public ServiceFilter Filters { get; set; }
     }
 
-    public class ServiceFilter : Dictionary<string, string>
+    public class ServiceFilter : Dictionary<string, string[]>
     {
-        public string Id
+        public string[] Id
         {
             get => this["id"];
             set => this["id"] = value;
         }
-        public string Label
+        public string[] Label
         {
             get => this["label"];
             set => this["label"] = value;
         }
-        public ServiceCreationMode Mode
+        public ServiceCreationMode[] Mode
         {
-            get => !Enum.TryParse(this["mode"], out ServiceCreationMode mode) ? ServiceCreationMode.Replicated : mode;
-            set => this["mode"] = value.ToString();
+            get => this["mode"]?.ToList().Select(m => (ServiceCreationMode)Enum.Parse(typeof(ServiceCreationMode), m)).ToArray();
+            set => this["mode"] = value?.Select(m => m.ToString()).ToArray();
         }
-        public string Name
+        public string[] Name
         {
             get => this["name"];
             set => this["name"] = value;
         }
-
     }
 
     public enum ServiceCreationMode
