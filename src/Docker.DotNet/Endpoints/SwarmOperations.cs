@@ -221,5 +221,52 @@ namespace Docker.DotNet
             var body = new JsonRequestContent<NodeUpdateParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)), this._client.JsonSerializer);
             await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"nodes/{id}/update", query, body, cancellationToken);
         }
+
+        async Task<IEnumerable<SwarmConfig>> ISwarmOperations.ListConfigsAsync(ConfigsListParameters parameters, CancellationToken cancellationToken)
+        {
+            var queryParameters = parameters != null ? new QueryString<ConfigsListParameters>(parameters) : null;
+            var response = await this._client
+                .MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"configs", queryParameters, cancellationToken)
+                .ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<SwarmConfig[]>(response.Body);
+        }
+
+        async Task<ConfigCreateResponse> ISwarmOperations.CreateConfigAsync(SwarmCreateConfigParameters parameters, CancellationToken cancellationToken)
+        {
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
+            var data = new JsonRequestContent<ConfigSpec>(parameters.Config ?? throw new ArgumentNullException(nameof(parameters.Config)), this._client.JsonSerializer);
+            //var data = new JsonRequestContent<SwarmCreateConfigParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)), this._client.JsonSerializer);
+            var response = await this._client
+                .MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "configs/create", null, data, cancellationToken)
+                .ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<ConfigCreateResponse>(response.Body);
+        }
+
+        async Task<SwarmConfig> ISwarmOperations.InspectConfigAsync(string id, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+
+            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"configs/{id}", cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<SwarmConfig>(response.Body);
+        }
+
+        async Task ISwarmOperations.UpdateConfigAsync(string id, ConfigUpdateParameters parameters, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
+            var query = new QueryString<ConfigUpdateParameters>(parameters);
+            var body = new JsonRequestContent<ConfigSpec>(parameters.Config ?? throw new ArgumentNullException(nameof(parameters.Config)), this._client.JsonSerializer);
+            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"configs/{id}/update", query, body, cancellationToken).ConfigureAwait(false);
+            //this._client.JsonSerializer.DeserializeObject<ConfigUpdateResponse>(response.Body);
+        }
+
+        async Task ISwarmOperations.RemoveConfigAsync(string id, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
+
+            await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Delete, $"configs/{id}", cancellationToken).ConfigureAwait(false);
+        }
     }
 }

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Docker.DotNet
 {
@@ -205,6 +205,78 @@ namespace Docker.DotNet
         /// <param name="parameters">Parameters to update.</param>
         Task UpdateNodeAsync(string id, ulong version, NodeUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
+        #endregion
+
+        #region Configs
+
+        /// <summary>
+        /// List configs
+        /// </summary>
+        /// <remarks>
+        /// 200 - No error.
+        /// 500 - Server error
+        /// 503 - Node is not part of a swarm
+        /// </remarks>
+        /// <returns></returns>
+        Task<IEnumerable<SwarmConfig>> ListConfigsAsync(ConfigsListParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Create a config 
+        /// </summary>
+        /// <remarks>
+        /// 201 no error
+        /// 409 name conflicts with an existing object
+        /// 500 server error
+        /// 503 node is not part of a swarm
+        /// </remarks>
+        /// <param name="parameters"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<ConfigCreateResponse> CreateConfigAsync(SwarmCreateConfigParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Inspect a config 
+        /// </summary>
+        /// <remarks>
+        /// 200 no error
+        /// 404 config not found
+        /// 500 server error
+        /// 503 node is not part of a swarm
+        /// </remarks>
+        /// <param name="id">ID of the config</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<SwarmConfig> InspectConfigAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Update a Config
+        /// </summary>
+        /// <remarks>
+        /// 200 no error
+        /// 400 bad parameter
+        /// 404 no such config
+        /// 500 server error
+        /// 503 node is not part of a swarm
+        /// </remarks>
+        /// <param name="id">The ID or name of the config</param>
+        /// <param name="parameters"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task UpdateConfigAsync(string id, ConfigUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Delete a config
+        /// </summary>
+        /// <remarks>
+        /// 204 no error
+        /// 404 config not found
+        /// 500 server error
+        /// 503 node is not part of a swarm
+        /// </remarks>
+        /// <param name="id">ID of the config</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task RemoveConfigAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
         #endregion
     }
 }
