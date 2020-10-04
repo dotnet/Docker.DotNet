@@ -333,7 +333,9 @@ namespace Microsoft.Net.Http.Client
                 try
                 {
 #if (NETSTANDARD1_3 || NETSTANDARD1_6 || NETSTANDARD2_0)
-                    await s.ConnectAsync(address, port).ConfigureAwait(false);
+                    // TODO: This method can be replaced by native ConnectAsync when this functionality is available:
+                    // https://github.com/dotnet/runtime/pull/40750
+                    await s.ConnectAsync(address, port, cancellationToken).ConfigureAwait(false);
 #else
                     await Task.Factory.FromAsync(
                         s.BeginConnect,
