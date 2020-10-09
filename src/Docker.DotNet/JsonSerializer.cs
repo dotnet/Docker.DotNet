@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Docker.DotNet
@@ -17,7 +17,8 @@ namespace Docker.DotNet
                 new JsonVersionConverter(),
                 new StringEnumConverter(),
                 new TimeSpanSecondsConverter(),
-                new TimeSpanNanosecondsConverter()
+                new TimeSpanNanosecondsConverter(),
+                new JsonBase64Converter()
             }
         };
 
