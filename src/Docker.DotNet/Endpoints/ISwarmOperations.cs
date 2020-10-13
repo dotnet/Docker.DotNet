@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using System.Threading;
+using System.IO;
 
 namespace Docker.DotNet
 {
@@ -153,6 +154,26 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of service.</param>
         Task RemoveServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get service logs.
+        ///
+        /// Get {stdout} and {stderr} logs from a container.
+        /// Note: This endpoint works only for services with the {json-file} or {journald} logging driver.
+        /// </summary>
+        /// <remarks>
+        /// docker service logs
+        ///
+        /// HTTP GET /services/(id)/logs
+        ///
+        /// 101 - Logs returned as a stream.
+        /// 200 - Logs returned as a string in response body.
+        /// 404 - No such service.
+        /// 500 - Server error.
+        /// 503 - Node is not part of a swarm.
+        /// </remarks>
+        /// <param name="id">ID or name of the service.</param>
+        Task<Stream> GetServiceLogsAsync(string id, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion Services
 

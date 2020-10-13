@@ -102,9 +102,6 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "OperatingSystem", EmitDefaultValue = false)]
         public string OperatingSystem { get; set; }
 
-        [DataMember(Name = "OSVersion", EmitDefaultValue = false)]
-        public string OSVersion { get; set; }
-
         [DataMember(Name = "OSType", EmitDefaultValue = false)]
         public string OSType { get; set; }
 

@@ -228,8 +228,8 @@ type ImagesSearchParameters struct {
 
 // ImageDeleteParameters for DELETE /images/(id)
 type ImageDeleteParameters struct {
-	Force         bool `rest:"query"`
-	NoPrune       bool `rest:"query,noprune"`
+	Force   bool `rest:"query"`
+	NoPrune bool `rest:"query,noprune"`
 }
 
 // ImageInspectParameters for GET /images/(id)/json
@@ -373,6 +373,17 @@ type ServiceUpdateParameters struct {
 	RegistryAuth     types.AuthConfig  `rest:"headers,X-Registry-Auth"`
 }
 
+// ServiceLogsParameters for POST /services/(id)/logs
+type ServiceLogsParameters struct {
+	ShowStdout bool   `rest:"query,stdout"`
+	ShowStderr bool   `rest:"query,stderr"`
+	Since      string `rest:"query"`
+	Timestamps bool   `rest:"query"`
+	Follow     bool   `rest:"query"`
+	Tail       string `rest:"query"`
+	Details    bool   `rest:"query"`
+}
+
 // SecretCreateResponse for POST /secrets/create
 type SecretCreateResponse struct {
 	ID string
@@ -380,5 +391,5 @@ type SecretCreateResponse struct {
 
 // TasksListParameters for GET /tasks
 type TasksListParameters struct {
-	Filters Args   `rest:"query"`
+	Filters Args `rest:"query"`
 }
