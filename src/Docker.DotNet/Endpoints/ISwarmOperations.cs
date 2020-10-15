@@ -158,7 +158,7 @@ namespace Docker.DotNet
         /// <summary>
         /// Get service logs.
         ///
-        /// Get {stdout} and {stderr} logs from a container.
+        /// Get {stdout} and {stderr} logs from all service tasks.
         /// Note: This endpoint works only for services with the {json-file} or {journald} logging driver.
         /// </summary>
         /// <remarks>
@@ -174,6 +174,17 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of the service.</param>
         Task<Stream> GetServiceLogsAsync(string id, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets the <code>stdout</code> and <code>stderr</code> logs from all service tasks.
+        /// This endpoint works only for services with the <code>json-file</code> or <code>journald</code> logging driver.
+        /// </summary>
+        /// <param name="id">ID or name of the service.</param>
+        /// <param name="tty">If the service was created with a TTY or not. If <see langword="false" />, the returned stream is multiplexed.</param>
+        /// <param name="parameters">The parameters used to retrieve the logs.</param>
+        /// <param name="cancellationToken">A token used to cancel this operation.</param>
+        /// <returns>A stream with the retrieved logs. If the service wasn't created with a TTY, this stream is multiplexed.</returns>
+        Task<MultiplexedStream> GetServiceLogsAsync(string id, bool tty, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion Services
 
