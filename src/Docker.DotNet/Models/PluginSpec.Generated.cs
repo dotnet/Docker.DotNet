@@ -17,8 +17,5 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "disabled", EmitDefaultValue = false)]
         public bool Disabled { get; set; }
-
-        [DataMember(Name = "env", EmitDefaultValue = false)]
-        public IList<string> Env { get; set; }
     }
 }

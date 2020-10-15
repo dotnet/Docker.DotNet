@@ -6,14 +6,13 @@ A tool that reflects the Docker client [engine-api](https://github.com/docker/en
 
 ##How to use:
 
-This tool relies on [GoDep](https://github.com/tools/godep), a tool used to manage which git hash's were used at which time to generate the corresponding models.
-
 To update the source repositories please use the following from your `$GOPATH`:
 
 ```
-> go get -u foo/bar
-> godep update foo/bar
+> go get -u github.com/docker/docker@<release-tag>
 ```
+
+Note: Since the docker library is not a go module the version go generates will look something like this  v17.12.0-ce-rc1.0.20200916142827-bd33bbf0497b+incompatible even though this is for v19.03.13. The commit hash bd33bbf0497b matches the commit hash of docker v 19.03.13
 
 Once you have the latest engine-api. Calling:
 

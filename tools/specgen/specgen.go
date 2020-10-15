@@ -70,10 +70,10 @@ var typesToDisambiguate = map[string]*CSModelType{
 			},
 		},
 	},
-	typeToKey(reflect.TypeOf(network.Task{})): {Name: "NetworkTask"},
+	typeToKey(reflect.TypeOf(network.Task{})):                {Name: "NetworkTask"},
 	typeToKey(reflect.TypeOf(registry.AuthenticateOKBody{})): {Name: "AuthResponse"},
 	typeToKey(reflect.TypeOf(registry.SearchResult{})):       {Name: "ImageSearchResponse"},
-	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})): {Name: "RuntimePluginPrivilege"},
+	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})):     {Name: "RuntimePluginPrivilege"},
 	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
 	typeToKey(reflect.TypeOf(swarm.InitRequest{})):           {Name: "SwarmInitParameters"},
 	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
@@ -95,15 +95,15 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{Name: "State", Type: CSType{"", "TaskState", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})): {Name: "SwarmUpdateConfig"},
-	typeToKey(reflect.TypeOf(swarm.ConfigReference{})): {Name: "SwarmConfigReference"},	
+	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})):    {Name: "SwarmUpdateConfig"},
+	typeToKey(reflect.TypeOf(swarm.ConfigReference{})): {Name: "SwarmConfigReference"},
 	typeToKey(reflect.TypeOf(types.Container{})): {
 		Name: "ContainerListResponse",
 		Properties: []CSProperty{
 			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem {})): {
+	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem{})): {
 		Name: "ContainerFileSystemChangeResponse",
 		Properties: []CSProperty{
 			CSProperty{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
@@ -116,10 +116,10 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):     {Name: "ContainerPathStatResponse"},
+	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):       {Name: "ContainerPathStatResponse"},
 	typeToKey(reflect.TypeOf(container.ContainerTopOKBody{})):  {Name: "ContainerProcessesResponse"},
-	typeToKey(reflect.TypeOf(types.ContainersPruneReport{})): {Name: "ContainersPruneResponse"},
-	typeToKey(reflect.TypeOf(types.ImageDeleteResponseItem{})):           {Name: "ImageDeleteResponse"},
+	typeToKey(reflect.TypeOf(types.ContainersPruneReport{})):   {Name: "ContainersPruneResponse"},
+	typeToKey(reflect.TypeOf(types.ImageDeleteResponseItem{})): {Name: "ImageDeleteResponse"},
 	typeToKey(reflect.TypeOf(image.HistoryResponseItem{})): {
 		Name: "ImageHistoryResponse",
 		Properties: []CSProperty{
@@ -198,7 +198,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// POST /containers/(id)/attach/ws
 
 	// GET /containers/(id)/changes
-	reflect.TypeOf(container.ContainerChangeResponseItem {}),
+	reflect.TypeOf(container.ContainerChangeResponseItem{}),
 
 	// OBSOLETE - POST /containers/(id)/copy
 
@@ -243,7 +243,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /containers/(id)/top
 	reflect.TypeOf(ContainerListProcessesParameters{}),
-	reflect.TypeOf(container.ContainerTopOKBody {}),
+	reflect.TypeOf(container.ContainerTopOKBody{}),
 
 	// POST /containers/(id)/unpause
 
@@ -437,6 +437,9 @@ var dockerTypesToReflect = []reflect.Type{
 	reflect.TypeOf(types.ServiceUpdateResponse{}),
 
 	// DELETE /services/(id)
+
+	// GET /services/(id)/logs
+	reflect.TypeOf(ServiceLogsParameters{}),
 
 	// GET /tasks
 	reflect.TypeOf(TasksListParameters{}),
