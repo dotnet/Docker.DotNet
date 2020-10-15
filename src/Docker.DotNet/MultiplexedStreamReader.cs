@@ -14,7 +14,7 @@ namespace Docker.DotNet
             _stream = stream;
         }
 
-        public async Task<string> ReadLineAsync(CancellationToken token)
+        public async Task<string> ReadLineAsync(CancellationToken token = default)
         {
             var line = new List<byte>();
 
