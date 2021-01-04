@@ -177,18 +177,20 @@ namespace Docker.DotNet.Tests
             {
                 _onMessageCalled = (m) =>
                 {
+                    Console.WriteLine($"Received: {m.Action} - {m.Status} {m.From} - {m.Type}");
+                    Assert.True(m.Status == "tag" || m.Status == "untag");
                     progressCalledCounter++;
                 }
             };
 
             using var cts = new CancellationTokenSource();
+            var task = Task.Run(() => _client.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
 
             await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
 
-            var task = Task.Run(() => _client.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
-
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
             await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+
             var newContainerId = _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository }).Result.ID;
             await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
 
