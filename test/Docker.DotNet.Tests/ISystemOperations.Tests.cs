@@ -109,6 +109,7 @@ namespace Docker.DotNet.Tests
                 _onMessageCalled = (m) =>
                 {
                     Assert.NotNull(m);
+                    Assert.True(m.Status == "tag" | m.Status == "pull");
                     Assert.Equal("tag", m.Status);
 
                     wasProgressCalled = true;
