@@ -24,7 +24,7 @@ namespace Docker.DotNet
         /// 200 - Summary image data for the images matching the query.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<ImagesListResponse>> ListImagesAsync(ImagesListParameters parameters, CancellationToken cancellationToken = default);
+        Task<IList<ImagesListResponse>> ListImagesAsync(ImagesListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Build an image.
@@ -50,7 +50,7 @@ namespace Docker.DotNet
         /// 204 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default);
+        Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create an image.
@@ -65,7 +65,7 @@ namespace Docker.DotNet
         /// 404 - Repository does not exist or no read access.
         /// 500 - Server error.
         /// </remarks>
-        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default);
+        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create an image.
@@ -80,25 +80,7 @@ namespace Docker.DotNet
         /// 404 - Repository does not exist or no read access.
         /// 500 - Server error.
         /// </remarks>
-        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Create an image.
-        ///
-        /// Create an image by either pulling it from a registry or importing it.
-        /// </summary>
-        /// <remarks>
-        /// docker pull
-        /// docker image pull
-        /// docker import
-        ///
-        /// HTTP POST /images/create
-        ///
-        /// 200 - No error.
-        /// 404 - Repository does not exist or no read access.
-        /// 500 - Server error.
-        /// </remarks>
-        Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default);
+        Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create an image.
@@ -116,7 +98,25 @@ namespace Docker.DotNet
         /// 404 - Repository does not exist or no read access.
         /// 500 - Server error.
         /// </remarks>
-        Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default);
+        Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Create an image.
+        ///
+        /// Create an image by either pulling it from a registry or importing it.
+        /// </summary>
+        /// <remarks>
+        /// docker pull
+        /// docker image pull
+        /// docker import
+        ///
+        /// HTTP POST /images/create
+        ///
+        /// 200 - No error.
+        /// 404 - Repository does not exist or no read access.
+        /// 500 - Server error.
+        /// </remarks>
+        Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inspect an image.
@@ -134,7 +134,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">Image name or id.</param>
-        Task<ImageInspectResponse> InspectImageAsync(string name, CancellationToken cancellationToken = default);
+        Task<ImageInspectResponse> InspectImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the history of an image.
@@ -152,7 +152,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">Image name or id.</param>
-        Task<IList<ImageHistoryResponse>> GetImageHistoryAsync(string name, CancellationToken cancellationToken = default);
+        Task<IList<ImageHistoryResponse>> GetImageHistoryAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Push an image.
@@ -175,7 +175,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">Image name or id.</param>
-        Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default);
+        Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Tag an image.
@@ -195,7 +195,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">Image name or id.</param>
-        Task<DockerApiResponse> TagImageAsync(string name, ImageTagParameters parameters, CancellationToken cancellationToken = default);
+        Task<DockerApiResponse> TagImageAsync(string name, ImageTagParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Remove an image.
@@ -216,7 +216,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">Image name or id.</param>
-        Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, ImageDeleteParameters parameters, CancellationToken cancellationToken = default);
+        Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, ImageDeleteParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Search images
@@ -231,7 +231,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters, CancellationToken cancellationToken = default);
+        Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete unused images
@@ -244,7 +244,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<ImagesPruneResponse> PruneImagesAsync(ImagesPruneParameters parameters = null, CancellationToken cancellationToken = default);
+        Task<ImagesPruneResponse> PruneImagesAsync(ImagesPruneParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create a new image from a container.
@@ -258,7 +258,7 @@ namespace Docker.DotNet
         /// 404 - No such container.
         /// 500 - Server error.
         /// </remarks>
-        Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters, CancellationToken cancellationToken = default);
+        Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Export an image.
@@ -275,7 +275,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">Image name or ID.</param>
-        Task<Stream> SaveImageAsync(string name, CancellationToken cancellationToken = default);
+        Task<Stream> SaveImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Export several images.
@@ -299,7 +299,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="names">Image names to filter by.</param>
-        Task<Stream> SaveImagesAsync(string[] names, CancellationToken cancellationToken = default);
+        Task<Stream> SaveImagesAsync(string[] names, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Loads a set of images and tags into a Docker repository.
@@ -312,6 +312,6 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task LoadImageAsync(ImageLoadParameters parameters, Stream imageStream, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default);
+        Task LoadImageAsync(ImageLoadParameters parameters, Stream imageStream, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

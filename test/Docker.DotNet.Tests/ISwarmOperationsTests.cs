@@ -59,8 +59,18 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var options = new ServicesListParameters { Filters = new ServiceFilter { Name = new string[] { firstServiceName } } };
-            var services = await _client.Swarm.ListServicesAsync(options, CancellationToken.None);
+            var services = await _client.Swarm.ListServicesAsync(
+                new ServicesListParameters
+                {
+                    Filters = new ServiceFilter
+                    {
+                        Name = new string[]
+                        {
+                            firstServiceName
+                        }
+                    }
+                },
+                CancellationToken.None);
 
             Assert.Single(services);
 

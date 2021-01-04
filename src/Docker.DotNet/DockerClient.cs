@@ -76,12 +76,8 @@ namespace Docker.DotNet
                     uri = new UriBuilder("http", pipeName).Uri;
                     handler = new ManagedHandler(async (host, port, cancellationToken) =>
                     {
-                        var timeout = (int)this.Configuration.NamedPipeConnectTimeout.TotalMilliseconds;
-                        var stream = new NamedPipeClientStream(
-                            serverName,
-                            pipeName,
-                            PipeDirection.InOut,
-                            PipeOptions.Asynchronous);
+                        int timeout = (int)this.Configuration.NamedPipeConnectTimeout.TotalMilliseconds;
+                        var stream = new NamedPipeClientStream(serverName, pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
                         var dockerStream = new DockerPipeStream(stream);
 
 #if NET45
@@ -337,7 +333,8 @@ namespace Docker.DotNet
 
             await HandleIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
 
-            if (!(response.Content is HttpConnectionResponseContent content))
+			var content = response.Content as HttpConnectionResponseContent;
+            if (content == null)            
             {
                 throw new NotSupportedException("message handler does not support hijacked streams");
             }
@@ -375,7 +372,7 @@ namespace Docker.DotNet
 
         private async static Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response, IEnumerable<ApiResponseErrorHandlingDelegate> handlers)
         {
-            var isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
+            bool isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
 
             string responseBody = null;
 
@@ -405,7 +402,7 @@ namespace Docker.DotNet
 
         public async static Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response)
         {
-            var isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
+            bool isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
 
             string responseBody = null;
 
@@ -432,6 +429,7 @@ namespace Docker.DotNet
             }
 
             var request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, this._requestedApiVersion, path, queryString));
+			
             request.Version = new Version(1, 1);
 
             request.Headers.Add("User-Agent", UserAgent);

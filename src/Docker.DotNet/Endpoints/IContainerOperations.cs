@@ -22,7 +22,7 @@ namespace Docker.DotNet
         /// 400 - Bad parameter.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<ContainerListResponse>> ListContainersAsync(ContainersListParameters parameters, CancellationToken cancellationToken = default);
+        Task<IList<ContainerListResponse>> ListContainersAsync(ContainersListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create a container
@@ -39,7 +39,7 @@ namespace Docker.DotNet
         /// 409 - Conflict.
         /// 500 - Server error.
         /// </remarks>
-        Task<CreateContainerResponse> CreateContainerAsync(CreateContainerParameters parameters, CancellationToken cancellationToken = default);
+        Task<CreateContainerResponse> CreateContainerAsync(CreateContainerParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Inspect a container.
@@ -57,7 +57,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<ContainerInspectResponse> InspectContainerAsync(string id, CancellationToken cancellationToken = default);
+        Task<ContainerInspectResponse> InspectContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// List processes running inside a container.
@@ -75,7 +75,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<ContainerProcessesResponse> ListProcessesAsync(string id, ContainerListProcessesParameters parameters, CancellationToken cancellationToken = default);
+        Task<ContainerProcessesResponse> ListProcessesAsync(string id, ContainerListProcessesParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get container logs.
@@ -98,7 +98,7 @@ namespace Docker.DotNet
         /// <param name="cancellationToken"></param>
         /// <param name="parameters"></param>
         [Obsolete("The stream returned by this method won't be demultiplexed properly if the container was created without a TTY. Use GetContainerLogsAsync(string, bool, ContainerLogsParameters, CancellationToken) instead")]
-        Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken = default);
+        Task<Stream> GetContainerLogsAsync(string id, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Gets the logs from a container.
@@ -124,7 +124,7 @@ namespace Docker.DotNet
         /// <param name="parameters">The parameters used to retrieve the logs.</param>
         /// <param name="cancellationToken">A token used to cancel this operation.</param>
         /// <returns>A stream with the retrieved logs. If the container wasn't created with a TTY, this stream is multiplexed.</returns>
-        Task<MultiplexedStream> GetContainerLogsAsync(string id, bool tty, ContainerLogsParameters parameters, CancellationToken cancellationToken = default);
+        Task<MultiplexedStream> GetContainerLogsAsync(string id, bool tty, ContainerLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get changes on a container's filesystem.
@@ -142,7 +142,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<IList<ContainerFileSystemChangeResponse>> InspectChangesAsync(string id, CancellationToken cancellationToken = default);
+        Task<IList<ContainerFileSystemChangeResponse>> InspectChangesAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Export a container.
@@ -160,7 +160,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<Stream> ExportContainerAsync(string id, CancellationToken cancellationToken = default);
+        Task<Stream> ExportContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         [Obsolete("Use 'Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)'")]
         Task<Stream> GetContainerStatsAsync(string id, ContainerStatsParameters parameters, CancellationToken cancellationToken);
@@ -183,7 +183,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<ContainerStatsResponse> progress, CancellationToken cancellationToken = default);
+        Task GetContainerStatsAsync(string id, ContainerStatsParameters parameters, IProgress<ContainerStatsResponse> progress, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Resize a container TTY.
@@ -198,7 +198,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task ResizeContainerTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default);
+        Task ResizeContainerTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Start a container.
@@ -215,7 +215,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<bool> StartContainerAsync(string id, ContainerStartParameters parameters, CancellationToken cancellationToken = default);
+        Task<bool> StartContainerAsync(string id, ContainerStartParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Stop a container.
@@ -232,7 +232,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<bool> StopContainerAsync(string id, ContainerStopParameters parameters, CancellationToken cancellationToken = default);
+        Task<bool> StopContainerAsync(string id, ContainerStopParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Restart a container.
@@ -248,7 +248,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task RestartContainerAsync(string id, ContainerRestartParameters parameters, CancellationToken cancellationToken = default);
+        Task RestartContainerAsync(string id, ContainerRestartParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Kill a container.
@@ -267,7 +267,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task KillContainerAsync(string id, ContainerKillParameters parameters, CancellationToken cancellationToken = default);
+        Task KillContainerAsync(string id, ContainerKillParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Rename a container
@@ -303,7 +303,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task PauseContainerAsync(string id, CancellationToken cancellationToken = default);
+        Task PauseContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Unpause a container.
@@ -321,7 +321,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task UnpauseContainerAsync(string id, CancellationToken cancellationToken = default);
+        Task UnpauseContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Attach to a container.
@@ -338,7 +338,7 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
         /// <param name="tty">Is this a TTY stream.</param>
-        Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken = default);
+        Task<MultiplexedStream> AttachContainerAsync(string id, bool tty, ContainerAttachParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         // TODO: Attach Web Socket
 
@@ -358,7 +358,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<ContainerWaitResponse> WaitContainerAsync(string id, CancellationToken cancellationToken = default);
+        Task<ContainerWaitResponse> WaitContainerAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Remove a container.
@@ -375,7 +375,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task RemoveContainerAsync(string id, ContainerRemoveParameters parameters, CancellationToken cancellationToken = default);
+        Task RemoveContainerAsync(string id, ContainerRemoveParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get information about files in a container
@@ -395,7 +395,7 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
         /// <param name="statOnly">If <c>True</c> will only return file information. If <c>False</c> will return the tarball stream.</param>
-        Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken = default);
+        Task<GetArchiveFromContainerResponse> GetArchiveFromContainerAsync(string id, GetArchiveFromContainerParameters parameters, bool statOnly, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Extract an archive of files or folders to a directory in a container.
@@ -412,7 +412,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task ExtractArchiveToContainerAsync(string id, ContainerPathStatParameters parameters, Stream stream, CancellationToken cancellationToken = default);
+        Task ExtractArchiveToContainerAsync(string id, ContainerPathStatParameters parameters, Stream stream, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete stopped containers
@@ -423,7 +423,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<ContainersPruneResponse> PruneContainersAsync(ContainersPruneParameters parameters = null, CancellationToken cancellationToken = default);
+        Task<ContainersPruneResponse> PruneContainersAsync(ContainersPruneParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update configuration of a container.
@@ -439,6 +439,6 @@ namespace Docker.DotNet
         /// 500 - Server error
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<ContainerUpdateResponse> UpdateContainerAsync(string id, ContainerUpdateParameters parameters, CancellationToken cancellationToken = default);
+        Task<ContainerUpdateResponse> UpdateContainerAsync(string id, ContainerUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

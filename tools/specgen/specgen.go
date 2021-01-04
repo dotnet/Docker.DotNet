@@ -30,43 +30,43 @@ func typeToKey(t reflect.Type) string {
 var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(container.Config{})): {
 		Properties: []CSProperty{
-			{
+			CSProperty{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
 	typeToKey(reflect.TypeOf(container.ContainerCreateCreatedBody{})): {Name: "CreateContainerResponse"},
 	typeToKey(reflect.TypeOf(container.HealthConfig{})): {
 		Properties: []CSProperty{
-			{
+			CSProperty{
 				Name:       "Interval",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
 			},
-			{
+			CSProperty{
 				Name:       "Timeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
 	typeToKey(reflect.TypeOf(container.RestartPolicy{})): {
-		Properties: []CSProperty{{Name: "Name", Type: CSType{"", "RestartPolicyKind", false}}},
+		Properties: []CSProperty{CSProperty{Name: "Name", Type: CSType{"", "RestartPolicyKind", false}}},
 	},
 	typeToKey(reflect.TypeOf(jsonmessage.JSONMessage{})): {
 		Properties: []CSProperty{
-			{Name: "Time", Type: CSType{"System", "DateTime", false}},
-			{Name: "Aux", Type: CSType{"", "ObjectExtensionData", false}},
+			CSProperty{Name: "Time", Type: CSType{"System", "DateTime", false}},
+			CSProperty{Name: "Aux", Type: CSType{"", "ObjectExtensionData", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(CreateContainerParameters{})): {
 		Properties: []CSProperty{
-			{
+			CSProperty{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
@@ -87,12 +87,12 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(swarm.Task{})): {
 		Name: "TaskResponse",
 		Properties: []CSProperty{
-			{Name: "DesiredState", Type: CSType{"", "TaskState", false}},
+			CSProperty{Name: "DesiredState", Type: CSType{"", "TaskState", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(swarm.TaskStatus{})): {
 		Properties: []CSProperty{
-			{Name: "State", Type: CSType{"", "TaskState", false}},
+			CSProperty{Name: "State", Type: CSType{"", "TaskState", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})):    {Name: "SwarmUpdateConfig"},
@@ -100,20 +100,20 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(types.Container{})): {
 		Name: "ContainerListResponse",
 		Properties: []CSProperty{
-			{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem{})): {
 		Name: "ContainerFileSystemChangeResponse",
 		Properties: []CSProperty{
-			{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
+			CSProperty{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.ContainerExecInspect{})): {Name: "ContainerExecInspectResponse"},
 	typeToKey(reflect.TypeOf(types.ContainerJSON{})):        {Name: "ContainerInspectResponse"},
 	typeToKey(reflect.TypeOf(types.ContainerJSONBase{})): {
 		Properties: []CSProperty{
-			{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):       {Name: "ContainerPathStatResponse"},
@@ -123,13 +123,13 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(image.HistoryResponseItem{})): {
 		Name: "ImageHistoryResponse",
 		Properties: []CSProperty{
-			{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.ImageInspect{})): {
 		Name: "ImageInspectResponse",
 		Properties: []CSProperty{
-			{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.ImageLoadResponse{})): {Name: "ImagesLoadResponse"},
@@ -137,7 +137,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(types.ImageSummary{})): {
 		Name: "ImagesListResponse",
 		Properties: []CSProperty{
-			{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.Info{})):                  {Name: "SystemInfoResponse"},
@@ -150,7 +150,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(types.PluginConfigInterface{})): {
 		Name: "PluginConfigInterface",
 		Properties: []CSProperty{
-			{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
+			CSProperty{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.StatsJSON{})):          {Name: "ContainerStatsResponse"},

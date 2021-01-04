@@ -102,6 +102,26 @@ await _client.Images.CreateImageAsync(
     });
 ```
 
+#### Example: Create an image and monitor progress messages
+
+```c#
+private static async Task Main(string[] args)
+{
+	var progress = new Progress<JSONMessage>(m => System.Diagnostics.Debug.WriteLine($"Create image status: {m.Status}"));
+
+	var _client = new Docker.DotNet.DockerClientConfiguration().CreateClient();
+
+	await _client.Images.CreateImageAsync(
+		new ImagesCreateParameters
+		{
+			FromImage = "hello-world",
+			Tag = "latest",
+		},
+		null,
+		progress);
+}
+```
+
 #### Example: Start a container
 
 The following code will start the created container with specified `HostConfig` object. This object is optional, therefore you can pass a null.
@@ -134,7 +154,7 @@ var stopped = await client.Containers.StopContainerAsync(
 
 #### Example: Processing stream messages using IProgress < Message >
 
-Some Docker API endpoints are designed to stream response messages using IProgress< Message > for message processing. For example [Monitoring Docker events](https://docs.docker.com/engine/reference/api/docker_remote_api_v1.24/#/monitor-docker-s-events) continuously streams the status in a format like :
+Some Docker API endpoints are designed to stream response messages using IProgress< Message > for processing. For example [Monitoring Docker events](https://docs.docker.com/engine/reference/api/docker_remote_api_v1.24/#/monitor-docker-s-events) continuously streams the status in a format like :
 
 ```json
 {"status":"create","id":"dfdf82bd3881","from":"base:latest","time":1374067924}

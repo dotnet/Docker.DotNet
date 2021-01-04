@@ -174,8 +174,7 @@ type ContainerWaitResponse struct {
 	StatusCode int `json:"StatusCode"`
 }
 
-// EventsParameters for GET /events
-// type EventsParameters types.EventsOptions
+// EventsParameters for GET /events, matches types.EventsOptions
 type EventsParameters struct {
 	Since   string `rest:"query"`
 	Until   string `rest:"query"`

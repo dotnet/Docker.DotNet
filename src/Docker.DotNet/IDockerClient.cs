@@ -5,20 +5,29 @@ namespace Docker.DotNet
     public interface IDockerClient : IDisposable
     {
         IConfigsOperations Configs { get; }
+		
         DockerClientConfiguration Configuration { get; }
 
-        IContainerOperations Containers { get; }
         TimeSpan DefaultTimeout { get; set; }
-        IExecOperations Exec { get; }
+		
+        IContainerOperations Containers { get; }
+		
         IImageOperations Images { get; }
 
         INetworkOperations Networks { get; }
+		
+		IVolumeOperations Volumes { get; }
+		
+        ISecretsOperations Secrets { get; }
+
+        ISwarmOperations Swarm { get; }
+        
+        ITasksOperations Tasks { get; }
+        
+		ISystemOperations System { get; }
 
         IPluginOperations Plugin { get; }
-        ISecretsOperations Secrets { get; }
-        ISwarmOperations Swarm { get; }
-        ISystemOperations System { get; }
-        ITasksOperations Tasks { get; }
-        IVolumeOperations Volumes { get; }
+		
+        IExecOperations Exec { get; }
     }
 }

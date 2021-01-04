@@ -79,6 +79,6 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task MonitorEventsAsync(EventsParameters parameters, IProgress<Message> progress, CancellationToken cancellationToken = default);
+        Task MonitorEventsAsync(EventsParameters parameters, IProgress<Message> progress, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
