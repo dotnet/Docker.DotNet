@@ -132,11 +132,9 @@ var stopped = await client.Containers.StopContainerAsync(
     CancellationToken.None);
 ```
 
-#### Example: Dealing with Stream responses
+#### Example: Processing stream messages using IProgress < Message >
 
-Some Docker API endpoints are designed to return stream responses. For example
-[Monitoring Docker events](https://docs.docker.com/engine/reference/api/docker_remote_api_v1.24/#/monitor-docker-s-events)
-continuously streams the status in a format like :
+Some Docker API endpoints are designed to stream response messages using IProgress< Message > for message processing. For example [Monitoring Docker events](https://docs.docker.com/engine/reference/api/docker_remote_api_v1.24/#/monitor-docker-s-events) continuously streams the status in a format like :
 
 ```json
 {"status":"create","id":"dfdf82bd3881","from":"base:latest","time":1374067924}
@@ -146,15 +144,49 @@ continuously streams the status in a format like :
 ...
 ```
 
-To obtain this stream you can use:
+To capture messages from this stream you can use:
 
 ```csharp
-CancellationTokenSource cancellation = new CancellationTokenSource();
-Stream stream = await client.System.MonitorEventsAsync(new ContainerEventsParameters(), new Progress<JSONMessage>(), cancellation.Token);
-// Initialize a StreamReader...
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Docker.DotNet.Models;
+
+internal class Program
+{
+    private static async Task Main(string[] args)
+    {
+        var progress = new Progress()
+        {
+            _onCalled = (m) =>
+            {
+                Console.WriteLine($"Received event: {m.Type} -> {m.Action}");
+            }
+        };
+
+        var _client = new Docker.DotNet.DockerClientConfiguration().CreateClient();
+        using var cts = new CancellationTokenSource();
+        
+        var task = Task.Run(() => _client.System.MonitorEventsAsync(new EventsParameters(), progress, cts.Token));
+        
+        await _client.Images.TagImageAsync("hello-world", new ImageTagParameters { RepositoryName = "hello-world", Tag = "test" }, cts.Token);
+        cts.Cancel();
+        await task;
+    }
+
+    private class Progress : IProgress<Message>
+    {
+        internal Action<Message> _onCalled;
+
+        void IProgress<Message>.Report(Message value)
+        {
+            _onCalled(value);
+        }
+    }
+}
 ```
 
-You can cancel streaming using the CancellationToken. On the other hand, if you wish to continuously stream, you can simply pass `CancellationToken.None`.
+You can cancel message processing using the CancellationToken. On the other hand, if you wish to continuously process messages, you can simply pass `CancellationToken.None`.
 
 #### Example: HTTPS Authentication to Docker
 
