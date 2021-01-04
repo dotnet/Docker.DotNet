@@ -204,14 +204,14 @@ namespace Docker.DotNet.Tests
             }));
         }
 
-        public void Dispose()
-        {
-            if (!wasSwarmInitialized)
-            {
-                _client.Swarm.LeaveSwarmAsync(new SwarmLeaveParameters { Force = true });
-            }
+        //public void Dispose()
+        //{
+        //    if (!wasSwarmInitialized)
+        //    {
+        //        _client.Swarm.LeaveSwarmAsync(new SwarmLeaveParameters { Force = true });
+        //    }
 
-            GC.SuppressFinalize(this);
-        }
+        //    GC.SuppressFinalize(this);
+        //}
     }
 }
