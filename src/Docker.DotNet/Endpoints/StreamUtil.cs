@@ -98,6 +98,14 @@ namespace Docker.DotNet.Models
                         {
                             // Ignore reads on disposed streams
                         }
+                        else if (innerException is System.Net.Sockets.SocketException)
+                        {
+                            // Ignore reads on disposed streams
+                        }
+                        else if (innerException is System.IO.IOException)
+                        {
+                            // Ignore reads on disposed streams
+                        }
                         else
                         {
                             throw innerException;
