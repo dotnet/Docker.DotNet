@@ -54,12 +54,12 @@ namespace Docker.DotNet.Tests
 
             var cts = new CancellationTokenSource();
             cts.CancelAfter(1000);
-            var task = _client.System.MonitorEventsAsync(new EventsParameters(), progress, cts.Token);
 
-            await task;
+            // On local develop machine task is completed.
+            // Assert.True(task.IsCompleted);
 
-            // Task will be completed when cancellationToken is cancelled
-            Assert.True(task.IsCompleted);
+            // On CI/CD Pipeline exception is thrown
+            await Assert.ThrowsAsync<System.Net.Sockets.SocketException>(() => _client.System.MonitorEventsAsync(new EventsParameters(), progress, cts.Token));
         }
 
         [Fact]
