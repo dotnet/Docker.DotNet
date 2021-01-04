@@ -10,7 +10,7 @@ namespace Docker.DotNet
     {
         /// <summary>
         /// Check auth configuration.
-        /// 
+        ///
         /// Validate credentials for a registry and, if available, get an identity token for accessing the registry without password.
         /// </summary>
         /// <remarks>
@@ -22,7 +22,7 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Get version.
-        /// 
+        ///
         /// Returns the version of Docker that is running and various information about the system that Docker is running on.
         /// </summary>
         /// <remarks>
@@ -35,7 +35,7 @@ namespace Docker.DotNet
 
         /// <summary>
         /// Ping.
-        /// 
+        ///
         /// This is a dummy endpoint you can use to test if the server is accessible.
         /// </summary>
         /// <remarks>
@@ -55,12 +55,12 @@ namespace Docker.DotNet
         /// </remarks>
         Task<SystemInfoResponse> GetSystemInfoAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        [Obsolete("Use 'Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)'")]
-        Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken);
+        [Obsolete("Use 'Task MonitorEventsAsync(EventsParameters parameters, CancellationToken cancellationToken, IProgress<Message> progress)'")]
+        Task<Stream> MonitorEventsAsync(EventsParameters parameters, CancellationToken cancellationToken);
 
         /// <summary>
         /// Monitor events.
-        /// 
+        ///
         /// Stream real-time events from the server.
         ///
         /// Various objects within Docker report events when something happens to them.
@@ -79,6 +79,6 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task MonitorEventsAsync(ContainerEventsParameters parameters, IProgress<Message> progress, CancellationToken cancellationToken = default(CancellationToken));
+        Task MonitorEventsAsync(EventsParameters parameters, IProgress<Message> progress, CancellationToken cancellationToken = default);
     }
 }

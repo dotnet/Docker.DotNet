@@ -6,7 +6,7 @@ namespace Docker.DotNet.Models
     public class ResourceRequirements // (swarm.ResourceRequirements)
     {
         [DataMember(Name = "Limits", EmitDefaultValue = false)]
-        public SwarmResources Limits { get; set; }
+        public Limit Limits { get; set; }
 
         [DataMember(Name = "Reservations", EmitDefaultValue = false)]
         public SwarmResources Reservations { get; set; }

@@ -26,10 +26,7 @@ namespace Docker.DotNet
 
         public async Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             if (parameters == null)
             {
@@ -43,10 +40,7 @@ namespace Docker.DotNet
 
         public async Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"exec/{id}/json", null, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<ContainerExecInspectResponse>(response.Body);
@@ -54,10 +48,7 @@ namespace Docker.DotNet
 
         public Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             if (parameters == null)
             {
@@ -72,10 +63,7 @@ namespace Docker.DotNet
         // stdin, stdout, or stderr pipes.
         public Task StartContainerExecAsync(string id, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             var parameters = new ContainerExecStartParameters
             {
@@ -94,10 +82,7 @@ namespace Docker.DotNet
 
         public async Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ContainerExecStartParameters eConfig, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
+            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
             var data = new JsonRequestContent<ContainerExecStartParameters>(eConfig, this._client.JsonSerializer);
             var stream = await this._client.MakeRequestForHijackedStreamAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"exec/{id}/start", null, data, null, cancellationToken).ConfigureAwait(false);

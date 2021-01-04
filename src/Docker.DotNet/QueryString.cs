@@ -113,8 +113,8 @@ namespace Docker.DotNet
             return attributedPublicProperties.Select(pi =>
                 new Tuple<PropertyInfo, TAttribType>(pi, pi.GetCustomAttribute<TAttribType>())).ToArray();
         }
-
-        private static bool IsDefaultOfType(object o)
+        
+         private static bool IsDefaultOfType(object o)
         {
             if (o is ValueType)
             {

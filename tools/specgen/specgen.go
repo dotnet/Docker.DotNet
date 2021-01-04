@@ -30,50 +30,50 @@ func typeToKey(t reflect.Type) string {
 var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(container.Config{})): {
 		Properties: []CSProperty{
-			CSProperty{
+			{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
 	typeToKey(reflect.TypeOf(container.ContainerCreateCreatedBody{})): {Name: "CreateContainerResponse"},
 	typeToKey(reflect.TypeOf(container.HealthConfig{})): {
 		Properties: []CSProperty{
-			CSProperty{
+			{
 				Name:       "Interval",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
+				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
 			},
-			CSProperty{
+			{
 				Name:       "Timeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
 	typeToKey(reflect.TypeOf(container.RestartPolicy{})): {
-		Properties: []CSProperty{CSProperty{Name: "Name", Type: CSType{"", "RestartPolicyKind", false}}},
+		Properties: []CSProperty{{Name: "Name", Type: CSType{"", "RestartPolicyKind", false}}},
 	},
 	typeToKey(reflect.TypeOf(jsonmessage.JSONMessage{})): {
 		Properties: []CSProperty{
-			CSProperty{Name: "Time", Type: CSType{"System", "DateTime", false}},
-			CSProperty{Name: "Aux", Type: CSType{"", "ObjectExtensionData", false}},
+			{Name: "Time", Type: CSType{"System", "DateTime", false}},
+			{Name: "Aux", Type: CSType{"", "ObjectExtensionData", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(CreateContainerParameters{})): {
 		Properties: []CSProperty{
-			CSProperty{
+			{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
-	typeToKey(reflect.TypeOf(network.Task{})): {Name: "NetworkTask"},
+	typeToKey(reflect.TypeOf(network.Task{})):                {Name: "NetworkTask"},
 	typeToKey(reflect.TypeOf(registry.AuthenticateOKBody{})): {Name: "AuthResponse"},
 	typeToKey(reflect.TypeOf(registry.SearchResult{})):       {Name: "ImageSearchResponse"},
-	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})): {Name: "RuntimePluginPrivilege"},
+	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})):     {Name: "RuntimePluginPrivilege"},
 	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
 	typeToKey(reflect.TypeOf(swarm.InitRequest{})):           {Name: "SwarmInitParameters"},
 	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
@@ -87,49 +87,49 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(swarm.Task{})): {
 		Name: "TaskResponse",
 		Properties: []CSProperty{
-			CSProperty{Name: "DesiredState", Type: CSType{"", "TaskState", false}},
+			{Name: "DesiredState", Type: CSType{"", "TaskState", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(swarm.TaskStatus{})): {
 		Properties: []CSProperty{
-			CSProperty{Name: "State", Type: CSType{"", "TaskState", false}},
+			{Name: "State", Type: CSType{"", "TaskState", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})): {Name: "SwarmUpdateConfig"},
-	typeToKey(reflect.TypeOf(swarm.ConfigReference{})): {Name: "SwarmConfigReference"},	
+	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})):    {Name: "SwarmUpdateConfig"},
+	typeToKey(reflect.TypeOf(swarm.ConfigReference{})): {Name: "SwarmConfigReference"},
 	typeToKey(reflect.TypeOf(types.Container{})): {
 		Name: "ContainerListResponse",
 		Properties: []CSProperty{
-			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem {})): {
+	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem{})): {
 		Name: "ContainerFileSystemChangeResponse",
 		Properties: []CSProperty{
-			CSProperty{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
+			{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.ContainerExecInspect{})): {Name: "ContainerExecInspectResponse"},
 	typeToKey(reflect.TypeOf(types.ContainerJSON{})):        {Name: "ContainerInspectResponse"},
 	typeToKey(reflect.TypeOf(types.ContainerJSONBase{})): {
 		Properties: []CSProperty{
-			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):     {Name: "ContainerPathStatResponse"},
+	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):       {Name: "ContainerPathStatResponse"},
 	typeToKey(reflect.TypeOf(container.ContainerTopOKBody{})):  {Name: "ContainerProcessesResponse"},
-	typeToKey(reflect.TypeOf(types.ContainersPruneReport{})): {Name: "ContainersPruneResponse"},
-	typeToKey(reflect.TypeOf(types.ImageDeleteResponseItem{})):           {Name: "ImageDeleteResponse"},
+	typeToKey(reflect.TypeOf(types.ContainersPruneReport{})):   {Name: "ContainersPruneResponse"},
+	typeToKey(reflect.TypeOf(types.ImageDeleteResponseItem{})): {Name: "ImageDeleteResponse"},
 	typeToKey(reflect.TypeOf(image.HistoryResponseItem{})): {
 		Name: "ImageHistoryResponse",
 		Properties: []CSProperty{
-			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.ImageInspect{})): {
 		Name: "ImageInspectResponse",
 		Properties: []CSProperty{
-			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.ImageLoadResponse{})): {Name: "ImagesLoadResponse"},
@@ -137,7 +137,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(types.ImageSummary{})): {
 		Name: "ImagesListResponse",
 		Properties: []CSProperty{
-			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
+			{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.Info{})):                  {Name: "SystemInfoResponse"},
@@ -150,13 +150,12 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(types.PluginConfigInterface{})): {
 		Name: "PluginConfigInterface",
 		Properties: []CSProperty{
-			CSProperty{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
+			{Name: "Types", Type: CSType{"System.Collections.Generic", "IList<string>", false}},
 		},
 	},
 	typeToKey(reflect.TypeOf(types.StatsJSON{})):          {Name: "ContainerStatsResponse"},
 	typeToKey(reflect.TypeOf(types.Version{})):            {Name: "VersionResponse"},
 	typeToKey(reflect.TypeOf(types.VolumesPruneReport{})): {Name: "VolumesPruneResponse"},
-	typeToKey(reflect.TypeOf(VolumeResponse{})):           {Name: "VolumeResponse"},
 }
 
 var dockerTypesToReflect = []reflect.Type{
@@ -198,7 +197,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// POST /containers/(id)/attach/ws
 
 	// GET /containers/(id)/changes
-	reflect.TypeOf(container.ContainerChangeResponseItem {}),
+	reflect.TypeOf(container.ContainerChangeResponseItem{}),
 
 	// OBSOLETE - POST /containers/(id)/copy
 
@@ -243,7 +242,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /containers/(id)/top
 	reflect.TypeOf(ContainerListProcessesParameters{}),
-	reflect.TypeOf(container.ContainerTopOKBody {}),
+	reflect.TypeOf(container.ContainerTopOKBody{}),
 
 	// POST /containers/(id)/unpause
 
@@ -261,7 +260,8 @@ var dockerTypesToReflect = []reflect.Type{
 	reflect.TypeOf(types.ContainerExecInspect{}),
 
 	// GET /events
-	reflect.TypeOf(ContainerEventsParameters{}),
+	reflect.TypeOf(EventsParameters{}),
+	reflect.TypeOf(events.Actor{}),
 	reflect.TypeOf(events.Message{}),
 
 	// POST /images/create
@@ -307,6 +307,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /info
 	reflect.TypeOf(types.Info{}),
+	reflect.TypeOf(registry.ServiceConfig{}),
 
 	// GET /networks
 	reflect.TypeOf(NetworksListParameters{}),
@@ -424,9 +425,27 @@ var dockerTypesToReflect = []reflect.Type{
 	// POST /secrets/create
 	reflect.TypeOf(SecretCreateResponse{}),
 
+	//
+	// Configs API (swarm)
+	//
+
+	// GET /configs
+	// GET /configs/(id)
+	reflect.TypeOf(SwarmConfig{}),
+	reflect.TypeOf(swarm.ConfigReference{}),
+
+	// POST /configs/create
+	reflect.TypeOf(SwarmCreateConfigParameters{}),
+	reflect.TypeOf(SwarmCreateConfigResponse{}),
+
+	// POST /configs/(id)/update
+	reflect.TypeOf(SwarmUpdateConfigParameters{}),
+	reflect.TypeOf(swarm.ConfigSpec{}),
+
 	// GET /services
 	// GET /services/(id)
 	reflect.TypeOf(swarm.Service{}),
+	reflect.TypeOf(ServiceListParameters{}),
 
 	// POST /services/create
 	reflect.TypeOf(ServiceCreateParameters{}),
@@ -438,6 +457,9 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// DELETE /services/(id)
 
+	// GET /services/(id)/logs
+	reflect.TypeOf(ServiceLogsParameters{}),
+
 	// GET /tasks
 	reflect.TypeOf(TasksListParameters{}),
 	reflect.TypeOf(swarm.Task{}),
@@ -445,6 +467,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// GET /nodes
 	// GET /nodes/(id)
 	reflect.TypeOf(swarm.Node{}),
+	reflect.TypeOf(swarm.TLSInfo{}),
 
 	// DELETE /nodes/(id)
 

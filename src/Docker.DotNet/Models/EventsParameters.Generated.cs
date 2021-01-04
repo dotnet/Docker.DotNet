@@ -4,10 +4,13 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ImagesListParameters // (main.ImagesListParameters)
+    public class EventsParameters // (main.EventsParameters)
     {
-        [QueryStringParameter("all", false, typeof(BoolQueryStringConverter))]
-        public bool? All { get; set; }
+        [QueryStringParameter("since", false)]
+        public string Since { get; set; }
+
+        [QueryStringParameter("until", false)]
+        public string Until { get; set; }
 
         [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, IDictionary<string, bool>> Filters { get; set; }

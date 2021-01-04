@@ -2,7 +2,7 @@
 
 namespace Docker.DotNet
 {
-    internal class DockerApiResponse
+    public class DockerApiResponse
     {
         public HttpStatusCode StatusCode { get; private set; }
 

@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
 
 #if (NETSTANDARD1_6 || NETSTANDARD2_0)
+
 using System.Net.Sockets;
+
 #endif
 
 namespace Docker.DotNet
@@ -39,6 +41,7 @@ namespace Docker.DotNet
             System = new SystemOperations(this);
             Networks = new NetworkOperations(this);
             Secrets = new SecretsOperations(this);
+            Configs = new ConfigsOperations(this);
             Swarm = new SwarmOperations(this);
             Tasks = new TasksOperations(this);
             Volumes = new VolumeOperations(this);
@@ -73,8 +76,12 @@ namespace Docker.DotNet
                     uri = new UriBuilder("http", pipeName).Uri;
                     handler = new ManagedHandler(async (host, port, cancellationToken) =>
                     {
-                        int timeout = (int)this.Configuration.NamedPipeConnectTimeout.TotalMilliseconds;
-                        var stream = new NamedPipeClientStream(serverName, pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
+                        var timeout = (int)this.Configuration.NamedPipeConnectTimeout.TotalMilliseconds;
+                        var stream = new NamedPipeClientStream(
+                            serverName,
+                            pipeName,
+                            PipeDirection.InOut,
+                            PipeOptions.Asynchronous);
                         var dockerStream = new DockerPipeStream(stream);
 
 #if NET45
@@ -121,6 +128,7 @@ namespace Docker.DotNet
             _endpointBaseUri = uri;
 
             _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
+            _client.DefaultRequestHeaders.Add(nameof(_endpointBaseUri.Host), _endpointBaseUri.Host);
             DefaultTimeout = Configuration.DefaultTimeout;
             _client.Timeout = s_InfiniteTimeout;
         }
@@ -138,6 +146,8 @@ namespace Docker.DotNet
         public IVolumeOperations Volumes { get; }
 
         public ISecretsOperations Secrets { get; }
+
+        public IConfigsOperations Configs { get; }
 
         public ISwarmOperations Swarm { get; }
 
@@ -327,8 +337,7 @@ namespace Docker.DotNet
 
             await HandleIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
 
-            var content = response.Content as HttpConnectionResponseContent;
-            if (content == null)
+            if (!(response.Content is HttpConnectionResponseContent content))
             {
                 throw new NotSupportedException("message handler does not support hijacked streams");
             }
@@ -364,9 +373,9 @@ namespace Docker.DotNet
             return await _client.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response, IEnumerable<ApiResponseErrorHandlingDelegate> handlers)
+        private async static Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response, IEnumerable<ApiResponseErrorHandlingDelegate> handlers)
         {
-            bool isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
+            var isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
 
             string responseBody = null;
 
@@ -394,9 +403,9 @@ namespace Docker.DotNet
             }
         }
 
-        public async Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response)
+        public async static Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response)
         {
-            bool isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
+            var isErrorResponse = statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest;
 
             string responseBody = null;
 
@@ -423,7 +432,6 @@ namespace Docker.DotNet
             }
 
             var request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, this._requestedApiVersion, path, queryString));
-
             request.Version = new Version(1, 1);
 
             request.Headers.Add("User-Agent", UserAgent);

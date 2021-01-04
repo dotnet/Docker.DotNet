@@ -4,13 +4,13 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class SwarmService // (swarm.Service)
+    public class SwarmConfig // (main.SwarmConfig)
     {
-        public SwarmService()
+        public SwarmConfig()
         {
         }
 
-        public SwarmService(Meta Meta)
+        public SwarmConfig(Meta Meta)
         {
             if (Meta != null)
             {
@@ -33,21 +33,6 @@ namespace Docker.DotNet.Models
         public DateTime UpdatedAt { get; set; }
 
         [DataMember(Name = "Spec", EmitDefaultValue = false)]
-        public ServiceSpec Spec { get; set; }
-
-        [DataMember(Name = "PreviousSpec", EmitDefaultValue = false)]
-        public ServiceSpec PreviousSpec { get; set; }
-
-        [DataMember(Name = "Endpoint", EmitDefaultValue = false)]
-        public Endpoint Endpoint { get; set; }
-
-        [DataMember(Name = "UpdateStatus", EmitDefaultValue = false)]
-        public UpdateStatus UpdateStatus { get; set; }
-
-        [DataMember(Name = "ServiceStatus", EmitDefaultValue = false)]
-        public ServiceStatus ServiceStatus { get; set; }
-
-        [DataMember(Name = "JobStatus", EmitDefaultValue = false)]
-        public JobStatus JobStatus { get; set; }
+        public ConfigSpec Spec { get; set; }
     }
 }
