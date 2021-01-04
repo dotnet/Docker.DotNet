@@ -10,7 +10,7 @@ namespace Docker.DotNet.Models
 {
     internal static class StreamUtil
     {
-		internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
+        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
         {
             using (var stream = await streamTask)
             {
@@ -28,17 +28,16 @@ namespace Docker.DotNet.Models
                 }
             }
         }
-		
-		internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
+
+        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
         {
             var serializer = new Newtonsoft.Json.JsonSerializer();
-
-            using (var stream = await streamTask)
-            using (cancel.Register(() => stream.Dispose()))
-            using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-            using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
+            try
             {
-                try
+                using (var stream = await streamTask)
+                using (cancel.Register(() => stream.Dispose()))
+                using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+                using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
                 {
                     while (jsonReader.Read())
                     {
@@ -53,35 +52,28 @@ namespace Docker.DotNet.Models
                         }
                     }
                 }
-                catch (AggregateException ex)
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var innerException in ex.InnerExceptions)
                 {
-                    foreach (var innerException in ex.InnerExceptions)
+                    if (innerException is ObjectDisposedException || innerException is System.Net.Sockets.SocketException || innerException is System.IO.IOException || innerException is System.ArgumentException)
                     {
-                        if (innerException is ObjectDisposedException)
-                        {
-                            // Ignore reads on disposed streams
-                        }
-                        else if (innerException is System.Net.Sockets.SocketException)
-                        {
-                            // Ignore reads on disposed streams
-                        }
-                        else if (innerException is System.IO.IOException)
-                        {
-                            // Ignore reads on disposed streams
-                        }
-                        else
-                        {
-                            throw innerException;
-                        }
+                        // Ignore reads on disposed streams.
+                    }
+                    else
+                    {
+                        // Could throw
+                        throw innerException;
                     }
                 }
-                catch (ObjectDisposedException)
-                {
-                    // Ignore reads on disposed streams
-                }
+            }
+            catch (ObjectDisposedException)
+            {
+                // Ignore reads on disposed streams
             }
         }
-		
+
         internal static async Task MonitorResponseForMessagesAsync<T>(Task<HttpResponseMessage> responseTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
         {
             using (var response = await responseTask)
@@ -116,7 +108,7 @@ namespace Docker.DotNet.Models
                 }
             }
         }
-		
+
         private static async Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<bool>();
