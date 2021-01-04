@@ -47,7 +47,7 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task MonitorEventsAsync_EmptyContainersList_CanBeCancelled()
         {
-            var progress = new MyProgress()
+            var progress = new ProgressMessage()
             {
                 _onMessageCalled = (m) => { }
             };
@@ -80,10 +80,19 @@ namespace Docker.DotNet.Tests
             const string repository = "hello-world";
             var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
 
-            var wasProgressCalled = false;
+            var wasJSONMessageProgressCalled = false;
+            var progressJSONMessage = new ProgressJSONMessage
+            {
+                _onJSONMessageCalled = (m) =>
+                {
+                    Assert.NotNull(m);
+                    // Status could be 'Pulling from...'
+                    wasJSONMessageProgressCalled = true;
+                }
+            };
 
-            using var cts = new CancellationTokenSource();
-            var progress = new MyProgress()
+            var wasProgressCalled = false;
+            var progressMessage = new ProgressMessage
             {
                 _onMessageCalled = (m) =>
                 {
@@ -94,13 +103,19 @@ namespace Docker.DotNet.Tests
                 }
             };
 
-            var task = Task.Run(() => _client.System.MonitorEventsAsync(new EventsParameters(), progress, cts.Token));
+            using var cts = new CancellationTokenSource();
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = "hello-world" }, null, progressJSONMessage);
+
+            var task = Task.Run(() => _client.System.MonitorEventsAsync(new EventsParameters(), progressMessage, cts.Token));
+
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
 
             cts.Cancel();
             await task;
 
             Assert.True(wasProgressCalled);
+            Assert.True(wasJSONMessageProgressCalled);
 
             await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
         }
@@ -110,6 +125,13 @@ namespace Docker.DotNet.Tests
         {
             const string repository = "hello-world";
             var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
+
+            var progressJSONMessage = new ProgressJSONMessage
+            {
+                _onJSONMessageCalled = (m) => { }
+            };
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
 
             var progressCalledCounter = 0;
 
@@ -139,8 +161,7 @@ namespace Docker.DotNet.Tests
                 }
             };
 
-            using var cts = new CancellationTokenSource();
-            var progress = new MyProgress()
+            var progress = new ProgressMessage()
             {
                 _onMessageCalled = (m) =>
                 {
@@ -148,11 +169,15 @@ namespace Docker.DotNet.Tests
                 }
             };
 
+            using var cts = new CancellationTokenSource();
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
+
             var task = Task.Run(() => _client.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
 
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
             await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
-            var newContainerId = _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = "hello-world" }).Result.ID;
+            var newContainerId = _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository }).Result.ID;
             await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
 
             cts.Cancel();
@@ -167,13 +192,23 @@ namespace Docker.DotNet.Tests
             await _client.System.PingAsync();
         }
 
-        private class MyProgress : IProgress<Message>
+        private class ProgressMessage : IProgress<Message>
         {
             internal Action<Message> _onMessageCalled;
 
             void IProgress<Message>.Report(Message value)
             {
                 _onMessageCalled(value);
+            }
+        }
+
+        private class ProgressJSONMessage : IProgress<JSONMessage>
+        {
+            internal Action<JSONMessage> _onJSONMessageCalled;
+
+            void IProgress<JSONMessage>.Report(JSONMessage value)
+            {
+                _onJSONMessageCalled(value);
             }
         }
     }

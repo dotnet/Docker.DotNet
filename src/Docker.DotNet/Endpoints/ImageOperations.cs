@@ -50,22 +50,22 @@ namespace Docker.DotNet
             return _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
         }
 
-        public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             return CreateImageAsync(parameters, null, authConfig, progress, cancellationToken);
         }
 
-        public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             return CreateImageAsync(parameters, null, authConfig, headers, progress, cancellationToken);
         }
 
-        public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             return CreateImageAsync(parameters, imageStream, authConfig, null, progress, cancellationToken);
         }
 
-        public Task<Stream> CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
+        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
