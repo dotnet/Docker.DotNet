@@ -4,7 +4,7 @@ A tool that reflects the Docker client [engine-api](https://github.com/docker/en
 
 ----
 
-##How to use:
+## How to use:
 
 To update the source repositories please use the following from your `$GOPATH`:
 
@@ -24,19 +24,19 @@ Should result in changes to the Docker.DotNet/Models directory if any exist.
 
 ----
 
-##About the structure of the tool:
+## About the structure of the tool:
 
 Many of Docker's engine-api types are used for both the query string and json body. Because there is no way to attribute this on the engine-api types themselves we have broken the tool into a few specific areas:
 
 `Csharptype.go`: Contains the translation/serialization code for writing the C# classes.
-<br />
+
 `Modeldefs.go` : Contains the parts of engine-api that are used as parameters or require custom serialization that needs to be explicitly handled differently.
-<br />
+
 `Specgen.go`   : Contains the majority of the code that reflects the engine-api structs and converts them to the C# in-memory abstractions.
 
 ----
 
-##About the structure of the output:
+## About the structure of the output:
 
 The resulting C# type contains both the `QueryString` parameters as well as the `JSON` body models in one object. This simplifies the calling API quite dramatically. For example:
 
