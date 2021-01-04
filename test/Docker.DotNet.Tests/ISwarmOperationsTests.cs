@@ -11,7 +11,6 @@ namespace Docker.DotNet.Tests
     public class ISwarmOperationsTests : IDisposable
     {
         private readonly DockerClient _client;
-        private bool wasSwarmInitialized = false;
 
         public ISwarmOperationsTests()
         {
@@ -25,8 +24,7 @@ namespace Docker.DotNet.Tests
             }
             catch (Exception ex)
             {
-                wasSwarmInitialized = true;
-                System.Diagnostics.Debug.WriteLine($"Swarm init: {ex.Message}");
+                Console.WriteLine($"Swarm init: {ex.Message}");
             }
         }
 
