@@ -41,8 +41,7 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         Task<SwarmInspectResponse> InspectSwarmAsync(CancellationToken cancellationToken = default(CancellationToken));
-		
-		
+				
         /// <summary>
         /// Join an existing swarm.
         /// </summary>
@@ -52,7 +51,7 @@ namespace Docker.DotNet
         /// 503 - Node is already part of a swarm.
         /// </remarks>
         /// <param name="parameters">The join parameters.</param>
-        Task<DockerApiResponse> JoinSwarmAsync(SwarmJoinParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task JoinSwarmAsync(SwarmJoinParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Leave a swarm.
@@ -63,7 +62,7 @@ namespace Docker.DotNet
         /// 503 - Node not part of a swarm.
         /// </remarks>
         /// <param name="parameters">The leave parameters.</param>
-        Task<DockerApiResponse> LeaveSwarmAsync(SwarmLeaveParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task LeaveSwarmAsync(SwarmLeaveParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Unlock a locked manager.
@@ -74,7 +73,7 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         /// <param name="parameters">The swarm's unlock key.</param>
-        Task<DockerApiResponse> UnlockSwarmAsync(SwarmUnlockParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task UnlockSwarmAsync(SwarmUnlockParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
  /// <summary>
         /// Update a swarm.
@@ -86,7 +85,7 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         /// <param name="parameters">The update parameters.</param>
-        Task<DockerApiResponse> UpdateSwarmAsync(SwarmUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateSwarmAsync(SwarmUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create a service.
@@ -100,7 +99,6 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         Task<ServiceCreateResponse> CreateServiceAsync(ServiceCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-		
 		
         /// <summary>
         /// Inspect a service.
@@ -139,7 +137,6 @@ namespace Docker.DotNet
         /// <returns>The service spec.</returns>
         Task<ServiceUpdateResponse> UpdateServiceAsync(string id, ServiceUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
-
         /// <summary>
         /// Delete a service.
         /// </summary>
@@ -150,7 +147,7 @@ namespace Docker.DotNet
         /// 503 - Node is not part of a swarm.
         /// </remarks>
         /// <param name="id">ID or name of service.</param>
-        Task<DockerApiResponse> RemoveServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task RemoveServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// List nodes.
@@ -162,7 +159,6 @@ namespace Docker.DotNet
         /// </remarks>
         /// <returns></returns>
         Task<IEnumerable<NodeListResponse>> ListNodesAsync(CancellationToken cancellationToken = default(CancellationToken));
-
 
         /// <summary>
         /// Inspect a node.
@@ -184,8 +180,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        Task<DockerApiResponse> RemoveNodeAsync(string id, bool force, CancellationToken cancellationToken = default(CancellationToken));
-
+        Task RemoveNodeAsync(string id, bool force, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a Config
@@ -203,7 +198,6 @@ namespace Docker.DotNet
         /// <returns></returns>
         Task<DockerApiResponse> UpdateConfigAsync(string id, SwarmUpdateConfigParameters parameters, CancellationToken cancellationToken = default);
 
-
         /// <summary>
         /// Create a config
         /// </summary>
@@ -217,7 +211,6 @@ namespace Docker.DotNet
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task<SwarmCreateConfigResponse> CreateConfigAsync(SwarmCreateConfigParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
 
         /// <summary>
         /// Get service logs.
@@ -249,9 +242,7 @@ namespace Docker.DotNet
         /// <param name="cancellationToken">A token used to cancel this operation.</param>
         /// <returns>A stream with the retrieved logs. If the service wasn't created with a TTY, this stream is multiplexed.</returns>
         Task<MultiplexedStream> GetServiceLogsAsync(string id, bool tty, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
-        
-
+    
         /// <summary>
         /// Inspect a config
         /// </summary>
@@ -266,7 +257,6 @@ namespace Docker.DotNet
         /// <returns></returns>
         Task<SwarmConfig> InspectConfigAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
-
         /// <summary>
         /// List configs
         /// </summary>
@@ -277,7 +267,6 @@ namespace Docker.DotNet
         /// </remarks>
         /// <returns></returns>
         Task<IEnumerable<SwarmConfig>> ListConfigsAsync(ConfigsListParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
-
 
         /// <summary>
         /// Delete a config
@@ -293,7 +282,6 @@ namespace Docker.DotNet
         /// <returns></returns>
         Task<DockerApiResponse> RemoveConfigAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
-
         /// <summary>
         /// Update node.
         /// </summary>
@@ -306,8 +294,7 @@ namespace Docker.DotNet
         /// <param name="id">ID or name of the node.</param>
         /// <param name="version">Current version of the node object.</param>
         /// <param name="parameters">Parameters to update.</param>
-        Task<DockerApiResponse> UpdateNodeAsync(string id, ulong version, NodeUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
+        Task UpdateNodeAsync(string id, ulong version, NodeUpdateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
            }
 }
