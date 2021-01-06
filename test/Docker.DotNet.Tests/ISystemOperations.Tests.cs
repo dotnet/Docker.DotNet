@@ -127,7 +127,14 @@ namespace Docker.DotNet.Tests
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
 
             cts.Cancel();
-            await task;
+            try
+            {
+                await task;
+            }
+            catch
+            {
+                // Exception could be thrown when cancelling task, not always thrown, not always the same exception type
+            }
 
             Assert.True(wasProgressCalled);
             Assert.True(wasJSONMessageProgressCalled);
