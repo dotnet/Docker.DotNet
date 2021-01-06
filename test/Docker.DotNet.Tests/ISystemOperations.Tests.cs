@@ -110,7 +110,7 @@ namespace Docker.DotNet.Tests
                 _onMessageCalled = (m) =>
                 {
                     Assert.NotNull(m);
-                    Assert.True(m.Status == "tag" || m.Status == "pull");
+                    Assert.True(m.Status == "tag" || m.Status == "pull" || m.Status == "untag");
                     Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled - {m.Action} - {m.Status} {m.From} - {m.Type}");
                     wasProgressCalled = true;
                 }
