@@ -57,21 +57,24 @@ namespace Docker.DotNet.Tests
 
             var task = _client.System.MonitorEventsAsync(new EventsParameters(), progress, cts.Token);
 
-            var exceptionIsThrown = false;
+            var taskFinishes = false;
             try
             {
                 await task;
             }
             catch
             {
-                // Exception is not always thrown
-                exceptionIsThrown = true;
+                // Exception is not always thrown when cancelling token
+            }
+            finally
+            {
+                taskFinishes = true;
             }
 
             // On local develop machine task is completed.
-            // On CI/CD Pipeline exception is thrown
+            // On CI/CD Pipeline exception is thrown, not always
 
-            Assert.True(task.IsCompleted || exceptionIsThrown);
+            Assert.True(task.IsCompleted || taskFinishes);
         }
 
         [Fact]
