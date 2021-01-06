@@ -95,14 +95,12 @@ namespace Docker.DotNet.Tests
             const string repository = "hello-world";
             var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
 
-            var wasJSONMessageProgressCalled = false;
             var progressJSONMessage = new ProgressJSONMessage
             {
                 _onJSONMessageCalled = (m) =>
                 {
-                    Assert.NotNull(m);
                     // Status could be 'Pulling from...'
-                    wasJSONMessageProgressCalled = true;
+                    Assert.NotNull(m);
                 }
             };
 
@@ -137,7 +135,6 @@ namespace Docker.DotNet.Tests
             }
 
             Assert.True(wasProgressCalled);
-            Assert.True(wasJSONMessageProgressCalled);
 
             await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
         }
