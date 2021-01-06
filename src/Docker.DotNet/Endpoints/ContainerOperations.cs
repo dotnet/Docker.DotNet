@@ -202,7 +202,6 @@ namespace Docker.DotNet
 
             var queryParams = parameters == null ? null : new QueryString<ContainerStartParameters>(parameters);
             var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/start", queryParams, cancellationToken).ConfigureAwait(false);
-
             return response.StatusCode != HttpStatusCode.NotModified;
         }
 
