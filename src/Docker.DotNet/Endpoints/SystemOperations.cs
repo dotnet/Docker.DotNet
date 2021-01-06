@@ -22,7 +22,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(authConfig));
             }
-            var data = new JsonRequestContent<AuthConfig>(authConfig, this._client.JsonSerializer);
+            var data = new JsonRequestContent<AuthConfig>(authConfig, this._client.JsonSerializer);            
             return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "auth", null, data, cancellationToken);
         }
 
