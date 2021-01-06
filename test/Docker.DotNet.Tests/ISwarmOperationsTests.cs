@@ -22,10 +22,7 @@ namespace Docker.DotNet.Tests
             {
                 var result = _client.Swarm.InitSwarmAsync(new SwarmInitParameters { AdvertiseAddr = "10.10.10.10", ListenAddr = "127.0.0.1" }, default).Result;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Swarm init: {ex.Message}");
-            }
+            catch (Exception) { }
         }
 
         [Fact]
