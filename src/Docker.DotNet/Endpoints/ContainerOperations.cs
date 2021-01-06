@@ -48,6 +48,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(parameters));
             }
+
             if (!string.IsNullOrEmpty(parameters.Name))
             {
                 qs = new QueryString<CreateContainerParameters>(parameters);
@@ -75,6 +76,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -91,6 +93,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -115,6 +118,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -154,6 +158,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -226,6 +231,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -243,6 +249,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -289,6 +296,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -322,6 +330,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -337,6 +346,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -367,6 +377,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
@@ -391,6 +402,7 @@ namespace Docker.DotNet
             {
                 throw new ArgumentNullException(nameof(id));
             }
+
             if (parameters == null)
             {
                 throw new ArgumentNullException(nameof(parameters));
