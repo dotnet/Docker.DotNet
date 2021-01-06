@@ -6,15 +6,15 @@ namespace Docker.DotNet
 {
     public class DockerClientConfiguration : IDisposable
     {
-	    public Uri EndpointBaseUri { get; internal set; }
-		
-		public Credentials Credentials { get; internal set; }
-		
+        public Uri EndpointBaseUri { get; internal set; }
+
+        public Credentials Credentials { get; internal set; }
+
         public TimeSpan DefaultTimeout { get; internal set; } = TimeSpan.FromSeconds(100);
-    
+
         public TimeSpan NamedPipeConnectTimeout { get; set; } = TimeSpan.FromMilliseconds(100);
 
-		private static Uri LocalDockerUri()
+        private static Uri LocalDockerUri()
         {
             var dockerHostVar = Environment.GetEnvironmentVariable("DOCKER_HOST");
             var defaultDockerUrl = !string.IsNullOrEmpty(dockerHostVar)
@@ -25,8 +25,9 @@ namespace Docker.DotNet
 
             return new Uri(defaultDockerUrl);
         }
-        public DockerClientConfiguration(Credentials credentials = null, TimeSpan defaultTimeout = default(TimeSpan)) 
-			: this(LocalDockerUri(), credentials, defaultTimeout)
+
+        public DockerClientConfiguration(Credentials credentials = null, TimeSpan defaultTimeout = default(TimeSpan))
+            : this(LocalDockerUri(), credentials, defaultTimeout)
         {
         }
 
@@ -34,9 +35,9 @@ namespace Docker.DotNet
         {
             if (endpoint == null)
                 throw new ArgumentNullException(nameof(endpoint));
-            
+
             Credentials = credentials ?? new AnonymousCredentials();
-            
+
             EndpointBaseUri = endpoint;
             if (defaultTimeout != TimeSpan.Zero)
             {
@@ -48,7 +49,6 @@ namespace Docker.DotNet
             }
         }
 
-        
         public DockerClient CreateClient() => this.CreateClient(null);
 
         public DockerClient CreateClient(Version requestedApiVersion) => new DockerClient(this, requestedApiVersion);
@@ -58,7 +58,5 @@ namespace Docker.DotNet
             Credentials.Dispose();
             GC.SuppressFinalize(this);
         }
-
-        
     }
 }
