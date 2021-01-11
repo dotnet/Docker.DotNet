@@ -426,16 +426,3 @@ type SecretCreateResponse struct {
 type TasksListParameters struct {
 	Filters Args `rest:"query"`
 }
-
-// TLSInfo represents the TLS information about what CA certificate is trusted,
-// and who the issuer for a TLS certificate is
-type TLSInfo struct {
-	// TrustRoot is the trusted CA root certificate in PEM format
-	TrustRoot string `json:",omitempty"`
-
-	// CertIssuer is the raw subject bytes of the issuer
-	CertIssuerSubject string `json:",omitempty"`
-
-	// CertIssuerPublicKey is the raw public key bytes of the issuer
-	CertIssuerPublicKey string `json:",omitempty"`
-}
