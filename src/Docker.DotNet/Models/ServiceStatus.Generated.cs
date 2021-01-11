@@ -10,5 +10,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "DesiredTasks", EmitDefaultValue = false)]
         public ulong DesiredTasks { get; set; }
+
+        [DataMember(Name = "CompletedTasks", EmitDefaultValue = false)]
+        public ulong CompletedTasks { get; set; }
     }
 }

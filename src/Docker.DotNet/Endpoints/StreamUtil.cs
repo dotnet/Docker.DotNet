@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Docker.DotNet.Models
 {
@@ -30,31 +31,46 @@ namespace Docker.DotNet.Models
 
         internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
         {
-            using (var stream = await streamTask)
+            var serializer = new Newtonsoft.Json.JsonSerializer();
+            try
             {
-                // ReadLineAsync must be cancelled by closing the whole stream.
+                using (var stream = await streamTask)
                 using (cancel.Register(() => stream.Dispose()))
+                using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+                using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
                 {
-                    using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+                    while (jsonReader.Read())
                     {
-                        string line;
-                        try
-                        {
-                            while ((line = await reader.ReadLineAsync()) != null)
-                            {
-                                var prog = client.JsonSerializer.DeserializeObject<T>(line);
-                                if (prog == null) continue;
+                        var ev = serializer.Deserialize<T>(jsonReader);
+                        if (progress is null) continue;
 
-                                progress.Report(prog);
-                            }
-                        }
-                        catch (ObjectDisposedException)
+                        progress.Report(ev);
+
+                        if (cancel.IsCancellationRequested)
                         {
-                            // The subsequent call to reader.ReadLineAsync() after cancellation
-                            // will fail because we disposed the stream. Just ignore here.
+                            break;
                         }
                     }
                 }
+            }
+            catch (AggregateException ex)
+            {
+                foreach (var innerException in ex.InnerExceptions)
+                {
+                    if (innerException is ObjectDisposedException || innerException is System.Net.Sockets.SocketException || innerException is System.IO.IOException || innerException is System.ArgumentException)
+                    {
+                        // Ignore reads on disposed streams.
+                    }
+                    else
+                    {
+                        // Could throw
+                        throw innerException;
+                    }
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                // Ignore reads on disposed streams
             }
         }
 

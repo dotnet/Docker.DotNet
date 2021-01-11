@@ -40,6 +40,7 @@ var CSInboxTypesMap = map[reflect.Kind]CSType{
 var CSCustomTypeMap = map[reflect.Type]CSType{
 	reflect.TypeOf(time.Time{}):         {"System", "DateTime", true},
 	reflect.TypeOf(registry.NetIPNet{}): {"", "string", false},
+	reflect.TypeOf([]byte{}):            {"", "string", false},
 	EmptyStruct:                         {"", "BUG_IN_CONVERSION", false},
 }
 

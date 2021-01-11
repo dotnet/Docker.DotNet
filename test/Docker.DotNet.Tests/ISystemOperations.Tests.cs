@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.ServiceProcess;
 using Docker.DotNet.Models;
 using Xunit;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Docker.DotNet.Tests
 {
@@ -21,11 +23,18 @@ namespace Docker.DotNet.Tests
         public void DockerService_IsRunning()
         {
             var services = ServiceController.GetServices();
-            using (var dockerService = services.SingleOrDefault(service => service.ServiceName == "docker"))
+            using (var dockerService = services.FirstOrDefault(service => service.ServiceName == "docker" || service.ServiceName == "com.docker.service"))
             {
                 Assert.NotNull(dockerService); // docker is not running
                 Assert.Equal(ServiceControllerStatus.Running, dockerService.Status);
             }
+        }
+
+        [Fact]
+        public async Task GetSystemInfoAsync_Succeeds()
+        {
+            var info = await _client.System.GetSystemInfoAsync();
+            Assert.NotNull(info.Architecture);
         }
 
         [Fact]
@@ -36,16 +45,36 @@ namespace Docker.DotNet.Tests
         }
 
         [Fact]
-        public async Task PingAsync_Succeeds()
+        public async Task MonitorEventsAsync_EmptyContainersList_CanBeCancelled()
         {
-            await _client.System.PingAsync();
-        }
+            var progress = new ProgressMessage()
+            {
+                _onMessageCalled = (m) => { }
+            };
 
-        [Fact]
-        public async Task GetSystemInfoAsync_Succeeds()
-        {
-            var info = await _client.System.GetSystemInfoAsync();
-            Assert.NotNull(info.Architecture);
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(1000);
+
+            var task = _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progress, cts.Token);
+
+            var taskFinishes = false;
+            try
+            {
+                await task;
+            }
+            catch
+            {
+                // Exception is not always thrown when cancelling token
+            }
+            finally
+            {
+                taskFinishes = true;
+            }
+
+            // On local develop machine task is completed.
+            // On CI/CD Pipeline exception is thrown, not always
+
+            Assert.True(task.IsCompleted || taskFinishes);
         }
 
         [Fact]
@@ -63,48 +92,144 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task MonitorEventsAsync_Succeeds()
         {
-            const string repository = "alpine";
-            await _client.Images.CreateImageAsync(
-                new ImagesCreateParameters
+            const string repository = "hello-world";
+            var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
+
+            var progressJSONMessage = new ProgressJSONMessage
+            {
+                _onJSONMessageCalled = (m) =>
                 {
-                    Repo = repository,
-                    Tag = "latest"
-                }, null, null);
-            const string tag = "MonitorTests";
+                    // Status could be 'Pulling from...'
+                    Assert.NotNull(m);
+                }
+            };
 
             var wasProgressCalled = false;
-
-            var cts = new CancellationTokenSource();
-            var progress = new Progress()
+            var progressMessage = new ProgressMessage
             {
-                _onCalled = (m) =>
+                _onMessageCalled = (m) =>
                 {
                     Assert.NotNull(m);
-                    Assert.Equal("tag", m.Status);
-
+                    Assert.True(m.Status == "tag" || m.Status == "pull" || m.Status == "untag");
+                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled - {m.Action} - {m.Status} {m.From} - {m.Type}");
                     wasProgressCalled = true;
                 }
             };
 
-            var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progress, cts.Token));
-            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = tag });
+            using var cts = new CancellationTokenSource();
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = "hello-world" }, null, progressJSONMessage);
+
+            var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token));
+
+            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
+
             cts.Cancel();
-            await task;
+            try
+            {
+                await task;
+            }
+            catch
+            {
+                // Exception could be thrown when cancelling task, not always thrown, not always the same exception type
+            }
 
             Assert.True(wasProgressCalled);
 
-            await _client.Images.DeleteImageAsync($"{repository}:{tag}", new ImageDeleteParameters());
+            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
         }
 
-
-
-        class Progress : IProgress<Message>
+        [Fact]
+        public async Task MonitorEventsFiltered_Succeeds()
         {
-            internal Action<Message> _onCalled;
+            const string repository = "hello-world";
+            var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
+
+            var progressJSONMessage = new ProgressJSONMessage
+            {
+                _onJSONMessageCalled = (m) => { }
+            };
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
+
+            var progressCalledCounter = 0;
+
+            var eventsParams = new ContainerEventsParameters()
+            {
+                Filters = new Dictionary<string, IDictionary<string, bool>>()
+                {
+                    {
+                        "event", new Dictionary<string, bool>()
+                        {
+                            {
+                                "tag", true
+                            },
+                            {
+                                "untag", true
+                            }
+                        }
+                    },
+                    {
+                        "type", new Dictionary<string, bool>()
+                        {
+                            {
+                                "image", true
+                            }
+                        }
+                    }
+                }
+            };
+
+            var progress = new ProgressMessage()
+            {
+                _onMessageCalled = (m) =>
+                {
+                    Console.WriteLine($"Received: {m.Action} - {m.Status} {m.From} - {m.Type}");
+                    Assert.True(m.Status == "tag" || m.Status == "untag");
+                    progressCalledCounter++;
+                }
+            };
+
+            using var cts = new CancellationTokenSource();
+            var task = Task.Run(() => _client.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
+
+            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
+            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+
+            var newContainerId = _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository }).Result.ID;
+            await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
+
+            cts.Cancel();
+            await task;
+
+            Assert.Equal(2, progressCalledCounter);
+        }
+
+        [Fact]
+        public async Task PingAsync_Succeeds()
+        {
+            await _client.System.PingAsync();
+        }
+
+        private class ProgressMessage : IProgress<Message>
+        {
+            internal Action<Message> _onMessageCalled;
 
             void IProgress<Message>.Report(Message value)
             {
-                _onCalled(value);
+                _onMessageCalled(value);
+            }
+        }
+
+        private class ProgressJSONMessage : IProgress<JSONMessage>
+        {
+            internal Action<JSONMessage> _onJSONMessageCalled;
+
+            void IProgress<JSONMessage>.Report(JSONMessage value)
+            {
+                _onJSONMessageCalled(value);
             }
         }
     }

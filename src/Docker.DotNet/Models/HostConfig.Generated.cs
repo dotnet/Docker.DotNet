@@ -81,9 +81,6 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "CapDrop", EmitDefaultValue = false)]
         public IList<string> CapDrop { get; set; }
 
-        [DataMember(Name = "Capabilities", EmitDefaultValue = false)]
-        public IList<string> Capabilities { get; set; }
-
         [DataMember(Name = "CgroupnsMode", EmitDefaultValue = false)]
         public string CgroupnsMode { get; set; }
 

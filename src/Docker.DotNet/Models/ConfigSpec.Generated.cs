@@ -4,13 +4,13 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class SecretSpec // (swarm.SecretSpec)
+    public class ConfigSpec // (swarm.ConfigSpec)
     {
-        public SecretSpec()
+        public ConfigSpec()
         {
         }
 
-        public SecretSpec(Annotations Annotations)
+        public ConfigSpec(Annotations Annotations)
         {
             if (Annotations != null)
             {
@@ -27,9 +27,6 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Data", EmitDefaultValue = false)]
         public string Data { get; set; }
-
-        [DataMember(Name = "Driver", EmitDefaultValue = false)]
-        public SwarmDriver Driver { get; set; }
 
         [DataMember(Name = "Templating", EmitDefaultValue = false)]
         public SwarmDriver Templating { get; set; }

@@ -205,9 +205,8 @@ type ImagesCreateParameters struct {
 
 // ImagesListParameters for GET /images/json
 type ImagesListParameters struct {
-	MatchName string `rest:"query,filter"`
-	All       bool   `rest:"query"`
-	Filters   Args   `rest:"query"`
+	All     bool `rest:"query"`
+	Filters Args `rest:"query"`
 }
 
 // ImageLoadParameters for POST /images/load
@@ -223,13 +222,15 @@ type ImagesPruneParameters struct {
 // ImagesSearchParameters for GET /images/search
 type ImagesSearchParameters struct {
 	Term         string           `rest:"query"`
+	Limit        int              `rest:"query"`
+	Filters      Args             `rest:"query"`
 	RegistryAuth types.AuthConfig `rest:"headers,X-Registry-Auth"`
 }
 
 // ImageDeleteParameters for DELETE /images/(id)
 type ImageDeleteParameters struct {
-	Force         bool `rest:"query"`
-	NoPrune       bool `rest:"query,noprune"`
+	Force   bool `rest:"query"`
+	NoPrune bool `rest:"query,noprune"`
 }
 
 // ImageInspectParameters for GET /images/(id)/json
@@ -339,6 +340,19 @@ type VolumesListResponse struct {
 	Warnings []string
 }
 
+// SwarmConfig represents a config.
+type SwarmConfig swarm.Config
+
+// SwarmCreateConfigParameters for POST /configs/create
+type SwarmCreateConfigParameters struct {
+	Config swarm.ConfigSpec `rest:"body,,required"`
+}
+
+// SwarmCreateConfigResponse for POST /configs/create
+type SwarmCreateConfigResponse struct {
+	ID string
+}
+
 // SwarmLeaveParameters for POST /swarm/leave
 type SwarmLeaveParameters struct {
 	Force bool `rest:"query"`
@@ -359,10 +373,29 @@ type SwarmUpdateParameters struct {
 // SwarmUnlockParameters for POST /swarm/unlock
 type SwarmUnlockParameters swarm.UnlockRequest
 
+// SwarmUpdateConfigParameters for POST /configs/(id)/update
+type SwarmUpdateConfigParameters struct {
+	Config  swarm.ConfigSpec `rest:"body,,required"`
+	Version int64            `rest:"query,version,required"`
+}
+
+// MessageResponse for methods returning json:"message", like for POST /configs/(id)/update
+type MessageResponse struct {
+	Message string `json:"message"`
+}
+
 // ServiceCreateParameters for POST /services/create
 type ServiceCreateParameters struct {
 	Service      swarm.ServiceSpec `rest:"body,service,required"`
 	RegistryAuth types.AuthConfig  `rest:"headers,X-Registry-Auth"`
+}
+
+// ServiceListParameters clone ServiceListOptions for GET /services, mimic ServiceListOptions
+type ServiceListParameters struct {
+	Filters Args `rest:"query"`
+	// Status indicates whether the server should include the service task
+	// count of running and desired tasks.
+	Status bool `rest:"query"`
 }
 
 // ServiceUpdateParameters for POST /services/{id}/update
@@ -373,6 +406,17 @@ type ServiceUpdateParameters struct {
 	RegistryAuth     types.AuthConfig  `rest:"headers,X-Registry-Auth"`
 }
 
+// ServiceLogsParameters for POST /services/(id)/logs
+type ServiceLogsParameters struct {
+	ShowStdout bool   `rest:"query,stdout"`
+	ShowStderr bool   `rest:"query,stderr"`
+	Since      string `rest:"query"`
+	Timestamps bool   `rest:"query"`
+	Follow     bool   `rest:"query"`
+	Tail       string `rest:"query"`
+	Details    bool   `rest:"query"`
+}
+
 // SecretCreateResponse for POST /secrets/create
 type SecretCreateResponse struct {
 	ID string
@@ -380,5 +424,18 @@ type SecretCreateResponse struct {
 
 // TasksListParameters for GET /tasks
 type TasksListParameters struct {
-	Filters Args   `rest:"query"`
+	Filters Args `rest:"query"`
+}
+
+// TLSInfo represents the TLS information about what CA certificate is trusted,
+// and who the issuer for a TLS certificate is
+type TLSInfo struct {
+	// TrustRoot is the trusted CA root certificate in PEM format
+	TrustRoot string `json:",omitempty"`
+
+	// CertIssuer is the raw subject bytes of the issuer
+	CertIssuerSubject string `json:",omitempty"`
+
+	// CertIssuerPublicKey is the raw public key bytes of the issuer
+	CertIssuerPublicKey string `json:",omitempty"`
 }
