@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Docker.DotNet.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
-using System.ServiceProcess;
-using Docker.DotNet.Models;
 using Xunit;
-using System.IO;
-using System.Collections.Generic;
 
 namespace Docker.DotNet.Tests
 {
@@ -101,6 +100,7 @@ namespace Docker.DotNet.Tests
                 {
                     // Status could be 'Pulling from...'
                     Assert.NotNull(m);
+                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onJSONMessageCalled - {m.ID} - {m.Status} {m.From} - {m.Stream}");
                 }
             };
 
