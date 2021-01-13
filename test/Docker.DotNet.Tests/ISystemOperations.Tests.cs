@@ -99,8 +99,8 @@ namespace Docker.DotNet.Tests
                 _onJSONMessageCalled = (m) =>
                 {
                     // Status could be 'Pulling from...'
-                    Assert.NotNull(m);
                     Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onJSONMessageCalled - {m.ID} - {m.Status} {m.From} - {m.Stream}");
+                    Assert.NotNull(m);
                 }
             };
 
@@ -109,10 +109,10 @@ namespace Docker.DotNet.Tests
             {
                 _onMessageCalled = (m) =>
                 {
-                    Assert.NotNull(m);
-                    Assert.True(m.Status == "tag" || m.Status == "pull" || m.Status == "untag");
                     Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled - {m.Action} - {m.Status} {m.From} - {m.Type}");
                     wasProgressCalled = true;
+                    Assert.NotNull(m);
+                    Assert.True(m.Status == "tag" || m.Status == "pull" || m.Status == "untag");
                 }
             };
 
