@@ -6,6 +6,6 @@ namespace Docker.DotNet.Models
     public class SwarmCreateConfigParameters // (main.SwarmCreateConfigParameters)
     {
         [DataMember(Name = "Config", EmitDefaultValue = false)]
-        public ConfigSpec Config { get; set; }
+        public SwarmConfigSpec Config { get; set; }
     }
 }

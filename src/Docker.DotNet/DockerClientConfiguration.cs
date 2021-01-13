@@ -16,14 +16,8 @@ namespace Docker.DotNet
 
         private static Uri LocalDockerUri()
         {
-            var dockerHostVar = Environment.GetEnvironmentVariable("DOCKER_HOST");
-            var defaultDockerUrl = !string.IsNullOrEmpty(dockerHostVar)
-                ? dockerHostVar
-                : !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                    ? "unix:///var/run/docker.sock"
-                    : "npipe://./pipe/docker_engine";
-
-            return new Uri(defaultDockerUrl);
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            return isWindows ? new Uri("npipe://./pipe/docker_engine") : new Uri("unix:/var/run/docker.sock");
         }
 
         public DockerClientConfiguration(Credentials credentials = null, TimeSpan defaultTimeout = default(TimeSpan))

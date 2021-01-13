@@ -6,7 +6,7 @@ namespace Docker.DotNet.Models
     public class SwarmUpdateConfigParameters // (main.SwarmUpdateConfigParameters)
     {
         [DataMember(Name = "Config", EmitDefaultValue = false)]
-        public ConfigSpec Config { get; set; }
+        public SwarmConfigSpec Config { get; set; }
 
         [QueryStringParameter("version", true)]
         public long Version { get; set; }

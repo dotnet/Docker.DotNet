@@ -33,6 +33,6 @@ namespace Docker.DotNet.Models
         public DateTime UpdatedAt { get; set; }
 
         [DataMember(Name = "Spec", EmitDefaultValue = false)]
-        public ConfigSpec Spec { get; set; }
+        public SwarmConfigSpec Spec { get; set; }
     }
 }

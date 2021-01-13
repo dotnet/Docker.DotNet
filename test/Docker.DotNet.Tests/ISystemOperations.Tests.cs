@@ -1,10 +1,10 @@
-﻿using Docker.DotNet.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Models;
 using Xunit;
 
 namespace Docker.DotNet.Tests

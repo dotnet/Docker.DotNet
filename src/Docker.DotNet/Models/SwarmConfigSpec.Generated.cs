@@ -4,13 +4,13 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class ConfigSpec // (swarm.ConfigSpec)
+    public class SwarmConfigSpec // (swarm.ConfigSpec)
     {
-        public ConfigSpec()
+        public SwarmConfigSpec()
         {
         }
 
-        public ConfigSpec(Annotations Annotations)
+        public SwarmConfigSpec(Annotations Annotations)
         {
             if (Annotations != null)
             {

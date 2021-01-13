@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +21,7 @@ namespace Docker.DotNet.Tests
             {
                 var result = _client.Swarm.InitSwarmAsync(new SwarmInitParameters { AdvertiseAddr = "10.10.10.10", ListenAddr = "127.0.0.1" }, default).Result;
             }
-            catch (Exception) { }
+            catch { }
         }
 
         [Fact]
@@ -153,7 +152,7 @@ namespace Docker.DotNet.Tests
             await _client.Swarm.RemoveServiceAsync(firstServiceId, default);
             await _client.Swarm.RemoveServiceAsync(secondServiceId, default);
             await _client.Swarm.RemoveServiceAsync(thirdServiceid, default);
-        }        
+        }
 
         public void Dispose()
         {

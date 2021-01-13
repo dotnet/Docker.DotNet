@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class Limit // (swarm.Limit)
+    public class SwarmLimit // (swarm.Limit)
     {
         [DataMember(Name = "NanoCPUs", EmitDefaultValue = false)]
         public long NanoCPUs { get; set; }

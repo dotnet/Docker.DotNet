@@ -121,7 +121,6 @@ namespace Docker.DotNet
             _endpointBaseUri = uri;
 
             _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
-            _client.DefaultRequestHeaders.Add(nameof(_endpointBaseUri.Host), _endpointBaseUri.Host);
             DefaultTimeout = Configuration.DefaultTimeout;
             _client.Timeout = s_InfiniteTimeout;
         }

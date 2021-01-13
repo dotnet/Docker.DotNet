@@ -9,7 +9,6 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
         public ServiceFilter Filters { get; set; }
     }
-    
     public class ServiceFilter : Dictionary<string, string[]>
     {
         public string[] Id
@@ -32,7 +31,6 @@ namespace Docker.DotNet.Models
             get => this["name"];
             set => this["name"] = value;
         }
-        
     }
 
     public enum ServiceCreationMode
