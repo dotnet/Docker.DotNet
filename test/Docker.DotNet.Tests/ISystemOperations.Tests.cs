@@ -56,24 +56,7 @@ namespace Docker.DotNet.Tests
 
             var task = _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progress, cts.Token);
 
-            var taskFinishes = false;
-            try
-            {
-                await task;
-            }
-            catch
-            {
-                // Exception is not always thrown when cancelling token
-            }
-            finally
-            {
-                taskFinishes = true;
-            }
-
-            // On local develop machine task is completed.
-            // On CI/CD Pipeline exception is thrown, not always
-
-            Assert.True(task.IsCompleted || taskFinishes);
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
         }
 
         [Fact]
@@ -125,14 +108,7 @@ namespace Docker.DotNet.Tests
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
 
             cts.Cancel();
-            try
-            {
-                await task;
-            }
-            catch
-            {
-                // Exception could be thrown when cancelling task, not always thrown, not always the same exception type
-            }
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
 
             Assert.True(wasProgressCalled);
 
@@ -184,7 +160,7 @@ namespace Docker.DotNet.Tests
             {
                 _onMessageCalled = (m) =>
                 {
-                    Console.WriteLine($"Received: {m.Action} - {m.Status} {m.From} - {m.Type}");
+                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled received: {m.Action} - {m.Status} {m.From} - {m.Type}");
                     Assert.True(m.Status == "tag" || m.Status == "untag");
                     progressCalledCounter++;
                 }
@@ -202,7 +178,7 @@ namespace Docker.DotNet.Tests
             await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
 
             cts.Cancel();
-            await task;
+            await Assert.ThrowsAsync<OperationCanceledException>(async () => await task);
 
             Assert.Equal(2, progressCalledCounter);
         }
