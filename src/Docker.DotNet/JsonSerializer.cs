@@ -17,7 +17,8 @@ namespace Docker.DotNet
                 new JsonVersionConverter(),
                 new StringEnumConverter(),
                 new TimeSpanSecondsConverter(),
-                new TimeSpanNanosecondsConverter()
+                new TimeSpanNanosecondsConverter(),
+                new JsonBase64Converter()
             }
         };
 

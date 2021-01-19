@@ -26,7 +26,7 @@ namespace Docker.DotNet.Models
         public IDictionary<string, string> Labels { get; set; }
 
         [DataMember(Name = "Data", EmitDefaultValue = false)]
-        public string Data { get; set; }
+        public IList<byte> Data { get; set; }
 
         [DataMember(Name = "Driver", EmitDefaultValue = false)]
         public SwarmDriver Driver { get; set; }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -9,9 +10,9 @@ namespace Docker.DotNet.Models
         public string TrustRoot { get; set; }
 
         [DataMember(Name = "CertIssuerSubject", EmitDefaultValue = false)]
-        public string CertIssuerSubject { get; set; }
+        public IList<byte> CertIssuerSubject { get; set; }
 
         [DataMember(Name = "CertIssuerPublicKey", EmitDefaultValue = false)]
-        public string CertIssuerPublicKey { get; set; }
+        public IList<byte> CertIssuerPublicKey { get; set; }
     }
 }
