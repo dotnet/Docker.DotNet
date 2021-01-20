@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
@@ -18,15 +18,11 @@ namespace Docker.DotNet.Tests
             _client = new DockerClientConfiguration().CreateClient();
         }
 
-        [SupportedOSPlatformsFact(Platform.Windows)]
-        public void DockerService_IsRunning()
+        [Fact]
+        public void Docker_IsRunning()
         {
-            var services = ServiceController.GetServices();
-            using (var dockerService = services.FirstOrDefault(service => service.ServiceName == "docker" || service.ServiceName == "com.docker.service"))
-            {
-                Assert.NotNull(dockerService); // docker is not running
-                Assert.Equal(ServiceControllerStatus.Running, dockerService.Status);
-            }
+            var dockerProcess = Process.GetProcesses().FirstOrDefault(_ => _.ProcessName == "docker" || _.ProcessName == "com.docker.service");
+            Assert.NotNull(dockerProcess); // docker is not running
         }
 
         [Fact]
