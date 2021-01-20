@@ -6,6 +6,7 @@ namespace Docker.DotNet
 {
     internal class JsonBase64Converter : JsonConverter
     {
+        private static readonly Type _byteListType = typeof(IList<byte>);
         public override bool CanRead => true;
 
         public override bool CanWrite => false;
@@ -24,7 +25,7 @@ namespace Docker.DotNet
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(IList<byte>);
+            return objectType == _byteListType;
         }
     }
 }

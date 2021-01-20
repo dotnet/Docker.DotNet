@@ -10,6 +10,8 @@ namespace Docker.DotNet.Models
 {
     internal static class StreamUtil
     {
+        private static Newtonsoft.Json.JsonSerializer _serializer = new Newtonsoft.Json.JsonSerializer();
+
         internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
         {
             using (var stream = await streamTask)
@@ -31,15 +33,13 @@ namespace Docker.DotNet.Models
 
         internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
         {
-            var serializer = new Newtonsoft.Json.JsonSerializer();
-
             using (var stream = await streamTask)
             using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
             using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
             {
                 while (await jsonReader.ReadAsync().WithCancellation(cancel))
                 {
-                    var ev = serializer.Deserialize<T>(jsonReader);
+                    var ev = _serializer.Deserialize<T>(jsonReader);
                     progress?.Report(ev);
                 }
             }
