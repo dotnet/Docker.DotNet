@@ -21,7 +21,7 @@ namespace Docker.DotNet.Tests
         [Fact]
         public void Docker_IsRunning()
         {
-            var dockerProcess = Process.GetProcesses().FirstOrDefault(_ => _.ProcessName == "docker" || _.ProcessName == "com.docker.service");
+            var dockerProcess = Process.GetProcesses().FirstOrDefault(_ => _.ProcessName == "docker");
             Assert.NotNull(dockerProcess); // docker is not running
         }
 
