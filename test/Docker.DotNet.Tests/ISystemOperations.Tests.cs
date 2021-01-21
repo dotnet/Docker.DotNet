@@ -21,6 +21,13 @@ namespace Docker.DotNet.Tests
         [Fact]
         public void Docker_IsRunning()
         {
+
+            foreach (var item in Process.GetProcesses())
+            {
+                Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name} -> ProcessName: '{item.ProcessName}'");                    
+            }
+            
+
             var dockerProcess = Process.GetProcesses().FirstOrDefault(_ => _.ProcessName == "docker");
             Assert.NotNull(dockerProcess); // docker is not running
         }
