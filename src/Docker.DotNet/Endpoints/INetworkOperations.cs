@@ -17,7 +17,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<NetworkResponse>> ListNetworksAsync(NetworksListParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<NetworkResponse>> ListNetworksAsync(NetworksListParameters parameters = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Inspect a network.
@@ -29,7 +29,7 @@ namespace Docker.DotNet
         /// 404 - Network not found.
         /// </remarks>
         /// <param name="id">Network ID or name.</param>
-        Task<NetworkResponse> InspectNetworkAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<NetworkResponse> InspectNetworkAsync(string id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Remove a network.
@@ -42,7 +42,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">Network ID or name.</param>
-        Task DeleteNetworkAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteNetworkAsync(string id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Create a network.
@@ -55,7 +55,7 @@ namespace Docker.DotNet
         /// 404 - Plugin not found.
         /// 500 - Server error.
         /// </remarks>
-        Task<NetworksCreateResponse> CreateNetworkAsync(NetworksCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task<NetworksCreateResponse> CreateNetworkAsync(NetworksCreateParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Connect a container to a network.
@@ -69,7 +69,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">Network ID or name.</param>
-        Task ConnectNetworkAsync(string id, NetworkConnectParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task ConnectNetworkAsync(string id, NetworkConnectParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Disconnect a container from a network.
@@ -83,7 +83,7 @@ namespace Docker.DotNet
         /// 404 - Network or container not found.
         /// 500 - Server error.
         /// </remarks>
-        Task DisconnectNetworkAsync(string id, NetworkDisconnectParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task DisconnectNetworkAsync(string id, NetworkDisconnectParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Delete unused networks.
@@ -100,7 +100,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         [System.Obsolete("Use INetworkOperations.PruneNetworksAsync")]
-        Task DeleteUnusedNetworksAsync(NetworksDeleteUnusedParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteUnusedNetworksAsync(NetworksDeleteUnusedParameters parameters = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Delete unused networks.
@@ -116,6 +116,6 @@ namespace Docker.DotNet
         /// 404 - Network or container not found.
         /// 500 - Server error.
         /// </remarks>
-        Task<NetworksPruneResponse> PruneNetworksAsync(NetworksDeleteUnusedParameters parameters = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<NetworksPruneResponse> PruneNetworksAsync(NetworksDeleteUnusedParameters parameters = null, CancellationToken cancellationToken = default);
     }
 }

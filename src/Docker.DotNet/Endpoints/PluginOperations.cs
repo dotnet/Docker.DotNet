@@ -27,14 +27,14 @@ namespace Docker.DotNet
             this._client = client;
         }
 
-        public async Task<IList<Plugin>> ListPluginsAsync(PluginListParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<Plugin>> ListPluginsAsync(PluginListParameters parameters, CancellationToken cancellationToken = default)
         {
             IQueryString queryParameters = parameters == null ? null : new QueryString<PluginListParameters>(parameters);
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "plugins", queryParameters, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<Plugin[]>(response.Body);
         }
 
-        public async Task<IList<PluginPrivilege>> GetPluginPrivilegesAsync(PluginGetPrivilegeParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<PluginPrivilege>> GetPluginPrivilegesAsync(PluginGetPrivilegeParameters parameters, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
@@ -46,7 +46,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<PluginPrivilege[]>(response.Body);
         }
 
-        public Task InstallPluginAsync(PluginInstallParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task InstallPluginAsync(PluginInstallParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
@@ -79,7 +79,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<Plugin>(response.Body);
         }
 
-        public Task RemovePluginAsync(string name, PluginRemoveParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task RemovePluginAsync(string name, PluginRemoveParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -90,7 +90,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Delete, $"plugins/{name}", queryParameters, cancellationToken);
         }
 
-        public Task EnablePluginAsync(string name, PluginEnableParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task EnablePluginAsync(string name, PluginEnableParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -101,7 +101,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/enable", queryParameters, cancellationToken);
         }
 
-        public Task DisablePluginAsync(string name, PluginDisableParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task DisablePluginAsync(string name, PluginDisableParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -112,7 +112,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/disable", queryParameters, cancellationToken);
         }
 
-        public Task UpgradePluginAsync(string name, PluginUpgradeParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task UpgradePluginAsync(string name, PluginUpgradeParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -134,7 +134,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/upgrade", query, data, cancellationToken);
         }
 
-        public Task CreatePluginAsync(PluginCreateParameters parameters, Stream plugin, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreatePluginAsync(PluginCreateParameters parameters, Stream plugin, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
@@ -151,7 +151,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"plugins/create", query, data, cancellationToken);
         }
 
-        public Task PushPluginAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public Task PushPluginAsync(string name, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -161,7 +161,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchPluginHandler }, HttpMethod.Post, $"plugins/{name}/push", cancellationToken);
         }
 
-        public Task ConfigurePluginAsync(string name, PluginConfigureParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task ConfigurePluginAsync(string name, PluginConfigureParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {

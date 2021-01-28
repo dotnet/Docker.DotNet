@@ -21,7 +21,7 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID or name of the container.</param>
-        Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Start an exec instance.
@@ -35,11 +35,11 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">Exec instance ID.</param>
-        Task StartContainerExecAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task StartContainerExecAsync(string id, CancellationToken cancellationToken = default);
 
-        Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken = default(CancellationToken));
+        Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken = default);
 
-        Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ContainerExecStartParameters eConfig, CancellationToken cancellationToken = default(CancellationToken));
+        Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ContainerExecStartParameters eConfig, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Resize an exec instance.
@@ -52,7 +52,7 @@ namespace Docker.DotNet
         /// 404 - No such exec instance.
         /// </remarks>
         /// <param name="id">Exec instance ID.</param>
-        Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Inspect an exec instance.
@@ -67,6 +67,6 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">Exec instance ID.</param>
-        Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken = default);
     }
 }

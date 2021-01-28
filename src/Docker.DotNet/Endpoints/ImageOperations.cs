@@ -31,7 +31,7 @@ namespace Docker.DotNet
             this._client = client;
         }
 
-        public async Task<IList<ImagesListResponse>> ListImagesAsync(ImagesListParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<ImagesListResponse>> ListImagesAsync(ImagesListParameters parameters, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
@@ -43,7 +43,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImagesListResponse[]>(response.Body);
         }
 
-        public Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default)
         {
             if (contents == null)
             {
@@ -60,22 +60,22 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             return CreateImageAsync(parameters, null, authConfig, progress, cancellationToken);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             return CreateImageAsync(parameters, null, authConfig, headers, progress, cancellationToken);
         }
 
-        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             return CreateImageAsync(parameters, imageStream, authConfig, null, progress, cancellationToken);
         }
         
-        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
@@ -110,7 +110,7 @@ namespace Docker.DotNet
                 progress);
         }
 
-        public async Task<ImageInspectResponse> InspectImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ImageInspectResponse> InspectImageAsync(string name, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -121,7 +121,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImageInspectResponse>(response.Body);
         }
 
-        public async Task<IList<ImageHistoryResponse>> GetImageHistoryAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<ImageHistoryResponse>> GetImageHistoryAsync(string name, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -132,7 +132,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImageHistoryResponse[]>(response.Body);
         }
 
-        public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task PushImageAsync(string name, ImagePushParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -152,7 +152,7 @@ namespace Docker.DotNet
                 progress);
         }
 
-        public Task TagImageAsync(string name, ImageTagParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public Task TagImageAsync(string name, ImageTagParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -168,7 +168,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestAsync(new[] { NoSuchImageHandler }, HttpMethod.Post, $"images/{name}/tag", queryParameters, cancellationToken);
         }
 
-        public async Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, ImageDeleteParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<IDictionary<string, string>>> DeleteImageAsync(string name, ImageDeleteParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -185,7 +185,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<Dictionary<string, string>[]>(response.Body);
         }
 
-        public async Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IList<ImageSearchResponse>> SearchImagesAsync(ImagesSearchParameters parameters, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
@@ -204,7 +204,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImagesPruneResponse>(response.Body);
         }
 
-        public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<CommitContainerChangesResponse> CommitContainerChangesAsync(CommitContainerChangesParameters parameters, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {
@@ -220,12 +220,12 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<CommitContainerChangesResponse>(response.Body);
         }
 
-        public Task<Stream> SaveImageAsync(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Stream> SaveImageAsync(string name, CancellationToken cancellationToken = default)
         {
             return SaveImagesAsync(new[] { name }, cancellationToken);
         }
 
-        public Task<Stream> SaveImagesAsync(string[] names, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Stream> SaveImagesAsync(string[] names, CancellationToken cancellationToken = default)
         {
             EnumerableQueryString queryString = null;
 
@@ -237,7 +237,7 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(new[] { ImageOperations.NoSuchImageHandler }, HttpMethod.Get, "images/get", queryString, cancellationToken);
         }
 
-        public Task LoadImageAsync(ImageLoadParameters parameters, Stream imageStream, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
+        public Task LoadImageAsync(ImageLoadParameters parameters, Stream imageStream, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             if (parameters == null)
             {

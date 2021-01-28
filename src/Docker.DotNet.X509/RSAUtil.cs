@@ -5,14 +5,16 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 #if !NETSTANDARD1_6
+
 using System.Security;
+
 #endif
 
 namespace Docker.DotNet.X509
 {
     public static class RSAUtil
     {
-        private const byte Padding = 0x00;
+        private const byte _padding = 0x00;
 
         public static X509Certificate2 GetCertFromPFX(string pfxFilePath, string password)
         {
@@ -20,6 +22,7 @@ namespace Docker.DotNet.X509
         }
 
 #if !NETSTANDARD1_6
+
         public static X509Certificate2 GetCertFromPFXSecure(string pfxFilePath, SecureString password)
         {
             return new X509Certificate2(pfxFilePath, password);
@@ -27,10 +30,13 @@ namespace Docker.DotNet.X509
 
         public static X509Certificate2 GetCertFromPEMFiles(string certFilePath, string keyFilePath)
         {
-            var cert = new X509Certificate2(certFilePath);
-            cert.PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath);
+            var cert = new X509Certificate2(certFilePath)
+            {
+                PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath)
+            };
             return cert;
         }
+
 #endif
 
         private static RSACryptoServiceProvider ReadFromPemFile(string pemFilePath)
@@ -71,7 +77,7 @@ namespace Docker.DotNet.X509
 
                 // Discard the next bits of the version.
                 rdr.ReadUInt32();
-                if (rdr.ReadByte() != Padding)
+                if (rdr.ReadByte() != _padding)
                 {
                     throw new InvalidDataException("Invalid ASN.1 format.");
                 }
@@ -91,14 +97,12 @@ namespace Docker.DotNet.X509
                 // Use "1" to indicate RSA.
                 var csp = new CspParameters(1)
                 {
-
                     // Set the KeyContainerName so that native code that looks up the private key
                     // can find it. This produces a keyset file on disk as a side effect.
                     KeyContainerName = pemFilePath
                 };
                 var rsaProvider = new RSACryptoServiceProvider(csp)
                 {
-
                     // Setting to false makes sure the keystore file will be cleaned up
                     // when the current process exits.
                     PersistKeyInCsp = false
@@ -145,7 +149,7 @@ namespace Docker.DotNet.X509
                 count = val;
             }
 
-            while (rdr.ReadByte() == Padding)
+            while (rdr.ReadByte() == _padding)
             {
                 count--;
             }
@@ -161,7 +165,7 @@ namespace Docker.DotNet.X509
         /// <summary>
         private static bool TryReadUntil(BinaryReader rdr, string tag)
         {
-            char delim = '\n';
+            const char delim = '\n';
             char c;
             char[] line = new char[64];
             int index;
@@ -173,7 +177,7 @@ namespace Docker.DotNet.X509
                     index = 0;
                     while ((c = rdr.ReadChar()) != delim)
                     {
-                        if(c == '\r')
+                        if (c == '\r')
                         {
                             continue;
                         }

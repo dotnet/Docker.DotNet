@@ -19,7 +19,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<TaskResponse>> ListAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<TaskResponse>> ListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List tasks
@@ -30,7 +30,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<TaskResponse>> ListAsync(TasksListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<TaskResponse>> ListAsync(TasksListParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Inspect a task
@@ -43,6 +43,6 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID of the task.</param>
-        Task<TaskResponse> InspectAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TaskResponse> InspectAsync(string id, CancellationToken cancellationToken = default);
     }
 }

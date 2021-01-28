@@ -24,7 +24,7 @@ namespace Docker.DotNet
             this._client = client;
         }
 
-        public async Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(id))
             {

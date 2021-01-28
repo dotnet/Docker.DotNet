@@ -11,9 +11,16 @@ namespace Docker.DotNet.Tests
         OSX,
         Windows
     }
-    
+
     public sealed class SupportedOSPlatformsFactAttribute : FactAttribute
     {
+        public SupportedOSPlatformsFactAttribute(params Platform[] supportedPlatforms)
+        {
+            var currentPlatform = CurrentPlatform();
+            var isSupported = supportedPlatforms.Contains(currentPlatform);
+            Skip = isSupported ? null : $"Not applicable to {currentPlatform}";
+        }
+
         private static Platform CurrentPlatform()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -23,13 +30,6 @@ namespace Docker.DotNet.Tests
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return Platform.Windows;
             throw new PlatformNotSupportedException();
-        }
-
-        public SupportedOSPlatformsFactAttribute(params Platform[] supportedPlatforms)
-        {
-            var currentPlatform = CurrentPlatform();
-            var isSupported = supportedPlatforms.Contains(currentPlatform);
-            Skip = isSupported ? null : $"Not applicable to {currentPlatform}";
         }
     }
 }
