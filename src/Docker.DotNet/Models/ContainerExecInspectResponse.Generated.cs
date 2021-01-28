@@ -5,7 +5,7 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class ContainerExecInspectResponse // (types.ContainerExecInspect)
     {
-        [DataMember(Name = "ExecID", EmitDefaultValue = false)]
+        [DataMember(Name = "ID", EmitDefaultValue = false)]
         public string ExecID { get; set; }
 
         [DataMember(Name = "ContainerID", EmitDefaultValue = false)]
