@@ -25,7 +25,7 @@ namespace Docker.DotNet
 
         private const string UserAgent = "Docker.DotNet";
 
-        private static readonly TimeSpan InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
+        private static readonly TimeSpan s_InfiniteTimeout = TimeSpan.FromMilliseconds(Timeout.Infinite);
 
         private readonly Uri _endpointBaseUri;
         private readonly HttpClient _httpClient;
@@ -125,7 +125,7 @@ namespace Docker.DotNet
 
             _httpClient = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
             DefaultTimeout = Configuration.DefaultTimeout;
-            _httpClient.Timeout = InfiniteTimeout;
+            _httpClient.Timeout = s_InfiniteTimeout;
         }
 
         public DockerClientConfiguration Configuration { get; }
@@ -182,7 +182,7 @@ namespace Docker.DotNet
         }
 
         internal Task<DockerApiResponse> MakeRequestAsync(
-                            IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
+            IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
             HttpMethod method,
             string path,
             CancellationToken token)
@@ -253,7 +253,7 @@ namespace Docker.DotNet
             IDictionary<string, string> headers,
             CancellationToken cancellationToken)
         {
-            return MakeRequestForHijackedStreamAsync(errorHandlers, method, path, queryString, body, headers, InfiniteTimeout, cancellationToken);
+            return MakeRequestForHijackedStreamAsync(errorHandlers, method, path, queryString, body, headers, s_InfiniteTimeout, cancellationToken);
         }
 
         internal async Task<WriteClosableStream> MakeRequestForHijackedStreamAsync(
@@ -286,12 +286,12 @@ namespace Docker.DotNet
             IDictionary<string, string> headers,
             CancellationToken token)
         {
-            var response = await PrivateMakeRequestAsync(InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, body, token).ConfigureAwait(false);
+            var response = await PrivateMakeRequestAsync(s_InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, body, token).ConfigureAwait(false);
             return response;
         }
 
         internal Task<Stream> MakeRequestForStreamAsync(
-                                    IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
+            IEnumerable<ApiResponseErrorHandlingDelegate> errorHandlers,
             HttpMethod method,
             string path,
             CancellationToken token)
@@ -329,7 +329,7 @@ namespace Docker.DotNet
             IDictionary<string, string> headers,
             CancellationToken token)
         {
-            return MakeRequestForStreamAsync(errorHandlers, method, path, queryString, body, headers, InfiniteTimeout, token);
+            return MakeRequestForStreamAsync(errorHandlers, method, path, queryString, body, headers, s_InfiniteTimeout, token);
         }
 
         internal async Task<Stream> MakeRequestForStreamAsync(
@@ -356,7 +356,7 @@ namespace Docker.DotNet
             IQueryString queryString,
             CancellationToken cancellationToken)
         {
-            var response = await PrivateMakeRequestAsync(InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, null, null, cancellationToken);
+            var response = await PrivateMakeRequestAsync(s_InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, null, null, cancellationToken);
 
             await HandleIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
 
@@ -439,14 +439,14 @@ namespace Docker.DotNet
             // If there is a timeout, we turn it into a cancellation token. At the same time, we need to link to the caller's
             // cancellation token. To avoid leaking objects, we must then also dispose of the CancellationTokenSource. To keep
             // code flow simple, we treat it as re-entering the same method with a different CancellationToken and no timeout.
-            if (timeout != InfiniteTimeout)
+            if (timeout != s_InfiniteTimeout)
             {
                 using (var timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
                 {
                     timeoutTokenSource.CancelAfter(timeout);
 
                     // We must await here because we need to dispose of the CTS only after the work has been completed.
-                    return await PrivateMakeRequestAsync(InfiniteTimeout, completionOption, method, path, queryString, headers, data, timeoutTokenSource.Token).ConfigureAwait(false);
+                    return await PrivateMakeRequestAsync(s_InfiniteTimeout, completionOption, method, path, queryString, headers, data, timeoutTokenSource.Token).ConfigureAwait(false);
                 }
             }
 

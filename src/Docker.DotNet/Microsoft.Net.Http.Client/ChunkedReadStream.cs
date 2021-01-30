@@ -77,17 +77,12 @@ namespace Microsoft.Net.Http.Client
             }
         }
 
-        public override void Flush()
-        {
-            throw new NotSupportedException();
-        }
-
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return ReadAsync(buffer, offset, count, CancellationToken.None).GetAwaiter().GetResult();
+            return ReadAsync(buffer, offset, count, CancellationToken.None).Result;
         }
 
-        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             // TODO: Validate buffer
             ThrowIfDisposed();
@@ -139,26 +134,6 @@ namespace Microsoft.Net.Http.Client
             return read;
         }
 
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException();
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -175,6 +150,31 @@ namespace Microsoft.Net.Http.Client
             {
                 throw new ObjectDisposedException(typeof(ContentLengthReadStream).FullName);
             }
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void Flush()
+        {
+            throw new NotSupportedException();
         }
     }
 }

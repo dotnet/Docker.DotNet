@@ -209,7 +209,9 @@ namespace Docker.DotNet
 
                 using (StreamReader outRdr = new StreamReader(outMem), errRdr = new StreamReader(outErr))
                 {
-                    return (await outRdr.ReadToEndAsync(), await errRdr.ReadToEndAsync());
+                    var stdout = outRdr.ReadToEnd();
+                    var stderr = errRdr.ReadToEnd();
+                    return (stdout, stderr);
                 }
             }
         }

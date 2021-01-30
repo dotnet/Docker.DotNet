@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -9,9 +8,9 @@ namespace Microsoft.Net.Http.Client
 {
     internal class ChunkedWriteStream : Stream
     {
-        private static readonly byte[] EndContentBytes = Encoding.ASCII.GetBytes("0\r\n\r\n");
+        private static readonly byte[] s_EndContentBytes = Encoding.ASCII.GetBytes("0\r\n\r\n");
 
-        private readonly Stream _innerStream;
+        private Stream _innerStream;
 
         public ChunkedWriteStream(Stream stream)
         {
@@ -36,11 +35,6 @@ namespace Microsoft.Net.Http.Client
         {
             get { throw new NotImplementedException(); }
             set { throw new NotImplementedException(); }
-        }
-
-        public Task EndContentAsync(CancellationToken cancellationToken)
-        {
-            return _innerStream.WriteAsync(EndContentBytes, 0, EndContentBytes.Length, cancellationToken);
         }
 
         public override void Flush()
@@ -84,6 +78,11 @@ namespace Microsoft.Net.Http.Client
             await _innerStream.WriteAsync(chunkSize, 0, chunkSize.Length, cancellationToken).ConfigureAwait(false);
             await _innerStream.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
             await _innerStream.WriteAsync(chunkSize, chunkSize.Length - 2, 2, cancellationToken).ConfigureAwait(false);
+        }
+
+        public Task EndContentAsync(CancellationToken cancellationToken)
+        {
+            return _innerStream.WriteAsync(s_EndContentBytes, 0, s_EndContentBytes.Length, cancellationToken);
         }
     }
 }
