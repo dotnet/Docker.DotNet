@@ -114,24 +114,20 @@ namespace Docker.DotNet.Tests
 
             var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token));
 
-            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
-            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+            _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag }).GetAwaiter().GetResult();
 
-            cts.CancelAfter(1000);
+            cts.Cancel();
 
-            bool taskIsCancelled = false;
             try
             {
                 await task;
             }
             catch (OperationCanceledException)
             {
-                taskIsCancelled = true;
             }
 
-            // On local develop machine task is completed.
-            // On CI/CD Pipeline exception is thrown, not always
-            Assert.True(task.IsCompleted || taskIsCancelled);
+            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+
             Assert.True(wasProgressCalled);
         }
 
@@ -192,25 +188,21 @@ namespace Docker.DotNet.Tests
             await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
 
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
-            _ = await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
 
             var newContainerId = (await _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository })).ID;
             await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
 
-            cts.CancelAfter(1000);
-            bool taskIsCancelled = false;
+            cts.Cancel();
+
             try
             {
                 await task;
             }
             catch (OperationCanceledException)
             {
-                taskIsCancelled = true;
             }
 
-            // On local develop machine task is completed.
-            // On CI/CD Pipeline exception is thrown, not always
-            Assert.True(task.IsCompleted || taskIsCancelled);
             Assert.Equal(2, progressCalledCounter);
         }
 
