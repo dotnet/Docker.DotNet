@@ -46,8 +46,18 @@ namespace Microsoft.Net.Http.Client
 
         public IWebProxy Proxy
         {
-            get => _proxy ?? (_proxy = WebRequest.DefaultWebProxy);
-            set => _proxy = value;
+            get
+            {
+                if (_proxy == null)
+                {
+                    _proxy = WebRequest.DefaultWebProxy;
+                }
+                return _proxy;
+            }
+            set
+            {
+                _proxy = value;
+            }
         }
 
         public RedirectMode RedirectMode { get; set; } = RedirectMode.NoDowngrade;

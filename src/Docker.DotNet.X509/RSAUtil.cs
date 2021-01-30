@@ -14,7 +14,14 @@ namespace Docker.DotNet.X509
 {
     public static class RSAUtil
     {
-        private const byte _padding = 0x00;
+        private const byte Padding = 0x00;
+
+        public static X509Certificate2 GetCertFromPEMFiles(string certFilePath, string keyFilePath)
+        {
+            var cert = new X509Certificate2(certFilePath);
+            cert.PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath);
+            return cert;
+        }
 
         public static X509Certificate2 GetCertFromPFX(string pfxFilePath, string password)
         {
@@ -26,15 +33,6 @@ namespace Docker.DotNet.X509
         public static X509Certificate2 GetCertFromPFXSecure(string pfxFilePath, SecureString password)
         {
             return new X509Certificate2(pfxFilePath, password);
-        }
-
-        public static X509Certificate2 GetCertFromPEMFiles(string certFilePath, string keyFilePath)
-        {
-            var cert = new X509Certificate2(certFilePath)
-            {
-                PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath)
-            };
-            return cert;
         }
 
 #endif
@@ -77,7 +75,7 @@ namespace Docker.DotNet.X509
 
                 // Discard the next bits of the version.
                 rdr.ReadUInt32();
-                if (rdr.ReadByte() != _padding)
+                if (rdr.ReadByte() != Padding)
                 {
                     throw new InvalidDataException("Invalid ASN.1 format.");
                 }
@@ -149,7 +147,7 @@ namespace Docker.DotNet.X509
                 count = val;
             }
 
-            while (rdr.ReadByte() == _padding)
+            while (rdr.ReadByte() == Padding)
             {
                 count--;
             }

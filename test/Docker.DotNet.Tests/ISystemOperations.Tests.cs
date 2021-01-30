@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Docker.DotNet.Tests
         [Fact]
         public void Docker_IsRunning()
         {
-            var dockerProcess = Array.Find(Process.GetProcesses(), _ => _.ProcessName.Equals("docker", StringComparison.InvariantCultureIgnoreCase) || _.ProcessName.Equals("dockerd", StringComparison.InvariantCultureIgnoreCase));
+            var dockerProcess = Process.GetProcesses().FirstOrDefault(_ => _.ProcessName.Equals("docker", StringComparison.InvariantCultureIgnoreCase) || _.ProcessName.Equals("dockerd", StringComparison.InvariantCultureIgnoreCase));
             Assert.NotNull(dockerProcess); // docker is not running
         }
 
@@ -114,7 +115,7 @@ namespace Docker.DotNet.Tests
             var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token));
 
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
-            _ = await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
 
             cts.Cancel();
 

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 
 #if (NETSTANDARD1_3 || NETSTANDARD1_6 || NETSTANDARD2_0)
-
+using System.Reflection;
 #endif
 
 namespace Docker.DotNet

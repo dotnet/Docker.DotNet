@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 
 namespace Docker.DotNet
@@ -10,22 +10,6 @@ namespace Docker.DotNet
         {
             StatusCode = statusCode;
             ResponseBody = responseBody;
-        }
-
-        public DockerApiException() : base()
-        {
-        }
-
-        public DockerApiException(string message) : base(message)
-        {
-        }
-
-        public DockerApiException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected DockerApiException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base(info, context)
-        {
         }
 
         public string ResponseBody { get; }

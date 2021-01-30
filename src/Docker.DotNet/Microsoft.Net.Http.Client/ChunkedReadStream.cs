@@ -18,20 +18,35 @@ namespace Microsoft.Net.Http.Client
             _inner = inner;
         }
 
-        public override bool CanRead => !_disposed;
+        public override bool CanRead
+        {
+            get { return !_disposed; }
+        }
 
-        public override bool CanSeek => false;
+        public override bool CanSeek
+        {
+            get { return false; }
+        }
 
-        public override bool CanTimeout => _inner.CanTimeout;
+        public override bool CanTimeout
+        {
+            get { return _inner.CanTimeout; }
+        }
 
-        public override bool CanWrite => false;
+        public override bool CanWrite
+        {
+            get { return false; }
+        }
 
-        public override long Length => throw new NotSupportedException();
+        public override long Length
+        {
+            get { throw new NotSupportedException(); }
+        }
 
         public override long Position
         {
-            get => throw new NotSupportedException();
-            set => throw new NotSupportedException();
+            get { throw new NotSupportedException(); }
+            set { throw new NotSupportedException(); }
         }
 
         public override int ReadTimeout
