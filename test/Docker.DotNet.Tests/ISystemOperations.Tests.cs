@@ -117,7 +117,7 @@ namespace Docker.DotNet.Tests
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
             await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
 
-            cts.Cancel();
+            cts.CancelAfter(1000);
 
             bool taskIsCancelled = false;
             try
@@ -197,7 +197,7 @@ namespace Docker.DotNet.Tests
             var newContainerId = (await _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository })).ID;
             await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
 
-            cts.Cancel();
+            cts.CancelAfter(1000);
             bool taskIsCancelled = false;
             try
             {
