@@ -1,4 +1,4 @@
-﻿namespace Docker.DotNet
+namespace Docker.DotNet
 {
     internal interface IQueryString
     {

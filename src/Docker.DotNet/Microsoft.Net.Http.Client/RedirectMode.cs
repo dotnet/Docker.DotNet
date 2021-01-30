@@ -1,4 +1,4 @@
-﻿namespace Microsoft.Net.Http.Client
+namespace Microsoft.Net.Http.Client
 {
     public enum RedirectMode
     {

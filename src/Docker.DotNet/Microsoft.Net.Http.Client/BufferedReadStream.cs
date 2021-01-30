@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
@@ -182,7 +182,7 @@ namespace Microsoft.Net.Http.Client
             {
                 int toCopy = Math.Min(_bufferCount, (int)toPeek);
                 Buffer.BlockCopy(_buffer, _bufferOffset, buffer, 0, toCopy);
-                peeked = (uint) toCopy;
+                peeked = (uint)toCopy;
                 available = (uint)_bufferCount;
                 remaining = available - peeked;
                 return toCopy;

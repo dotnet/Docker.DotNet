@@ -155,7 +155,7 @@ namespace Docker.DotNet
 
             try
             {
-                for (;;)
+                for (; ; )
                 {
                     var count = await input.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
                     if (count == 0)
@@ -184,7 +184,7 @@ namespace Docker.DotNet
 
             try
             {
-                for (;;)
+                for (; ; )
                 {
                     var result = await ReadOutputAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
                     if (result.EOF)

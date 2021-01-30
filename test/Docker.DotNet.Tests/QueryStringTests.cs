@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Docker.DotNet.Models;
 using Xunit;

@@ -1,4 +1,4 @@
-﻿namespace Docker.DotNet
+namespace Docker.DotNet
 {
     public interface IPeekableStream
     {

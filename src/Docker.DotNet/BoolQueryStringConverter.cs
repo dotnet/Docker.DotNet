@@ -1,4 +1,4 @@
-﻿namespace Docker.DotNet
+namespace Docker.DotNet
 {
     using System;
     using System.Diagnostics;
@@ -8,14 +8,14 @@
     {
         public bool CanConvert(Type t)
         {
-            return t == typeof (bool);
+            return t == typeof(bool);
         }
 
         public string[] Convert(object o)
         {
             Debug.Assert(o != null);
 
-            return new[] {System.Convert.ToInt32(System.Convert.ToBoolean(o)).ToString(CultureInfo.InvariantCulture)};
+            return new[] { System.Convert.ToInt32(System.Convert.ToBoolean(o)).ToString(CultureInfo.InvariantCulture) };
         }
     }
 }
