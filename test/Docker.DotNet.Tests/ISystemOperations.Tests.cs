@@ -108,13 +108,13 @@ namespace Docker.DotNet.Tests
                 }
             };
 
-            using var cts = new CancellationTokenSource();
+            using var cts = new CancellationTokenSource(60000);
 
-            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = "hello-world" }, null, progressJSONMessage);
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = "hello-world" }, null, progressJSONMessage, cts.Token);
 
             var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token));
 
-            _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag }).GetAwaiter().GetResult();
+            _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag }, cts.Token).GetAwaiter().GetResult();
 
             cts.Cancel();
 
@@ -142,7 +142,9 @@ namespace Docker.DotNet.Tests
                 _onJSONMessageCalled = (_) => { }
             };
 
-            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
+            using var cts = new CancellationTokenSource(60000);
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage, cts.Token);
 
             var progressCalledCounter = 0;
 
@@ -182,15 +184,14 @@ namespace Docker.DotNet.Tests
                 }
             };
 
-            using var cts = new CancellationTokenSource();
             var task = Task.Run(() => _client.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
 
-            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage, cts.Token);
 
-            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
-            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag }, cts.Token);
+            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters(), cts.Token);
 
-            var newContainerId = (await _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository })).ID;
+            var newContainerId = _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository }, cts.Token).GetAwaiter().GetResult().ID;
             await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
 
             cts.Cancel();
