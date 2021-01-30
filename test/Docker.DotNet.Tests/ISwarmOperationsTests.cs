@@ -27,32 +27,32 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task GetFilteredServicesById_Succeeds()
         {
-            var firstServiceId = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var firstServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service1-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
-            var secondServiceId = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var secondServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service2-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
-            var thirdServiceid = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var thirdServiceid = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service3-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
             var services = await _client.Swarm.ListServicesAsync(new ServicesListParameters { Filters = new ServiceFilter { Id = new string[] { firstServiceId } } }, CancellationToken.None);
             Assert.Single(services);
@@ -66,32 +66,32 @@ namespace Docker.DotNet.Tests
         public async Task GetFilteredServicesByName_Succeeds()
         {
             var firstServiceName = $"service1-{Guid.NewGuid().ToString().Substring(1, 10)}";
-            var firstServiceId = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var firstServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = firstServiceName,
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
-            var secondServiceId = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var secondServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service2-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
-            var thirdServiceid = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var thirdServiceid = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service3-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
             var services = await _client.Swarm.ListServicesAsync(
                 new ServicesListParameters
@@ -116,34 +116,34 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task GetServices_Succeeds()
         {
-            var initialServiceCount = (await _client.Swarm.ListServicesAsync(cancellationToken: CancellationToken.None)).Count();
+            var initialServiceCount = _client.Swarm.ListServicesAsync(cancellationToken: CancellationToken.None).GetAwaiter().GetResult().Count();
 
-            var firstServiceId = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var firstServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service1-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
-            var secondServiceId = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var secondServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service2-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
-            var thirdServiceid = (await _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var thirdServiceid = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
                     Name = $"service3-{Guid.NewGuid().ToString().Substring(1, 10)}",
                     TaskTemplate = new TaskSpec { ContainerSpec = new ContainerSpec { Image = "hello-world" } }
                 }
-            })).ID;
+            }).GetAwaiter().GetResult().ID;
 
             var services = await _client.Swarm.ListServicesAsync(cancellationToken: CancellationToken.None);
 
