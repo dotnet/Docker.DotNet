@@ -8,15 +8,6 @@ namespace Docker.DotNet
     public interface ISecretsOperations
     {
         /// <summary>
-        /// List secrets
-        /// </summary>
-        /// <remarks>
-        /// 200 - No error.
-        /// 500 - Server error.
-        /// </remarks>
-        Task<IList<Secret>> ListAsync(CancellationToken cancellationToken = default);
-
-        /// <summary>
         /// Create a secret
         /// </summary>
         /// <remarks>
@@ -26,6 +17,17 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         Task<SecretCreateResponse> CreateAsync(SecretSpec body, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Delete a secret
+        /// </summary>
+        /// <remarks>
+        /// 204 - No error.
+        /// 404 - Secret not found.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID of the secret.</param>
+        Task DeleteAsync(string id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Inspect a secret
@@ -40,14 +42,12 @@ namespace Docker.DotNet
         Task<Secret> InspectAsync(string id, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Delete a secret
+        /// List secrets
         /// </summary>
         /// <remarks>
-        /// 204 - No error.
-        /// 404 - Secret not found.
+        /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        /// <param name="id">ID of the secret.</param>
-        Task DeleteAsync(string id, CancellationToken cancellationToken = default);
+        Task<IList<Secret>> ListAsync(CancellationToken cancellationToken = default);
     }
 }

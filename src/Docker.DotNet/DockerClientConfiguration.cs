@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -38,7 +38,7 @@ namespace Docker.DotNet
 
         public DockerClient CreateClient()
         {
-            return this.CreateClient(null);
+            return CreateClient(null);
         }
 
         public DockerClient CreateClient(Version requestedApiVersion)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -15,8 +15,11 @@ namespace Microsoft.Net.Http.Client
 {
     public class ManagedHandler : HttpMessageHandler
     {
-        public delegate Task<Stream> StreamOpener(string host, int port, CancellationToken cancellationToken);
-        public delegate Task<Socket> SocketOpener(string host, int port, CancellationToken cancellationToken);
+        public IWebProxy _proxy;
+
+        private readonly SocketOpener _socketOpener;
+
+        private readonly StreamOpener _streamOpener;
 
         public ManagedHandler()
         {
@@ -33,47 +36,37 @@ namespace Microsoft.Net.Http.Client
             _socketOpener = opener ?? throw new ArgumentNullException(nameof(opener));
         }
 
-        public IWebProxy Proxy
-        {
-            get
-            {
-                if (_proxy == null)
-                {
-                    _proxy = WebRequest.DefaultWebProxy;
-                }
-                return _proxy;
-            }
-            set
-            {
-                _proxy = value;
-            }
-        }
+        public delegate Task<Socket> SocketOpener(string host, int port, CancellationToken cancellationToken);
 
-        public bool UseProxy { get; set; } = true;
-
-        public int MaxAutomaticRedirects { get; set; } = 20;
-
-        public RedirectMode RedirectMode { get; set; } = RedirectMode.NoDowngrade;
+        public delegate Task<Stream> StreamOpener(string host, int port, CancellationToken cancellationToken);
 
         public X509CertificateCollection ClientCertificates { get; set; }
 
+        public int MaxAutomaticRedirects { get; set; } = 20;
+
+        public IWebProxy Proxy
+        {
+            get => _proxy ?? (_proxy = WebRequest.DefaultWebProxy);
+            set => _proxy = value;
+        }
+
+        public RedirectMode RedirectMode { get; set; } = RedirectMode.NoDowngrade;
+
         public RemoteCertificateValidationCallback ServerCertificateValidationCallback { get; set; }
 
-        private StreamOpener _streamOpener;
-        private SocketOpener _socketOpener;
-        private IWebProxy _proxy;
+        public bool UseProxy { get; set; } = true;
 
-        protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
-                throw new ArgumentNullException("request");
+                throw new ArgumentNullException(nameof(request));
             }
 
-            HttpResponseMessage response = null;
             int redirectCount = 0;
             bool retry;
 
+            HttpResponseMessage response;
             do
             {
                 retry = false;
@@ -83,10 +76,100 @@ namespace Microsoft.Net.Http.Client
                     redirectCount++;
                     retry = true;
                 }
-
             } while (retry);
 
             return response;
+        }
+
+        private static async Task<Socket> TCPSocketOpenerAsync(string host, int port, CancellationToken cancellationToken)
+        {
+            var addresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
+            if (addresses.Length == 0)
+            {
+                throw new Exception($"could not resolve address for {host}");
+            }
+
+            Socket connectedSocket = null;
+            Exception lastException = null;
+            foreach (var address in addresses)
+            {
+                var s = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                try
+                {
+#if (NETSTANDARD1_3 || NETSTANDARD1_6 || NETSTANDARD2_0)
+                    await s.ConnectAsync(address, port).ConfigureAwait(false);
+#else
+                    await Task.Factory.FromAsync(
+                        s.BeginConnect,
+                        s.EndConnect,
+                        new IPEndPoint(address, port),
+                        null
+                    ).ConfigureAwait(false);
+#endif
+                    connectedSocket = s;
+                    break;
+                }
+                catch (Exception e)
+                {
+                    s.Dispose();
+                    lastException = e;
+                }
+            }
+
+            if (connectedSocket == null)
+            {
+                throw lastException;
+            }
+
+            return connectedSocket;
+        }
+
+        private ProxyMode DetermineProxyModeAndAddressLine(HttpRequestMessage request)
+        {
+            string scheme = request.GetSchemeProperty();
+            string host = request.GetHostProperty();
+            int? port = request.GetPortProperty();
+            string pathAndQuery = request.GetPathAndQueryProperty();
+            string addressLine = request.GetAddressLineProperty();
+
+            if (string.IsNullOrEmpty(addressLine))
+            {
+                request.SetAddressLineProperty(pathAndQuery);
+            }
+
+            try
+            {
+                if (!UseProxy || (Proxy?.IsBypassed(request.RequestUri) != false))
+                {
+                    return ProxyMode.None;
+                }
+            }
+            catch (System.PlatformNotSupportedException)
+            {
+                return ProxyMode.None;
+            }
+
+            var proxyUri = Proxy.GetProxy(request.RequestUri);
+            if (proxyUri == null)
+            {
+                return ProxyMode.None;
+            }
+
+            if (request.IsHttp())
+            {
+                if (string.IsNullOrEmpty(addressLine))
+                {
+                    addressLine = scheme + "://" + host + ":" + port.Value + pathAndQuery;
+                    request.SetAddressLineProperty(addressLine);
+                }
+                request.SetConnectionHostProperty(proxyUri.DnsSafeHost);
+                request.SetConnectionPortProperty(proxyUri.Port);
+                return ProxyMode.Http;
+            }
+            // Tunneling generates a completely seperate request, don't alter the original, just the connection address.
+            request.SetConnectionHostProperty(proxyUri.DnsSafeHost);
+            request.SetConnectionPortProperty(proxyUri.Port);
+            return ProxyMode.Tunnel;
         }
 
         private bool IsAllowedRedirectResponse(HttpRequestMessage request, HttpResponseMessage response)
@@ -138,6 +221,22 @@ namespace Microsoft.Net.Http.Client
             request.SetPathAndQueryProperty(null);
             request.SetAddressLineProperty(null);
             return true;
+        }
+
+        private void ProcessHostHeader(HttpRequestMessage request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Headers.Host))
+            {
+                string host = request.GetHostProperty();
+                int port = request.GetPortProperty().Value;
+                if (host.Contains(':'))
+                {
+                    // IPv6
+                    host = '[' + host + ']';
+                }
+
+                request.Headers.Host = host + ":" + port.ToString(CultureInfo.InvariantCulture);
+            }
         }
 
         private async Task<HttpResponseMessage> ProcessRequestAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -251,113 +350,6 @@ namespace Microsoft.Net.Http.Client
                 }
                 request.SetPathAndQueryProperty(pathAndQuery);
             }
-        }
-
-        private void ProcessHostHeader(HttpRequestMessage request)
-        {
-            if (string.IsNullOrWhiteSpace(request.Headers.Host))
-            {
-                string host = request.GetHostProperty();
-                int port = request.GetPortProperty().Value;
-                if (host.Contains(':'))
-                {
-                    // IPv6
-                    host = '[' + host + ']';
-                }
-
-                request.Headers.Host = host + ":" + port.ToString(CultureInfo.InvariantCulture);
-            }
-        }
-
-        private ProxyMode DetermineProxyModeAndAddressLine(HttpRequestMessage request)
-        {
-            string scheme = request.GetSchemeProperty();
-            string host = request.GetHostProperty();
-            int? port = request.GetPortProperty();
-            string pathAndQuery = request.GetPathAndQueryProperty();
-            string addressLine = request.GetAddressLineProperty();
-
-            if (string.IsNullOrEmpty(addressLine))
-            {
-                request.SetAddressLineProperty(pathAndQuery);
-            }
-
-            try
-            {
-                if (!UseProxy || (Proxy == null) || Proxy.IsBypassed(request.RequestUri))
-                {
-                    return ProxyMode.None;
-                }
-            }
-            catch (System.PlatformNotSupportedException)
-            {
-                return ProxyMode.None;
-            }
-
-            var proxyUri = Proxy.GetProxy(request.RequestUri);
-            if (proxyUri == null)
-            {
-                return ProxyMode.None;
-            }
-
-            if (request.IsHttp())
-            {
-                if (string.IsNullOrEmpty(addressLine))
-                {
-                    addressLine = scheme + "://" + host + ":" + port.Value + pathAndQuery;
-                    request.SetAddressLineProperty(addressLine);
-                }
-                request.SetConnectionHostProperty(proxyUri.DnsSafeHost);
-                request.SetConnectionPortProperty(proxyUri.Port);
-                return ProxyMode.Http;
-            }
-            // Tunneling generates a completely seperate request, don't alter the original, just the connection address.
-            request.SetConnectionHostProperty(proxyUri.DnsSafeHost);
-            request.SetConnectionPortProperty(proxyUri.Port);
-            return ProxyMode.Tunnel;
-        }
-
-        private static async Task<Socket> TCPSocketOpenerAsync(string host, int port, CancellationToken cancellationToken)
-        {
-            var addresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
-            if (addresses.Length == 0)
-            {
-                throw new Exception($"could not resolve address for {host}");
-            }
-
-            Socket connectedSocket = null;
-            Exception lastException = null;
-            foreach (var address in addresses)
-            {
-                var s = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                try
-                {
-#if (NETSTANDARD1_3 || NETSTANDARD1_6 || NETSTANDARD2_0)
-                    await s.ConnectAsync(address, port).ConfigureAwait(false);
-#else
-                    await Task.Factory.FromAsync(
-                        s.BeginConnect,
-                        s.EndConnect,
-                        new IPEndPoint(address, port),
-                        null
-                    ).ConfigureAwait(false);
-#endif
-                    connectedSocket = s;
-                    break;
-                }
-                catch (Exception e)
-                {
-                    s.Dispose();
-                    lastException = e;
-                }
-            }
-
-            if (connectedSocket == null)
-            {
-                throw lastException;
-            }
-
-            return connectedSocket;
         }
 
         private async Task TunnelThroughProxyAsync(HttpRequestMessage request, Stream transport, CancellationToken cancellationToken)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -18,35 +18,20 @@ namespace Microsoft.Net.Http.Client
             _inner = inner;
         }
 
-        public override bool CanRead
-        {
-            get { return !_disposed; }
-        }
+        public override bool CanRead => !_disposed;
 
-        public override bool CanSeek
-        {
-            get { return false; }
-        }
+        public override bool CanSeek => false;
 
-        public override bool CanTimeout
-        {
-            get { return _inner.CanTimeout; }
-        }
+        public override bool CanTimeout => _inner.CanTimeout;
 
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
+        public override bool CanWrite => false;
 
-        public override long Length
-        {
-            get { throw new NotSupportedException(); }
-        }
+        public override long Length => throw new NotSupportedException();
 
         public override long Position
         {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
         }
 
         public override int ReadTimeout
@@ -77,12 +62,17 @@ namespace Microsoft.Net.Http.Client
             }
         }
 
-        public override int Read(byte[] buffer, int offset, int count)
+        public override void Flush()
         {
-            return ReadAsync(buffer, offset, count, CancellationToken.None).Result;
+            throw new NotSupportedException();
         }
 
-        public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            return ReadAsync(buffer, offset, count, CancellationToken.None).GetAwaiter().GetResult();
+        }
+
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             // TODO: Validate buffer
             ThrowIfDisposed();
@@ -134,6 +124,26 @@ namespace Microsoft.Net.Http.Client
             return read;
         }
 
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -150,31 +160,6 @@ namespace Microsoft.Net.Http.Client
             {
                 throw new ObjectDisposedException(typeof(ContentLengthReadStream).FullName);
             }
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void Flush()
-        {
-            throw new NotSupportedException();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
@@ -90,7 +91,7 @@ namespace Docker.DotNet.Tests
                 _onJSONMessageCalled = (m) =>
                 {
                     // Status could be 'Pulling from...'
-                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onJSONMessageCalled - {m.ID} - {m.Status} {m.From} - {m.Stream}");
+                    Console.WriteLine($"{MethodBase.GetCurrentMethod().Module}->{MethodBase.GetCurrentMethod().Name}: _onJSONMessageCalled - {m.ID} - {m.Status} {m.From} - {m.Stream}");
                     Assert.NotNull(m);
                 }
             };
@@ -100,7 +101,7 @@ namespace Docker.DotNet.Tests
             {
                 _onMessageCalled = (m) =>
                 {
-                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled - {m.Action} - {m.Status} {m.From} - {m.Type}");
+                    Console.WriteLine($"{MethodBase.GetCurrentMethod().Module}->{MethodBase.GetCurrentMethod().Name}: _onMessageCalled - {m.Action} - {m.Status} {m.From} - {m.Type}");
                     wasProgressCalled = true;
                     Assert.NotNull(m);
                 }
@@ -113,6 +114,7 @@ namespace Docker.DotNet.Tests
             var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token));
 
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
+            _ = await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
 
             cts.Cancel();
 
@@ -130,8 +132,6 @@ namespace Docker.DotNet.Tests
             // On CI/CD Pipeline exception is thrown, not always
             Assert.True(task.IsCompleted || taskIsCancelled);
             Assert.True(wasProgressCalled);
-
-            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
         }
 
         [Fact]
@@ -179,7 +179,7 @@ namespace Docker.DotNet.Tests
             {
                 _onMessageCalled = (m) =>
                 {
-                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled received: {m.Action} - {m.Status} {m.From} - {m.Type}");
+                    Console.WriteLine($"{MethodBase.GetCurrentMethod().Module}->{MethodBase.GetCurrentMethod().Name}: _onMessageCalled received: {m.Action} - {m.Status} {m.From} - {m.Type}");
                     Assert.True(m.Status == "tag" || m.Status == "untag");
                     progressCalledCounter++;
                 }
@@ -191,7 +191,7 @@ namespace Docker.DotNet.Tests
             await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
 
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
-            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+            _ = await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
 
             var newContainerId = (await _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository })).ID;
             await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);

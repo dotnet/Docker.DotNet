@@ -11,6 +11,19 @@ namespace Docker.DotNet
     public interface ITasksOperations
     {
         /// <summary>
+        /// Inspect a task
+        /// </summary>
+        /// <remarks>
+        /// HTTP GET /tasks/{id}
+        ///
+        /// 200 - No error.
+        /// 404 - No such task.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="id">ID of the task.</param>
+        Task<TaskResponse> InspectAsync(string id, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// List tasks
         /// </summary>
         /// <remarks>
@@ -31,18 +44,5 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         Task<IList<TaskResponse>> ListAsync(TasksListParameters parameters, CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Inspect a task
-        /// </summary>
-        /// <remarks>
-        /// HTTP GET /tasks/{id}
-        ///
-        /// 200 - No error.
-        /// 404 - No such task.
-        /// 500 - Server error.
-        /// </remarks>
-        /// <param name="id">ID of the task.</param>
-        Task<TaskResponse> InspectAsync(string id, CancellationToken cancellationToken = default);
     }
 }

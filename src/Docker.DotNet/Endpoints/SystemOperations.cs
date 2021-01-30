@@ -1,9 +1,9 @@
-﻿using Docker.DotNet.Models;
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -13,60 +13,44 @@ namespace Docker.DotNet
 
         internal SystemOperations(DockerClient client)
         {
-            this._client = client;
+            _client = client;
         }
 
         public Task AuthenticateAsync(AuthConfig authConfig, CancellationToken cancellationToken = default)
         {
-            if (authConfig == null)
-            {
-                throw new ArgumentNullException(nameof(authConfig));
-            }
-            var data = new JsonRequestContent<AuthConfig>(authConfig, this._client.JsonSerializer);
-
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "auth", null, data, cancellationToken);
-        }
-
-        public async Task<VersionResponse> GetVersionAsync(CancellationToken cancellationToken = default)
-        {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "version", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<VersionResponse>(response.Body);
-        }
-
-        public Task PingAsync(CancellationToken cancellationToken = default)
-        {
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "_ping", cancellationToken);
+            var data = new JsonRequestContent<AuthConfig>(authConfig ?? throw new ArgumentNullException(nameof(authConfig)), _client.JsonSerializer);
+            return _client.MakeRequestAsync(_client.NoErrorHandlers, HttpMethod.Post, "auth", null, data, cancellationToken);
         }
 
         public async Task<SystemInfoResponse> GetSystemInfoAsync(CancellationToken cancellationToken = default)
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "info", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
+            var response = await _client.MakeRequestAsync(_client.NoErrorHandlers, HttpMethod.Get, "info", cancellationToken).ConfigureAwait(false);
+            return _client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
+        }
+
+        public async Task<VersionResponse> GetVersionAsync(CancellationToken cancellationToken = default)
+        {
+            var response = await _client.MakeRequestAsync(_client.NoErrorHandlers, HttpMethod.Get, "version", cancellationToken).ConfigureAwait(false);
+            return _client.JsonSerializer.DeserializeObject<VersionResponse>(response.Body);
         }
 
         public Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken)
         {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
-            IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters);
-            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, cancellationToken);
+            IQueryString queryParameters = new QueryString<ContainerEventsParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)));
+            return _client.MakeRequestForStreamAsync(_client.NoErrorHandlers, HttpMethod.Get, "events", queryParameters, cancellationToken);
         }
 
         public Task MonitorEventsAsync(ContainerEventsParameters parameters, IProgress<Message> progress, CancellationToken cancellationToken = default)
         {
-            if (progress == null)
-            {
-                throw new ArgumentNullException(nameof(progress));
-            }
-
             return StreamUtil.MonitorStreamForMessagesAsync(
                 MonitorEventsAsync(parameters, cancellationToken),
-                this._client,
                 cancellationToken,
-                progress);
+                progress ?? throw new ArgumentNullException(nameof(progress)));
+        }
+
+        public Task PingAsync(CancellationToken cancellationToken = default)
+        {
+            return _client.MakeRequestAsync(_client.NoErrorHandlers, HttpMethod.Get, "_ping", cancellationToken);
         }
     }
 }

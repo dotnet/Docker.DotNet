@@ -1,6 +1,6 @@
-﻿using Docker.DotNet.Models;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -24,22 +24,19 @@ namespace Docker.DotNet
         Task<ContainerExecCreateResponse> ExecCreateContainerAsync(string id, ContainerExecCreateParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Start an exec instance.
+        /// Inspect an exec instance.
         ///
-        /// Starts a previously set up exec instance. If detach is true, this endpoint returns immediately after starting
-        /// the command. Otherwise, it sets up an interactive session with the command.
+        /// Return low-level information about an exec instance.
         /// </summary>
         /// <remarks>
-        /// 204 - No error.
+        /// docker inspect
+        ///
+        /// 200 - No error.
         /// 404 - No such exec instance.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">Exec instance ID.</param>
-        Task StartContainerExecAsync(string id, CancellationToken cancellationToken = default);
-
-        Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken = default);
-
-        Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ContainerExecStartParameters eConfig, CancellationToken cancellationToken = default);
+        Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Resize an exec instance.
@@ -54,19 +51,22 @@ namespace Docker.DotNet
         /// <param name="id">Exec instance ID.</param>
         Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken = default);
 
+        Task<MultiplexedStream> StartAndAttachContainerExecAsync(string id, bool tty, CancellationToken cancellationToken = default);
+
         /// <summary>
-        /// Inspect an exec instance.
+        /// Start an exec instance.
         ///
-        /// Return low-level information about an exec instance.
+        /// Starts a previously set up exec instance. If detach is true, this endpoint returns immediately after starting
+        /// the command. Otherwise, it sets up an interactive session with the command.
         /// </summary>
         /// <remarks>
-        /// docker inspect
-        ///
-        /// 200 - No error.
+        /// 204 - No error.
         /// 404 - No such exec instance.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">Exec instance ID.</param>
-        Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken = default);
+        Task StartContainerExecAsync(string id, CancellationToken cancellationToken = default);
+
+        Task<MultiplexedStream> StartWithConfigContainerExecAsync(string id, ContainerExecStartParameters eConfig, CancellationToken cancellationToken = default);
     }
 }

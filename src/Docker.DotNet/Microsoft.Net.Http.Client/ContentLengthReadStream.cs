@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,14 +76,9 @@ namespace Microsoft.Net.Http.Client
             }
         }
 
-        private void UpdateBytesRemaining(int read)
+        public override void Flush()
         {
-            _bytesRemaining -= read;
-            if (_bytesRemaining <= 0)
-            {
-                _disposed = true;
-            }
-            System.Diagnostics.Debug.Assert(_bytesRemaining >= 0, "Negative bytes remaining? " + _bytesRemaining);
+            throw new NotSupportedException();
         }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -99,7 +94,7 @@ namespace Microsoft.Net.Http.Client
             return read;
         }
 
-        public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             // TODO: Validate args
             if (_disposed)
@@ -111,6 +106,26 @@ namespace Microsoft.Net.Http.Client
             int read = await _inner.ReadAsync(buffer, offset, toRead, cancellationToken);
             UpdateBytesRemaining(read);
             return read;
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException();
         }
 
         protected override void Dispose(bool disposing)
@@ -130,29 +145,14 @@ namespace Microsoft.Net.Http.Client
             }
         }
 
-        public override void Write(byte[] buffer, int offset, int count)
+        private void UpdateBytesRemaining(int read)
         {
-            throw new NotSupportedException();
-        }
-
-        public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override void Flush()
-        {
-            throw new NotSupportedException();
+            _bytesRemaining -= read;
+            if (_bytesRemaining <= 0)
+            {
+                _disposed = true;
+            }
+            System.Diagnostics.Debug.Assert(_bytesRemaining >= 0, "Negative bytes remaining? " + _bytesRemaining);
         }
     }
 }

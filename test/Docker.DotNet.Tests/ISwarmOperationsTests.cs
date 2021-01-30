@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Docker.DotNet.Tests
 {
-    public class ISwarmOperationsTests : IDisposable
+    public class ISwarmOperationsTests
     {
         private readonly DockerClient _client;
 
@@ -22,16 +22,6 @@ namespace Docker.DotNet.Tests
                 var result = _client.Swarm.InitSwarmAsync(new SwarmInitParameters { AdvertiseAddr = "10.10.10.10", ListenAddr = "127.0.0.1" }, default).Result;
             }
             catch { }
-        }
-
-        public void Dispose()
-        {
-            //if (!wasSwarmInitialized)
-            //{
-            //    _client.Swarm.LeaveSwarmAsync(new SwarmLeaveParameters { Force = true });
-            //}
-
-            GC.SuppressFinalize(this);
         }
 
         [Fact]

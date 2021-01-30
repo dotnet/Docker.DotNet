@@ -1,25 +1,26 @@
 using System;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
 
 #if !NET45
+
 using System.Buffers;
+
 #endif
 
 namespace Docker.DotNet
 {
     public class MultiplexedStream : IDisposable, IPeekableStream
     {
-        private readonly Stream _stream;
-        private TargetStream _target;
-        private int _remaining;
+        private const int BufferSize = 81920;
         private readonly byte[] _header = new byte[8];
         private readonly bool _multiplexed;
+        private readonly Stream _stream;
 
-        const int BufferSize = 81920;
+        private int _remaining;
+        private TargetStream _target;
 
         public MultiplexedStream(Stream stream, bool multiplexed)
         {
@@ -34,13 +35,6 @@ namespace Docker.DotNet
             StandardError = 2
         }
 
-        public struct ReadResult
-        {
-            public int Count { get; set; }
-            public TargetStream Target { get; set; }
-            public bool EOF => Count == 0;
-        }
-
         public void CloseWrite()
         {
             if (_stream is WriteClosableStream closable)
@@ -49,9 +43,86 @@ namespace Docker.DotNet
             }
         }
 
-        public Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        public async Task CopyFromAsync(Stream input, CancellationToken cancellationToken)
         {
-            return _stream.WriteAsync(buffer, offset, count, cancellationToken);
+#if !NET45
+            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
+#else
+            var buffer = new byte[BufferSize];
+#endif
+
+            try
+            {
+                for (; ; )
+                {
+                    var count = await input.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                    if (count == 0)
+                    {
+                        break;
+                    }
+
+                    await WriteAsync(buffer, 0, count, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+#if !NET45
+                ArrayPool<byte>.Shared.Return(buffer);
+#endif
+            }
+        }
+
+        public async Task CopyOutputToAsync(Stream stdin, Stream stdout, Stream stderr, CancellationToken cancellationToken)
+        {
+#if !NET45
+            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
+#else
+            var buffer = new byte[BufferSize];
+#endif
+
+            try
+            {
+                for (; ; )
+                {
+                    var result = await ReadOutputAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+                    if (result.EOF)
+                    {
+                        return;
+                    }
+
+                    Stream stream;
+                    switch (result.Target)
+                    {
+                        case TargetStream.StandardIn:
+                            stream = stdin;
+                            break;
+
+                        case TargetStream.StandardOut:
+                            stream = stdout;
+                            break;
+
+                        case TargetStream.StandardError:
+                            stream = stderr;
+                            break;
+
+                        default:
+                            throw new InvalidOperationException($"Unknown TargetStream: '{result.Target}'.");
+                    }
+
+                    await stream.WriteAsync(buffer, 0, result.Count, cancellationToken).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+#if !NET45
+                ArrayPool<byte>.Shared.Return(buffer);
+#endif
+            }
+        }
+
+        public void Dispose()
+        {
+            ((IDisposable)_stream).Dispose();
         }
 
         public bool Peek(byte[] buffer, uint toPeek, out uint peeked, out uint available, out uint remaining)
@@ -138,90 +209,22 @@ namespace Docker.DotNet
 
                 using (StreamReader outRdr = new StreamReader(outMem), errRdr = new StreamReader(outErr))
                 {
-                    var stdout = outRdr.ReadToEnd();
-                    var stderr = errRdr.ReadToEnd();
-                    return (stdout, stderr);
+                    return (await outRdr.ReadToEndAsync(), await errRdr.ReadToEndAsync());
                 }
             }
         }
 
-        public async Task CopyFromAsync(Stream input, CancellationToken cancellationToken)
+        public Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-#if !NET45
-            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
-#else
-            var buffer = new byte[BufferSize];
-#endif
-
-            try
-            {
-                for (;;)
-                {
-                    var count = await input.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-                    if (count == 0)
-                    {
-                        break;
-                    }
-
-                    await WriteAsync(buffer, 0, count, cancellationToken).ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-#if !NET45
-                ArrayPool<byte>.Shared.Return(buffer);
-#endif
-            }
+            return _stream.WriteAsync(buffer, offset, count, cancellationToken);
         }
 
-        public async Task CopyOutputToAsync(Stream stdin, Stream stdout, Stream stderr, CancellationToken cancellationToken)
+        public struct ReadResult
         {
-#if !NET45
-            var buffer = ArrayPool<byte>.Shared.Rent(BufferSize);
-#else
-            var buffer = new byte[BufferSize];
-#endif
+            public int Count { get; set; }
 
-            try
-            {
-                for (;;)
-                {
-                    var result = await ReadOutputAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-                    if (result.EOF)
-                    {
-                        return;
-                    }
-
-                    Stream stream;
-                    switch (result.Target)
-                    {
-                        case TargetStream.StandardIn:
-                            stream = stdin;
-                            break;
-                        case TargetStream.StandardOut:
-                            stream = stdout;
-                            break;
-                        case TargetStream.StandardError:
-                            stream = stderr;
-                            break;
-                        default:
-                            throw new InvalidOperationException($"Unknown TargetStream: '{result.Target}'.");
-                    }
-
-                    await stream.WriteAsync(buffer, 0, result.Count, cancellationToken).ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-#if !NET45
-                ArrayPool<byte>.Shared.Return(buffer);
-#endif
-            }
-        }
-
-        public void Dispose()
-        {
-            ((IDisposable)_stream).Dispose();
+            public bool EOF => Count == 0;
+            public TargetStream Target { get; set; }
         }
     }
 }

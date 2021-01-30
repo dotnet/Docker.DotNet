@@ -25,10 +25,13 @@ namespace Docker.DotNet.Tests
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 return Platform.Linux;
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 return Platform.OSX;
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return Platform.Windows;
+
             throw new PlatformNotSupportedException();
         }
     }
