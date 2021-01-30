@@ -16,13 +16,6 @@ namespace Docker.DotNet.X509
     {
         private const byte Padding = 0x00;
 
-        public static X509Certificate2 GetCertFromPEMFiles(string certFilePath, string keyFilePath)
-        {
-            var cert = new X509Certificate2(certFilePath);
-            cert.PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath);
-            return cert;
-        }
-
         public static X509Certificate2 GetCertFromPFX(string pfxFilePath, string password)
         {
             return new X509Certificate2(pfxFilePath, password);
