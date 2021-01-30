@@ -5,17 +5,7 @@ namespace Docker.DotNet
 {
     internal class TimeSpanNanosecondsConverter : JsonConverter
     {
-        const int MiliSecondToNanoSecond = 1000000;
-        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var timeSpan = value as TimeSpan?;
-            if (timeSpan == null)
-            {
-                return;
-            }
-
-            writer.WriteValue((long)(timeSpan.Value.TotalMilliseconds * MiliSecondToNanoSecond));
-        }
+        private const int MiliSecondToNanoSecond = 1000000;
 
         public override bool CanConvert(Type objectType)
         {
@@ -32,7 +22,18 @@ namespace Docker.DotNet
             }
             var miliSecondValue = valueInNanoSeconds.Value / MiliSecondToNanoSecond;
 
-            return TimeSpan.FromMilliseconds((long)miliSecondValue);
+            return TimeSpan.FromMilliseconds(miliSecondValue);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        {
+            var timeSpan = value as TimeSpan?;
+            if (timeSpan == null)
+            {
+                return;
+            }
+
+            writer.WriteValue((long)(timeSpan.Value.TotalMilliseconds * MiliSecondToNanoSecond));
         }
     }
 }

@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using Newtonsoft.Json;
 
 namespace Docker.DotNet
 {
     internal class JsonVersionConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        public override bool CanConvert(Type objectType)
         {
-            throw new NotImplementedException();
+            return objectType == typeof(Version);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
@@ -22,9 +22,9 @@ namespace Docker.DotNet
             return Version.Parse(strVal);
         }
 
-        public override bool CanConvert(Type objectType)
+        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
         {
-            return objectType == typeof (Version);
+            throw new NotImplementedException();
         }
     }
 }

@@ -10,40 +10,7 @@ namespace Docker.DotNet.Models
 {
     internal static class StreamUtil
     {
-        private static Newtonsoft.Json.JsonSerializer _serializer = new Newtonsoft.Json.JsonSerializer();
-
-        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
-        {
-            using (var stream = await streamTask)
-            {
-                // ReadLineAsync must be cancelled by closing the whole stream.
-                using (cancel.Register(() => stream.Dispose()))
-                {
-                    using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-                    {
-                        string line;
-                        while ((line = await reader.ReadLineAsync()) != null)
-                        {
-                            progress.Report(line);
-                        }
-                    }
-                }
-            }
-        }
-
-        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
-        {
-            using (var stream = await streamTask)
-            using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-            using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
-            {
-                while (await jsonReader.ReadAsync().WithCancellation(cancel))
-                {
-                    var ev = _serializer.Deserialize<T>(jsonReader);
-                    progress?.Report(ev);
-                }
-            }
-        }
+        private static readonly Newtonsoft.Json.JsonSerializer Serializer = new Newtonsoft.Json.JsonSerializer();
 
         internal static async Task MonitorResponseForMessagesAsync<T>(Task<HttpResponseMessage> responseTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
         {
@@ -76,6 +43,39 @@ namespace Docker.DotNet.Models
                             }
                         }
                     }
+                }
+            }
+        }
+
+        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, CancellationToken cancel, IProgress<string> progress)
+        {
+            using (var stream = await streamTask)
+            {
+                // ReadLineAsync must be cancelled by closing the whole stream.
+                using (cancel.Register(() => stream.Dispose()))
+                {
+                    using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+                    {
+                        string line;
+                        while ((line = await reader.ReadLineAsync()) != null)
+                        {
+                            progress.Report(line);
+                        }
+                    }
+                }
+            }
+        }
+
+        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, CancellationToken cancel, IProgress<T> progress)
+        {
+            using (var stream = await streamTask)
+            using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+            using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
+            {
+                while (await jsonReader.ReadAsync(default).WithCancellation(cancel))
+                {
+                    var ev = Serializer.Deserialize<T>(jsonReader);
+                    progress.Report(ev);
                 }
             }
         }

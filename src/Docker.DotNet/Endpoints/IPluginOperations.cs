@@ -1,101 +1,41 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Docker.DotNet.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
+using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
     public interface IPluginOperations
     {
         /// <summary>
-        /// List plugins.
-        ///
-        /// Returns information about installed plugins.
+        /// Configure a plugin.
         /// </summary>
         /// <remarks>
-        /// docker plugin ls
+        /// docker plugin set
         ///
-        /// HTTP GET /plugins
-        ///
-        /// 200 - No error.
-        /// 500 - Server error.
-        /// </remarks>
-        Task<IList<Plugin>> ListPluginsAsync(PluginListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Get plugin privileges.
-        /// </summary>
-        /// <remarks>
-        /// docker plugin privileges
-        ///
-        /// HTTP POST /plugins/privileges
-        ///
-        /// 200 - No error.
-        /// 500 - Server error.
-        /// </remarks>
-        Task<IList<PluginPrivilege>> GetPluginPrivilegesAsync(PluginGetPrivilegeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Install a plugin.
-        ///
-        /// Pulls and installs a plugin. After the plugin is installed, it can be enabled using the `POST /plugins/{name}/enable` endpoint.
-        /// </summary>
-        /// <remarks>
-        /// docker plugin pull
-        ///
-        /// HTTP POST /plugins/pull
+        /// HTTP POST /plugins/{name}/set
         ///
         /// 204 - No error.
-        /// 500 - Server error.
-        /// </remarks>
-        Task InstallPluginAsync(PluginInstallParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Inspect a plugin.
-        /// </summary>
-        /// <remarks>
-        /// docker plugin inspect
-        ///
-        /// HTTP GET /plugins/{name}/json
-        ///
-        /// 200 - No error.
         /// 404 - Plugin not installed.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
-        Task<Plugin> InspectPluginAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
+        Task ConfigurePluginAsync(string name, PluginConfigureParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Remove a plugin.
+        /// Create a plugin.
         /// </summary>
         /// <remarks>
-        /// docker plugin rm
+        /// docker plugin create
         ///
-        /// HTTP DELETE /plugins/{name}
-        ///
-        /// 200 - No error.
-        /// 404 - Plugin not installed.
-        /// 500 - Server error.
-        /// </remarks>
-        /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
-        Task RemovePluginAsync(string name, PluginRemoveParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Enable a plugin.
-        /// </summary>
-        /// <remarks>
-        /// docker plugin enable
-        ///
-        /// HTTP POST /plugins/{name}/enable
+        /// HTTP POST /plugins/create
         ///
         /// 200 - No error.
-        /// 404 - Plugin not installed.
         /// 500 - Server error.
         /// </remarks>
-        /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
-        Task EnablePluginAsync(string name, PluginEnableParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task CreatePluginAsync(PluginCreateParameters parameters, Stream plugin, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Disable a plugin.
@@ -110,35 +50,80 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
-        Task DisablePluginAsync(string name, PluginDisableParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task DisablePluginAsync(string name, PluginDisableParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Upgrade a plugin.
+        /// Enable a plugin.
         /// </summary>
         /// <remarks>
-        /// docker plugin upgrade
+        /// docker plugin enable
         ///
-        /// HTTP POST /plugins/{name}/upgrade
+        /// HTTP POST /plugins/{name}/enable
         ///
         /// 200 - No error.
         /// 404 - Plugin not installed.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
-        Task UpgradePluginAsync(string name, PluginUpgradeParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task EnablePluginAsync(string name, PluginEnableParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Create a plugin.
+        /// Get plugin privileges.
         /// </summary>
         /// <remarks>
-        /// docker plugin create
+        /// docker plugin privileges
         ///
-        /// HTTP POST /plugins/create
+        /// HTTP POST /plugins/privileges
         ///
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task CreatePluginAsync(PluginCreateParameters parameters, Stream plugin, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<PluginPrivilege>> GetPluginPrivilegesAsync(PluginGetPrivilegeParameters parameters, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Inspect a plugin.
+        /// </summary>
+        /// <remarks>
+        /// docker plugin inspect
+        ///
+        /// HTTP GET /plugins/{name}/json
+        ///
+        /// 200 - No error.
+        /// 404 - Plugin not installed.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
+        Task<Plugin> InspectPluginAsync(string name, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Install a plugin.
+        ///
+        /// Pulls and installs a plugin. After the plugin is installed, it can be enabled using the `POST /plugins/{name}/enable` endpoint.
+        /// </summary>
+        /// <remarks>
+        /// docker plugin pull
+        ///
+        /// HTTP POST /plugins/pull
+        ///
+        /// 204 - No error.
+        /// 500 - Server error.
+        /// </remarks>
+        Task InstallPluginAsync(PluginInstallParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// List plugins.
+        ///
+        /// Returns information about installed plugins.
+        /// </summary>
+        /// <remarks>
+        /// docker plugin ls
+        ///
+        /// HTTP GET /plugins
+        ///
+        /// 200 - No error.
+        /// 500 - Server error.
+        /// </remarks>
+        Task<IList<Plugin>> ListPluginsAsync(PluginListParameters parameters, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Push a plugin.
@@ -155,21 +140,36 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
-        Task PushPluginAsync(string name, CancellationToken cancellationToken = default(CancellationToken));
+        Task PushPluginAsync(string name, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Configure a plugin.
+        /// Remove a plugin.
         /// </summary>
         /// <remarks>
-        /// docker plugin set
+        /// docker plugin rm
         ///
-        /// HTTP POST /plugins/{name}/set
+        /// HTTP DELETE /plugins/{name}
         ///
-        /// 204 - No error.
+        /// 200 - No error.
         /// 404 - Plugin not installed.
         /// 500 - Server error.
         /// </remarks>
         /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
-        Task ConfigurePluginAsync(string name, PluginConfigureParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task RemovePluginAsync(string name, PluginRemoveParameters parameters, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Upgrade a plugin.
+        /// </summary>
+        /// <remarks>
+        /// docker plugin upgrade
+        ///
+        /// HTTP POST /plugins/{name}/upgrade
+        ///
+        /// 200 - No error.
+        /// 404 - Plugin not installed.
+        /// 500 - Server error.
+        /// </remarks>
+        /// <param name="name">The name of the plugin. The `:latest` tag is optional, and is the default if omitted.</param>
+        Task UpgradePluginAsync(string name, PluginUpgradeParameters parameters, CancellationToken cancellationToken = default);
     }
 }

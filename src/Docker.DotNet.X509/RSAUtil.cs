@@ -5,7 +5,9 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 #if !NETSTANDARD1_6
+
 using System.Security;
+
 #endif
 
 namespace Docker.DotNet.X509
@@ -20,6 +22,7 @@ namespace Docker.DotNet.X509
         }
 
 #if !NETSTANDARD1_6
+
         public static X509Certificate2 GetCertFromPFXSecure(string pfxFilePath, SecureString password)
         {
             return new X509Certificate2(pfxFilePath, password);
@@ -91,14 +94,12 @@ namespace Docker.DotNet.X509
                 // Use "1" to indicate RSA.
                 var csp = new CspParameters(1)
                 {
-
                     // Set the KeyContainerName so that native code that looks up the private key
                     // can find it. This produces a keyset file on disk as a side effect.
                     KeyContainerName = pemFilePath
                 };
                 var rsaProvider = new RSACryptoServiceProvider(csp)
                 {
-
                     // Setting to false makes sure the keystore file will be cleaned up
                     // when the current process exits.
                     PersistKeyInCsp = false
@@ -161,7 +162,7 @@ namespace Docker.DotNet.X509
         /// <summary>
         private static bool TryReadUntil(BinaryReader rdr, string tag)
         {
-            char delim = '\n';
+            const char delim = '\n';
             char c;
             char[] line = new char[64];
             int index;
@@ -173,7 +174,7 @@ namespace Docker.DotNet.X509
                     index = 0;
                     while ((c = rdr.ReadChar()) != delim)
                     {
-                        if(c == '\r')
+                        if (c == '\r')
                         {
                             continue;
                         }

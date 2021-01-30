@@ -1,18 +1,39 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
 namespace Docker.DotNet
 {
+    /// <summary>
+    /// Generates query string formatted as:
+    /// [url]?key=value1&key=value2&key=value3...
+    /// </summary>
+    internal class EnumerableQueryString : IQueryString
+    {
+        private readonly string[] _data;
+        private readonly string _key;
+
+        public EnumerableQueryString(string key, string[] data)
+        {
+            _key = key;
+            _data = data;
+        }
+
+        /// <summary>
+        /// Returns formatted query string.
+        /// </summary>
+        /// <returns></returns>
+        public string GetQueryString()
+        {
+            return string.Join("&",
+                        _data.Select(
+                            v => $"{Uri.EscapeUriString(_key)}={Uri.EscapeDataString(v)}"));
+        }
+    }
+
     internal class QueryString<T> : IQueryString
     {
-        private T Object { get; }
-
-        private Tuple<PropertyInfo, QueryStringParameterAttribute>[] AttributedPublicProperties { get; }
-
-        private IQueryStringConverterInstanceFactory QueryStringConverterInstanceFactory { get; }
-
         public QueryString(T value)
         {
             if (EqualityComparer<T>.Default.Equals(value))
@@ -20,19 +41,23 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(value));
             }
 
-            this.Object = value;
-            this.QueryStringConverterInstanceFactory = new QueryStringConverterInstanceFactory();
-            this.AttributedPublicProperties = FindAttributedPublicProperties<T, QueryStringParameterAttribute>();
+            Object = value;
+            QueryStringConverterInstanceFactory = new QueryStringConverterInstanceFactory();
+            AttributedPublicProperties = FindAttributedPublicProperties<T, QueryStringParameterAttribute>();
         }
+
+        private Tuple<PropertyInfo, QueryStringParameterAttribute>[] AttributedPublicProperties { get; }
+        private T Object { get; }
+        private IQueryStringConverterInstanceFactory QueryStringConverterInstanceFactory { get; }
 
         public IDictionary<string, string[]> GetKeyValuePairs()
         {
             var queryParameters = new Dictionary<string, string[]>();
-            foreach (var pair in this.AttributedPublicProperties)
+            foreach (var pair in AttributedPublicProperties)
             {
                 var property = pair.Item1;
                 var attribute = pair.Item2;
-                var value = property.GetValue(this.Object, null);
+                var value = property.GetValue(Object, null);
 
                 // 'Required' check
                 if (attribute.IsRequired && value == null)
@@ -52,8 +77,8 @@ namespace Docker.DotNet
                     }
                     else
                     {
-                        var converter = this.QueryStringConverterInstanceFactory.GetConverterInstance(attribute.ConverterType);
-                        valueStr = this.ConvertValue(converter, value);
+                        var converter = QueryStringConverterInstanceFactory.GetConverterInstance(attribute.ConverterType);
+                        valueStr = ConvertValue(converter, value);
 
                         if (valueStr == null)
                         {
@@ -79,6 +104,16 @@ namespace Docker.DotNet
                     pair => string.Join("&",
                         pair.Value.Select(
                             v => $"{Uri.EscapeUriString(pair.Key)}={Uri.EscapeDataString(v)}"))));
+        }
+
+        private static bool IsDefaultOfType(object o)
+        {
+            if (o is ValueType)
+            {
+                return o.Equals(Activator.CreateInstance(o.GetType()));
+            }
+
+            return o == null;
         }
 
         private string[] ConvertValue(IQueryStringConverter converter, object value)
@@ -112,43 +147,6 @@ namespace Docker.DotNet
 
             return attributedPublicProperties.Select(pi =>
                 new Tuple<PropertyInfo, TAttribType>(pi, pi.GetCustomAttribute<TAttribType>())).ToArray();
-        }
-
-        private static bool IsDefaultOfType(object o)
-        {
-            if (o is ValueType)
-            {
-                return o.Equals(Activator.CreateInstance(o.GetType()));
-            }
-
-            return o == null;
-        }
-    }
-
-    /// <summary>
-    /// Generates query string formatted as:
-    /// [url]?key=value1&key=value2&key=value3...
-    /// </summary>
-    internal class EnumerableQueryString : IQueryString
-    {
-        private readonly string _key;
-        private readonly string[] _data;
-
-        public EnumerableQueryString(string key, string[] data)
-        {
-            _key = key;
-            _data = data;
-        }
-
-        /// <summary>
-        /// Returns formatted query string.
-        /// </summary>
-        /// <returns></returns>
-        public string GetQueryString()
-        {
-            return string.Join("&",
-                        _data.Select(
-                            v => $"{Uri.EscapeUriString(_key)}={Uri.EscapeDataString(v)}"));
         }
     }
 }

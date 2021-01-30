@@ -11,28 +11,6 @@ namespace Docker.DotNet
     public interface ITasksOperations
     {
         /// <summary>
-        /// List tasks
-        /// </summary>
-        /// <remarks>
-        /// HTTP GET /tasks
-        ///
-        /// 200 - No error.
-        /// 500 - Server error.
-        /// </remarks>
-        Task<IList<TaskResponse>> ListAsync(CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// List tasks
-        /// </summary>
-        /// <remarks>
-        /// HTTP GET /tasks
-        ///
-        /// 200 - No error.
-        /// 500 - Server error.
-        /// </remarks>
-        Task<IList<TaskResponse>> ListAsync(TasksListParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
         /// Inspect a task
         /// </summary>
         /// <remarks>
@@ -43,6 +21,28 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// </remarks>
         /// <param name="id">ID of the task.</param>
-        Task<TaskResponse> InspectAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<TaskResponse> InspectAsync(string id, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// List tasks
+        /// </summary>
+        /// <remarks>
+        /// HTTP GET /tasks
+        ///
+        /// 200 - No error.
+        /// 500 - Server error.
+        /// </remarks>
+        Task<IList<TaskResponse>> ListAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// List tasks
+        /// </summary>
+        /// <remarks>
+        /// HTTP GET /tasks
+        ///
+        /// 200 - No error.
+        /// 500 - Server error.
+        /// </remarks>
+        Task<IList<TaskResponse>> ListAsync(TasksListParameters parameters, CancellationToken cancellationToken = default);
     }
 }

@@ -1,5 +1,7 @@
-﻿#if !NETSTANDARD1_6
+#if !NETSTANDARD1_6
+
 using System.Net;
+
 #endif
 
 using System.Net.Http;
@@ -20,6 +22,10 @@ namespace Docker.DotNet.X509
 
         public RemoteCertificateValidationCallback ServerCertificateValidationCallback { get; set; }
 
+        public override void Dispose()
+        {
+        }
+
         public override HttpMessageHandler GetHandler(HttpMessageHandler innerHandler)
         {
             var handler = (ManagedHandler)innerHandler;
@@ -28,7 +34,7 @@ namespace Docker.DotNet.X509
                 _certificate
             };
 
-            handler.ServerCertificateValidationCallback = this.ServerCertificateValidationCallback;
+            handler.ServerCertificateValidationCallback = ServerCertificateValidationCallback;
 #if !NETSTANDARD1_6
             if (handler.ServerCertificateValidationCallback == null)
             {
@@ -42,10 +48,6 @@ namespace Docker.DotNet.X509
         public override bool IsTlsCredentials()
         {
             return true;
-        }
-
-        public override void Dispose()
-        {
         }
     }
 }
