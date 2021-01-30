@@ -6,39 +6,47 @@ namespace Docker.DotNet
 {
     public class DockerClientConfiguration : IDisposable
     {
-        public DockerClientConfiguration(Credentials credentials = null, TimeSpan defaultTimeout = default)
+        public Uri EndpointBaseUri { get; internal set; }
+
+        public Credentials Credentials { get; internal set; }
+
+        public TimeSpan DefaultTimeout { get; internal set; } = TimeSpan.FromSeconds(100);
+
+        public TimeSpan NamedPipeConnectTimeout { get; set; } = TimeSpan.FromMilliseconds(100);
+
+        private static Uri LocalDockerUri()
+        {
+            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            return isWindows ? new Uri("npipe://./pipe/docker_engine") : new Uri("unix:/var/run/docker.sock");
+        }
+
+        public DockerClientConfiguration(Credentials credentials = null, TimeSpan defaultTimeout = default(TimeSpan))
             : this(LocalDockerUri(), credentials, defaultTimeout)
         {
         }
 
         public DockerClientConfiguration(Uri endpoint, Credentials credentials = null,
-            TimeSpan defaultTimeout = default)
+            TimeSpan defaultTimeout = default(TimeSpan))
         {
             if (endpoint == null)
                 throw new ArgumentNullException(nameof(endpoint));
+
 
             Credentials = credentials ?? new AnonymousCredentials();
             EndpointBaseUri = endpoint;
             if (defaultTimeout != TimeSpan.Zero)
             {
                 if (defaultTimeout < Timeout.InfiniteTimeSpan)
-                {
                     // TODO: Should be a resource for localization.
                     // TODO: Is this a good message?
                     throw new ArgumentException("Timeout must be greater than Timeout.Infinite", nameof(defaultTimeout));
-                }
                 DefaultTimeout = defaultTimeout;
             }
         }
 
-        public Credentials Credentials { get; internal set; }
-        public TimeSpan DefaultTimeout { get; internal set; } = TimeSpan.FromSeconds(100);
-        public Uri EndpointBaseUri { get; internal set; }
-        public TimeSpan NamedPipeConnectTimeout { get; set; } = TimeSpan.FromMilliseconds(100);
-
         public DockerClient CreateClient()
         {
-            return CreateClient(null);
+            return this.CreateClient(null);
         }
 
         public DockerClient CreateClient(Version requestedApiVersion)
@@ -49,12 +57,6 @@ namespace Docker.DotNet
         public void Dispose()
         {
             Credentials.Dispose();
-        }
-
-        private static Uri LocalDockerUri()
-        {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            return isWindows ? new Uri("npipe://./pipe/docker_engine") : new Uri("unix:/var/run/docker.sock");
         }
     }
 }
