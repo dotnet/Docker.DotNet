@@ -47,10 +47,11 @@ namespace Docker.DotNet
         ///
         /// HTTP POST /build
         ///
-        /// 204 - No error.
+        /// 200 - No error.
+        /// 400 - Bad parameter.
         /// 500 - Server error.
         /// </remarks>
-        Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+        Task BuildImageFromDockerfileAsync(ImageBuildParameters parameters, Stream contents, IEnumerable<AuthConfig> authConfigs, IDictionary<string, string> headers, IProgress<JSONMessage> progress,  CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create an image.
