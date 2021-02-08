@@ -111,10 +111,11 @@ namespace Docker.DotNet.Tests
 
             await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = "hello-world" }, null, progressJSONMessage);
 
-            var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token));
+            var task = _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token);
 
             await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
 
+            Thread.Sleep(500); // Let's wait some time before cancelling the monitor stream to make sure we got some progress back.
             cts.Cancel();
 
             bool taskIsCancelled = false;
