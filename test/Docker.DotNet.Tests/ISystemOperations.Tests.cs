@@ -220,6 +220,17 @@ namespace Docker.DotNet.Tests
             await _client.System.PingAsync();
         }
 
+        [Fact]
+        public async Task AuthenticateAsync_Succeeds()
+        {
+            // The blank config goes to Dockerhub, which allows anonymous 
+            // reads, so the auth will definitely be accepted. This lets
+            // us check whether we correctly retrieve that acceptance.
+            var config = new AuthConfig();
+            var response = await _client.System.AuthenticateAsync(config);
+            Assert.Equal("Login Succeeded", response.Status);
+        }
+
         private class ProgressMessage : IProgress<Message>
         {
             internal Action<Message> _onMessageCalled;

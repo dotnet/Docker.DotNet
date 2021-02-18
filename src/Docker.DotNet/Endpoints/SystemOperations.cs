@@ -16,7 +16,7 @@ namespace Docker.DotNet
             this._client = client;
         }
 
-        public Task AuthenticateAsync(AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<AuthResponse> AuthenticateAsync(AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (authConfig == null)
             {
@@ -24,7 +24,8 @@ namespace Docker.DotNet
             }
             var data = new JsonRequestContent<AuthConfig>(authConfig, this._client.JsonSerializer);
 
-            return this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "auth", null, data, cancellationToken);
+            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "auth", null, data, cancellationToken).ConfigureAwait(false);
+            return this._client.JsonSerializer.DeserializeObject<AuthResponse>(response.Body);
         }
 
         public async Task<VersionResponse> GetVersionAsync(CancellationToken cancellationToken = default(CancellationToken))
