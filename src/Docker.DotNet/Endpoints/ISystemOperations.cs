@@ -18,7 +18,7 @@ namespace Docker.DotNet
         /// 204 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task AuthenticateAsync(AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken));
+        Task<AuthResponse> AuthenticateAsync(AuthConfig authConfig, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get version.
