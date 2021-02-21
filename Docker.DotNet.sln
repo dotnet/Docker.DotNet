@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{85990620-78A6-4381-8BD6-84E6D0CF0649}"
 EndProject
@@ -14,6 +14,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docker.DotNet.X509", "src\Docker.DotNet.X509\Docker.DotNet.X509.csproj", "{89BD76AD-78C9-4E4A-96A2-E5DA6D4AFA44}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Docker.DotNet.Tests", "test\Docker.DotNet.Tests\Docker.DotNet.Tests.csproj", "{248C5D51-2B33-4A06-A0EA-AA709F752E52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DockerSdk", "src\DockerSdk\DockerSdk.csproj", "{2E0D6ACC-A935-465E-ADD3-E06A6A426408}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DockerSdk.Tests", "test\DockerSdk.Tests\DockerSdk.Tests.csproj", "{94D3A9F4-36DD-4104-8919-621C3B2ECB99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3FC99294-813B-450A-9DD2-7D3126B17A55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +79,30 @@ Global
 		{248C5D51-2B33-4A06-A0EA-AA709F752E52}.Release|x64.Build.0 = Release|Any CPU
 		{248C5D51-2B33-4A06-A0EA-AA709F752E52}.Release|x86.ActiveCfg = Release|Any CPU
 		{248C5D51-2B33-4A06-A0EA-AA709F752E52}.Release|x86.Build.0 = Release|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Debug|x64.Build.0 = Debug|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Release|x64.ActiveCfg = Release|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Release|x64.Build.0 = Release|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Release|x86.ActiveCfg = Release|Any CPU
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408}.Release|x86.Build.0 = Release|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Debug|x64.Build.0 = Debug|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Debug|x86.Build.0 = Debug|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Release|x64.ActiveCfg = Release|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Release|x64.Build.0 = Release|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Release|x86.ActiveCfg = Release|Any CPU
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -82,5 +112,10 @@ Global
 		{E1F24B25-E027-45E0-A6E1-E08138F1F95D} = {85990620-78A6-4381-8BD6-84E6D0CF0649}
 		{89BD76AD-78C9-4E4A-96A2-E5DA6D4AFA44} = {85990620-78A6-4381-8BD6-84E6D0CF0649}
 		{248C5D51-2B33-4A06-A0EA-AA709F752E52} = {AA4B8CC2-1431-4FC7-9DF3-533EC6C86D3A}
+		{2E0D6ACC-A935-465E-ADD3-E06A6A426408} = {85990620-78A6-4381-8BD6-84E6D0CF0649}
+		{94D3A9F4-36DD-4104-8919-621C3B2ECB99} = {AA4B8CC2-1431-4FC7-9DF3-533EC6C86D3A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2FB3FE97-BC33-411B-92BB-69801DD461D1}
 	EndGlobalSection
 EndGlobal
