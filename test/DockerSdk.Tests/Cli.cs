@@ -81,7 +81,6 @@ namespace DockerSdk.Tests
             var pi = new ProcessStartInfo("pwsh.exe", "-Command -")
             {
                 CreateNoWindow = true,
-                LoadUserProfile = false,
                 UseShellExecute = false,  // needed for .Net Framework, which defaults it to true
                 RedirectStandardInput = true,
                 RedirectStandardError = true,
