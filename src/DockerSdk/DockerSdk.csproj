@@ -23,4 +23,4 @@
 		<ProjectReference Include="..\Docker.DotNet\Docker.DotNet.csproj" />
 	</ItemGroup>
 </Project>
-  
+   
