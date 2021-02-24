@@ -32,5 +32,7 @@ jobs:
       # TODO: this will actually be a release step
     - name: Publish documentation
       uses: Cecilapp/GitHub-Pages-deploy@3.1.0
+      env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
             build_dir: src/DockerSdk/html/
