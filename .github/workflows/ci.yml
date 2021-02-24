@@ -27,6 +27,8 @@ jobs:
       run: pwd
     - name: ls
       run: ls
+    - name: ls src/DockerSdk/
+      run: ls src/DockerSdk/
       
     - name: Generate documentation
       uses: mattnotmitt/doxygen-action@v1
