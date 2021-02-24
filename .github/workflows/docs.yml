@@ -25,7 +25,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - run: dotnet build --configuration Release /doc
+      - run: dotnet build --configuration Release
         
       - uses: mattnotmitt/doxygen-action@v1
         with:
