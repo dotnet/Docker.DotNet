@@ -20,3 +20,15 @@ jobs:
       run: dotnet build -c Release
     - name: Test
       run: dotnet test -c Release --no-build
+              
+    - name: Generate documentation
+      uses: mattnotmitt/doxygen-action@v1
+      with:
+            working-directory: 'src/DockerSdk/'
+            doxyfile-path: './Doxygen'
+
+      # TODO: this will actually be a release step
+    - name: Publish documentation
+      uses: Cecilapp/GitHub-Pages-deploy@3.1.0
+      with:
+            build_dir: src/DockerSdk/html/
