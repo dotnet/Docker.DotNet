@@ -18,14 +18,21 @@ jobs:
         dotnet-version: 3.1.301
     - name: Build
       run: dotnet build -c Release
-    - name: Test
-      run: dotnet test -c Release --no-build
+ 
+# temp disable while testing
+#    - name: Test
+#      run: dotnet test -c Release --no-build
               
+    - name: pwd
+      run: pwd
+    - name: ls
+      run: ls
+      
     - name: Generate documentation
       uses: mattnotmitt/doxygen-action@v1
       with:
             working-directory: 'src/DockerSdk/'
-            doxyfile-path: 'src/DockerSdk/Doxygen'
+            doxyfile-path: './Doxygen'
 
       # TODO: this will actually be a release step
     - name: Publish documentation
