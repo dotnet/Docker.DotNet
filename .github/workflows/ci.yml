@@ -25,7 +25,7 @@ jobs:
       uses: mattnotmitt/doxygen-action@v1
       with:
             working-directory: 'src/DockerSdk/'
-            doxyfile-path: './Doxygen'
+            doxyfile-path: 'src/DockerSdk/Doxygen'
 
       # TODO: this will actually be a release step
     - name: Publish documentation
