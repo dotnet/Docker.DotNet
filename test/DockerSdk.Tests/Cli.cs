@@ -78,7 +78,15 @@ namespace DockerSdk.Tests
         /// </exception>
         public static string[] Run(string command, bool ignoreErrors)
         {
-            var pi = new ProcessStartInfo("pwsh.exe", "-Command -")
+            // Get the name of the PowerShell executable, which depends on the platform.
+            string powershellCommand
+                = Environment.OSVersion.Platform == PlatformID.Win32NT
+                ? "pwsh.exe"
+                : "pwsh";
+
+            // Declare how to start the process. The trailing - in the parameters means
+            // to read the command from stdin.
+            var pi = new ProcessStartInfo(powershellCommand, "-Command -")
             {
                 CreateNoWindow = true,
                 UseShellExecute = false,  // needed for .Net Framework, which defaults it to true
@@ -86,26 +94,44 @@ namespace DockerSdk.Tests
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
             };
-            using var process = Process.Start(pi);
 
-            process.StandardInput.WriteLine(command);
-            process.StandardInput.WriteLine("exit");
-            process.WaitForExit();
-
-            if (!ignoreErrors)
+            // Start the process.
+            Process process;
+            try
             {
-                var errors = process.StandardError.ReadToEnd();
-                if (!string.IsNullOrEmpty(errors))
-                    throw new InvalidOperationException(errors);
-
-                if (process.ExitCode != 0)
-                    throw new InvalidOperationException($"The process exited with code {process.ExitCode}.");
+                process = Process.Start(pi);
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                throw new InvalidOperationException($"Failed to start PowerShell. Is it installed and in the PATH? (Command: {pi.FileName} {pi.Arguments})", ex);
             }
 
-            return process.StandardOutput.ReadToEnd()
-                .Split('\n')
-                .Select(line => line.Trim())
-                .ToArray();
+            using (process)
+            {
+                // Feed the command to PowerShell via stdin.
+                process.StandardInput.WriteLine(command);
+
+                // Shut down the process.
+                process.StandardInput.WriteLine("exit");
+                process.WaitForExit();
+
+                // Throw an exception if errors were detected. (Unless supressed.)
+                if (!ignoreErrors)
+                {
+                    var errors = process.StandardError.ReadToEnd();
+                    if (!string.IsNullOrEmpty(errors))
+                        throw new InvalidOperationException(errors);
+
+                    if (process.ExitCode != 0)
+                        throw new InvalidOperationException($"The process exited with code {process.ExitCode}.");
+                }
+
+                // Return the text that the process wrote to stdout.
+                return process.StandardOutput.ReadToEnd()
+                    .Split('\n')
+                    .Select(line => line.Trim())
+                    .ToArray();
+            }
         }
     }
 }
