@@ -7,7 +7,11 @@
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 	</PropertyGroup>
 
-	<ItemGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+        <DocumentationFile>DockerSdk.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
 	  <None Remove=".editorconfig" />
 	</ItemGroup>
 
