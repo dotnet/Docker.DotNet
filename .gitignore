@@ -188,5 +188,3 @@ packages/
 SignClient
 nbgv
 .vscode
-/src/DockerSdk/html
-/src/DockerSdk/DockerSdk.xml
