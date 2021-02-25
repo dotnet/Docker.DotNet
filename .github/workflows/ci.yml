@@ -19,20 +19,5 @@ jobs:
     - name: Build
       run: dotnet build -c Release
  
-# temp disable while testing
-#    - name: Test
-#      run: dotnet test -c Release --no-build
-              
-    - name: Generate documentation
-      uses: mattnotmitt/doxygen-action@v1
-      with:
-            working-directory: 'src/DockerSdk/'
-            doxyfile-path: './Doxyfile'
-
-      # TODO: this will actually be a release step
-    - name: Publish documentation
-      uses: Cecilapp/GitHub-Pages-deploy@3.1.0
-      env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-            build_dir: src/DockerSdk/html/
+    - name: Test
+      run: dotnet test -c Release --no-build`
