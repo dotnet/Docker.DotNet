@@ -1,0 +1,18 @@
+﻿# Sets up the docker containers needed by the project's tests.
+version: '3.9'
+
+services:
+
+  registry-open:
+    build: registry-open
+    image: ddnt:registry-open
+    container_name: ddnt-registry-open
+    ports:
+      - "4000:80"
+
+  registry-htpasswd-tls:
+    build: registry-htpasswd-tls
+    image: ddnt:registry-htpasswd-tls
+    container_name: ddnt-registry-htpasswd-tls
+    ports:
+      - "5001:443"

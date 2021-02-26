@@ -14,7 +14,7 @@ namespace Docker.DotNet
 
         public TimeSpan NamedPipeConnectTimeout { get; set; } = TimeSpan.FromMilliseconds(100);
 
-        private static Uri LocalDockerUri()
+        public static Uri LocalDockerUri()
         {
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
             return isWindows ? new Uri("npipe://./pipe/docker_engine") : new Uri("unix:/var/run/docker.sock");

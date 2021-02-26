@@ -1,0 +1,31 @@
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+
+###############################
+# Core EditorConfig Options   #
+###############################
+
+root = true
+
+# All files
+[*]
+indent_style = space
+
+# Code files
+[*.cs]
+indent_size = 4
+insert_final_newline = true
+charset = utf-8-bom
+
+# Dockerfiles
+[Dockerfile]
+indent_size = 2
+
+# YAML
+[*.yml]
+indent_size = 2
+
+# Scripts
+[*.ps1]
+indent_size = 4
+insert_final_newline = true
+charset = utf-8-bom
