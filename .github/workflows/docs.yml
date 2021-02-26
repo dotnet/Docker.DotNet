@@ -1,0 +1,41 @@
+name: "Regen SDK docs"
+
+# This workflow runs when triggered manually.
+on:
+  workflow_dispatch:
+
+jobs:
+  doc-gen:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # Check out the code.
+    - uses: actions/checkout@v1
+
+      # Install the version of .NET that we're building against.
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+
+      # Build the solution in Release configuration.
+    - name: Build
+      run: dotnet build -c Release
+
+      # Generate the documentation for the SDK. The result is
+      # in folder src/DockerSdk/html/.
+    - name: Generate documentation
+      uses: mattnotmitt/doxygen-action@v1
+      with:
+            working-directory: 'src/DockerSdk/'
+            doxyfile-path: './Doxyfile'
+
+      # Publish the documentation to GitHub Pages.
+    - name: Publish documentation
+      uses: Cecilapp/GitHub-Pages-deploy@3.1.0
+      env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+            build_dir: src/DockerSdk/html/
