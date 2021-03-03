@@ -2,20 +2,36 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
+using Newtonsoft.Json;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Docker.DotNet.Tests
 {
+    [Collection("Test collection")]
     public class ISystemOperationsTests
     {
         private readonly DockerClient _client;
+        private readonly TestOutput _output;
+        private readonly string _repositoryName;
+        private readonly string _tag;
+        private readonly CancellationTokenSource _cts;
 
-        public ISystemOperationsTests()
+        public ISystemOperationsTests(TestFixture testFixture, ITestOutputHelper output)
         {
-            _client = new DockerClientConfiguration().CreateClient();
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(testFixture.cts.Token);
+            _cts.Token.Register(() => throw new TimeoutException("ISystemOperationsTest timeout"));
+            _cts.CancelAfter(TimeSpan.FromMinutes(5));
+
+            _repositoryName = testFixture.repositoryName;
+            _tag = testFixture.tag;
+
+            _client = testFixture.dockerClient;
+            _output = new TestOutput(output);
         }
 
         [Fact]
@@ -42,30 +58,14 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task MonitorEventsAsync_EmptyContainersList_CanBeCancelled()
         {
-            var progress = new ProgressMessage()
-            {
-                _onMessageCalled = (m) => { }
-            };
+            var progress = new Progress<Message>();
 
-            var cts = new CancellationTokenSource();
-            cts.CancelAfter(1000);
+            using var cts = new CancellationTokenSource();
+            cts.Cancel();
+            await Task.Delay(1);
 
-            var task = _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progress, cts.Token);
+            await Assert.ThrowsAsync<TaskCanceledException>(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progress, cts.Token));
 
-            var taskIsCancelled = false;
-            try
-            {
-                await task;
-            }
-            catch
-            {
-                // Exception is not always thrown when cancelling token
-                taskIsCancelled = true;
-            }
-
-            // On local develop machine task is completed.
-            // On CI/CD Pipeline exception is thrown, not always
-            Assert.True(task.IsCompleted || taskIsCancelled);
         }
 
         [Fact]
@@ -83,70 +83,140 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task MonitorEventsAsync_Succeeds()
         {
-            const string repository = "hello-world";
             var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
 
-            var progressJSONMessage = new ProgressJSONMessage
+            var progressJSONMessage = new Progress<JSONMessage>((m) =>
             {
-                _onJSONMessageCalled = (m) =>
-                {
-                    // Status could be 'Pulling from...'
-                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onJSONMessageCalled - {m.ID} - {m.Status} {m.From} - {m.Stream}");
-                    Assert.NotNull(m);
-                }
-            };
+                // Status could be 'Pulling from...'
+                Assert.NotNull(m);
+                _output.WriteLine($"MonitorEventsAsync_Succeeds: JSONMessage - {m.ID} - {m.Status} {m.From} - {m.Stream}");
+            });
 
             var wasProgressCalled = false;
-            var progressMessage = new ProgressMessage
+
+            var progressMessage = new Progress<Message>((m) =>
             {
-                _onMessageCalled = (m) =>
+                _output.WriteLine($"MonitorEventsAsync_Succeeds: Message - {m.Action} - {m.Status} {m.From} - {m.Type}");
+                wasProgressCalled = true;
+                Assert.NotNull(m);
+            });
+
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+
+            var task = _client.System.MonitorEventsAsync(
+                new ContainerEventsParameters(),
+                progressMessage,
+                cts.Token);
+
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = $"{_repositoryName}:{_tag}" }, null, progressJSONMessage, _cts.Token);
+
+            await _client.Images.TagImageAsync($"{_repositoryName}:{_tag}", new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag }, _cts.Token);
+
+            await _client.Images.DeleteImageAsync(
+                name: $"{_repositoryName}:{newTag}",
+                new ImageDeleteParameters
                 {
-                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled - {m.Action} - {m.Status} {m.From} - {m.Type}");
-                    wasProgressCalled = true;
-                    Assert.NotNull(m);
-                }
-            };
+                    Force = true
+                },
+                _cts.Token);
 
-            using var cts = new CancellationTokenSource();
-
-            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = "hello-world" }, null, progressJSONMessage);
-
-            var task = Task.Run(() => _client.System.MonitorEventsAsync(new ContainerEventsParameters(), progressMessage, cts.Token));
-
-            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
+            // Give it some time for output operation to complete before cancelling task
+            await Task.Delay(TimeSpan.FromSeconds(1));
 
             cts.Cancel();
 
-            bool taskIsCancelled = false;
-            try
-            {
-                await task;
-            }
-            catch (OperationCanceledException)
-            {
-                taskIsCancelled = true;
-            }
+            await Assert.ThrowsAsync<TaskCanceledException>(() => task).ConfigureAwait(false);
 
-            // On local develop machine task is completed.
-            // On CI/CD Pipeline exception is thrown, not always
-            Assert.True(task.IsCompleted || taskIsCancelled);
             Assert.True(wasProgressCalled);
+        }
 
-            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+        [Fact]
+        public async Task MonitorEventsAsync_IsCancelled_NoStreamCorruption()
+        {
+            var rand = new Random();
+            var sw = new Stopwatch();
+
+            for (int i = 0; i < 20; ++i)
+            {
+                try
+                {
+                    // (1) Create monitor task
+                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+
+                    string newImageTag = Guid.NewGuid().ToString();
+
+                    var monitorTask = _client.System.MonitorEventsAsync(
+                        new ContainerEventsParameters(),
+                        new Progress<Message>((value) => _output.WriteLine($"DockerSystemEvent: {JsonConvert.SerializeObject(value)}")),
+                        cts.Token);
+
+                    // (2) Wait for some time to make sure we get into blocking IO call
+                    await Task.Delay(100);
+
+                    // (3) Invoke another request that will attempt to grab the same buffer
+                    var listImagesTask1 = _client.Images.TagImageAsync(
+                        $"{_repositoryName}:{_tag}",
+                        new ImageTagParameters
+                        {
+                            RepositoryName = _repositoryName,
+                            Tag = newImageTag,
+                            Force = true
+                        },
+                        default);
+
+                    // (4) Wait for a short bit again and cancel the monitor task - if we get lucky, we the list images call will grab the same buffer while
+                    sw.Restart();
+                    var iterations = rand.Next(15000000);
+
+                    for (int j = 0; j < iterations; j++)
+                    {
+                        // noop
+                    }
+                    _output.WriteLine($"Waited for {sw.Elapsed.TotalMilliseconds} ms");
+
+                    cts.Cancel();
+
+                    listImagesTask1.GetAwaiter().GetResult();
+
+                    _client.Images.TagImageAsync(
+                        $"{_repositoryName}:{_tag}",
+                        new ImageTagParameters
+                        {
+                            RepositoryName = _repositoryName,
+                            Tag = newImageTag,
+                            Force = true
+                        }
+                    ).GetAwaiter().GetResult();
+
+                    monitorTask.GetAwaiter().GetResult();
+                }
+                catch (TaskCanceledException)
+                {
+                    // Exceptions other than this causes test to fail
+                }
+            }
         }
 
         [Fact]
         public async Task MonitorEventsFiltered_Succeeds()
         {
-            const string repository = "hello-world";
-            var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
+            string newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
+            string newImageRespositoryName = Guid.NewGuid().ToString();
 
-            var progressJSONMessage = new ProgressJSONMessage
-            {
-                _onJSONMessageCalled = (m) => { }
-            };
+            await _client.Images.TagImageAsync(
+                $"{_repositoryName}:{_tag}",
+                new ImageTagParameters
+                {
+                    RepositoryName = newImageRespositoryName,
+                    Tag = newTag
+                },
+                _cts.Token
+            );
 
-            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
+            ImageInspectResponse image = await _client.Images.InspectImageAsync(
+                $"{newImageRespositoryName}:{newTag}",
+                _cts.Token
+            );
 
             var progressCalledCounter = 0;
 
@@ -172,72 +242,49 @@ namespace Docker.DotNet.Tests
                                 "image", true
                             }
                         }
+                    },
+                    {
+                        "image", new Dictionary<string, bool>()
+                        {
+                            {
+                                image.ID, true
+                            }
+                        }
                     }
                 }
             };
 
-            var progress = new ProgressMessage()
+            var progress = new Progress<Message>((m) =>
             {
-                _onMessageCalled = (m) =>
-                {
-                    Console.WriteLine($"{System.Reflection.MethodInfo.GetCurrentMethod().Module}->{System.Reflection.MethodInfo.GetCurrentMethod().Name}: _onMessageCalled received: {m.Action} - {m.Status} {m.From} - {m.Type}");
-                    Assert.True(m.Status == "tag" || m.Status == "untag");
-                    progressCalledCounter++;
-                }
-            };
+                progressCalledCounter++;
+                Assert.True(m.Status == "tag" || m.Status == "untag");
+                _output.WriteLine($"MonitorEventsFiltered_Succeeds: Message received: {m.Action} - {m.Status} {m.From} - {m.Type}");
+            });
 
-            using var cts = new CancellationTokenSource();
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
             var task = Task.Run(() => _client.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
 
-            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = repository }, null, progressJSONMessage);
+            await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = $"{_repositoryName}:{_tag}" }, null, new Progress<JSONMessage>());
 
-            await _client.Images.TagImageAsync(repository, new ImageTagParameters { RepositoryName = repository, Tag = newTag });
-            await _client.Images.DeleteImageAsync($"{repository}:{newTag}", new ImageDeleteParameters());
+            await _client.Images.TagImageAsync($"{_repositoryName}:{_tag}", new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag });
+            await _client.Images.DeleteImageAsync($"{_repositoryName}:{newTag}", new ImageDeleteParameters());
 
-            var newContainerId = _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = repository }).Result.ID;
-            await _client.Containers.RemoveContainerAsync(newContainerId, new ContainerRemoveParameters(), cts.Token);
+            var createContainerResponse = await _client.Containers.CreateContainerAsync(new CreateContainerParameters { Image = $"{_repositoryName}:{_tag}" });
+            await _client.Containers.RemoveContainerAsync(createContainerResponse.ID, new ContainerRemoveParameters(), cts.Token);
 
+            await Task.Delay(TimeSpan.FromSeconds(1));
             cts.Cancel();
-            bool taskIsCancelled = false;
-            try
-            {
-                await task;
-            }
-            catch (OperationCanceledException)
-            {
-                taskIsCancelled = true;
-            }
 
-            // On local develop machine task is completed.
-            // On CI/CD Pipeline exception is thrown, not always
-            Assert.True(task.IsCompleted || taskIsCancelled);
+            await Assert.ThrowsAsync<TaskCanceledException>(() => task);
+
             Assert.Equal(2, progressCalledCounter);
+            Assert.True(task.IsCanceled);
         }
 
         [Fact]
         public async Task PingAsync_Succeeds()
         {
             await _client.System.PingAsync();
-        }
-
-        private class ProgressMessage : IProgress<Message>
-        {
-            internal Action<Message> _onMessageCalled;
-
-            void IProgress<Message>.Report(Message value)
-            {
-                _onMessageCalled(value);
-            }
-        }
-
-        private class ProgressJSONMessage : IProgress<JSONMessage>
-        {
-            internal Action<JSONMessage> _onJSONMessageCalled;
-
-            void IProgress<JSONMessage>.Report(JSONMessage value)
-            {
-                _onJSONMessageCalled(value);
-            }
         }
     }
 }
