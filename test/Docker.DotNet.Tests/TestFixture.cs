@@ -66,11 +66,12 @@ namespace Docker.DotNet.Tests
             try
             {
                 var result = dockerClient.Swarm.InitSwarmAsync(new SwarmInitParameters { AdvertiseAddr = "10.10.10.10", ListenAddr = "127.0.0.1" }, default).GetAwaiter().GetResult();
+                _wasSwarmInitialized = true;
             }
             catch
             {
                 Console.WriteLine("Couldn't init a new swarm, node should take part of a existing one");
-                _wasSwarmInitialized = true;
+                _wasSwarmInitialized = false;
             }
 
 
