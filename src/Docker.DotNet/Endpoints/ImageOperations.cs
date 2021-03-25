@@ -45,7 +45,24 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<ImagesListResponse[]>(response.Body);
         }
 
-        public Task BuildImageFromDockerfileAsync(ImageBuildParameters parameters, Stream contents, IEnumerable<AuthConfig> authConfigs, IDictionary<string, string> headers, IProgress<JSONMessage> progress,  CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (contents == null)
+            {
+                throw new ArgumentNullException(nameof(contents));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            var data = new BinaryRequestContent(contents, TarContentType);
+            IQueryString queryParameters = new QueryString<ImageBuildParameters>(parameters);
+            return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
+        }
+
+        public Task BuildImageFromDockerfileAsync(ImageBuildParameters parameters, Stream contents, IEnumerable<AuthConfig> authConfigs, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
         {
             if (contents == null)
             {
@@ -60,9 +77,9 @@ namespace Docker.DotNet
             HttpMethod httpMethod = HttpMethod.Post;
 
             var data = new BinaryRequestContent(contents, TarContentType);
-            
+
             IQueryString queryParameters = new QueryString<ImageBuildParameters>(parameters);
-            
+
             Dictionary<string, string> customHeaders = RegistryConfigHeaders(authConfigs);
 
             if (headers != null)
@@ -101,7 +118,7 @@ namespace Docker.DotNet
         {
             return CreateImageAsync(parameters, imageStream, authConfig, null, progress, cancellationToken);
         }
-        
+
         public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (parameters == null)
@@ -118,7 +135,7 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImagesCreateParameters>(parameters);
-            
+
             Dictionary<string, string> customHeaders = RegistryAuthHeaders(authConfig);
 
             if(headers != null)
