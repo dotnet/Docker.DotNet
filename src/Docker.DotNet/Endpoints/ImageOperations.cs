@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -21,6 +22,7 @@ namespace Docker.DotNet
         };
 
         private const string RegistryAuthHeaderKey = "X-Registry-Auth";
+        private const string RegistryConfigHeaderKey = "X-Registry-Config";
         private const string TarContentType = "application/x-tar";
         private const string ImportFromBodySource = "-";
 
@@ -60,6 +62,48 @@ namespace Docker.DotNet
             return this._client.MakeRequestForStreamAsync(this._client.NoErrorHandlers, HttpMethod.Post, "build", queryParameters, data, cancellationToken);
         }
 
+        public Task BuildImageFromDockerfileAsync(ImageBuildParameters parameters, Stream contents, IEnumerable<AuthConfig> authConfigs, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default)
+        {
+            if (contents == null)
+            {
+                throw new ArgumentNullException(nameof(contents));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            HttpMethod httpMethod = HttpMethod.Post;
+
+            var data = new BinaryRequestContent(contents, TarContentType);
+
+            IQueryString queryParameters = new QueryString<ImageBuildParameters>(parameters);
+
+            Dictionary<string, string> customHeaders = RegistryConfigHeaders(authConfigs);
+
+            if (headers != null)
+            {
+                foreach (string key in headers.Keys)
+                {
+                    customHeaders[key] = headers[key];
+                }
+            }
+
+            return StreamUtil.MonitorResponseForMessagesAsync(
+                this._client.MakeRequestForRawResponseAsync(
+                    httpMethod,
+                    "build",
+                    queryParameters,
+                    data,
+                    customHeaders,
+                    cancellationToken),
+                this._client,
+                cancellationToken,
+                progress
+            );
+        }
+
         public Task CreateImageAsync(ImagesCreateParameters parameters, AuthConfig authConfig, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             return CreateImageAsync(parameters, null, authConfig, progress, cancellationToken);
@@ -74,7 +118,7 @@ namespace Docker.DotNet
         {
             return CreateImageAsync(parameters, imageStream, authConfig, null, progress, cancellationToken);
         }
-        
+
         public Task CreateImageAsync(ImagesCreateParameters parameters, Stream imageStream, AuthConfig authConfig, IDictionary<string, string> headers, IProgress<JSONMessage> progress, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (parameters == null)
@@ -91,7 +135,7 @@ namespace Docker.DotNet
             }
 
             IQueryString queryParameters = new QueryString<ImagesCreateParameters>(parameters);
-            
+
             Dictionary<string, string> customHeaders = RegistryAuthHeaders(authConfig);
 
             if(headers != null)
@@ -266,6 +310,18 @@ namespace Docker.DotNet
                 {
                     RegistryAuthHeaderKey,
                     Convert.ToBase64String(Encoding.UTF8.GetBytes(this._client.JsonSerializer.SerializeObject(authConfig ?? new AuthConfig())))
+                }
+            };
+        }
+
+        private Dictionary<string, string> RegistryConfigHeaders(IEnumerable<AuthConfig> authConfig)
+        {
+            var configDictionary = (authConfig ?? new AuthConfig[0]).ToDictionary(e => e.ServerAddress, e => e);
+            return new Dictionary<string, string>
+            {
+                {
+                    RegistryConfigHeaderKey,
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(this._client.JsonSerializer.SerializeObject(configDictionary)))
                 }
             };
         }

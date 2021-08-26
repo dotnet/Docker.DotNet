@@ -69,9 +69,6 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("buildargs", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, string> BuildArgs { get; set; }
 
-        [DataMember(Name = "AuthConfigs", EmitDefaultValue = false)]
-        public IDictionary<string, AuthConfig> AuthConfigs { get; set; }
-
         [QueryStringParameter("labels", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, string> Labels { get; set; }
 

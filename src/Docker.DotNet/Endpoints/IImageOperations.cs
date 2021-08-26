@@ -25,6 +25,35 @@ namespace Docker.DotNet
         /// <summary>
         /// Builds an image from a tar archive that contains a Dockerfile.
         /// </summary>
+        /// <param name="contents">A readable tar stream of file contents for the build.</param>
+        /// <param name="parameters">Specifics of how to perform the operation.</param>
+        /// <param name="authConfig">Information for authenticating with the registry.</param>
+        /// <param name="headers">Additional headers to include in the HTTP request to the registry.</param>
+        /// <param name="progress">Provides a delegate the receives progress updates while the operation is underway.</param>
+        /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
+        /// <remarks>
+        /// The Dockerfile specifies how the image is built from the tar archive. It is typically in the
+        /// archive's root, but can be at a different path or have a different name by setting the <c>dockerfile</c>
+        /// parameter. See the Dockerfile reference for more information.
+        /// <br/>
+        /// The Docker daemon performs a preliminary validation of the Dockerfile before starting the build,
+        /// and returns an error if the syntax is incorrect. After that, each instruction is run one-by-one until
+        /// the ID of the new image is output.
+        /// <br/>
+        /// The build is canceled if the client drops the connection by quitting or being killed.
+        /// <br/>
+        /// The equivalent commands in the Docker CLI are <c>docker build</c> and <c>docker image build</c>.
+        /// 200 - No error.
+        /// 400 - Bad parameter.
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
+        /// <exception cref="DockerApiException">The input is invalid or the daemon experienced an error.</exception>
+        /// <exception cref="HttpRequestException">The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.</exception>
+        Task BuildImageFromDockerfileAsync(ImageBuildParameters parameters, Stream contents, IEnumerable<AuthConfig> authConfigs, IDictionary<string, string> headers, IProgress<JSONMessage> progress,  CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Builds an image from a tar archive that contains a Dockerfile.
+        /// </summary>
         /// <param name="parameters">Specifics of how to perform the operation.</param>
         /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
         /// <remarks>
@@ -43,6 +72,7 @@ namespace Docker.DotNet
         /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
         /// <exception cref="DockerApiException">The input is invalid or the daemon experienced an error.</exception>
         /// <exception cref="HttpRequestException">The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.</exception>
+        [ObsoleteAttribute("This method does not wait for build to complete. Use new BuildImageFromDockerfileAsync(contents, parameters, authConfigs, headers, progress, cancellationToken,  instead.)", false)]
         Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
