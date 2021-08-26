@@ -90,10 +90,10 @@ The code below pulls `fedora/memcached` image to your Docker instance using your
 anonymously download the image as well by passing `null` instead of AuthConfig object:
 
 ```csharp
-Stream stream  = await client.Images.CreateImageAsync(
+await client.Images.CreateImageAsync(
     new ImagesCreateParameters
     {
-        Parent = "fedora/memcached",
+        FromImage = "fedora/memcached",
         Tag = "alpha",
     },
     new AuthConfig
@@ -101,7 +101,8 @@ Stream stream  = await client.Images.CreateImageAsync(
         Email = "test@example.com",
         Username = "test",
         Password = "pa$$w0rd"
-    });
+    },
+    new Progress<JSONMessage>());
 ```
 
 #### Example: Start a container
