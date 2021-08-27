@@ -189,5 +189,5 @@ SignClient
 nbgv
 .vscode
 
-/src/DockerSdk/html
-/src/DockerSdk/DockerSdk.xml
+# OS X
+.DS_Store

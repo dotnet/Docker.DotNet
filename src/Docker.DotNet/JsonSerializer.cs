@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace Docker.DotNet
@@ -8,6 +10,8 @@ namespace Docker.DotNet
     /// </summary>
     internal class JsonSerializer
     {
+        private readonly Newtonsoft.Json.JsonSerializer _serializer;
+
         private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
         {
             NullValueHandling = NullValueHandling.Ignore,
@@ -24,6 +28,23 @@ namespace Docker.DotNet
 
         public JsonSerializer()
         {
+            _serializer = Newtonsoft.Json.JsonSerializer.CreateDefault(this._settings);
+        }
+
+        public Task<T> Deserialize<T>(JsonReader jsonReader, CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<T>();
+            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
+            {
+                Task.Factory.StartNew(
+                    () => tcs.TrySetResult(_serializer.Deserialize<T>(jsonReader)),
+                    cancellationToken,
+                    TaskCreationOptions.LongRunning,
+                    TaskScheduler.Default
+                );
+
+                return tcs.Task;
+            }
         }
 
         public T DeserializeObject<T>(string json)

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -10,37 +11,35 @@ namespace Docker.DotNet.Models
 {
     internal static class StreamUtil
     {
-        private static Newtonsoft.Json.JsonSerializer _serializer = new Newtonsoft.Json.JsonSerializer();
-
-        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
+        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancellationToken, IProgress<string> progress)
         {
+            var tcs = new TaskCompletionSource<string>();
+
             using (var stream = await streamTask)
+            using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
             {
-                // ReadLineAsync must be cancelled by closing the whole stream.
-                using (cancel.Register(() => stream.Dispose()))
+                string line;
+                while ((line = await await Task.WhenAny(reader.ReadLineAsync(), tcs.Task)) != null)
                 {
-                    using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-                    {
-                        string line;
-                        while ((line = await reader.ReadLineAsync()) != null)
-                        {
-                            progress.Report(line);
-                        }
-                    }
+                    progress.Report(line);
                 }
             }
         }
 
-        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
+        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancellationToken, IProgress<T> progress)
         {
+            var tcs = new TaskCompletionSource<bool>();
+
             using (var stream = await streamTask)
             using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
             using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
+            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
             {
-                while (await jsonReader.ReadAsync().WithCancellation(cancel))
+                while (await await Task.WhenAny(jsonReader.ReadAsync(cancellationToken), tcs.Task))
                 {
-                    var ev = _serializer.Deserialize<T>(jsonReader);
-                    progress?.Report(ev);
+                    var ev = await client.JsonSerializer.Deserialize<T>(jsonReader, cancellationToken);
+                    progress.Report(ev);
                 }
             }
         }
@@ -49,49 +48,8 @@ namespace Docker.DotNet.Models
         {
             using (var response = await responseTask)
             {
-                await client.HandleIfErrorResponseAsync(response.StatusCode, response);
-
-                using (var stream = await response.Content.ReadAsStreamAsync())
-                {
-                    // ReadLineAsync must be cancelled by closing the whole stream.
-                    using (cancel.Register(() => stream.Dispose()))
-                    {
-                        using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-                        {
-                            string line;
-                            try
-                            {
-                                while ((line = await reader.ReadLineAsync()) != null)
-                                {
-                                    var prog = client.JsonSerializer.DeserializeObject<T>(line);
-                                    if (prog == null) continue;
-
-                                    progress.Report(prog);
-                                }
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // The subsequent call to reader.ReadLineAsync() after cancellation
-                                // will fail because we disposed the stream. Just ignore here.
-                            }
-                        }
-                    }
-                }
+                await MonitorStreamForMessagesAsync<T>(response.Content.ReadAsStreamAsync(), client, cancel, progress);
             }
-        }
-
-        private static async Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
-            {
-                if (task != await Task.WhenAny(task, tcs.Task))
-                {
-                    throw new OperationCanceledException(cancellationToken);
-                }
-            }
-
-            return await task;
         }
     }
 }
