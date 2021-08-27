@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
@@ -346,22 +346,22 @@ namespace Docker.DotNet
             IRequestContent data,
             CancellationToken cancellationToken)
         {
-            // If there is a timeout, we turn it into a cancellation token. At the same time, we need to link to the caller's
-            // cancellation token. To avoid leaking objects, we must then also dispose of the CancellationTokenSource. To keep
-            // code flow simple, we treat it as re-entering the same method with a different CancellationToken and no timeout.
+            var request = PrepareRequest(method, path, queryString, headers, data);
+
             if (timeout != s_InfiniteTimeout)
             {
                 using (var timeoutTokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
                 {
                     timeoutTokenSource.CancelAfter(timeout);
-
-                    // We must await here because we need to dispose of the CTS only after the work has been completed.
-                    return await PrivateMakeRequestAsync(s_InfiniteTimeout, completionOption, method, path, queryString, headers, data, timeoutTokenSource.Token).ConfigureAwait(false);
+                    return await _client.SendAsync(request, completionOption, timeoutTokenSource.Token).ConfigureAwait(false);
                 }
             }
 
-            var request = PrepareRequest(method, path, queryString, headers, data);
-            return await _client.SendAsync(request, completionOption, cancellationToken).ConfigureAwait(false);
+            var tcs = new TaskCompletionSource<HttpResponseMessage>();
+            using (cancellationToken.Register(() => tcs.SetCanceled()))
+            {
+                return await await Task.WhenAny(tcs.Task, _client.SendAsync(request, completionOption, cancellationToken)).ConfigureAwait(false);
+            }
         }
 
         private async Task HandleIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response, IEnumerable<ApiResponseErrorHandlingDelegate> handlers)

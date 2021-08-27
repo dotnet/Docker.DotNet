@@ -1,6 +1,6 @@
 # SpecGen
 
-A tool that reflects the Docker client [engine-api](https://github.com/docker/engine-api) in order to generate C# classes that match its model for [Docker.DotNet Models](https://github.com/ahmetalpbalkan/Docker.DotNet/tree/master/Docker.DotNet/Models).
+A tool that reflects the Docker client [engine-api](https://github.com/docker/engine-api) in order to generate C# classes that match its model for [Docker.DotNet Models](/src/Docker.DotNet/Models).
 
 ----
 
