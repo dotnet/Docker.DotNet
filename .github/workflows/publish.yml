@@ -12,7 +12,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.301
+          dotnet-version: 3.1.412
       - name: Install SignClient tool
         run: dotnet tool install --tool-path . SignClient
       - name: Install NBGV tool
