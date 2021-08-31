@@ -48,7 +48,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{
 				Name:       "Timeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
 			},
 		},
 	},
