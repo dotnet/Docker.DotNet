@@ -9,9 +9,7 @@ namespace Docker.DotNet
             return false;
         }
 
-        public override void Dispose()
-        {
-        }
+        public override void Dispose() { }
 
         public override HttpMessageHandler GetHandler(HttpMessageHandler innerHandler)
         {
