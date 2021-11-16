@@ -22,5 +22,8 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("tail", false)]
         public string Tail { get; set; }
+        
+        [QueryStringParameter("until", false)]
+        public string Until { get; set; }
     }
 }
