@@ -270,7 +270,7 @@ namespace Docker.DotNet
 
             await HandleAndDisposeIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
 
-            return await response.Content.ReadAsStreamAsync().ConfigureAwait(true);
+            return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
         }
 
         internal async Task<HttpResponseMessage> MakeRequestForRawResponseAsync(
