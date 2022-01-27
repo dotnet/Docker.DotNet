@@ -268,9 +268,9 @@ namespace Docker.DotNet
         {
             var response = await PrivateMakeRequestAsync(timeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, body, token).ConfigureAwait(false);
 
-            await HandleIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
+            await HandleAndDisposeIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
 
-            return await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            return await response.Content.ReadAsStreamAsync().ConfigureAwait(true);
         }
 
         internal async Task<HttpResponseMessage> MakeRequestForRawResponseAsync(
@@ -294,7 +294,7 @@ namespace Docker.DotNet
         {
             var response = await PrivateMakeRequestAsync(s_InfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, null, null, cancellationToken);
 
-            await HandleIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
+            await HandleAndDisposeIfErrorResponseAsync(response.StatusCode, response, errorHandlers);
 
             var body = await response.Content.ReadAsStreamAsync();
 
@@ -361,6 +361,31 @@ namespace Docker.DotNet
             using (cancellationToken.Register(() => tcs.SetCanceled()))
             {
                 return await await Task.WhenAny(tcs.Task, _client.SendAsync(request, completionOption, cancellationToken)).ConfigureAwait(false);
+            }
+        }
+
+        private async Task HandleAndDisposeIfErrorResponseAsync(HttpStatusCode statusCode, HttpResponseMessage response, IEnumerable<ApiResponseErrorHandlingDelegate> handlers)
+        {
+            if (statusCode < HttpStatusCode.OK || statusCode >= HttpStatusCode.BadRequest)
+            {
+                // If it is not an error response, we do not read the response body because the caller may wish to consume it.
+                // If it is an error response, we do because there is nothing else going to be done with it anyway and
+                // we want to report the response body in the error message as it contains potentially useful info.
+                string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                // Dispose the response object to clean up any open connections.
+                response.Dispose();
+
+                // If no customer handlers just default the response.
+                if (handlers != null)
+                {
+                    foreach (var handler in handlers)
+                    {
+                        handler(statusCode, responseBody);
+                    }
+                }
+
+                throw new DockerApiException(statusCode, responseBody);
             }
         }
 
