@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Net.Http.Client;
 
 #if (NETSTANDARD1_6 || NETSTANDARD2_0)
@@ -424,7 +425,7 @@ namespace Docker.DotNet
 
             var request = new HttpRequestMessage(method, HttpUtility.BuildUri(_endpointBaseUri, this._requestedApiVersion, path, queryString));
 
-            request.Version = new Version(1, 1);
+            request.Version = this.Configuration.HttpVersion;
 
             request.Headers.Add("User-Agent", UserAgent);
 

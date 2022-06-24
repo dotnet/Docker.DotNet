@@ -14,6 +14,8 @@ namespace Docker.DotNet
 
         public TimeSpan NamedPipeConnectTimeout { get; set; } = TimeSpan.FromMilliseconds(100);
 
+        public Version HttpVersion { get; set; } = new Version(1, 1); // Default Version, although rancher desktop requires 1.0 to avoid chunked encoding
+
         private static Uri LocalDockerUri()
         {
             var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
@@ -34,6 +36,7 @@ namespace Docker.DotNet
 
             Credentials = credentials ?? new AnonymousCredentials();
             EndpointBaseUri = endpoint;
+
             if (defaultTimeout != TimeSpan.Zero)
             {
                 if (defaultTimeout < Timeout.InfiniteTimeSpan)
