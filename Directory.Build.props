@@ -1,0 +1,11 @@
+<Project>
+  <!-- Strong-naming  -->
+  <PropertyGroup Label="Signing">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)\Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Defines the StrongNamePublicKeys class with constant which contains the repo identity public key formatted for use in InternalsVisibleTo attributes. -->
+    <Compile Include="$(MSBuildThisFileDirectory)\StrongNamePublicKeys.cs" Visible="false" />
+  </ItemGroup>
+</Project>
