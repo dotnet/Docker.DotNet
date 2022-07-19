@@ -333,7 +333,9 @@ namespace Docker.DotNet
                 throw new NotSupportedException("message handler does not support hijacked streams");
             }
 
-            return content.HijackStream();
+            var stream = await content.ReadAsStreamAsync()
+                .ConfigureAwait(false);
+            return (WriteClosableStream)stream;
         }
 
         private async Task<HttpResponseMessage> PrivateMakeRequestAsync(

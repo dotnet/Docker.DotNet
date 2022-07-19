@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    internal class ChunkedReadStream : Stream
+    internal class ChunkedReadStream : WriteClosableStream
     {
         private readonly BufferedReadStream _inner;
         private long _chunkBytesRemaining;
@@ -175,6 +175,14 @@ namespace Microsoft.Net.Http.Client
         public override void Flush()
         {
             throw new NotSupportedException();
+        }
+
+        public override bool CanCloseWrite
+            => _inner.CanCloseWrite;
+
+        public override void CloseWrite()
+        {
+            _inner.CloseWrite();
         }
     }
 }
