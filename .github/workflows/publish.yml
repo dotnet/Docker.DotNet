@@ -32,7 +32,7 @@ jobs:
           DNF_CODESIGN_SECRET: ${{secrets.DNF_CODESIGN_SECRET}}
       - name: Push packages to NuGet.org
         run: |
-          dotnet nuget push ./packages/Docker.DotNet.*.nupkg -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
+          dotnet nuget push ./packages/Docker.DotNet.*.nupkg --skip-duplicate -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
       - name: Create Release
         uses: actions/create-release@master
         env:
