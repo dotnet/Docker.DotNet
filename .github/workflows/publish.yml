@@ -34,11 +34,15 @@ jobs:
         run: |
           dotnet nuget push ./packages/Docker.DotNet.*.nupkg --skip-duplicate -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
       - name: Create Release
-        uses: actions/create-release@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/github-script@v5
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: false
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ context.ref }}',              
+              name: 'Release ${{ context.ref }}',
+              draft: false,
+              prerelease: false,
+              generate_release_notes: true
+            })
