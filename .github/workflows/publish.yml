@@ -40,8 +40,8 @@ jobs:
             github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: '${{ context.ref }}',              
-              name: 'Release ${{ context.ref }}',
+              tag_name: context.ref,              
+              name: context.ref,
               draft: false,
               prerelease: false,
               generate_release_notes: true
