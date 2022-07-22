@@ -1,7 +1,4 @@
-﻿#if !NETSTANDARD1_6
-using System.Net;
-#endif
-
+﻿using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Net.Http.Client;
@@ -29,12 +26,11 @@ namespace Docker.DotNet.X509
             };
 
             handler.ServerCertificateValidationCallback = this.ServerCertificateValidationCallback;
-#if !NETSTANDARD1_6
+
             if (handler.ServerCertificateValidationCallback == null)
             {
                 handler.ServerCertificateValidationCallback = ServicePointManager.ServerCertificateValidationCallback;
             }
-#endif
 
             return handler;
         }

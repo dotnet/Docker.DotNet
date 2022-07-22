@@ -82,7 +82,6 @@ namespace Docker.DotNet
 
                         return dockerStream;
                     });
-
                     break;
 
                 case "tcp":
