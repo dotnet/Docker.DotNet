@@ -38,6 +38,11 @@ namespace Microsoft.Net.Http.Client
             get { return false; }
         }
 
+        public override bool CanCloseWrite
+        {
+            get { return _inner.CanCloseWrite; }
+        }
+
         public override long Length
         {
             get { throw new NotSupportedException(); }
@@ -154,12 +159,12 @@ namespace Microsoft.Net.Http.Client
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new NotSupportedException();
+            _inner.Write(buffer, offset, count);
         }
 
         public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            throw new NotSupportedException();
+            return _inner.WriteAsync(buffer, offset, count, cancellationToken);
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -174,11 +179,8 @@ namespace Microsoft.Net.Http.Client
 
         public override void Flush()
         {
-            throw new NotSupportedException();
+            _inner.Flush();
         }
-
-        public override bool CanCloseWrite
-            => _inner.CanCloseWrite;
 
         public override void CloseWrite()
         {

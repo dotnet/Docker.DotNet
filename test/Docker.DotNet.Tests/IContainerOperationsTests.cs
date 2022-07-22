@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
@@ -819,6 +820,45 @@ namespace Docker.DotNet.Tests
             Func<Task> op = async () => await _dockerClient.Containers.CreateContainerAsync(parameters);
 
             await Assert.ThrowsAsync<DockerImageNotFoundException>(op);
+        }
+
+        [Fact]
+        public async Task MultiplexedStreamWriteAsync_DoesNotThrowAnException()
+        {
+            // Given
+            Exception exception;
+
+            var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(
+                new CreateContainerParameters
+                {
+                    Image = _imageId
+                })
+                .ConfigureAwait(false);
+
+            _ = await _dockerClient.Containers.StartContainerAsync(createContainerResponse.ID, new ContainerStartParameters())
+                .ConfigureAwait(false);
+
+            var containerExecCreateResponse = await _dockerClient.Exec.ExecCreateContainerAsync(createContainerResponse.ID,
+                new ContainerExecCreateParameters
+                {
+                    AttachStdout = true,
+                    AttachStderr = true,
+                    AttachStdin = true,
+                    Cmd = new [] { string.Empty }
+                })
+                .ConfigureAwait(false);
+
+            // When
+            using (var stream = await _dockerClient.Exec.StartAndAttachContainerExecAsync(containerExecCreateResponse.ID, false)
+                .ConfigureAwait(false))
+            {
+                var buffer = Encoding.ASCII.GetBytes("\n");
+                exception = await Record.ExceptionAsync(() => stream.WriteAsync(buffer, 0, buffer.Length, default))
+                    .ConfigureAwait(false);
+            }
+
+            // Then
+            Assert.Null(exception);
         }
     }
 }
