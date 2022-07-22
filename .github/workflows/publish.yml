@@ -12,18 +12,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: 3.1.412
+          dotnet-version: 6.0.x
       - name: Install SignClient tool
         run: dotnet tool install --tool-path . SignClient
       - name: Install NBGV tool
         run: dotnet tool install --tool-path . nbgv
       - name: Set Version
         run: ./nbgv cloud
-      - name: Create Packages 
+      - name: Create Packages
         run: dotnet pack -c Release -o packages
       - name: Sign Packages
         run: |
@@ -35,8 +35,7 @@ jobs:
           DNF_CODESIGN_USER: ${{secrets.DNF_CODESIGN_USER}}
           DNF_CODESIGN_SECRET: ${{secrets.DNF_CODESIGN_SECRET}}
       - name: Push packages to NuGet.org
-        run: |
-          dotnet nuget push ./packages/Docker.DotNet.*.nupkg --skip-duplicate -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./packages/Docker.DotNet.*.nupkg --skip-duplicate -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
       - name: Create Release
         uses: actions/github-script@v5
         with:
@@ -44,7 +43,7 @@ jobs:
             github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag_name: context.ref,              
+              tag_name: context.ref,
               name: context.ref,
               draft: false,
               prerelease: false,

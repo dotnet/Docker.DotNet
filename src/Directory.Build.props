@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
         <IsPackable>true</IsPackable>
-        <TargetFrameworks>netstandard2.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
         <PackageIconUrl>https://camo.githubusercontent.com/fa6d5c12609ed8a3ba1163b96f9e9979b8f59b0d/687474703a2f2f7765732e696f2f566663732f636f6e74656e74</PackageIconUrl>
         <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
         <PackageTags>Docker Container C# .NET</PackageTags>
