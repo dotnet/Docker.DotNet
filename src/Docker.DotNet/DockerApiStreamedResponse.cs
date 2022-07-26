@@ -4,19 +4,19 @@ using System.Net.Http.Headers;
 
 namespace Docker.DotNet
 {
-    internal class DockerApiStreamedResponse
+    internal sealed class DockerApiStreamedResponse
     {
-        public HttpStatusCode StatusCode { get; private set; }
-
-        public Stream Body { get; private set; }
-
-        public HttpResponseHeaders Headers { get; private set; }
-
         public DockerApiStreamedResponse(HttpStatusCode statusCode, Stream body, HttpResponseHeaders headers)
         {
-            this.StatusCode = statusCode;
-            this.Body = body;
-            this.Headers = headers;
+            StatusCode = statusCode;
+            Body = body;
+            Headers = headers;
         }
+
+        public HttpStatusCode StatusCode { get; }
+
+        public Stream Body { get; }
+
+        public HttpResponseHeaders Headers { get; }
     }
 }
