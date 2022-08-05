@@ -393,12 +393,13 @@ namespace Docker.DotNet
             request.Version = new Version(1, 1);
             request.Headers.Add("User-Agent", UserAgent);
 
-            if (headers != null)
+            var customHeaders = headers == null
+                ? Configuration.DefaultHttpRequestHeaders
+                : Configuration.DefaultHttpRequestHeaders.Concat(headers);
+
+            foreach (var header in customHeaders)
             {
-                foreach (var header in headers)
-                {
-                    request.Headers.Add(header.Key, header.Value);
-                }
+                request.Headers.Add(header.Key, header.Value);
             }
 
             if (data != null)

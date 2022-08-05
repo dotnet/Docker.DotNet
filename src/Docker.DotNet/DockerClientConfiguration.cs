@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -6,12 +7,21 @@ namespace Docker.DotNet
 {
     public class DockerClientConfiguration : IDisposable
     {
-        public DockerClientConfiguration(Credentials credentials = null, TimeSpan defaultTimeout = default)
-            : this(GetLocalDockerEndpoint(), credentials, defaultTimeout)
+        public DockerClientConfiguration(
+            Credentials credentials = null,
+            TimeSpan defaultTimeout = default,
+            TimeSpan namedPipeConnectTimeout = default,
+            IReadOnlyDictionary<string, string> defaultHttpRequestHeaders = null)
+            : this(GetLocalDockerEndpoint(), credentials, defaultTimeout, namedPipeConnectTimeout, defaultHttpRequestHeaders)
         {
         }
 
-        public DockerClientConfiguration(Uri endpoint, Credentials credentials = null, TimeSpan defaultTimeout = default)
+        public DockerClientConfiguration(
+            Uri endpoint,
+            Credentials credentials = null,
+            TimeSpan defaultTimeout = default,
+            TimeSpan namedPipeConnectTimeout = default,
+            IReadOnlyDictionary<string, string> defaultHttpRequestHeaders = null)
         {
             if (endpoint == null)
             {
@@ -23,21 +33,17 @@ namespace Docker.DotNet
                 throw new ArgumentException("Default timeout must be greater than -1", nameof(defaultTimeout));
             }
 
-            if (credentials == null)
-            {
-                credentials = new AnonymousCredentials();
-            }
-
-            if (defaultTimeout == default)
-            {
-                defaultTimeout = TimeSpan.FromSeconds(100);
-            }
-
             EndpointBaseUri = endpoint;
-            Credentials = credentials;
-            DefaultTimeout = defaultTimeout;
-            NamedPipeConnectTimeout = TimeSpan.FromMilliseconds(100);
+            Credentials = credentials ?? new AnonymousCredentials();
+            DefaultTimeout = TimeSpan.Equals(default, defaultTimeout) ? TimeSpan.FromSeconds(100) : defaultTimeout;
+            NamedPipeConnectTimeout = TimeSpan.Equals(default, namedPipeConnectTimeout) ? TimeSpan.FromMilliseconds(100) : namedPipeConnectTimeout;
+            DefaultHttpRequestHeaders = defaultHttpRequestHeaders ?? new Dictionary<string, string>();
         }
+
+        /// <summary>
+        /// Gets the collection of default HTTP request headers.
+        /// </summary>
+        public IReadOnlyDictionary<string, string> DefaultHttpRequestHeaders { get; }
 
         public Uri EndpointBaseUri { get; }
 
@@ -45,7 +51,7 @@ namespace Docker.DotNet
 
         public TimeSpan DefaultTimeout { get; }
 
-        public TimeSpan NamedPipeConnectTimeout { get; set; }
+        public TimeSpan NamedPipeConnectTimeout { get; }
 
         public DockerClient CreateClient(Version requestedApiVersion = null)
         {
