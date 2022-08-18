@@ -10,31 +10,21 @@ using Xunit.Abstractions;
 
 namespace Docker.DotNet.Tests
 {
-	[Collection("Test collection")]
+	[Collection(nameof(TestCollection))]
 	public class IVolumeOperationsTests
 	{
-
 		private readonly CancellationTokenSource _cts;
 
-		private readonly TestOutput _output;
-		private readonly string _repositoryName;
-		private readonly string _tag = Guid.NewGuid().ToString();
-		private readonly DockerClientConfiguration _dockerConfiguration;
 		private readonly DockerClient _dockerClient;
 
-		public IVolumeOperationsTests(TestFixture testFixture, ITestOutputHelper _outputHelper)
+		public IVolumeOperationsTests(TestFixture testFixture, ITestOutputHelper outputHelper)
 		{
-			_output = new TestOutput(_outputHelper);
-
-			_dockerConfiguration = new DockerClientConfiguration();
-			_dockerClient = _dockerConfiguration.CreateClient();
+			_dockerClient = testFixture.DockerClient;
 
 			// Do not wait forever in case it gets stuck
-			_cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-			_cts.Token.Register(() => throw new TimeoutException("ImageOperationTests timeout"));
-
-			_repositoryName = testFixture.repositoryName;
-			_tag = testFixture.tag;
+			_cts = CancellationTokenSource.CreateLinkedTokenSource(testFixture.Cts.Token);
+			_cts.CancelAfter(TimeSpan.FromMinutes(5));
+			_cts.Token.Register(() => throw new TimeoutException("VolumeOperationsTests timeout"));
 		}
 
 		[Fact]
