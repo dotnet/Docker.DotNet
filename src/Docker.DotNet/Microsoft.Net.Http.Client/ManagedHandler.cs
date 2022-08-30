@@ -332,16 +332,7 @@ namespace Microsoft.Net.Http.Client
                 var s = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
-#if (NETSTANDARD1_3 || NETSTANDARD1_6 || NETSTANDARD2_0)
                     await s.ConnectAsync(address, port).ConfigureAwait(false);
-#else
-                    await Task.Factory.FromAsync(
-                        s.BeginConnect,
-                        s.EndConnect,
-                        new IPEndPoint(address, port),
-                        null
-                    ).ConfigureAwait(false);
-#endif
                     connectedSocket = s;
                     break;
                 }

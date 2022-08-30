@@ -1,162 +1,187 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using Newtonsoft.Json;
 using Xunit;
 
 namespace Docker.DotNet.Tests
 {
-    public class TestFixture : IDisposable
+    public sealed class TestFixture : IAsyncLifetime, IDisposable
     {
-        // Tests require an image whose containers continue running when created new, and works on both Windows an Linux containers. 
-        private const string _imageName = "nats";
+        /// <summary>
+        /// The Docker image name.
+        /// </summary>
+        private const string Name = "nats";
+        
+        private static readonly Progress<JSONMessage> WriteProgressOutput;
 
-        private readonly bool _wasSwarmInitialized = false;
-
+        private bool _hasInitializedSwarm;
+        
+        static TestFixture()
+        {
+            WriteProgressOutput = new Progress<JSONMessage>(jsonMessage =>
+            {
+                var message = JsonConvert.SerializeObject(jsonMessage);
+                Console.WriteLine(message);
+                Debug.WriteLine(message);
+            });
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestFixture" /> class.
+        /// </summary>
+        /// <exception cref="TimeoutException">Thrown when tests are not finished within 5 minutes.</exception>
         public TestFixture()
         {
-            // Do not wait forever in case it gets stuck
-            cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
-            cts.Token.Register(() => throw new TimeoutException("Docker.DotNet test timeout exception"));
+            DockerClientConfiguration = new DockerClientConfiguration();
+            DockerClient = DockerClientConfiguration.CreateClient();
+            Cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            Cts.Token.Register(() => throw new TimeoutException("Docker.DotNet test timeout exception"));
+        }
 
-            dockerClientConfiguration = new DockerClientConfiguration();
-            dockerClient = dockerClientConfiguration.CreateClient();
+        /// <summary>
+        /// Gets the Docker image repository.
+        /// </summary>
+        public string Repository { get; }
+            = Guid.NewGuid().ToString("N");
 
+        /// <summary>
+        /// Gets the Docker image tag.
+        /// </summary>
+        public string Tag { get; }
+            = Guid.NewGuid().ToString("N");
+
+        /// <summary>
+        /// Gets the Docker client.
+        /// </summary>
+        public DockerClient DockerClient { get; }
+
+        /// <summary>
+        /// Gets the Docker client configuration.
+        /// </summary>
+        public DockerClientConfiguration DockerClientConfiguration { get; }
+
+        /// <summary>
+        /// Gets the cancellation token source.
+        /// </summary>
+        public CancellationTokenSource Cts { get; }
+
+        /// <summary>
+        /// Gets or sets the Docker image.
+        /// </summary>
+        public ImagesListResponse Image { get; private set; }
+
+        /// <inheritdoc />
+        public async Task InitializeAsync()
+        {
             // Create image
-            dockerClient.Images.CreateImageAsync(
-                new ImagesCreateParameters
-                {
-                    FromImage = _imageName,
-                    Tag = "latest"
-                },
-                null,
-                new Progress<JSONMessage>((m) => { Console.WriteLine(JsonConvert.SerializeObject(m)); Debug.WriteLine(JsonConvert.SerializeObject(m)); }),
-                cts.Token).GetAwaiter().GetResult();
+            await DockerClient.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = Name, Tag = "latest" }, null, WriteProgressOutput, Cts.Token)
+                .ConfigureAwait(false);
 
-            // Create local image tag to reuse
-            var existingImagesResponse = dockerClient.Images.ListImagesAsync(
-               new ImagesListParameters
-               {
-                   Filters = new Dictionary<string, IDictionary<string, bool>>
-                   {
-                       ["reference"] = new Dictionary<string, bool>
-                       {
-                           [_imageName] = true
-                       }
-                   }
-               },
-               cts.Token
-           ).GetAwaiter().GetResult();
+            // Get images
+            var images = await DockerClient.Images.ListImagesAsync(
+                    new ImagesListParameters
+                    {
+                        Filters = new Dictionary<string, IDictionary<string, bool>>
+                        {
+                            ["reference"] = new Dictionary<string, bool>
+                            {
+                                [Name] = true
+                            }
+                        }
+                    }, Cts.Token)
+                .ConfigureAwait(false);
 
-            imageId = existingImagesResponse[0].ID;
+            // Set image
+            Image = images.Single();
 
-            dockerClient.Images.TagImageAsync(
-                imageId,
-                new ImageTagParameters
-                {
-                    RepositoryName = repositoryName,
-                    Tag = tag
-                },
-                cts.Token
-            ).GetAwaiter().GetResult();
+            // Tag image
+            await DockerClient.Images.TagImageAsync(Image.ID, new ImageTagParameters { RepositoryName = Repository, Tag = Tag }, Cts.Token)
+                .ConfigureAwait(false);
 
-            // Init swarm if not part of one
+            // Init a new swarm, if not part of an existing one
             try
             {
-                var result = dockerClient.Swarm.InitSwarmAsync(new SwarmInitParameters { AdvertiseAddr = "10.10.10.10", ListenAddr = "127.0.0.1" }, default).GetAwaiter().GetResult();
-                _wasSwarmInitialized = true;
+                _ = await DockerClient.Swarm.InitSwarmAsync(new SwarmInitParameters { AdvertiseAddr = "10.10.10.10", ListenAddr = "127.0.0.1" }, Cts.Token)
+                    .ConfigureAwait(false);
+
+                _hasInitializedSwarm = true;
             }
             catch
             {
-                Console.WriteLine("Couldn't init a new swarm, node should take part of a existing one");
-                _wasSwarmInitialized = false;
+                const string message = "Couldn't init a new swarm, the node should take part of an existing one.";
+                Console.WriteLine(message);
+                Debug.WriteLine(message);
+
+                _hasInitializedSwarm = false;
             }
-
-
         }
 
-        public CancellationTokenSource cts { get; }
-        public DockerClient dockerClient { get; }
-        public DockerClientConfiguration dockerClientConfiguration { get; }
-        public string repositoryName { get; } = Guid.NewGuid().ToString();
-        public string tag { get; } = Guid.NewGuid().ToString();
-        public string imageId { get; }
+        /// <inheritdoc />
+        public async Task DisposeAsync()
+        {
+            if (_hasInitializedSwarm)
+            {
+                await DockerClient.Swarm.LeaveSwarmAsync(new SwarmLeaveParameters { Force = true }, Cts.Token)
+                    .ConfigureAwait(false);
+            }
 
+            var containers = await DockerClient.Containers.ListContainersAsync(
+                    new ContainersListParameters
+                    {
+                        Filters = new Dictionary<string, IDictionary<string, bool>>
+                        {
+                            ["ancestor"] = new Dictionary<string, bool>
+                            {
+                                [Image.ID] = true
+                            }
+                        },
+                        All = true
+                    }, Cts.Token)
+                .ConfigureAwait(false);
+
+            var images = await DockerClient.Images.ListImagesAsync(
+                    new ImagesListParameters
+                    {
+                        Filters = new Dictionary<string, IDictionary<string, bool>>
+                        {
+                            ["reference"] = new Dictionary<string, bool>
+                            {
+                                [Image.RepoDigests.Single()] = true
+                            }
+                        },
+                        All = true
+                    }, Cts.Token)
+                .ConfigureAwait(false);
+
+            foreach (var container in containers)
+            {
+                await DockerClient.Containers.RemoveContainerAsync(container.ID, new ContainerRemoveParameters { Force = true }, Cts.Token)
+                    .ConfigureAwait(false);
+            }
+
+            foreach (var image in images)
+            {
+                await DockerClient.Images.DeleteImageAsync(image.ID, new ImageDeleteParameters { Force = true }, Cts.Token)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            if (_wasSwarmInitialized)
-            {
-                dockerClient.Swarm.LeaveSwarmAsync(new SwarmLeaveParameters { Force = true }, cts.Token);
-            }
-
-            var containerList = dockerClient.Containers.ListContainersAsync(
-                new ContainersListParameters
-                {
-                    Filters = new Dictionary<string, IDictionary<string, bool>>
-                    {
-                        ["ancestor"] = new Dictionary<string, bool>
-                        {
-                            [$"{repositoryName}:{tag}"] = true
-                        }
-                    },
-                    All = true,
-                },
-                cts.Token
-                ).GetAwaiter().GetResult();
-
-            foreach (ContainerListResponse container in containerList)
-            {
-                dockerClient.Containers.RemoveContainerAsync(
-                    container.ID,
-                    new ContainerRemoveParameters
-                    {
-                        Force = true
-                    },
-                    cts.Token
-                ).GetAwaiter().GetResult();
-            }
-
-            var imageList = dockerClient.Images.ListImagesAsync(
-                new ImagesListParameters
-                {
-                    Filters = new Dictionary<string, IDictionary<string, bool>>
-                    {
-                        ["reference"] = new Dictionary<string, bool>
-                        {
-                            [imageId] = true
-                        },
-                        ["since"] = new Dictionary<string, bool>
-                        {
-                            [imageId] = true
-                        }
-                    },
-                    All = true
-                },
-                cts.Token
-            ).GetAwaiter().GetResult();
-
-            foreach (ImagesListResponse image in imageList)
-            {
-                dockerClient.Images.DeleteImageAsync(
-                    image.ID,
-                    new ImageDeleteParameters { Force = true },
-                    cts.Token
-                ).GetAwaiter().GetResult();
-            }
-
-            dockerClient.Dispose();
-            dockerClientConfiguration.Dispose();
-            cts.Dispose();
+            DockerClient.Dispose();
+            DockerClientConfiguration.Dispose();
+            Cts.Dispose();
         }
     }
 
-    [CollectionDefinition("Test collection")]
-    public class TestsCollection : ICollectionFixture<TestFixture>
+    [CollectionDefinition(nameof(TestCollection))]
+    public sealed class TestCollection : ICollectionFixture<TestFixture>
     {
-        // This class has no code, and is never created. Its purpose is simply
-        // to be the place to apply [CollectionDefinition] and all the
-        // ICollectionFixture<> interfaces.
     }
 }

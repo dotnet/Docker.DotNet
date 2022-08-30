@@ -200,7 +200,6 @@ The `CertFile` in the example above should be a .pfx file (PKCS12 format), if yo
 //
 
 // You can do this globally for all certificates:
-// (Note: This is not available on netstandard1.6)
 ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
 
 // Or you can do this on a credential by credential basis:

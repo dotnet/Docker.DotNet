@@ -7,23 +7,23 @@ using Xunit;
 
 namespace Docker.DotNet.Tests
 {
-    [Collection("Test collection")]
+    [Collection(nameof(TestCollection))]
     public class ISwarmOperationsTests
     {
-        private readonly DockerClient _client;
+        private readonly DockerClient _dockerClient;
         private readonly string _imageId;
 
         public ISwarmOperationsTests(TestFixture testFixture)
         {
-            _client = testFixture.dockerClient;
-            _imageId = testFixture.imageId;
+            _dockerClient = testFixture.DockerClient;
+            _imageId = testFixture.Image.ID;
         }
 
         [Fact]
         public async Task GetFilteredServicesByName_Succeeds()
         {
             var firstServiceName = $"service1-{Guid.NewGuid().ToString().Substring(1, 10)}";
-            var firstServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var firstServiceId = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -32,7 +32,7 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var secondServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var secondServiceId = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -41,7 +41,7 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var thirdServiceid = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var thirdServiceid = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -50,7 +50,7 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var services = await _client.Swarm.ListServicesAsync(
+            var services = await _dockerClient.Swarm.ListServicesAsync(
                 new ServicesListParameters
                 {
                     Filters = new ServiceFilter
@@ -65,15 +65,15 @@ namespace Docker.DotNet.Tests
 
             Assert.Single(services);
 
-            await _client.Swarm.RemoveServiceAsync(firstServiceId, default);
-            await _client.Swarm.RemoveServiceAsync(secondServiceId, default);
-            await _client.Swarm.RemoveServiceAsync(thirdServiceid, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid, default);
         }
 
         [Fact]
         public async Task GetFilteredServicesById_Succeeds()
         {
-            var firstServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var firstServiceId = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -82,7 +82,7 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var secondServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var secondServiceId = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -91,7 +91,7 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var thirdServiceid = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var thirdServiceid = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -100,20 +100,20 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var services = await _client.Swarm.ListServicesAsync(new ServicesListParameters { Filters = new ServiceFilter { Id = new string[] { firstServiceId } } }, CancellationToken.None);
+            var services = await _dockerClient.Swarm.ListServicesAsync(new ServicesListParameters { Filters = new ServiceFilter { Id = new string[] { firstServiceId } } }, CancellationToken.None);
             Assert.Single(services);
 
-            await _client.Swarm.RemoveServiceAsync(firstServiceId, default);
-            await _client.Swarm.RemoveServiceAsync(secondServiceId, default);
-            await _client.Swarm.RemoveServiceAsync(thirdServiceid, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid, default);
         }
 
         [Fact]
         public async Task GetServices_Succeeds()
         {
-            var initialServiceCount = _client.Swarm.ListServicesAsync(cancellationToken: CancellationToken.None).Result.Count();
+            var initialServiceCount = _dockerClient.Swarm.ListServicesAsync(cancellationToken: CancellationToken.None).Result.Count();
 
-            var firstServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var firstServiceId = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -122,7 +122,7 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var secondServiceId = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var secondServiceId = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -131,7 +131,7 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var thirdServiceid = _client.Swarm.CreateServiceAsync(new ServiceCreateParameters
+            var thirdServiceid = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
             {
                 Service = new ServiceSpec
                 {
@@ -140,13 +140,13 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var services = await _client.Swarm.ListServicesAsync(cancellationToken: CancellationToken.None);
+            var services = await _dockerClient.Swarm.ListServicesAsync(cancellationToken: CancellationToken.None);
 
             Assert.True(services.Count() > initialServiceCount);
 
-            await _client.Swarm.RemoveServiceAsync(firstServiceId, default);
-            await _client.Swarm.RemoveServiceAsync(secondServiceId, default);
-            await _client.Swarm.RemoveServiceAsync(thirdServiceid, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid, default);
         }
     }
 }

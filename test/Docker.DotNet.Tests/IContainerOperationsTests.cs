@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
@@ -11,26 +12,29 @@ using Xunit.Abstractions;
 
 namespace Docker.DotNet.Tests
 {
-    [Collection("Test collection")]
+    [Collection(nameof(TestCollection))]
     public class IContainerOperationsTests
     {
         private readonly CancellationTokenSource _cts;
-        private readonly DockerClient _dockerClient;
-        private readonly DockerClientConfiguration _dockerClientConfiguration;
+
+        private readonly TestOutput _output;
         private readonly string _imageId;
-        private readonly Tests.TestOutput _output;
+        private readonly DockerClientConfiguration _dockerClientConfiguration;
+        private readonly DockerClient _dockerClient;
 
         public IContainerOperationsTests(TestFixture testFixture, ITestOutputHelper outputHelper)
         {
-            // Do not wait forever in case it gets stuck
-            _cts = CancellationTokenSource.CreateLinkedTokenSource(testFixture.cts.Token);
-            _cts.CancelAfter(TimeSpan.FromMinutes(5));
-            _cts.Token.Register(() => throw new TimeoutException("IContainerOperationsTest timeout"));
-
-            _dockerClient = testFixture.dockerClient;
-            _dockerClientConfiguration = testFixture.dockerClientConfiguration;
             _output = new TestOutput(outputHelper);
-            _imageId = testFixture.imageId;
+
+            _dockerClientConfiguration = testFixture.DockerClientConfiguration;
+            _dockerClient = _dockerClientConfiguration.CreateClient();
+
+            // Do not wait forever in case it gets stuck
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(testFixture.Cts.Token);
+            _cts.CancelAfter(TimeSpan.FromMinutes(5));
+            _cts.Token.Register(() => throw new TimeoutException("ContainerOperationsTests timeout"));
+
+            _imageId = testFixture.Image.ID;
         }
 
         [Fact]
@@ -819,6 +823,45 @@ namespace Docker.DotNet.Tests
             Func<Task> op = async () => await _dockerClient.Containers.CreateContainerAsync(parameters);
 
             await Assert.ThrowsAsync<DockerImageNotFoundException>(op);
+        }
+
+        [Fact]
+        public async Task MultiplexedStreamWriteAsync_DoesNotThrowAnException()
+        {
+            // Given
+            Exception exception;
+
+            var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(
+                new CreateContainerParameters
+                {
+                    Image = _imageId
+                })
+                .ConfigureAwait(false);
+
+            _ = await _dockerClient.Containers.StartContainerAsync(createContainerResponse.ID, new ContainerStartParameters())
+                .ConfigureAwait(false);
+
+            var containerExecCreateResponse = await _dockerClient.Exec.ExecCreateContainerAsync(createContainerResponse.ID,
+                new ContainerExecCreateParameters
+                {
+                    AttachStdout = true,
+                    AttachStderr = true,
+                    AttachStdin = true,
+                    Cmd = new [] { string.Empty }
+                })
+                .ConfigureAwait(false);
+
+            // When
+            using (var stream = await _dockerClient.Exec.StartAndAttachContainerExecAsync(containerExecCreateResponse.ID, false)
+                .ConfigureAwait(false))
+            {
+                var buffer = Encoding.ASCII.GetBytes("\n");
+                exception = await Record.ExceptionAsync(() => stream.WriteAsync(buffer, 0, buffer.Length, default))
+                    .ConfigureAwait(false);
+            }
+
+            // Then
+            Assert.Null(exception);
         }
     }
 }
