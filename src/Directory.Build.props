@@ -6,7 +6,7 @@
         <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
         <PackageTags>Docker Container C# .NET</PackageTags>
         <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/Microsoft/Docker.DotNet/tree/master/Docker.DotNet</RepositoryUrl>
+        <RepositoryUrl>https://github.com/dotnet/Docker.DotNet/</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
