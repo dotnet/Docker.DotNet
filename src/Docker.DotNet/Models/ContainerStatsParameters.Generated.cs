@@ -7,5 +7,8 @@ namespace Docker.DotNet.Models
     {
         [QueryStringParameter("stream", true, typeof(BoolQueryStringConverter))]
         public bool Stream { get; set; } = true;
+
+        [QueryStringParameter("one-shot", false, typeof(BoolQueryStringConverter))]
+        public bool? OneShot { get; set; }
     }
 }

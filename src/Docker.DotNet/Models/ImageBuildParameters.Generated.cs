@@ -27,6 +27,9 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("pullparent", false, typeof(BoolQueryStringConverter))]
         public bool? PullParent { get; set; }
 
+        [QueryStringParameter("pull", false)]
+        public string Pull { get; set; }
+
         [QueryStringParameter("isolation", false)]
         public string Isolation { get; set; }
 
@@ -92,5 +95,11 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("platform", false)]
         public string Platform { get; set; }
+
+        [QueryStringParameter("outputs", false)]
+        public string Outputs { get; set; }
+
+        [DataMember(Name = "AuthConfigs", EmitDefaultValue = false)]
+        public IDictionary<string, AuthConfig> AuthConfigs { get; set; }
     }
 }
