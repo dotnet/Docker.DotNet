@@ -14,6 +14,9 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("registryauthfrom", false)]
         public string RegistryAuthFrom { get; set; }
 
+        [QueryStringParameter("rollback", false)]
+        public string Rollback { get; set; }
+
         [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
         public AuthConfig RegistryAuth { get; set; }
     }

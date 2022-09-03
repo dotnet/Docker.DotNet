@@ -20,6 +20,7 @@ type ImageBuildParameters struct {
 	Remove         bool                        `rest:"query,rm"`
 	ForceRemove    bool                        `rest:"query,forcerm"`
 	PullParent     bool                        `rest:"query"`
+	Pull           string                      `rest:"query"`
 	Isolation      string                      `rest:"query"`
 	CPUSetCPUs     string                      `rest:"query"`
 	CPUSetMems     string                      `rest:"query"`
@@ -34,7 +35,6 @@ type ImageBuildParameters struct {
 	Dockerfile     string                      `rest:"query"`
 	Ulimits        []*units.Ulimit             `rest:"query"`
 	BuildArgs      map[string]string           `rest:"query"`
-	AuthConfigs    map[string]types.AuthConfig `rest:"headers,X-Registry-Auth"`
 	Labels         map[string]string           `rest:"query"`
 	Squash         bool                        `rest:"query"`
 	CacheFrom      []string                    `rest:"query"`
@@ -43,6 +43,8 @@ type ImageBuildParameters struct {
 	Target         string                      `rest:"query"`
 	SessionID      string                      `rest:"query,session"`
 	Platform       string                      `rest:"query"`
+	Outputs        string                      `rest:"query"`
+	AuthConfigs    map[string]types.AuthConfig `rest:"headers,X-Registry-Config"`
 }
 
 // CommitContainerChangesParameters for POST /commit
@@ -62,8 +64,9 @@ type CommitContainerChangesResponse types.IDResponse
 
 // CreateContainerParameters for POST /containers/create
 type CreateContainerParameters struct {
-	Name              string `rest:"query,name"`
-	*container.Config `rest:"body"`
+	Name              string                    `rest:"query"`
+	Platform          string                    `rest:"query"`
+	*container.Config                           `rest:"body"`
 	HostConfig        *container.HostConfig     `rest:"body"`
 	NetworkingConfig  *network.NetworkingConfig `rest:"body"`
 }
@@ -111,11 +114,12 @@ type ContainerKillParameters struct {
 	Signal string `rest:"query"`
 }
 
-// ContainerLogsParameters for POST /containers/(id)/logs
+// ContainerLogsParameters for GET /containers/(id)/logs
 type ContainerLogsParameters struct {
 	ShowStdout bool   `rest:"query,stdout"`
 	ShowStderr bool   `rest:"query,stderr"`
 	Since      string `rest:"query"`
+	Until      string `rest:"query"`
 	Timestamps bool   `rest:"query"`
 	Follow     bool   `rest:"query"`
 	Tail       string `rest:"query"`
@@ -149,7 +153,8 @@ type ContainerStopParameters struct {
 
 // ContainerStatsParameters for GET /containers/(id)/stats
 type ContainerStatsParameters struct {
-	Stream bool `rest:"query,stream,required,true"`
+	Stream  bool `rest:"query,stream,required,true"`
+	OneShot bool `rest:"query,one-shot"`
 }
 
 // ContainerListProcessesParameters for GET /containers/(id)/top
@@ -164,15 +169,11 @@ type ContainerUpdateParameters struct {
 
 // ContainerUpdateResponse for POST /containers/(id)/update
 type ContainerUpdateResponse struct {
-	// Warnings are any warnings encountered during the updating of the container.
 	Warnings []string `json:"Warnings"`
 }
 
 // ContainerWaitResponse for POST /containers/(id)/wait
-type ContainerWaitResponse struct {
-	// StatusCode is the status code of the wait job
-	StatusCode int `json:"StatusCode"`
-}
+type ContainerWaitResponse container.ContainerWaitOKBody
 
 // ContainerEventsParameters for GET /events
 type ContainerEventsParameters struct {
@@ -197,16 +198,21 @@ type ContainerExecStartParameters types.ExecConfig
 
 // ImagesCreateParameters for POST /images/create
 type ImagesCreateParameters struct {
-	FromImage string `rest:"query,fromImage"`
-	FromSrc   string `rest:"query,fromSrc"`
-	Repo      string `rest:"query"`
-	Tag       string `rest:"query"`
+	FromImage    string           `rest:"query,fromImage"`
+	FromSrc      string           `rest:"query,fromSrc"`
+	Repo         string           `rest:"query"`
+	Tag          string           `rest:"query"`
+	Message      string           `rest:"query"`
+	Changes      []string         `rest:"query"`
+	Platform     string           `rest:"query"`
+	RegistryAuth types.AuthConfig `rest:"headers,X-Registry-Auth"`
 }
 
 // ImagesListParameters for GET /images/json
 type ImagesListParameters struct {
 	All     bool `rest:"query"`
 	Filters Args `rest:"query"`
+	Digests bool `rest:"query"`
 }
 
 // ImageLoadParameters for POST /images/load
@@ -267,7 +273,7 @@ type PluginListParameters struct {
 	Filters Args `rest:"query"`
 }
 
-// PluginGetPrivilegeParameters for POST /plugins/privileges
+// PluginGetPrivilegeParameters for GET /plugins/privileges
 type PluginGetPrivilegeParameters struct {
 	Remote       string           `rest:"query,remote,required"`
 	RegistryAuth types.AuthConfig `rest:"headers,X-Registry-Auth"`
@@ -281,7 +287,7 @@ type PluginInstallParameters struct {
 	Privileges   types.PluginPrivileges `rest:"body,,required"`
 }
 
-// PluginRemoveParameters for DELETE /plugins/(name)/json
+// PluginRemoveParameters for DELETE /plugins/(name)
 type PluginRemoveParameters struct {
 	Force bool `rest:"query"`
 }
@@ -331,7 +337,7 @@ type VolumesPruneParameters struct {
 	Filters Args `rest:"query"`
 }
 
-// VolumeResponse for volume list.
+// VolumeResponse for GET /volumes
 type VolumeResponse types.Volume
 
 // VolumesListResponse for GET /volumes
@@ -379,7 +385,7 @@ type SwarmUpdateConfigParameters struct {
 	Version int64            `rest:"query,version,required"`
 }
 
-// MessageResponse for methods returning json:"message", like for POST /configs/(id)/update
+// MessageResponse for POST /configs/(id)/update
 type MessageResponse struct {
 	Message string `json:"message"`
 }
@@ -390,11 +396,9 @@ type ServiceCreateParameters struct {
 	RegistryAuth types.AuthConfig  `rest:"headers,X-Registry-Auth"`
 }
 
-// ServiceListParameters clone ServiceListOptions for GET /services, mimic ServiceListOptions
+// ServiceListParameters for GET /services
 type ServiceListParameters struct {
 	Filters Args `rest:"query"`
-	// Status indicates whether the server should include the service task
-	// count of running and desired tasks.
 	Status bool `rest:"query"`
 }
 
@@ -403,10 +407,11 @@ type ServiceUpdateParameters struct {
 	Service          swarm.ServiceSpec `rest:"body,service,required"`
 	Version          int64             `rest:"query,version,required"`
 	RegistryAuthFrom string            `rest:"query"`
+	Rollback         string            `rest:"query"`
 	RegistryAuth     types.AuthConfig  `rest:"headers,X-Registry-Auth"`
 }
 
-// ServiceLogsParameters for POST /services/(id)/logs
+// ServiceLogsParameters for GET /services/(id)/logs
 type ServiceLogsParameters struct {
 	ShowStdout bool   `rest:"query,stdout"`
 	ShowStderr bool   `rest:"query,stderr"`

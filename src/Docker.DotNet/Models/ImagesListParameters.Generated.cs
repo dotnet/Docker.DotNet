@@ -11,5 +11,8 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, IDictionary<string, bool>> Filters { get; set; }
+
+        [QueryStringParameter("digests", false, typeof(BoolQueryStringConverter))]
+        public bool? Digests { get; set; }
     }
 }
