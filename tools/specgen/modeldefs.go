@@ -5,7 +5,6 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/swarm"
-	"github.com/docker/go-units"
 )
 
 // Args map
@@ -19,29 +18,22 @@ type ImageBuildParameters struct {
 	NoCache        bool                        `rest:"query"`
 	Remove         bool                        `rest:"query,rm"`
 	ForceRemove    bool                        `rest:"query,forcerm"`
-	PullParent     bool                        `rest:"query"`
 	Pull           string                      `rest:"query"`
-	Isolation      string                      `rest:"query"`
 	CPUSetCPUs     string                      `rest:"query"`
-	CPUSetMems     string                      `rest:"query"`
 	CPUShares      int64                       `rest:"query"`
 	CPUQuota       int64                       `rest:"query"`
 	CPUPeriod      int64                       `rest:"query"`
 	Memory         int64                       `rest:"query"`
 	MemorySwap     int64                       `rest:"query,memswap"`
-	CgroupParent   string                      `rest:"query"`
 	NetworkMode    string                      `rest:"query"`
 	ShmSize        int64                       `rest:"query"`
 	Dockerfile     string                      `rest:"query"`
-	Ulimits        []*units.Ulimit             `rest:"query"`
 	BuildArgs      map[string]string           `rest:"query"`
 	Labels         map[string]string           `rest:"query"`
 	Squash         bool                        `rest:"query"`
 	CacheFrom      []string                    `rest:"query"`
-	SecurityOpt    []string                    `rest:"query"`
 	ExtraHosts     []string                    `rest:"query"`
 	Target         string                      `rest:"query"`
-	SessionID      string                      `rest:"query,session"`
 	Platform       string                      `rest:"query"`
 	Outputs        string                      `rest:"query"`
 	AuthConfigs    map[string]types.AuthConfig `rest:"headers,X-Registry-Config"`
