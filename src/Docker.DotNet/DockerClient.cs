@@ -151,6 +151,7 @@ namespace Docker.DotNet
         public void Dispose()
         {
             Configuration.Dispose();
+            _client.Dispose();
         }
 
         internal Task<DockerApiResponse> MakeRequestAsync(
