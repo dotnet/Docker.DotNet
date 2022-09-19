@@ -188,3 +188,6 @@ packages/
 SignClient
 nbgv
 .vscode
+
+# OS X
+.DS_Store

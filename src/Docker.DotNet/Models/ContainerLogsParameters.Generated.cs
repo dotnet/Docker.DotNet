@@ -14,6 +14,9 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("since", false)]
         public string Since { get; set; }
 
+        [QueryStringParameter("until", false)]
+        public string Until { get; set; }
+
         [QueryStringParameter("timestamps", false, typeof(BoolQueryStringConverter))]
         public bool? Timestamps { get; set; }
 

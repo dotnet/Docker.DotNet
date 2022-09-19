@@ -46,5 +46,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "ServiceStatus", EmitDefaultValue = false)]
         public ServiceStatus ServiceStatus { get; set; }
+
+        [DataMember(Name = "JobStatus", EmitDefaultValue = false)]
+        public JobStatus JobStatus { get; set; }
     }
 }

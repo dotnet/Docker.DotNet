@@ -16,6 +16,8 @@ or non-breaking feature additions.
 
 ## Installation
 
+[![NuGet latest release](https://img.shields.io/nuget/v/Docker.DotNet.svg)](https://www.nuget.org/packages/Docker.DotNet)
+
 You can add this library to your project using [NuGet][nuget].
 
 **Package Manager Console**
@@ -88,10 +90,10 @@ The code below pulls `fedora/memcached` image to your Docker instance using your
 anonymously download the image as well by passing `null` instead of AuthConfig object:
 
 ```csharp
-Stream stream  = await client.Images.CreateImageAsync(
+await client.Images.CreateImageAsync(
     new ImagesCreateParameters
     {
-        Parent = "fedora/memcached",
+        FromImage = "fedora/memcached",
         Tag = "alpha",
     },
     new AuthConfig
@@ -99,20 +101,35 @@ Stream stream  = await client.Images.CreateImageAsync(
         Email = "test@example.com",
         Username = "test",
         Password = "pa$$w0rd"
+    },
+    new Progress<JSONMessage>());
+```
+
+
+#### Example: Create a container
+
+The following code will create a new container of the previously fetched image.
+
+```csharp
+await client.Containers.CreateContainerAsync(new CreateContainerParameters()
+    {
+        Image = "fedora/memcached",
+        HostConfig = new HostConfig()
+        {
+            DNS = new[] { "8.8.8.8", "8.8.4.4" }
+        }
     });
 ```
 
 #### Example: Start a container
 
-The following code will start the created container with specified `HostConfig` object. This object is optional, therefore you can pass a null.
+The following code will start the created container.
 
 ```csharp
 await client.Containers.StartContainerAsync(
     "39e3317fd258",
-    new HostConfig
-    {
-	    DNS = new[] { "8.8.8.8", "8.8.4.4" }
-    });
+    new ContainerStartParameters()
+    );
 ```
 
 #### Example: Stop a container
@@ -183,7 +200,6 @@ The `CertFile` in the example above should be a .pfx file (PKCS12 format), if yo
 //
 
 // You can do this globally for all certificates:
-// (Note: This is not available on netstandard1.6)
 ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
 
 // Or you can do this on a credential by credential basis:

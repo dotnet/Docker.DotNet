@@ -47,6 +47,9 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("name", false)]
         public string Name { get; set; }
 
+        [QueryStringParameter("platform", false)]
+        public string Platform { get; set; }
+
         [DataMember(Name = "Hostname", EmitDefaultValue = false)]
         public string Hostname { get; set; }
 

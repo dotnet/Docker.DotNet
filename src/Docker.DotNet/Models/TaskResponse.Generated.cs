@@ -68,5 +68,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "GenericResources", EmitDefaultValue = false)]
         public IList<GenericResource> GenericResources { get; set; }
+
+        [DataMember(Name = "JobIteration", EmitDefaultValue = false)]
+        public Version JobIteration { get; set; }
     }
 }

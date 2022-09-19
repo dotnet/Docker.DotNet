@@ -10,5 +10,11 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Global", EmitDefaultValue = false)]
         public GlobalService Global { get; set; }
+
+        [DataMember(Name = "ReplicatedJob", EmitDefaultValue = false)]
+        public ReplicatedJob ReplicatedJob { get; set; }
+
+        [DataMember(Name = "GlobalJob", EmitDefaultValue = false)]
+        public GlobalJob GlobalJob { get; set; }
     }
 }

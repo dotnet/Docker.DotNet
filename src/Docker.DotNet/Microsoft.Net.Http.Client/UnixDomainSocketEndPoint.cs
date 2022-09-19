@@ -2,8 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE-MIT.txt file for more information.
 
-#if (NETSTANDARD1_6 || NETSTANDARD2_0)
-
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -95,5 +93,3 @@ namespace Microsoft.Net.Http.Client
         public override string ToString() => _path;
     }
 }
-
-#endif
