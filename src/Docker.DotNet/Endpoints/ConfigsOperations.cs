@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -29,7 +29,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(body));
             }
 
-            var data = new JsonRequestContent<SwarmCreateConfigParameters>(body, this._client.JsonSerializer);
+            var data = new JsonRequestContent<SwarmConfigSpec>(body.Config, this._client.JsonSerializer);
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "configs/create", null, data, cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<SwarmCreateConfigResponse>(response.Body);
         }
