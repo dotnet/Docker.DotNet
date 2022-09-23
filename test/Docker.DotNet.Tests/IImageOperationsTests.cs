@@ -70,16 +70,14 @@ namespace Docker.DotNet.Tests
         }
 
         [Fact]
-        public async Task CreateImageAsync_ErrorResponse_ThrowsDockerApiException()
+        public Task CreateImageAsync_ErrorResponse_ThrowsDockerApiException()
         {
-            await Assert.ThrowsAsync<DockerApiException>(() => _dockerClient.Images.CreateImageAsync(
+            return Assert.ThrowsAsync<DockerApiException>(() => _dockerClient.Images.CreateImageAsync(
                 new ImagesCreateParameters()
                 {
                     FromImage = "1.2.3.Apparently&this$is+not-a_valid%repository//name",
                     Tag = "ancient-one"
-                }, null, new Progress<JSONMessage>((m) =>
-                {
-                })));
+                }, null, null));
         }
 
         [Fact]
