@@ -95,6 +95,9 @@ namespace Docker.DotNet.Tests
                 _output.WriteLine($"MonitorEventsAsync_Succeeds: JSONMessage - {m.ID} - {m.Status} {m.From} - {m.Stream}");
             });
 
+            const string repositoryHello = "hello-world";   // Well known image name.
+            const string tagLatest = "latest";
+
             var wasProgressCalled = false;
 
             var progressMessage = new Progress<Message>((m) =>
@@ -113,16 +116,15 @@ namespace Docker.DotNet.Tests
 
             try
             {
-                // This call will fail.
                 await _dockerClient.Images.CreateImageAsync(
-                    new ImagesCreateParameters { FromImage = $"{_repositoryName}:{_tag}" }, null, progressJSONMessage,
+                    new ImagesCreateParameters { FromImage = $"{repositoryHello}:{tagLatest}" }, null, progressJSONMessage,
                     _cts.Token);
 
-                await _dockerClient.Images.TagImageAsync($"{_repositoryName}:{_tag}",
-                    new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag }, _cts.Token);
+                await _dockerClient.Images.TagImageAsync($"{repositoryHello}:{tagLatest}",
+                    new ImageTagParameters { RepositoryName = repositoryHello, Tag = newTag }, _cts.Token);
 
                 await _dockerClient.Images.DeleteImageAsync(
-                    name: $"{_repositoryName}:{newTag}",
+                    name: $"{repositoryHello}:{newTag}",
                     new ImageDeleteParameters
                     {
                         Force = true
