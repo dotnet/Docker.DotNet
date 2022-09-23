@@ -95,6 +95,9 @@ namespace Docker.DotNet.Tests
                 _output.WriteLine($"MonitorEventsAsync_Succeeds: JSONMessage - {m.ID} - {m.Status} {m.From} - {m.Stream}");
             });
 
+            const string repositoryHello = "hello-world";   // Well known image name.
+            const string tagLatest = "latest";
+
             var wasProgressCalled = false;
 
             var progressMessage = new Progress<Message>((m) =>
@@ -111,17 +114,29 @@ namespace Docker.DotNet.Tests
                 progressMessage,
                 cts.Token);
 
-            await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = $"{_repositoryName}:{_tag}" }, null, progressJSONMessage, _cts.Token);
+            try
+            {
+                await _dockerClient.Images.CreateImageAsync(
+                    new ImagesCreateParameters { FromImage = $"{repositoryHello}:{tagLatest}" }, null, progressJSONMessage,
+                    _cts.Token);
 
-            await _dockerClient.Images.TagImageAsync($"{_repositoryName}:{_tag}", new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag }, _cts.Token);
+                await _dockerClient.Images.TagImageAsync($"{repositoryHello}:{tagLatest}",
+                    new ImageTagParameters { RepositoryName = repositoryHello, Tag = newTag }, _cts.Token);
 
-            await _dockerClient.Images.DeleteImageAsync(
-                name: $"{_repositoryName}:{newTag}",
-                new ImageDeleteParameters
-                {
-                    Force = true
-                },
-                _cts.Token);
+                await _dockerClient.Images.DeleteImageAsync(
+                    name: $"{repositoryHello}:{newTag}",
+                    new ImageDeleteParameters
+                    {
+                        Force = true
+                    },
+                    _cts.Token);
+            }
+            catch
+            {
+                // Ignore
+            }
+
+            ;
 
             // Give it some time for output operation to complete before cancelling task
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -206,8 +221,10 @@ namespace Docker.DotNet.Tests
             string newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
             string newImageRespositoryName = Guid.NewGuid().ToString();
 
+            const string repositoryHello = "hello-world";   // Well known image name.
+            const string tagLatest = "latest";
             await _dockerClient.Images.TagImageAsync(
-                $"{_repositoryName}:{_tag}",
+                $"{repositoryHello}:{tagLatest}",
                 new ImageTagParameters
                 {
                     RepositoryName = newImageRespositoryName,
@@ -267,12 +284,12 @@ namespace Docker.DotNet.Tests
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
             var task = Task.Run(() => _dockerClient.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
 
-            await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = $"{_repositoryName}:{_tag}" }, null, new Progress<JSONMessage>());
+            await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = $"{repositoryHello}:{tagLatest}" }, null, new Progress<JSONMessage>());
 
-            await _dockerClient.Images.TagImageAsync($"{_repositoryName}:{_tag}", new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag });
-            await _dockerClient.Images.DeleteImageAsync($"{_repositoryName}:{newTag}", new ImageDeleteParameters());
+            await _dockerClient.Images.TagImageAsync($"{repositoryHello}:{tagLatest}", new ImageTagParameters { RepositoryName = repositoryHello, Tag = newTag });
+            await _dockerClient.Images.DeleteImageAsync($"{repositoryHello}:{newTag}", new ImageDeleteParameters());
 
-            var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters { Image = $"{_repositoryName}:{_tag}" });
+            var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters { Image = $"{repositoryHello}:{tagLatest}" });
             await _dockerClient.Containers.RemoveContainerAsync(createContainerResponse.ID, new ContainerRemoveParameters(), cts.Token);
 
             await Task.Delay(TimeSpan.FromSeconds(1));
