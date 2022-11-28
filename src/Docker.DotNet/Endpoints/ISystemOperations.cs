@@ -55,7 +55,7 @@ namespace Docker.DotNet
         /// </remarks>
         Task<SystemInfoResponse> GetSystemInfoAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        [Obsolete("Use 'Task MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken, IProgress<JSONMessage> progress)'")]
+        [Obsolete("Use 'Task MonitorEventsAsync(ContainerEventsParameters parameters, IProgress<JSONMessage> progress, CancellationToken cancellationToken)'")]
         Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken);
 
         /// <summary>
