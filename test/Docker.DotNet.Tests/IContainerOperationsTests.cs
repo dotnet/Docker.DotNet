@@ -13,7 +13,7 @@ using Xunit.Abstractions;
 namespace Docker.DotNet.Tests
 {
     [Collection(nameof(TestCollection))]
-    public class IContainerOperationsTests
+    public sealed class IContainerOperationsTests : IDisposable
     {
         private readonly CancellationTokenSource _cts;
 
@@ -807,6 +807,11 @@ namespace Docker.DotNet.Tests
 
             // Then
             Assert.Null(exception);
+        }
+
+        public void Dispose()
+        {
+            _cts.Dispose();
         }
     }
 }

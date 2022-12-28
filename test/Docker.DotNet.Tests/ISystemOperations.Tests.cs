@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -13,7 +12,7 @@ using Xunit.Abstractions;
 namespace Docker.DotNet.Tests
 {
     [Collection(nameof(TestCollection))]
-    public class ISystemOperationsTests
+    public sealed class ISystemOperationsTests : IDisposable
     {
         private readonly CancellationTokenSource _cts;
 
@@ -259,7 +258,15 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task PingAsync_Succeeds()
         {
-            await _dockerClient.System.PingAsync();
+            var exception = await Record.ExceptionAsync(() => _dockerClient.System.PingAsync())
+                .ConfigureAwait(false);
+
+            Assert.Null(exception);
+        }
+
+        public void Dispose()
+        {
+            _cts.Dispose();
         }
     }
 }
