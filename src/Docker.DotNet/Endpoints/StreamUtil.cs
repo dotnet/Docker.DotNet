@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -32,7 +31,7 @@ namespace Docker.DotNet.Models
             var tcs = new TaskCompletionSource<bool>();
 
             using (var stream = await streamTask)
-            using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+            using (var reader = new StreamReader(stream, new UTF8Encoding(false), false))
             using (var jsonReader = new JsonTextReader(reader) { SupportMultipleContent = true })
             using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
             {
@@ -44,11 +43,13 @@ namespace Docker.DotNet.Models
             }
         }
 
-        internal static async Task MonitorResponseForMessagesAsync<T>(Task<HttpResponseMessage> responseTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
+        internal static async Task MonitorResponseForMessagesAsync<T>(Task<HttpResponseMessage> responseTask, DockerClient client, CancellationToken cancellationToken, IProgress<T> progress)
         {
-            using (var response = await responseTask)
+            using (var response = await responseTask
+                .ConfigureAwait(false))
             {
-                await MonitorStreamForMessagesAsync<T>(response.Content.ReadAsStreamAsync(), client, cancel, progress);
+                await MonitorStreamForMessagesAsync(response.Content.ReadAsStreamAsync(), client, cancellationToken, progress)
+                    .ConfigureAwait(false);
             }
         }
     }

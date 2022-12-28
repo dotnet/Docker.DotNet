@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
@@ -92,7 +92,7 @@ namespace Docker.DotNet.Tests
 
             var progressMessage = new Progress<Message>((m) =>
             {
-                _output.WriteLine($"MonitorEventsAsync_Succeeds: Message - {m.Action} - {m.Status} {m.From} - {m.Type}");
+                _output.WriteLine($"MonitorEventsAsync_Succeeds: Message - {m.Action} - {m.Status} {m.Actor.Attributes["name"]} - {m.Type}");
                 wasProgressCalled = true;
                 Assert.NotNull(m);
             });
@@ -115,11 +115,13 @@ namespace Docker.DotNet.Tests
                 _cts.Token);
 
             // Give it some time for output operation to complete before cancelling task
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await Task.Delay(TimeSpan.FromSeconds(1), cts.Token)
+                .ConfigureAwait(false);
 
             cts.Cancel();
 
-            await Assert.ThrowsAsync<TaskCanceledException>(() => task).ConfigureAwait(false);
+            await Assert.ThrowsAsync<TaskCanceledException>(() => task)
+                .ConfigureAwait(false);
 
             Assert.True(wasProgressCalled);
         }
@@ -127,99 +129,72 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task MonitorEventsAsync_IsCancelled_NoStreamCorruption()
         {
-            var rand = new Random();
-            var sw = new Stopwatch();
+            const int iterationCount = 10;
 
-            for (int i = 0; i < 20; ++i)
+            ICollection<string> events = new List<string>();
+
+            for (var i = 0; i < iterationCount; ++i)
             {
-                try
-                {
-                    // (1) Create monitor task
-                    using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
 
-                    string newImageTag = Guid.NewGuid().ToString();
+                using var eventsSync = new AutoResetEvent(false);
 
-                    var monitorTask = _dockerClient.System.MonitorEventsAsync(
-                        new ContainerEventsParameters(),
-                        new Progress<Message>((value) => _output.WriteLine($"DockerSystemEvent: {JsonConvert.SerializeObject(value)}")),
-                        cts.Token);
+                var imageTagParameters = new ImageTagParameters();
+                imageTagParameters.RepositoryName = _repositoryName;
+                imageTagParameters.Tag = Guid.NewGuid().ToString();
 
-                    // (2) Wait for some time to make sure we get into blocking IO call
-                    await Task.Delay(100);
+                var progress = new Progress<Message>(message => _output.WriteLine($"DockerSystemEvent: {JsonConvert.SerializeObject(message)}"));
+                progress.ProgressChanged += (_, message) => events.Add(message.Status);
+                progress.ProgressChanged += (_, _) => eventsSync.Set();
 
-                    // (3) Invoke another request that will attempt to grab the same buffer
-                    var listImagesTask1 = _dockerClient.Images.TagImageAsync(
-                        $"{_repositoryName}:{_tag}",
-                        new ImageTagParameters
-                        {
-                            RepositoryName = _repositoryName,
-                            Tag = newImageTag,
-                            Force = true
-                        },
-                        default);
+                var monitorTask = _dockerClient.System.MonitorEventsAsync(new ContainerEventsParameters(), progress, cts.Token);
 
-                    // (4) Wait for a short bit again and cancel the monitor task - if we get lucky, we the list images call will grab the same buffer while
-                    sw.Restart();
-                    var iterations = rand.Next(15000000);
+                var tagImage = (CancellationToken ct) => _dockerClient.Images.TagImageAsync($"{_repositoryName}:{_tag}", imageTagParameters, ct);
 
-                    for (int j = 0; j < iterations; j++)
-                    {
-                        // noop
-                    }
-                    _output.WriteLine($"Waited for {sw.Elapsed.TotalMilliseconds} ms");
+                _ = tagImage.Invoke(default);
 
-                    cts.Cancel();
+                _ = eventsSync.WaitOne(TimeSpan.FromSeconds(1));
 
-                    listImagesTask1.GetAwaiter().GetResult();
+                cts.Cancel();
 
-                    _dockerClient.Images.TagImageAsync(
-                        $"{_repositoryName}:{_tag}",
-                        new ImageTagParameters
-                        {
-                            RepositoryName = _repositoryName,
-                            Tag = newImageTag,
-                            Force = true
-                        }
-                    ).GetAwaiter().GetResult();
+                await tagImage.Invoke(default)
+                    .ConfigureAwait(false);
 
-                    monitorTask.GetAwaiter().GetResult();
-                }
-                catch (TaskCanceledException)
-                {
-                    // Exceptions other than this causes test to fail
-                }
+                await Assert.ThrowsAsync<TaskCanceledException>(() => monitorTask)
+                    .ConfigureAwait(false);
             }
+
+            Assert.Equal(iterationCount, events.Count);
         }
 
         [Fact]
         public async Task MonitorEventsFiltered_Succeeds()
         {
-            string newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
-            string newImageRespositoryName = Guid.NewGuid().ToString();
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
 
-            await _dockerClient.Images.TagImageAsync(
-                $"{_repositoryName}:{_tag}",
-                new ImageTagParameters
-                {
-                    RepositoryName = newImageRespositoryName,
-                    Tag = newTag
-                },
-                _cts.Token
-            );
+            using var eventsSync = new AutoResetEvent(false);
 
-            ImageInspectResponse image = await _dockerClient.Images.InspectImageAsync(
-                $"{newImageRespositoryName}:{newTag}",
-                _cts.Token
-            );
+            ICollection<string> events = new List<string>();
 
-            var progressCalledCounter = 0;
+            var sourceImageTag = $"{_repositoryName}:{_tag}";
 
-            var eventsParams = new ContainerEventsParameters()
+            var targetImageTag = $"{_repositoryName}:{Guid.NewGuid().ToString()}";
+
+            var image = await _dockerClient.Images.InspectImageAsync(sourceImageTag, _cts.Token)
+                .ConfigureAwait(false);
+
+            var imageTagParameters = new ImageTagParameters
             {
-                Filters = new Dictionary<string, IDictionary<string, bool>>()
+                RepositoryName = targetImageTag.Split(':').First(),
+                Tag = targetImageTag.Split(':').Last()
+            };
+
+            var containerEventsParameters = new ContainerEventsParameters
+            {
+                Filters = new Dictionary<string, IDictionary<string, bool>>
                 {
                     {
-                        "event", new Dictionary<string, bool>()
+                        "event", new Dictionary<string, bool>
                         {
                             {
                                 "tag", true
@@ -230,7 +205,7 @@ namespace Docker.DotNet.Tests
                         }
                     },
                     {
-                        "type", new Dictionary<string, bool>()
+                        "type", new Dictionary<string, bool>
                         {
                             {
                                 "image", true
@@ -238,7 +213,7 @@ namespace Docker.DotNet.Tests
                         }
                     },
                     {
-                        "image", new Dictionary<string, bool>()
+                        "image", new Dictionary<string, bool>
                         {
                             {
                                 image.ID, true
@@ -248,29 +223,37 @@ namespace Docker.DotNet.Tests
                 }
             };
 
-            var progress = new Progress<Message>((m) =>
-            {
-                Interlocked.Increment(ref progressCalledCounter);
-                Assert.True(m.Status == "tag" || m.Status == "untag");
-                _output.WriteLine($"MonitorEventsFiltered_Succeeds: Message received: {m.Action} - {m.Status} {m.From} - {m.Type}");
-            });
+            var progress = new Progress<Message>(message => _output.WriteLine($"MonitorEventsFiltered_Succeeds: Message received: {message.Action} - {message.Status} {message.Actor.Attributes["name"]} - {message.Type}"));
+            progress.ProgressChanged += (_, message) => events.Add(message.Status);
+            progress.ProgressChanged += (_, _) => eventsSync.Set();
 
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
-            var task = Task.Run(() => _dockerClient.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
+            var monitorTask = _dockerClient.System.MonitorEventsAsync(containerEventsParameters, progress, cts.Token);
 
-            await _dockerClient.Images.TagImageAsync($"{_repositoryName}:{_tag}", new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag });
-            await _dockerClient.Images.DeleteImageAsync($"{_repositoryName}:{newTag}", new ImageDeleteParameters());
+            await _dockerClient.Images.TagImageAsync(sourceImageTag, imageTagParameters, cts.Token)
+                .ConfigureAwait(false);
 
-            var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters { Image = $"{_repositoryName}:{_tag}" });
-            await _dockerClient.Containers.RemoveContainerAsync(createContainerResponse.ID, new ContainerRemoveParameters(), cts.Token);
+            _ = eventsSync.WaitOne(TimeSpan.FromSeconds(1));
 
-            await Task.Delay(TimeSpan.FromSeconds(1));
+            await _dockerClient.Images.DeleteImageAsync(targetImageTag, new ImageDeleteParameters(), cts.Token)
+                .ConfigureAwait(false);
+
+            _ = eventsSync.WaitOne(TimeSpan.FromSeconds(1));
+
+            var createContainerResponse = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters { Image = sourceImageTag }, cts.Token)
+                .ConfigureAwait(false);
+
+            await _dockerClient.Containers.RemoveContainerAsync(createContainerResponse.ID, new ContainerRemoveParameters(), cts.Token)
+                .ConfigureAwait(false);
+
             cts.Cancel();
 
-            await Assert.ThrowsAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsAsync<TaskCanceledException>(() => monitorTask)
+                .ConfigureAwait(false);
 
-            Assert.Equal(2, progressCalledCounter);
-            Assert.True(task.IsCanceled);
+            Assert.True(monitorTask.IsCanceled);
+            Assert.Equal(2, events.Count);
+            Assert.Contains("tag", events);
+            Assert.Contains("untag", events);
         }
 
         [Fact]
