@@ -107,6 +107,8 @@ namespace Docker.DotNet.Tests
                 _cts.Token
             );
 
+            await Task.Delay(TimeSpan.FromSeconds(5), default);
+
             containerLogsCts.CancelAfter(TimeSpan.FromSeconds(5));
 
             var containerLogsTask = _dockerClient.Containers.GetContainerLogsAsync(
@@ -153,6 +155,8 @@ namespace Docker.DotNet.Tests
                 new ContainerStartParameters(),
                 _cts.Token
             );
+
+            await Task.Delay(TimeSpan.FromSeconds(5), default);
 
             containerLogsCts.CancelAfter(TimeSpan.FromSeconds(5));
 
@@ -203,6 +207,8 @@ namespace Docker.DotNet.Tests
                 _cts.Token
             );
 
+            await Task.Delay(TimeSpan.FromSeconds(5), default);
+
             containerLogsCts.CancelAfter(TimeSpan.FromSeconds(5));
 
             var containerLogsTask = _dockerClient.Containers.GetContainerLogsAsync(
@@ -215,10 +221,8 @@ namespace Docker.DotNet.Tests
                     Follow = false
                 },
                 containerLogsCts.Token,
-                new Progress<string>(m => { _output.WriteLine(m); logList.Add(m); })
+                new Progress<string>(m => { logList.Add(m); _output.WriteLine(m); })
             );
-
-            await Task.Delay(TimeSpan.FromSeconds(5));
 
             await _dockerClient.Containers.StopContainerAsync(
                 createContainerResponse.ID,
@@ -253,9 +257,11 @@ namespace Docker.DotNet.Tests
                 _cts.Token
             );
 
+            await Task.Delay(TimeSpan.FromSeconds(5), default);
+
             containerLogsCts.CancelAfter(TimeSpan.FromSeconds(5));
 
-            await Assert.ThrowsAsync<TaskCanceledException>(() => _dockerClient.Containers.GetContainerLogsAsync(
+            var containerLogsTask = _dockerClient.Containers.GetContainerLogsAsync(
                 createContainerResponse.ID,
                 new ContainerLogsParameters
                 {
@@ -266,7 +272,9 @@ namespace Docker.DotNet.Tests
                 },
                 containerLogsCts.Token,
                 new Progress<string>(m => _output.WriteLine(m))
-            ));
+            );
+
+            await Assert.ThrowsAsync<TaskCanceledException>(() => containerLogsTask);
         }
 
         [Fact]
@@ -289,6 +297,8 @@ namespace Docker.DotNet.Tests
                 new ContainerStartParameters(),
                 _cts.Token
             );
+
+            await Task.Delay(TimeSpan.FromSeconds(5), default);
 
             containerLogsCts.CancelAfter(TimeSpan.FromSeconds(5));
 
@@ -330,6 +340,8 @@ namespace Docker.DotNet.Tests
                 _cts.Token
             );
 
+            await Task.Delay(TimeSpan.FromSeconds(5), default);
+
             containerLogsCts.CancelAfter(TimeSpan.FromSeconds(5));
 
             var containerLogsTask = _dockerClient.Containers.GetContainerLogsAsync(
@@ -342,17 +354,8 @@ namespace Docker.DotNet.Tests
                     Follow = true
                 },
                 containerLogsCts.Token,
-                new Progress<string>(m => { _output.WriteLine(m); logList.Add(m); })
+                new Progress<string>(m => { logList.Add(m); _output.WriteLine(m); })
             );
-
-            await Task.Delay(TimeSpan.FromSeconds(5));
-
-            await _dockerClient.Containers.StopContainerAsync(
-                createContainerResponse.ID,
-                new ContainerStopParameters(),
-                _cts.Token
-            );
-
 
             await Assert.ThrowsAsync<TaskCanceledException>(() => containerLogsTask);
             _output.WriteLine($"Line count: {logList.Count}");

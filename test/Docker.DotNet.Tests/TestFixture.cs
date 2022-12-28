@@ -16,11 +16,11 @@ namespace Docker.DotNet.Tests
         /// The Docker image name.
         /// </summary>
         private const string Name = "nats";
-        
+
         private static readonly Progress<JSONMessage> WriteProgressOutput;
 
         private bool _hasInitializedSwarm;
-        
+
         static TestFixture()
         {
             WriteProgressOutput = new Progress<JSONMessage>(jsonMessage =>
@@ -30,7 +30,7 @@ namespace Docker.DotNet.Tests
                 Debug.WriteLine(message);
             });
         }
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TestFixture" /> class.
         /// </summary>
@@ -39,7 +39,7 @@ namespace Docker.DotNet.Tests
         {
             DockerClientConfiguration = new DockerClientConfiguration();
             DockerClient = DockerClientConfiguration.CreateClient();
-            Cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+            Cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
             Cts.Token.Register(() => throw new TimeoutException("Docker.DotNet test timeout exception"));
         }
 
