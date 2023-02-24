@@ -247,16 +247,16 @@ Here are typical exceptions thrown from the client library:
 
 ## .NET Foundation
 
-Docker.DotNet is a [.NET Foundation](https://www.dotnetfoundation.org/projects) project.
+Docker.DotNet is a [.NET Foundation](https://www.dotnetfoundation.org) project.
 
 There are many .NET related projects on GitHub.
 
 - [.NET home repo](https://github.com/Microsoft/dotnet) - links to 100s of .NET projects, from Microsoft and the community.
-- [ASP.NET Core home](https://docs.microsoft.com/aspnet/core/?view=aspnetcore-3.1) - the best place to start learning about ASP.NET Core.
+- [ASP.NET Core home](https://docs.microsoft.com/aspnet/core) - the best place to start learning about ASP.NET Core.
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community. For more information, see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
-General .NET OSS discussions: [.NET Foundation forums](https://forums.dotnetfoundation.org)
+General .NET OSS discussions: [.NET Foundation Discord](https://dotnetfoundation.org/socialize/discord)
 
 ## Contributing
 
