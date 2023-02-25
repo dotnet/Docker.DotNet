@@ -30,7 +30,7 @@ namespace Docker.DotNet
         /// <param name="parameters">Specifics of how to perform the operation.</param>
         /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
         /// <returns>A <see cref="Task{TResult}"/> that resolves to a <see cref="CreateContainerResponse"/>, which provides information about the newly-created container.</returns>
-        /// <remarks>The corresponding command in the Docker CLI is <c>docker container create</c>.</remarks>
+        /// <remarks>The corresponding command in the Docker CLI are <c>docker create</c> and <c>docker container create</c>.</remarks>
         /// <exception cref="DockerContainerNotFoundException">No such container was found.</exception>
         /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
         /// <exception cref="DockerApiException">The input is invalid, there was a conflict with another container, or the daemon experienced an error.</exception>
@@ -73,7 +73,7 @@ namespace Docker.DotNet
         /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
         /// <returns>A <see cref="Task{TResult}"/> that resolves to a <see cref="Stream"/>, which provides the log information.</returns>
         /// <remarks>This method works only for containers with the <c>json-file</c> or <c>journald</c> logging driver.
-        /// <br/>The corresponding command in the Docker CLI is <c>docker logs</c>.</remarks>
+        /// <br/>The corresponding command in the Docker CLI are </c> <c>docker logs</c> and <c>docker container logs</c>.</remarks>
         /// <exception cref="DockerContainerNotFoundException">No such container was found.</exception>
         /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
         /// <exception cref="DockerApiException">The input is invalid or the daemon experienced an error.</exception>
@@ -91,7 +91,7 @@ namespace Docker.DotNet
         /// <returns>A <see cref="Task"/> that will complete once all log lines have been read, or once the container has exited if Follow is set to <see langword="true"/>.</returns>
         /// <remarks>This method is only suited for containers created with a TTY. For containers created without a TTY, use
         /// <see cref="GetContainerLogsAsync(string, bool, ContainerLogsParameters, CancellationToken)"/> instead.
-        /// <br/>The corresponding command in the Docker CLI is <c>docker logs</c>.</remarks>
+        /// <br/>The corresponding command in the Docker CLI are </c> <c>docker logs</c> and <c>docker container logs</c>.</remarks>
         /// <exception cref="DockerContainerNotFoundException">No such container was found.</exception>
         /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
         /// <exception cref="DockerApiException">The input is invalid or the daemon experienced an error.</exception>
@@ -107,7 +107,7 @@ namespace Docker.DotNet
         /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
         /// <returns>A <see cref="Task{TResult}"/> that resolves to a <see cref="MultiplexedStream"/>, which provides the log information.
         /// If the container wasn't created with a TTY, this stream is multiplexed.</returns>
-        /// <remarks>The corresponding command in the Docker CLI is <c>docker logs</c>.</remarks>
+        /// <br/>The corresponding command in the Docker CLI are </c> <c>docker logs</c> and <c>docker container logs</c>.</remarks>
         /// <exception cref="DockerContainerNotFoundException">No such container was found.</exception>
         /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
         /// <exception cref="DockerApiException">The input is invalid or the daemon experienced an error.</exception>
@@ -400,7 +400,7 @@ namespace Docker.DotNet
         /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
         /// <returns>A <see cref="Task{TResult}"/> that resolves to a <see cref="ContainerUpdateResponse"/>, which provides updated
         /// information about the container.</returns>
-        /// <remarks>The corresponding command in the Docker CLI is <c>docker update</c>.</remarks>
+        /// <remarks>The corresponding command in the Docker CLI are <c>docker update</c> and <c>docker container update</c>.</remarks>
         /// <exception cref="DockerContainerNotFoundException">No such container was found.</exception>
         /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
         /// <exception cref="DockerApiException">The input is invalid or the daemon experienced an error.</exception>
