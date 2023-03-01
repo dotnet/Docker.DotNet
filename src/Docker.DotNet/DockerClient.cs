@@ -286,7 +286,7 @@ namespace Docker.DotNet
                 .ConfigureAwait(false);
         }
 
-        internal Task<HttpResponseMessage> MakeRequestForRawResponseAsync(
+        internal async Task<HttpResponseMessage> MakeRequestForRawResponseAsync(
             HttpMethod method,
             string path,
             IQueryString queryString,
@@ -294,7 +294,10 @@ namespace Docker.DotNet
             IDictionary<string, string> headers,
             CancellationToken token)
         {
-            return PrivateMakeRequestAsync(SInfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, body, token);
+            var response = await  PrivateMakeRequestAsync(SInfiniteTimeout, HttpCompletionOption.ResponseHeadersRead, method, path, queryString, headers, body, token).ConfigureAwait(false);
+            await HandleIfErrorResponseAsync(response.StatusCode, response)
+                .ConfigureAwait(false);
+            return response;
         }
 
         internal async Task<DockerApiStreamedResponse> MakeRequestForStreamedResponseAsync(

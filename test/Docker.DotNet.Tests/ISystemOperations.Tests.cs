@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -88,13 +88,6 @@ namespace Docker.DotNet.Tests
         {
             var newTag = $"MonitorTests-{Guid.NewGuid().ToString().Substring(1, 10)}";
 
-            var progressJSONMessage = new Progress<JSONMessage>((m) =>
-            {
-                // Status could be 'Pulling from...'
-                Assert.NotNull(m);
-                _output.WriteLine($"MonitorEventsAsync_Succeeds: JSONMessage - {m.ID} - {m.Status} {m.From} - {m.Stream}");
-            });
-
             var wasProgressCalled = false;
 
             var progressMessage = new Progress<Message>((m) =>
@@ -110,8 +103,6 @@ namespace Docker.DotNet.Tests
                 new ContainerEventsParameters(),
                 progressMessage,
                 cts.Token);
-
-            await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = $"{_repositoryName}:{_tag}" }, null, progressJSONMessage, _cts.Token);
 
             await _dockerClient.Images.TagImageAsync($"{_repositoryName}:{_tag}", new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag }, _cts.Token);
 
@@ -259,15 +250,13 @@ namespace Docker.DotNet.Tests
 
             var progress = new Progress<Message>((m) =>
             {
-                progressCalledCounter++;
+                Interlocked.Increment(ref progressCalledCounter);
                 Assert.True(m.Status == "tag" || m.Status == "untag");
                 _output.WriteLine($"MonitorEventsFiltered_Succeeds: Message received: {m.Action} - {m.Status} {m.From} - {m.Type}");
             });
 
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
             var task = Task.Run(() => _dockerClient.System.MonitorEventsAsync(eventsParams, progress, cts.Token));
-
-            await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = $"{_repositoryName}:{_tag}" }, null, new Progress<JSONMessage>());
 
             await _dockerClient.Images.TagImageAsync($"{_repositoryName}:{_tag}", new ImageTagParameters { RepositoryName = _repositoryName, Tag = newTag });
             await _dockerClient.Images.DeleteImageAsync($"{_repositoryName}:{newTag}", new ImageDeleteParameters());
