@@ -176,14 +176,19 @@ namespace Docker.DotNet
         Task<Stream> GetServiceLogsAsync(string id, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Gets the <code>stdout</code> and <code>stderr</code> logs from all service tasks.
-        /// This endpoint works only for services with the <code>json-file</code> or <code>journald</code> logging driver.
+        /// Gets <c>stdout</c> and <c>stderr</c> logs from services.
         /// </summary>
-        /// <param name="id">ID or name of the service.</param>
-        /// <param name="tty">If the service was created with a TTY or not. If <see langword="false" />, the returned stream is multiplexed.</param>
-        /// <param name="parameters">The parameters used to retrieve the logs.</param>
-        /// <param name="cancellationToken">A token used to cancel this operation.</param>
-        /// <returns>A stream with the retrieved logs. If the service wasn't created with a TTY, this stream is multiplexed.</returns>
+        /// <param name="id">The ID or name of the service.</param>
+        /// <param name="tty">Indicates whether the service was created with a TTY. If <see langword="false"/>, the returned stream is multiplexed.</param>
+        /// <param name="parameters">Specifics of how to perform the operation.</param>
+        /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> that resolves to a <see cref="MultiplexedStream"/>, which provides the log information.
+        /// If the service wasn't created with a TTY, this stream is multiplexed.
+        /// </returns>
+        /// <remarks>
+        /// This method is only suited for services with the <c>json-file</c> or <c>journald</c> logging driver.
+        /// </remarks>
         Task<MultiplexedStream> GetServiceLogsAsync(string id, bool tty, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion Services
