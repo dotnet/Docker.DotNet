@@ -192,7 +192,7 @@ namespace Docker.DotNet
             return new MultiplexedStream(result, !tty);
         }
 
-       async Task ISwarmOperations.UpdateSwarmAsync(SwarmUpdateParameters parameters, CancellationToken cancellationToken)
+        async Task ISwarmOperations.UpdateSwarmAsync(SwarmUpdateParameters parameters, CancellationToken cancellationToken)
         {
             var query = new QueryString<SwarmUpdateParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)));
             var body = new JsonRequestContent<Spec>(parameters.Spec ?? throw new ArgumentNullException(nameof(parameters.Spec)), this._client.JsonSerializer);
@@ -247,7 +247,7 @@ namespace Docker.DotNet
         async Task ISwarmOperations.RemoveNodeAsync(string id, bool force, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
-            var parameters = new NodeRemoveParameters {Force = force};
+            var parameters = new NodeRemoveParameters { Force = force };
             var query = new QueryString<NodeRemoveParameters>(parameters);
             await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Delete, $"nodes/{id}", query, cancellationToken).ConfigureAwait(false);
         }
