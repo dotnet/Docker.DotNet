@@ -156,13 +156,14 @@ namespace Docker.DotNet
         Task RemoveServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Get service logs.
-        ///
-        /// Get {stdout} and {stderr} logs from all service tasks.
-        /// Note: This endpoint works only for services with the {json-file} or {journald} logging driver.
+        /// Gets <c>stdout</c> and <c>stderr</c> logs from services.
         /// </summary>
+        /// <param name="id">The ID or name of the service.</param>
+        /// <param name="parameters">Specifics of how to perform the operation.</param>
+        /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
+        /// <returns>A <see cref="Task"/> that will complete once all log lines have been read.</returns>
         /// <remarks>
-        /// docker service logs
+        /// This method is only suited for services with the <c>json-file</c> or <c>journald</c> logging driver.
         ///
         /// HTTP GET /services/(id)/logs
         ///
@@ -172,7 +173,6 @@ namespace Docker.DotNet
         /// 500 - Server error.
         /// 503 - Node is not part of a swarm.
         /// </remarks>
-        /// <param name="id">ID or name of the service.</param>
         Task<Stream> GetServiceLogsAsync(string id, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
