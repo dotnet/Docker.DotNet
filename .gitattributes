@@ -1,5 +1,3 @@
 # Autodetect text files
 * text=auto
 
-# Definitively text files
-*.cs text
