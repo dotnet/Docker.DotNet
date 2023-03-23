@@ -5,7 +5,7 @@ using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
-    public interface IConfigsOperations
+    public interface IConfigOperations
     {
         /// <summary>
         /// List configs
