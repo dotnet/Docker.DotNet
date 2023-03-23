@@ -14,7 +14,7 @@ namespace Docker.DotNet
         /// 200 - No error.
         /// 500 - Server error.
         /// </remarks>
-        Task<IList<SwarmConfig>> ListConfigAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IList<SwarmConfig>> ListConfigsAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create a configs
