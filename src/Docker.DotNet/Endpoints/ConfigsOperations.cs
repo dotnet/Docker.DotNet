@@ -7,7 +7,7 @@ using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
-    internal class ConfigsOperations : IConfigsOperations
+    internal class ConfigOperations : IConfigOperations
     {
         private readonly DockerClient _client;
 
