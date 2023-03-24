@@ -39,7 +39,7 @@ namespace Docker.DotNet
             System = new SystemOperations(this);
             Networks = new NetworkOperations(this);
             Secrets = new SecretsOperations(this);
-            Configs = new ConfigsOperations(this);
+            Configs = new ConfigOperations(this);
             Swarm = new SwarmOperations(this);
             Tasks = new TasksOperations(this);
             Volumes = new VolumeOperations(this);
@@ -137,7 +137,7 @@ namespace Docker.DotNet
 
         public ISecretsOperations Secrets { get; }
 
-        public IConfigsOperations Configs { get; }
+        public IConfigOperations Configs { get; }
 
         public ISwarmOperations Swarm { get; }
 

@@ -11,18 +11,18 @@ namespace Docker.DotNet
     {
         private readonly DockerClient _client;
 
-        internal ConfigsOperations(DockerClient client)
+        internal ConfigOperations(DockerClient client)
         {
             this._client = client;
         }
 
-        async Task<IList<SwarmConfig>> IConfigsOperations.ListConfigAsync(CancellationToken cancellationToken)
+        async Task<IList<SwarmConfig>> IConfigOperations.ListConfigsAsync(CancellationToken cancellationToken)
         {
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "configs", cancellationToken).ConfigureAwait(false);
             return this._client.JsonSerializer.DeserializeObject<IList<SwarmConfig>>(response.Body);
         }
 
-        async Task<SwarmCreateConfigResponse> IConfigsOperations.CreateConfigAsync(SwarmCreateConfigParameters body, CancellationToken cancellationToken)
+        async Task<SwarmCreateConfigResponse> IConfigOperations.CreateConfigAsync(SwarmCreateConfigParameters body, CancellationToken cancellationToken)
         {
             if (body == null)
             {
@@ -34,7 +34,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<SwarmCreateConfigResponse>(response.Body);
         }
 
-        async Task<SwarmConfig> IConfigsOperations.InspectConfigAsync(string id, CancellationToken cancellationToken)
+        async Task<SwarmConfig> IConfigOperations.InspectConfigAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -45,7 +45,7 @@ namespace Docker.DotNet
             return this._client.JsonSerializer.DeserializeObject<SwarmConfig>(response.Body);
         }
 
-        Task IConfigsOperations.RemoveConfigAsync(string id, CancellationToken cancellationToken)
+        Task IConfigOperations.RemoveConfigAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id))
             {
