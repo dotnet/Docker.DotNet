@@ -161,7 +161,8 @@ namespace Docker.DotNet.Tests
         [Fact]
         public async Task GetServiceLogs_Succeeds()
         {
-            using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
+            var cts = new CancellationTokenSource();
+            var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, cts.Token);
 
             var serviceName = $"service-withLogs-{Guid.NewGuid().ToString().Substring(1, 10)}";
             var serviceId = _dockerClient.Swarm.CreateServiceAsync(new ServiceCreateParameters
@@ -180,36 +181,73 @@ namespace Docker.DotNet.Tests
                 ShowStderr = true
             });
 
-            TimeSpan delay = TimeSpan.FromSeconds(10);
-            cts.CancelAfter(delay);
+            int maxRetries = 3;
+            int currentRetry = 0;
+            TimeSpan delayBetweenRetries = TimeSpan.FromSeconds(5);
+            List<string> logLines = null;
 
-            var logLines = new List<string>();
-            while (!cts.IsCancellationRequested)
+            while (currentRetry < maxRetries && !linkedCts.IsCancellationRequested)
             {
-                var line = new List<byte>();
-                var buffer = new byte[1];
+                logLines = new List<string>();
+                TimeSpan delay = TimeSpan.FromSeconds(10);
+                cts.CancelAfter(delay);
 
-                while (!cts.IsCancellationRequested)
+                bool cancelRequested = false; // Add a flag to indicate cancellation
+
+                while (!linkedCts.IsCancellationRequested && !cancelRequested)
                 {
-                    var res = await _stream.ReadOutputAsync(buffer, 0, 1, default);
+                    var line = new List<byte>();
+                    var buffer = new byte[4096];
 
-                    if (res.Count == 0)
+                    try
                     {
-                        continue;
+                        while (true)
+                        {
+                            var res = await _stream.ReadOutputAsync(buffer, 0, buffer.Length, linkedCts.Token);
+
+                            if (res.Count == 0)
+                            {
+                                continue;
+                            }
+
+                            int newlineIndex = Array.IndexOf(buffer, (byte)'\n', 0, res.Count);
+
+                            if (newlineIndex != -1)
+                            {
+                                line.AddRange(buffer.Take(newlineIndex));
+                                break;
+                            }
+                            else
+                            {
+                                line.AddRange(buffer.Take(res.Count));
+                            }
+                        }
+
+                        logLines.Add(Encoding.UTF8.GetString(line.ToArray()));
                     }
-
-                    else if (buffer[0] == '\n')
+                    catch (OperationCanceledException)
                     {
-                        break;
-                    }
+                        cancelRequested = true; // Set the flag when cancellation is requested
 
-                    else
-                    {
-                        line.Add(buffer[0]);
+                        // Reset the CancellationTokenSource for the next attempt
+                        cts = new CancellationTokenSource();
+                        linkedCts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token, cts.Token);
+                        cts.CancelAfter(delay);
                     }
                 }
 
-                logLines.Add(Encoding.UTF8.GetString(line.ToArray()));                
+                if (logLines.Any() && logLines.First().Contains("[INF]"))
+                {
+                    break;
+                }
+                else
+                {
+                    currentRetry++;
+                    if (currentRetry < maxRetries)
+                    {
+                        await Task.Delay(delayBetweenRetries);
+                    }
+                }
             }
 
             Assert.True(logLines.Any());
