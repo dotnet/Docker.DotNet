@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using System.Threading;
+using System.IO;
 
 namespace Docker.DotNet
 {
@@ -153,6 +154,42 @@ namespace Docker.DotNet
         /// </remarks>
         /// <param name="id">ID or name of service.</param>
         Task RemoveServiceAsync(string id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets <c>stdout</c> and <c>stderr</c> logs from services.
+        /// </summary>
+        /// <param name="id">The ID or name of the service.</param>
+        /// <param name="parameters">Specifics of how to perform the operation.</param>
+        /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
+        /// <returns>A <see cref="Task"/> that will complete once all log lines have been read.</returns>
+        /// <remarks>
+        /// This method is only suited for services with the <c>json-file</c> or <c>journald</c> logging driver.
+        ///
+        /// HTTP GET /services/(id)/logs
+        ///
+        /// 101 - Logs returned as a stream.
+        /// 200 - Logs returned as a string in response body.
+        /// 404 - No such service.
+        /// 500 - Server error.
+        /// 503 - Node is not part of a swarm.
+        /// </remarks>
+        Task<Stream> GetServiceLogsAsync(string id, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Gets <c>stdout</c> and <c>stderr</c> logs from services.
+        /// </summary>
+        /// <param name="id">The ID or name of the service.</param>
+        /// <param name="tty">Indicates whether the service was created with a TTY. If <see langword="false"/>, the returned stream is multiplexed.</param>
+        /// <param name="parameters">Specifics of how to perform the operation.</param>
+        /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
+        /// <returns>
+        /// A <see cref="Task{TResult}"/> that resolves to a <see cref="MultiplexedStream"/>, which provides the log information.
+        /// If the service wasn't created with a TTY, this stream is multiplexed.
+        /// </returns>
+        /// <remarks>
+        /// This method is only suited for services with the <c>json-file</c> or <c>journald</c> logging driver.
+        /// </remarks>
+        Task<MultiplexedStream> GetServiceLogsAsync(string id, bool tty, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         #endregion Services
 
