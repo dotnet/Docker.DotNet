@@ -41,14 +41,14 @@ type ImageBuildParameters struct {
 
 // CommitContainerChangesParameters for POST /commit
 type CommitContainerChangesParameters struct {
-	ContainerID    string   `rest:"query,container,required"`
-	RepositoryName string   `rest:"query,repo"`
-	Tag            string   `rest:"query"`
-	Comment        string   `rest:"query"`
-	Author         string   `rest:"query"`
-	Changes        []string `rest:"query"`
-	Pause          bool     `rest:"query"`
-	Config         *container.Config
+	ContainerID    string       `rest:"query,container,required"`
+	RepositoryName string       `rest:"query,repo"`
+	Tag            string       `rest:"query"`
+	Comment        string       `rest:"query"`
+	Author         string       `rest:"query"`
+	Changes        []string     `rest:"query"`
+	Pause          bool         `rest:"query"`
+	*container.Config           `rest:"body"`
 }
 
 // CommitContainerChangesResponse for POST /commit
