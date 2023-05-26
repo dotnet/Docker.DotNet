@@ -5,6 +5,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/swarm"
+	"github.com/docker/docker/api/types/volume"
 )
 
 // Args map
@@ -165,7 +166,7 @@ type ContainerUpdateResponse struct {
 }
 
 // ContainerWaitResponse for POST /containers/(id)/wait
-type ContainerWaitResponse container.ContainerWaitOKBody
+type ContainerWaitResponse container.WaitResponse
 
 // ContainerEventsParameters for GET /events
 type ContainerEventsParameters struct {
@@ -330,7 +331,7 @@ type VolumesPruneParameters struct {
 }
 
 // VolumeResponse for GET /volumes
-type VolumeResponse types.Volume
+type VolumeResponse volume.Volume
 
 // VolumesListResponse for GET /volumes
 type VolumesListResponse struct {

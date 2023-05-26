@@ -37,7 +37,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 			},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerCreateCreatedBody{})): {Name: "CreateContainerResponse"},
+	typeToKey(reflect.TypeOf(container.CreateResponse{})): {Name: "CreateContainerResponse"},
 	typeToKey(reflect.TypeOf(container.HealthConfig{})): {
 		Properties: []CSProperty{
 			CSProperty{
@@ -177,7 +177,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// POST /containers/create
 	reflect.TypeOf(CreateContainerParameters{}),
-	reflect.TypeOf(container.ContainerCreateCreatedBody{}),
+	reflect.TypeOf(container.CreateResponse{}),
 
 	// GET /containers/json
 	reflect.TypeOf(ContainersListParameters{}),
@@ -719,9 +719,19 @@ func main() {
 		reflectType(t)
 	}
 
-	for k, v := range reflectedTypes {
-		if _, e := os.Stat(path.Join(sourcePath, v.Name+".Generated.cs")); e == nil {
-			panic(fmt.Sprintf("File: (%s.Generated.cs) already exists. Failed to write key same name for key: (%s) type: (%s).", v.Name, k, v.SourceName))
+	for _, v := range reflectedTypes {
+		// if _, e := os.Stat(path.Join(sourcePath, v.Name+".Generated.cs")); e == nil {
+		// 	panic(fmt.Sprintf("File: (%s.Generated.cs) already exists. Failed to write key same name for key: (%s) type: (%s).", v.Name, k, v.SourceName))
+		// }
+
+		// TODO: Validate the generated file name class for Swarm.Info, Swarm.Secret, Swarm.Topology, etc.
+
+		var className string
+
+		if _, e := os.Stat(path.Join(sourcePath, v.Name + ".Generated.cs")); e == nil {
+			className = strings.Title(v.SourceName) + ".Generated.cs"
+		} else {
+			className = v.Name + ".Generated.cs"
 		}
 
 		f, err := ioutil.TempFile(sourcePath, "ser")
@@ -740,6 +750,6 @@ func main() {
 		}
 
 		f.Close()
-		os.Rename(f.Name(), path.Join(sourcePath, v.Name+".Generated.cs"))
+		os.Rename(f.Name(), path.Join(sourcePath, className))
 	}
 }
