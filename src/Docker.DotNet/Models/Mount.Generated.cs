@@ -28,5 +28,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "TmpfsOptions", EmitDefaultValue = false)]
         public TmpfsOptions TmpfsOptions { get; set; }
+
+        [DataMember(Name = "ClusterOptions", EmitDefaultValue = false)]
+        public ClusterOptions ClusterOptions { get; set; }
     }
 }

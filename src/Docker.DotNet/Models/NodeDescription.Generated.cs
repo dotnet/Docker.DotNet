@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
@@ -19,5 +20,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "TLSInfo", EmitDefaultValue = false)]
         public TLSInfo TLSInfo { get; set; }
+
+        [DataMember(Name = "CSIInfo", EmitDefaultValue = false)]
+        public IList<NodeCSIInfo> CSIInfo { get; set; }
     }
 }

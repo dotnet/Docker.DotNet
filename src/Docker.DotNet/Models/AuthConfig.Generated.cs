@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class AuthConfig // (types.AuthConfig)
+    public class AuthConfig // (registry.AuthConfig)
     {
         [DataMember(Name = "username", EmitDefaultValue = false)]
         public string Username { get; set; }

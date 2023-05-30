@@ -15,6 +15,9 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "Tty", EmitDefaultValue = false)]
         public bool Tty { get; set; }
 
+        [DataMember(Name = "ConsoleSize", EmitDefaultValue = false)]
+        public ulong[] ConsoleSize { get; set; }
+
         [DataMember(Name = "AttachStdin", EmitDefaultValue = false)]
         public bool AttachStdin { get; set; }
 

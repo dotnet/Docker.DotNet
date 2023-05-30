@@ -6,6 +6,9 @@ namespace Docker.DotNet.Models
     [DataContract]
     public class VolumeResponse // (main.VolumeResponse)
     {
+        [DataMember(Name = "ClusterVolume", EmitDefaultValue = false)]
+        public ClusterVolume ClusterVolume { get; set; }
+
         [DataMember(Name = "CreatedAt", EmitDefaultValue = false)]
         public string CreatedAt { get; set; }
 
@@ -31,6 +34,6 @@ namespace Docker.DotNet.Models
         public IDictionary<string, object> Status { get; set; }
 
         [DataMember(Name = "UsageData", EmitDefaultValue = false)]
-        public VolumeUsageData UsageData { get; set; }
+        public UsageData UsageData { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Docker.DotNet.Models
 {
     [DataContract]
-    public class VolumeUsageData // (types.VolumeUsageData)
+    public class UsageData // (volume.UsageData)
     {
         [DataMember(Name = "RefCount", EmitDefaultValue = false)]
         public long RefCount { get; set; }

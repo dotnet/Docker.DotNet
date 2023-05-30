@@ -18,6 +18,7 @@ import (
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/api/types/swarm/runtime"
+	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/pkg/jsonmessage"
 )
 
@@ -70,13 +71,15 @@ var typesToDisambiguate = map[string]*CSModelType{
 			},
 		},
 	},
+	typeToKey(reflect.TypeOf(volume.Info{})):                 {Name: "VolumeInfo"},
+	typeToKey(reflect.TypeOf(volume.Topology{})):             {Name: "VolumeTopology"},
+	typeToKey(reflect.TypeOf(volume.Secret{})):               {Name: "VolumeSecret"},
 	typeToKey(reflect.TypeOf(network.Task{})):                {Name: "NetworkTask"},
 	typeToKey(reflect.TypeOf(registry.AuthenticateOKBody{})): {Name: "AuthResponse"},
 	typeToKey(reflect.TypeOf(registry.SearchResult{})):       {Name: "ImageSearchResponse"},
 	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})):     {Name: "RuntimePluginPrivilege"},
 	typeToKey(reflect.TypeOf(swarm.ConfigSpec{})):            {Name: "SwarmConfigSpec"},
 	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
-	typeToKey(reflect.TypeOf(swarm.Info{})):                  {Name: "SwarmInfo"},
 	typeToKey(reflect.TypeOf(swarm.InitRequest{})):           {Name: "SwarmInitParameters"},
 	typeToKey(reflect.TypeOf(swarm.IPAMConfig{})):            {Name: "SwarmIPAMConfig"},
 	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
@@ -85,10 +88,8 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(swarm.NodeSpec{})):              {Name: "NodeUpdateParameters"},
 	typeToKey(reflect.TypeOf(swarm.Resources{})):             {Name: "SwarmResources"},
 	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
-	typeToKey(reflect.TypeOf(swarm.Secret{})):                {Name: "SwarmSecret"},
 	typeToKey(reflect.TypeOf(swarm.Service{})):               {Name: "SwarmService"},
 	typeToKey(reflect.TypeOf(swarm.Swarm{})):                 {Name: "SwarmInspectResponse"},
-	typeToKey(reflect.TypeOf(swarm.Topology{})):              {Name: "SwarmTopology"},
 	typeToKey(reflect.TypeOf(swarm.Task{})): {
 		Name: "TaskResponse",
 		Properties: []CSProperty{
