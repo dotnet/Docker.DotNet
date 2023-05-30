@@ -9,8 +9,6 @@ const (
 	header = "header"
 	body   = "body"
 	query  = "query"
-
-	requiredTag = "required"
 )
 
 // RestTag is a type that represents the valid values of a 'rest' struct tag.
@@ -25,7 +23,7 @@ type RestTag struct {
 // This can take the form of rest:in,name,required
 func RestTagFromString(tag string) (RestTag, error) {
 	if tag == "" {
-		return RestTag{}, errors.New("Nil or empty tag string")
+		return RestTag{}, errors.New("nil or empty tag string")
 	}
 
 	entries := strings.Split(tag, ",")

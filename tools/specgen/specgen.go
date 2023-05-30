@@ -76,16 +76,19 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})):     {Name: "RuntimePluginPrivilege"},
 	typeToKey(reflect.TypeOf(swarm.ConfigSpec{})):            {Name: "SwarmConfigSpec"},
 	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
+	typeToKey(reflect.TypeOf(swarm.Info{})):                  {Name: "SwarmInfo"},
 	typeToKey(reflect.TypeOf(swarm.InitRequest{})):           {Name: "SwarmInitParameters"},
-	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
 	typeToKey(reflect.TypeOf(swarm.IPAMConfig{})):            {Name: "SwarmIPAMConfig"},
+	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
 	typeToKey(reflect.TypeOf(swarm.Limit{})):                 {Name: "SwarmLimit"},
 	typeToKey(reflect.TypeOf(swarm.Node{})):                  {Name: "NodeListResponse"},
 	typeToKey(reflect.TypeOf(swarm.NodeSpec{})):              {Name: "NodeUpdateParameters"},
-	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
 	typeToKey(reflect.TypeOf(swarm.Resources{})):             {Name: "SwarmResources"},
+	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
+	typeToKey(reflect.TypeOf(swarm.Secret{})):                {Name: "SwarmSecret"},
 	typeToKey(reflect.TypeOf(swarm.Service{})):               {Name: "SwarmService"},
 	typeToKey(reflect.TypeOf(swarm.Swarm{})):                 {Name: "SwarmInspectResponse"},
+	typeToKey(reflect.TypeOf(swarm.Topology{})):              {Name: "SwarmTopology"},
 	typeToKey(reflect.TypeOf(swarm.Task{})): {
 		Name: "TaskResponse",
 		Properties: []CSProperty{
@@ -105,7 +108,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem{})): {
+	typeToKey(reflect.TypeOf(container.FilesystemChange{})): {
 		Name: "ContainerFileSystemChangeResponse",
 		Properties: []CSProperty{
 			CSProperty{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
@@ -164,7 +167,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 var dockerTypesToReflect = []reflect.Type{
 
 	// POST /auth
-	reflect.TypeOf(types.AuthConfig{}),
+	reflect.TypeOf(registry.AuthConfig{}),
 	reflect.TypeOf(registry.AuthenticateOKBody{}),
 
 	// POST /build
@@ -200,7 +203,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// POST /containers/(id)/attach/ws
 
 	// GET /containers/(id)/changes
-	reflect.TypeOf(container.ContainerChangeResponseItem{}),
+	reflect.TypeOf(container.FilesystemChange{}),
 
 	// OBSOLETE - POST /containers/(id)/copy
 
@@ -719,19 +722,9 @@ func main() {
 		reflectType(t)
 	}
 
-	for _, v := range reflectedTypes {
-		// if _, e := os.Stat(path.Join(sourcePath, v.Name+".Generated.cs")); e == nil {
-		// 	panic(fmt.Sprintf("File: (%s.Generated.cs) already exists. Failed to write key same name for key: (%s) type: (%s).", v.Name, k, v.SourceName))
-		// }
-
-		// TODO: Validate the generated file name class for Swarm.Info, Swarm.Secret, Swarm.Topology, etc.
-
-		var className string
-
-		if _, e := os.Stat(path.Join(sourcePath, v.Name + ".Generated.cs")); e == nil {
-			className = strings.Title(v.SourceName) + ".Generated.cs"
-		} else {
-			className = v.Name + ".Generated.cs"
+	for k, v := range reflectedTypes {
+		if _, e := os.Stat(path.Join(sourcePath, v.Name+".Generated.cs")); e == nil {
+			panic(fmt.Sprintf("File: (%s.Generated.cs) already exists. Failed to write key same name for key: (%s) type: (%s).", v.Name, k, v.SourceName))
 		}
 
 		f, err := ioutil.TempFile(sourcePath, "ser")
@@ -750,6 +743,6 @@ func main() {
 		}
 
 		f.Close()
-		os.Rename(f.Name(), path.Join(sourcePath, className))
+		os.Rename(f.Name(), path.Join(sourcePath, v.Name+".Generated.cs"))
 	}
 }

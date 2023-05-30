@@ -260,7 +260,7 @@ func writeConstructors(w io.Writer, typeName string, constructors []CSConstructo
 
 		plen := len(c.Parameters)
 		for pi, p := range c.Parameters {
-			fmt.Fprintf(w, p.toString())
+			fmt.Fprint(w, p.toString())
 
 			if pi != plen-1 {
 				fmt.Fprint(w, ", ")
