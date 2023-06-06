@@ -75,6 +75,12 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "VolumesFrom", EmitDefaultValue = false)]
         public IList<string> VolumesFrom { get; set; }
 
+        [DataMember(Name = "ConsoleSize", EmitDefaultValue = false)]
+        public ulong[] ConsoleSize { get; set; }
+
+        [DataMember(Name = "Annotations", EmitDefaultValue = false)]
+        public IDictionary<string, string> Annotations { get; set; }
+
         [DataMember(Name = "CapAdd", EmitDefaultValue = false)]
         public IList<string> CapAdd { get; set; }
 
@@ -146,9 +152,6 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "Runtime", EmitDefaultValue = false)]
         public string Runtime { get; set; }
-
-        [DataMember(Name = "ConsoleSize", EmitDefaultValue = false)]
-        public ulong[] ConsoleSize { get; set; }
 
         [DataMember(Name = "Isolation", EmitDefaultValue = false)]
         public string Isolation { get; set; }

@@ -71,5 +71,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "JobIteration", EmitDefaultValue = false)]
         public Version JobIteration { get; set; }
+
+        [DataMember(Name = "Volumes", EmitDefaultValue = false)]
+        public IList<VolumeAttachment> Volumes { get; set; }
     }
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/api/types/swarm/runtime"
+	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/pkg/jsonmessage"
 )
 
@@ -37,7 +38,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 			},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerCreateCreatedBody{})): {Name: "CreateContainerResponse"},
+	typeToKey(reflect.TypeOf(container.CreateResponse{})): {Name: "CreateContainerResponse"},
 	typeToKey(reflect.TypeOf(container.HealthConfig{})): {
 		Properties: []CSProperty{
 			CSProperty{
@@ -70,6 +71,9 @@ var typesToDisambiguate = map[string]*CSModelType{
 			},
 		},
 	},
+	typeToKey(reflect.TypeOf(volume.Info{})):                 {Name: "VolumeInfo"},
+	typeToKey(reflect.TypeOf(volume.Topology{})):             {Name: "VolumeTopology"},
+	typeToKey(reflect.TypeOf(volume.Secret{})):               {Name: "VolumeSecret"},
 	typeToKey(reflect.TypeOf(network.Task{})):                {Name: "NetworkTask"},
 	typeToKey(reflect.TypeOf(registry.AuthenticateOKBody{})): {Name: "AuthResponse"},
 	typeToKey(reflect.TypeOf(registry.SearchResult{})):       {Name: "ImageSearchResponse"},
@@ -77,13 +81,13 @@ var typesToDisambiguate = map[string]*CSModelType{
 	typeToKey(reflect.TypeOf(swarm.ConfigSpec{})):            {Name: "SwarmConfigSpec"},
 	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
 	typeToKey(reflect.TypeOf(swarm.InitRequest{})):           {Name: "SwarmInitParameters"},
-	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
 	typeToKey(reflect.TypeOf(swarm.IPAMConfig{})):            {Name: "SwarmIPAMConfig"},
+	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
 	typeToKey(reflect.TypeOf(swarm.Limit{})):                 {Name: "SwarmLimit"},
 	typeToKey(reflect.TypeOf(swarm.Node{})):                  {Name: "NodeListResponse"},
 	typeToKey(reflect.TypeOf(swarm.NodeSpec{})):              {Name: "NodeUpdateParameters"},
-	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
 	typeToKey(reflect.TypeOf(swarm.Resources{})):             {Name: "SwarmResources"},
+	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
 	typeToKey(reflect.TypeOf(swarm.Service{})):               {Name: "SwarmService"},
 	typeToKey(reflect.TypeOf(swarm.Swarm{})):                 {Name: "SwarmInspectResponse"},
 	typeToKey(reflect.TypeOf(swarm.Task{})): {
@@ -105,7 +109,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem{})): {
+	typeToKey(reflect.TypeOf(container.FilesystemChange{})): {
 		Name: "ContainerFileSystemChangeResponse",
 		Properties: []CSProperty{
 			CSProperty{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
@@ -164,7 +168,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 var dockerTypesToReflect = []reflect.Type{
 
 	// POST /auth
-	reflect.TypeOf(types.AuthConfig{}),
+	reflect.TypeOf(registry.AuthConfig{}),
 	reflect.TypeOf(registry.AuthenticateOKBody{}),
 
 	// POST /build
@@ -177,7 +181,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// POST /containers/create
 	reflect.TypeOf(CreateContainerParameters{}),
-	reflect.TypeOf(container.ContainerCreateCreatedBody{}),
+	reflect.TypeOf(container.CreateResponse{}),
 
 	// GET /containers/json
 	reflect.TypeOf(ContainersListParameters{}),
@@ -200,7 +204,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// POST /containers/(id)/attach/ws
 
 	// GET /containers/(id)/changes
-	reflect.TypeOf(container.ContainerChangeResponseItem{}),
+	reflect.TypeOf(container.FilesystemChange{}),
 
 	// OBSOLETE - POST /containers/(id)/copy
 

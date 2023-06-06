@@ -153,12 +153,6 @@ namespace Docker.DotNet.Models
         [DataMember(Name = "ServerVersion", EmitDefaultValue = false)]
         public string ServerVersion { get; set; }
 
-        [DataMember(Name = "ClusterStore", EmitDefaultValue = false)]
-        public string ClusterStore { get; set; }
-
-        [DataMember(Name = "ClusterAdvertise", EmitDefaultValue = false)]
-        public string ClusterAdvertise { get; set; }
-
         [DataMember(Name = "Runtimes", EmitDefaultValue = false)]
         public IDictionary<string, Runtime> Runtimes { get; set; }
 

@@ -10,5 +10,8 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "NonRecursive", EmitDefaultValue = false)]
         public bool NonRecursive { get; set; }
+
+        [DataMember(Name = "CreateMountpoint", EmitDefaultValue = false)]
+        public bool CreateMountpoint { get; set; }
     }
 }

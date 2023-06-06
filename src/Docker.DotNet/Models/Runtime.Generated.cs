@@ -11,5 +11,11 @@ namespace Docker.DotNet.Models
 
         [DataMember(Name = "runtimeArgs", EmitDefaultValue = false)]
         public IList<string> Args { get; set; }
+
+        [DataMember(Name = "runtimeType", EmitDefaultValue = false)]
+        public string Type { get; set; }
+
+        [DataMember(Name = "options", EmitDefaultValue = false)]
+        public IDictionary<string, object> Options { get; set; }
     }
 }
