@@ -255,9 +255,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            var data = parameters.Config == null
-                ? null
-                : new JsonRequestContent<Config>(parameters.Config, this._client.JsonSerializer);
+            var data = new JsonRequestContent<CommitContainerChangesParameters>(parameters, this._client.JsonSerializer);
 
             IQueryString queryParameters = new QueryString<CommitContainerChangesParameters>(parameters);
             var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "commit", queryParameters, data, cancellationToken).ConfigureAwait(false);
