@@ -9,6 +9,11 @@ namespace Docker.DotNet
             return false;
         }
 
+        public override bool IsSshCredentials()
+        {
+            return false;
+        }
+
         public override void Dispose()
         {
         }

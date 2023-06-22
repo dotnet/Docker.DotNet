@@ -37,6 +37,11 @@ namespace Docker.DotNet.BasicAuth
             return _isTls;
         }
 
+        public override bool IsSshCredentials()
+        {
+            return false;
+        }
+
         public override void Dispose()
         {
             _username.Dispose();

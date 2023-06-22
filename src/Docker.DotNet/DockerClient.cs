@@ -113,6 +113,16 @@ namespace Docker.DotNet
                     uri = new UriBuilder("http", uri.Segments.Last()).Uri;
                     break;
 
+                case "ssh":
+                    if(!Configuration.Credentials.IsSshCredentials())
+                    {
+                        throw new ArgumentException("ssh:// protocol can only be used with SSHCredentials");
+                    };
+                    handler = new ManagedHandler(Configuration.Credentials.GetStreamOpener());
+                    uri = new UriBuilder("http", uri.Host, uri.IsDefaultPort ? 22 : uri.Port).Uri;
+                    Console.WriteLine(uri.ToString());
+                    break;
+
                 default:
                     throw new Exception($"Unknown URL scheme {configuration.EndpointBaseUri.Scheme}");
             }
