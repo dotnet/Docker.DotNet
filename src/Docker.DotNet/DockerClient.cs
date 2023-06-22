@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Net.Http.Client;
@@ -46,94 +44,8 @@ namespace Docker.DotNet
             Plugin = new PluginOperations(this);
             Exec = new ExecOperations(this);
 
-            ManagedHandler handler;
-            var uri = Configuration.EndpointBaseUri;
-            switch (uri.Scheme.ToLowerInvariant())
-            {
-                case "npipe":
-                    if (Configuration.Credentials.IsTlsCredentials())
-                    {
-                        throw new Exception("TLS not supported over npipe");
-                    }
-
-                    var segments = uri.Segments;
-                    if (segments.Length != 3 || !segments[1].Equals("pipe/", StringComparison.OrdinalIgnoreCase))
-                    {
-                        throw new ArgumentException($"{Configuration.EndpointBaseUri} is not a valid npipe URI");
-                    }
-
-                    var serverName = uri.Host;
-                    if (string.Equals(serverName, "localhost", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // npipe schemes dont work with npipe://localhost/... and need npipe://./... so fix that for a client here.
-                        serverName = ".";
-                    }
-
-                    var pipeName = uri.Segments[2];
-
-                    uri = new UriBuilder("http", pipeName).Uri;
-                    handler = new ManagedHandler(async (host, port, cancellationToken) =>
-                    {
-                        var timeout = (int)Configuration.NamedPipeConnectTimeout.TotalMilliseconds;
-                        var stream = new NamedPipeClientStream(serverName, pipeName, PipeDirection.InOut, PipeOptions.Asynchronous);
-                        var dockerStream = new DockerPipeStream(stream);
-
-                        await stream.ConnectAsync(timeout, cancellationToken)
-                            .ConfigureAwait(false);
-
-                        return dockerStream;
-                    });
-                    break;
-
-                case "tcp":
-                case "http":
-                    var builder = new UriBuilder(uri)
-                    {
-                        Scheme = configuration.Credentials.IsTlsCredentials() ? "https" : "http"
-                    };
-                    uri = builder.Uri;
-                    handler = new ManagedHandler();
-                    break;
-
-                case "https":
-                    handler = new ManagedHandler();
-                    break;
-
-                case "unix":
-                    var pipeString = uri.LocalPath;
-                    handler = new ManagedHandler(async (host, port, cancellationToken) =>
-                    {
-                        var sock = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
-
-                        await sock.ConnectAsync(new Microsoft.Net.Http.Client.UnixDomainSocketEndPoint(pipeString))
-                            .ConfigureAwait(false);
-
-                        return sock;
-                    });
-                    uri = new UriBuilder("http", uri.Segments.Last()).Uri;
-                    break;
-
-                case "ssh":
-                    if(!Configuration.Credentials.IsSshCredentials())
-                    {
-                        throw new ArgumentException("ssh:// protocol can only be used with SSHCredentials");
-                    };
-
-                    var username = uri.UserInfo;
-                    if(username.Contains(":"))
-                    {
-                        throw new ArgumentException("ssh:// protocol only supports authentication with private keys");
-                    };
-
-                    handler = new ManagedHandler(Configuration.Credentials.GetSshStreamOpener(username));
-                    uri = new UriBuilder("http", uri.Host, uri.IsDefaultPort ? 22 : uri.Port).Uri;
-                    break;
-
-                default:
-                    throw new Exception($"Unknown URL scheme {configuration.EndpointBaseUri.Scheme}");
-            }
-
-            _endpointBaseUri = uri;
+            var (url, handler) = Configuration.GetHandler();
+            _endpointBaseUri = url;
 
             _client = new HttpClient(Configuration.Credentials.GetHandler(handler), true);
             _client.Timeout = SInfiniteTimeout;
