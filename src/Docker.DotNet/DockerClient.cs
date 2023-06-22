@@ -118,9 +118,15 @@ namespace Docker.DotNet
                     {
                         throw new ArgumentException("ssh:// protocol can only be used with SSHCredentials");
                     };
-                    handler = new ManagedHandler(Configuration.Credentials.GetStreamOpener());
+
+                    var username = uri.UserInfo;
+                    if(username.Contains(":"))
+                    {
+                        throw new ArgumentException("ssh:// protocol only supports authentication with private keys");
+                    };
+
+                    handler = new ManagedHandler(Configuration.Credentials.GetSshStreamOpener(username));
                     uri = new UriBuilder("http", uri.Host, uri.IsDefaultPort ? 22 : uri.Port).Uri;
-                    Console.WriteLine(uri.ToString());
                     break;
 
                 default:

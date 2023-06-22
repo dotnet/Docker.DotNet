@@ -12,7 +12,7 @@ namespace Docker.DotNet
 
         public abstract HttpMessageHandler GetHandler(HttpMessageHandler innerHandler);
 
-        public virtual ManagedHandler.StreamOpener GetStreamOpener()
+        public virtual ManagedHandler.StreamOpener GetSshStreamOpener(string username)
         {
             return null;
         }
