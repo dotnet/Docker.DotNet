@@ -9,6 +9,11 @@ namespace Docker.DotNet
             return false;
         }
 
+        public override bool SupportsScheme(string scheme)
+        {
+            return true;
+        }
+
         public override void Dispose()
         {
         }
