@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Docker.DotNet.SSH</PackageId>
+    <Description>Docker.DotNet.SSH is a library that allows you to use SSH to communicate with a remote Docker engine programmatically in your .NET applications.</Description>
+    <AssemblyName>Docker.DotNet.SSH</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Docker.DotNet\Docker.DotNet.csproj" />
+  </ItemGroup>
+</Project>
