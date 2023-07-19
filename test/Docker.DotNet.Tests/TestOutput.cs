@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Xunit.Abstractions;
 
 namespace Docker.DotNet.Tests
@@ -15,8 +16,8 @@ namespace Docker.DotNet.Tests
         public void WriteLine(string line)
         {
             Console.WriteLine(line);
+            Debug.WriteLine(line);
             _outputHelper.WriteLine(line);
-            System.Diagnostics.Debug.WriteLine(line);
         }
     }
 }

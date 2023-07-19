@@ -4,14 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
-using Newtonsoft.Json;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Docker.DotNet.Tests
 {
 	[Collection(nameof(TestCollection))]
-	public class IVolumeOperationsTests
+	public sealed class IVolumeOperationsTests : IDisposable
 	{
 		private readonly CancellationTokenSource _cts;
 
@@ -54,6 +53,11 @@ namespace Docker.DotNet.Tests
 			{
 				await _dockerClient.Volumes.RemoveAsync(volumeName, force: true, _cts.Token);
 			}
+		}
+
+		public void Dispose()
+		{
+			_cts.Dispose();
 		}
 	}
 }

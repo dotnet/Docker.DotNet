@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Docker.DotNet.Tests
 {
     [Collection(nameof(TestCollection))]
-    public class IImageOperationsTests
+    public sealed class IImageOperationsTests : IDisposable
     {
         private readonly CancellationTokenSource _cts;
 
@@ -34,7 +34,7 @@ namespace Docker.DotNet.Tests
         }
 
         [Fact]
-        public async Task CreateImageAsync_TaskCancelled_ThowsTaskCanceledException()
+        public async Task CreateImageAsync_TaskCancelled_ThrowsTaskCanceledException()
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cts.Token);
 
@@ -113,6 +113,11 @@ namespace Docker.DotNet.Tests
 
             Assert.NotNull(inspectExistingImageResponse);
             await Assert.ThrowsAsync<DockerImageNotFoundException>(() => inspectDeletedImageTask);
+        }
+
+        public void Dispose()
+        {
+            _cts.Dispose();
         }
     }
 }
