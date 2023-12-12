@@ -303,7 +303,6 @@ var dockerTypesToReflect = []reflect.Type{
 	reflect.TypeOf(image.HistoryResponseItem{}),
 
 	// GET /images/(id)/json
-	reflect.TypeOf(ImageInspectParameters{}),
 	reflect.TypeOf(types.ImageInspect{}),
 
 	// POST /images/(id)/push

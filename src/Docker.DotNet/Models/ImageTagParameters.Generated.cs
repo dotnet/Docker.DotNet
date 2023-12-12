@@ -10,8 +10,5 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("tag", false)]
         public string Tag { get; set; }
-
-        [QueryStringParameter("force", false, typeof(BoolQueryStringConverter))]
-        public bool? Force { get; set; }
     }
 }

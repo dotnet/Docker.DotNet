@@ -154,7 +154,6 @@ namespace Docker.DotNet.Tests
                         {
                             RepositoryName = _repositoryName,
                             Tag = newImageTag,
-                            Force = true
                         },
                         default);
 
@@ -178,7 +177,6 @@ namespace Docker.DotNet.Tests
                         {
                             RepositoryName = _repositoryName,
                             Tag = newImageTag,
-                            Force = true
                         }
                     ).GetAwaiter().GetResult();
 

@@ -84,8 +84,7 @@ type ContainerRemoveParameters struct {
 
 // ContainerPathStatParameters for GET /containers/(id)/archive
 type ContainerPathStatParameters struct {
-	Path                      string `rest:"query,path,required"`
-	AllowOverwriteDirWithFile bool   `rest:"query,noOverwriteDirNonDir"`
+	Path string `rest:"query,path,required"`
 }
 
 // ContainerAttachParameters for POST /containers/(id)/attach
@@ -133,6 +132,7 @@ type ContainerResizeParameters struct {
 // ContainerRestartParameters for POST /containers/(id)/restart
 type ContainerRestartParameters struct {
 	WaitBeforeKillSeconds uint32 `rest:"query,t"`
+	Signal				  string `rest:"query"`
 }
 
 // ContainerStartParameters for POST /containers/(id)/start
@@ -143,6 +143,7 @@ type ContainerStartParameters struct {
 // ContainerStopParameters for POST /containers/(id)/stop
 type ContainerStopParameters struct {
 	WaitBeforeKillSeconds uint32 `rest:"query,t"`
+	Signal				  string `rest:"query"`
 }
 
 // ContainerStatsParameters for GET /containers/(id)/stats
@@ -204,9 +205,10 @@ type ImagesCreateParameters struct {
 
 // ImagesListParameters for GET /images/json
 type ImagesListParameters struct {
-	All     bool `rest:"query"`
-	Filters Args `rest:"query"`
-	Digests bool `rest:"query"`
+	All		   bool `rest:"query"`
+	Filters	   Args `rest:"query"`
+	Digests	   bool `rest:"query"`
+	SharedSize bool `rest:"query,shared-size"`
 }
 
 // ImageLoadParameters for POST /images/load
@@ -233,14 +235,8 @@ type ImageDeleteParameters struct {
 	NoPrune bool `rest:"query,noprune"`
 }
 
-// ImageInspectParameters for GET /images/(id)/json
-type ImageInspectParameters struct {
-	IncludeSize bool `rest:"query,size"`
-}
-
 // ImagePushParameters for POST /images/(id)/push
 type ImagePushParameters struct {
-	ImageID      string              `rest:"query,fromImage"`
 	Tag          string              `rest:"query"`
 	RegistryAuth registry.AuthConfig `rest:"headers,X-Registry-Auth"`
 }
@@ -249,7 +245,6 @@ type ImagePushParameters struct {
 type ImageTagParameters struct {
 	RepositoryName string `rest:"query,repo"`
 	Tag            string `rest:"query"`
-	Force          bool   `rest:"query"`
 }
 
 // NetworksListParameters for GET /networks

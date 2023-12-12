@@ -14,5 +14,8 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("digests", false, typeof(BoolQueryStringConverter))]
         public bool? Digests { get; set; }
+
+        [QueryStringParameter("shared-size", false, typeof(BoolQueryStringConverter))]
+        public bool? SharedSize { get; set; }
     }
 }
