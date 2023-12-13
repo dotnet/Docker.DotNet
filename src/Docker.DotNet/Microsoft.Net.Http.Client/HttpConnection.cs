@@ -68,7 +68,7 @@ namespace Microsoft.Net.Http.Client
             builder.Append(request.Version.ToString(2));
             builder.Append("\r\n");
 
-            builder.Append(request.Headers.ToString());
+            builder.Append(request.Headers);
 
             if (request.Content != null)
             {
@@ -79,7 +79,7 @@ namespace Microsoft.Net.Http.Client
                     request.Content.Headers.ContentLength = contentLength.Value;
                 }
 
-                builder.Append(request.Content.Headers.ToString());
+                builder.Append(request.Content.Headers);
                 if (!contentLength.HasValue)
                 {
                     // Add header for chunked mode.

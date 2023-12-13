@@ -67,8 +67,7 @@ namespace Docker.DotNet
                 const int ERROR_IO_PENDING = 997;
                 if (Marshal.GetLastWin32Error() == ERROR_IO_PENDING)
                 {
-                    int written;
-                    if (GetOverlappedResult(_stream.SafePipeHandle, ref overlapped, out written, 1) == 0)
+                    if (GetOverlappedResult(_stream.SafePipeHandle, ref overlapped, out var _, 1) == 0)
                     {
                         Marshal.ThrowExceptionForHR(Marshal.GetHRForLastWin32Error());
                     }

@@ -384,7 +384,7 @@ namespace Microsoft.Net.Http.Client
             if ((int)connectResponse.StatusCode < 200 || 300 <= (int)connectResponse.StatusCode)
             {
                 transport.Dispose();
-                throw new HttpRequestException("Failed to negotiate the proxy tunnel: " + connectResponse.ToString());
+                throw new HttpRequestException("Failed to negotiate the proxy tunnel: " + connectResponse);
             }
         }
     }

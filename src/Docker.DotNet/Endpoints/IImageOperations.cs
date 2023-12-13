@@ -72,7 +72,7 @@ namespace Docker.DotNet
         /// <exception cref="ArgumentNullException">One or more of the inputs was <see langword="null"/>.</exception>
         /// <exception cref="DockerApiException">The input is invalid or the daemon experienced an error.</exception>
         /// <exception cref="HttpRequestException">The request failed due to an underlying issue such as network connectivity, DNS failure, server certificate validation or timeout.</exception>
-        [ObsoleteAttribute("This method does not wait for build to complete. Use new BuildImageFromDockerfileAsync(contents, parameters, authConfigs, headers, progress, cancellationToken,  instead.)", false)]
+        [Obsolete("This method does not wait for build to complete. Use new BuildImageFromDockerfileAsync(contents, parameters, authConfigs, headers, progress, cancellationToken,  instead.)", false)]
         Task<Stream> BuildImageFromDockerfileAsync(Stream contents, ImageBuildParameters parameters, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -48,7 +47,7 @@ namespace Docker.DotNet.Models
         {
             using (var response = await responseTask)
             {
-                await MonitorStreamForMessagesAsync<T>(response.Content.ReadAsStreamAsync(), client, cancel, progress);
+                await MonitorStreamForMessagesAsync(response.Content.ReadAsStreamAsync(), client, cancel, progress);
             }
         }
     }

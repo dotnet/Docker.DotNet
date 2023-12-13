@@ -30,9 +30,9 @@ namespace Docker.DotNet
             {
                 return null;
             }
-            var miliSecondValue = valueInNanoSeconds.Value / MiliSecondToNanoSecond;
+            var milliSecondValue = valueInNanoSeconds.Value / MiliSecondToNanoSecond;
 
-            return TimeSpan.FromMilliseconds((long)miliSecondValue);
+            return TimeSpan.FromMilliseconds(milliSecondValue);
         }
     }
 }
