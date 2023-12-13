@@ -64,7 +64,7 @@ namespace Docker.DotNet.Tests
                 {
                     Filters = new ServiceFilter
                     {
-                        Name = new string[]
+                        Name = new[]
                         {
                             firstServiceName
                         }
@@ -74,9 +74,9 @@ namespace Docker.DotNet.Tests
 
             Assert.Single(services);
 
-            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId, default);
-            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId, default);
-            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId);
+            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId);
+            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid);
         }
 
         [Fact]
@@ -109,12 +109,12 @@ namespace Docker.DotNet.Tests
                 }
             }).Result.ID;
 
-            var services = await _dockerClient.Swarm.ListServicesAsync(new ServicesListParameters { Filters = new ServiceFilter { Id = new string[] { firstServiceId } } }, CancellationToken.None);
+            var services = await _dockerClient.Swarm.ListServicesAsync(new ServicesListParameters { Filters = new ServiceFilter { Id = new[] { firstServiceId } } }, CancellationToken.None);
             Assert.Single(services);
 
-            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId, default);
-            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId, default);
-            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId);
+            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId);
+            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid);
         }
 
         [Fact]
@@ -153,9 +153,9 @@ namespace Docker.DotNet.Tests
 
             Assert.True(services.Count() > initialServiceCount);
 
-            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId, default);
-            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId, default);
-            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(firstServiceId);
+            await _dockerClient.Swarm.RemoveServiceAsync(secondServiceId);
+            await _dockerClient.Swarm.RemoveServiceAsync(thirdServiceid);
         }
 
         [Fact]
@@ -253,7 +253,7 @@ namespace Docker.DotNet.Tests
             Assert.True(logLines.Any());
             Assert.Contains("[INF]", logLines.First());
 
-            await _dockerClient.Swarm.RemoveServiceAsync(serviceId, default);
+            await _dockerClient.Swarm.RemoveServiceAsync(serviceId);
         }
     }
 }

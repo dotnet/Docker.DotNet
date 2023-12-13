@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Docker.DotNet.Models;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace Docker.DotNet.Tests
         [Fact]
         public void ServiceListParameters_GenerateIdFilters()
         {
-            var p = new ServicesListParameters { Filters = new ServiceFilter { Id = new string[] { "service-id" } } };
+            var p = new ServicesListParameters { Filters = new ServiceFilter { Id = new[] { "service-id" } } };
             var qs = new QueryString<ServicesListParameters>(p);
 
             Assert.Equal("filters={\"id\":[\"service-id\"]}", Uri.UnescapeDataString(qs.GetQueryString()));
@@ -19,7 +18,7 @@ namespace Docker.DotNet.Tests
         [Fact]
         public void ServiceListParameters_GenerateCompositeFilters()
         {
-            var p = new ServicesListParameters { Filters = new ServiceFilter { Id = new string[] { "service-id" }, Label = new string[] { "label" } } };
+            var p = new ServicesListParameters { Filters = new ServiceFilter { Id = new[] { "service-id" }, Label = new[] { "label" } } };
             var qs = new QueryString<ServicesListParameters>(p);
 
             Assert.Equal("filters={\"id\":[\"service-id\"],\"label\":[\"label\"]}", Uri.UnescapeDataString(qs.GetQueryString()));

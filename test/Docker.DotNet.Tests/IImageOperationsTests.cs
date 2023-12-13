@@ -47,7 +47,6 @@ namespace Docker.DotNet.Tests
                 {
                     RepositoryName = newRepositoryName,
                     Tag = newTag,
-                    Force = true
                 },
                 cts.Token
             );

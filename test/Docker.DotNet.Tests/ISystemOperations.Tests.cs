@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
@@ -40,7 +39,7 @@ namespace Docker.DotNet.Tests
         [Fact]
         public void Docker_IsRunning()
         {
-            var dockerProcess = Process.GetProcesses().FirstOrDefault(_ => _.ProcessName.Equals("docker", StringComparison.InvariantCultureIgnoreCase) || _.ProcessName.Equals("dockerd", StringComparison.InvariantCultureIgnoreCase));
+            var dockerProcess = Process.GetProcesses().FirstOrDefault(process => process.ProcessName.Equals("docker", StringComparison.InvariantCultureIgnoreCase) || process.ProcessName.Equals("dockerd", StringComparison.InvariantCultureIgnoreCase));
             Assert.NotNull(dockerProcess); // docker is not running
         }
 
@@ -154,9 +153,7 @@ namespace Docker.DotNet.Tests
                         {
                             RepositoryName = _repositoryName,
                             Tag = newImageTag,
-                            Force = true
-                        },
-                        default);
+                        });
 
                     // (4) Wait for a short bit again and cancel the monitor task - if we get lucky, we the list images call will grab the same buffer while
                     sw.Restart();
@@ -178,7 +175,6 @@ namespace Docker.DotNet.Tests
                         {
                             RepositoryName = _repositoryName,
                             Tag = newImageTag,
-                            Force = true
                         }
                     ).GetAwaiter().GetResult();
 
