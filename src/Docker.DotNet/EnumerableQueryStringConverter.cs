@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using Newtonsoft.Json;
 
 namespace Docker.DotNet
 {
@@ -32,7 +31,7 @@ namespace Docker.DotNet
                 }
                 else
                 {
-                    items.Add(JsonConvert.SerializeObject(e));
+                    items.Add(System.Text.Json.JsonSerializer.Serialize(e));
                 }
             }
 

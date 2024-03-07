@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class VolumeSecret // (volume.Secret)
     {
-        [DataMember(Name = "Key", EmitDefaultValue = false)]
+        [JsonPropertyName("Key")]
         public string Key { get; set; }
 
-        [DataMember(Name = "Secret", EmitDefaultValue = false)]
+        [JsonPropertyName("Secret")]
         public string Secret { get; set; }
     }
 }

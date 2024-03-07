@@ -1,8 +1,7 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImagePushParameters // (main.ImagePushParameters)
     {
         [QueryStringParameter("fromImage", false)]
@@ -11,7 +10,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("tag", false)]
         public string Tag { get; set; }
 
-        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
+        [JsonPropertyName("RegistryAuth")]
         public AuthConfig RegistryAuth { get; set; }
     }
 }

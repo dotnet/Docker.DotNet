@@ -119,7 +119,7 @@ namespace Docker.DotNet.Tests
 
             cts.Cancel();
 
-            await Assert.ThrowsAsync<TaskCanceledException>(() => task).ConfigureAwait(false);
+            await Assert.ThrowsAsync<OperationCanceledException>(() => task).ConfigureAwait(false);
 
             Assert.True(wasProgressCalled);
         }
@@ -184,7 +184,7 @@ namespace Docker.DotNet.Tests
 
                     monitorTask.GetAwaiter().GetResult();
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     // Exceptions other than this causes test to fail
                 }
@@ -267,7 +267,7 @@ namespace Docker.DotNet.Tests
             await Task.Delay(TimeSpan.FromSeconds(1));
             cts.Cancel();
 
-            await Assert.ThrowsAsync<TaskCanceledException>(() => task);
+            await Assert.ThrowsAsync<OperationCanceledException>(() => task);
 
             Assert.Equal(2, progressCalledCounter);
             Assert.True(task.IsCanceled);

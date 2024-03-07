@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class LogConfig // (container.LogConfig)
     {
-        [DataMember(Name = "Type", EmitDefaultValue = false)]
+        [JsonPropertyName("Type")]
         public string Type { get; set; }
 
-        [DataMember(Name = "Config", EmitDefaultValue = false)]
+        [JsonPropertyName("Config")]
         public IDictionary<string, string> Config { get; set; }
     }
 }

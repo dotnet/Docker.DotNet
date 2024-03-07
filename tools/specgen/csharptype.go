@@ -161,8 +161,6 @@ func NewModel(name, sourceName string) *CSModelType {
 		SourceName: sourceName,
 	}
 
-	s.Attributes = append(s.Attributes, CSAttribute{Type: CSType{"System.Runtime.Serialization", "DataContract", false}})
-
 	return &s
 }
 

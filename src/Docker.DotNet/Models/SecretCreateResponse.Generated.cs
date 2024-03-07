@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class SecretCreateResponse // (main.SecretCreateResponse)
     {
-        [DataMember(Name = "ID", EmitDefaultValue = false)]
+        [JsonPropertyName("ID")]
         public string ID { get; set; }
     }
 }

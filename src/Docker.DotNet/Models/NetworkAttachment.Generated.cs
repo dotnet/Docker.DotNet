@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class NetworkAttachment // (swarm.NetworkAttachment)
     {
-        [DataMember(Name = "Network", EmitDefaultValue = false)]
+        [JsonPropertyName("Network")]
         public Network Network { get; set; }
 
-        [DataMember(Name = "Addresses", EmitDefaultValue = false)]
+        [JsonPropertyName("Addresses")]
         public IList<string> Addresses { get; set; }
     }
 }

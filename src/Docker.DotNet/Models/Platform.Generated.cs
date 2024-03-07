@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class Platform // (swarm.Platform)
     {
-        [DataMember(Name = "Architecture", EmitDefaultValue = false)]
+        [JsonPropertyName("Architecture")]
         public string Architecture { get; set; }
 
-        [DataMember(Name = "OS", EmitDefaultValue = false)]
+        [JsonPropertyName("OS")]
         public string OS { get; set; }
     }
 }

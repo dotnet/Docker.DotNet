@@ -1,15 +1,14 @@
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class JobStatus // (swarm.JobStatus)
     {
-        [DataMember(Name = "JobIteration", EmitDefaultValue = false)]
+        [JsonPropertyName("JobIteration")]
         public Version JobIteration { get; set; }
 
-        [DataMember(Name = "LastExecution", EmitDefaultValue = false)]
+        [JsonPropertyName("LastExecution")]
         public DateTime LastExecution { get; set; }
     }
 }

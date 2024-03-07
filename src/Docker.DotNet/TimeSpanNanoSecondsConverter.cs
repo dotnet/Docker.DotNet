@@ -1,38 +1,23 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet
 {
-    internal class TimeSpanNanosecondsConverter : JsonConverter
+    internal class TimeSpanNanosecondsConverter : JsonConverter<TimeSpan>
     {
-        const int MiliSecondToNanoSecond = 1000000;
-        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var timeSpan = value as TimeSpan?;
-            if (timeSpan == null)
-            {
-                return;
-            }
+        const int MilliSecondToNanoSecond = 1000000;
 
-            writer.WriteValue((long)(timeSpan.Value.TotalMilliseconds * MiliSecondToNanoSecond));
+        public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var valueInNanoSeconds = reader.GetInt64();
+            var milliSecondValue = valueInNanoSeconds / MilliSecondToNanoSecond;
+            return TimeSpan.FromMilliseconds(milliSecondValue);
         }
 
-        public override bool CanConvert(Type objectType)
+        public override void Write(Utf8JsonWriter writer, TimeSpan timeSpan, JsonSerializerOptions options)
         {
-            return objectType == typeof(TimeSpan) || objectType == typeof(TimeSpan?);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var valueInNanoSeconds = (long?)reader.Value;
-
-            if (!valueInNanoSeconds.HasValue)
-            {
-                return null;
-            }
-            var miliSecondValue = valueInNanoSeconds.Value / MiliSecondToNanoSecond;
-
-            return TimeSpan.FromMilliseconds((long)miliSecondValue);
+            writer.WriteNumberValue((long)(timeSpan.TotalMilliseconds * MilliSecondToNanoSecond));
         }
     }
 }

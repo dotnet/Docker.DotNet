@@ -1,9 +1,8 @@
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class NodeListResponse // (swarm.Node)
     {
         public NodeListResponse()
@@ -20,28 +19,28 @@ namespace Docker.DotNet.Models
             }
         }
 
-        [DataMember(Name = "ID", EmitDefaultValue = false)]
+        [JsonPropertyName("ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Version", EmitDefaultValue = false)]
+        [JsonPropertyName("Version")]
         public Version Version { get; set; }
 
-        [DataMember(Name = "CreatedAt", EmitDefaultValue = false)]
+        [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
 
-        [DataMember(Name = "UpdatedAt", EmitDefaultValue = false)]
+        [JsonPropertyName("UpdatedAt")]
         public DateTime UpdatedAt { get; set; }
 
-        [DataMember(Name = "Spec", EmitDefaultValue = false)]
+        [JsonPropertyName("Spec")]
         public NodeUpdateParameters Spec { get; set; }
 
-        [DataMember(Name = "Description", EmitDefaultValue = false)]
+        [JsonPropertyName("Description")]
         public NodeDescription Description { get; set; }
 
-        [DataMember(Name = "Status", EmitDefaultValue = false)]
+        [JsonPropertyName("Status")]
         public NodeStatus Status { get; set; }
 
-        [DataMember(Name = "ManagerStatus", EmitDefaultValue = false)]
+        [JsonPropertyName("ManagerStatus")]
         public ManagerStatus ManagerStatus { get; set; }
     }
 }

@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class EncryptionConfig // (swarm.EncryptionConfig)
     {
-        [DataMember(Name = "AutoLockManagers", EmitDefaultValue = false)]
+        [JsonPropertyName("AutoLockManagers")]
         public bool AutoLockManagers { get; set; }
     }
 }

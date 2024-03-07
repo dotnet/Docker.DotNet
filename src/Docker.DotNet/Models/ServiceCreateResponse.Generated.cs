@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ServiceCreateResponse // (types.ServiceCreateResponse)
     {
-        [DataMember(Name = "ID", EmitDefaultValue = false)]
+        [JsonPropertyName("ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Warnings", EmitDefaultValue = false)]
+        [JsonPropertyName("Warnings")]
         public IList<string> Warnings { get; set; }
     }
 }

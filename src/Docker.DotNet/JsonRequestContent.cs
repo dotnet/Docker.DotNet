@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 
 namespace Docker.DotNet
 {
     internal class JsonRequestContent<T> : IRequestContent
     {
-        private const string JsonMimeType = "application/json";
-
         private readonly T _value;
         private readonly JsonSerializer _serializer;
 
@@ -30,8 +27,7 @@ namespace Docker.DotNet
 
         public HttpContent GetContent()
         {
-            var serializedObject = this._serializer.SerializeObject(this._value);
-            return new StringContent(serializedObject, Encoding.UTF8, JsonMimeType);
+            return this._serializer.GetHttpContent(_value);
         }
     }
 }

@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerWaitResponse // (main.ContainerWaitResponse)
     {
-        [DataMember(Name = "Error", EmitDefaultValue = false)]
+        [JsonPropertyName("Error")]
         public WaitExitError Error { get; set; }
 
-        [DataMember(Name = "StatusCode", EmitDefaultValue = false)]
+        [JsonPropertyName("StatusCode")]
         public long StatusCode { get; set; }
     }
 }

@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class TmpfsOptions // (mount.TmpfsOptions)
     {
-        [DataMember(Name = "SizeBytes", EmitDefaultValue = false)]
+        [JsonPropertyName("SizeBytes")]
         public long SizeBytes { get; set; }
 
-        [DataMember(Name = "Mode", EmitDefaultValue = false)]
+        [JsonPropertyName("Mode")]
         public uint Mode { get; set; }
     }
 }

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainersListParameters // (main.ContainersListParameters)
     {
         [QueryStringParameter("size", false, typeof(BoolQueryStringConverter))]

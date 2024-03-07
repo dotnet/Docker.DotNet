@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImagesCreateParameters // (main.ImagesCreateParameters)
     {
         [QueryStringParameter("fromImage", false)]
@@ -27,7 +26,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("platform", false)]
         public string Platform { get; set; }
 
-        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
+        [JsonPropertyName("RegistryAuth")]
         public AuthConfig RegistryAuth { get; set; }
     }
 }

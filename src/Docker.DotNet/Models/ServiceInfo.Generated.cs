@@ -1,21 +1,20 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ServiceInfo // (network.ServiceInfo)
     {
-        [DataMember(Name = "VIP", EmitDefaultValue = false)]
+        [JsonPropertyName("VIP")]
         public string VIP { get; set; }
 
-        [DataMember(Name = "Ports", EmitDefaultValue = false)]
+        [JsonPropertyName("Ports")]
         public IList<string> Ports { get; set; }
 
-        [DataMember(Name = "LocalLBIndex", EmitDefaultValue = false)]
+        [JsonPropertyName("LocalLBIndex")]
         public long LocalLBIndex { get; set; }
 
-        [DataMember(Name = "Tasks", EmitDefaultValue = false)]
+        [JsonPropertyName("Tasks")]
         public IList<NetworkTask> Tasks { get; set; }
     }
 }

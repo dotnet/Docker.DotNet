@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerEventsParameters // (main.ContainerEventsParameters)
     {
         [QueryStringParameter("since", false)]

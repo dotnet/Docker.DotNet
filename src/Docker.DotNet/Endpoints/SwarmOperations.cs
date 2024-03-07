@@ -4,7 +4,6 @@ namespace Docker.DotNet
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Threading;
     using Models;
@@ -33,20 +32,18 @@ namespace Docker.DotNet
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
             var data = new JsonRequestContent<ServiceSpec>(parameters.Service ?? throw new ArgumentNullException(nameof(parameters.Service)), this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, "services/create", null, data, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<ServiceCreateResponse>(response.Body);
+            return await this._client.MakeRequestAsync<ServiceCreateResponse>(new[] { SwarmResponseHandler }, HttpMethod.Post, "services/create", null, data, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
         }
 
         async Task<SwarmUnlockResponse> ISwarmOperations.GetSwarmUnlockKeyAsync(CancellationToken cancellationToken)
         {
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, "swarm/unlockkey", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<SwarmUnlockResponse>(response.Body);
+            return await this._client.MakeRequestAsync<SwarmUnlockResponse>(new[] { SwarmResponseHandler }, HttpMethod.Get, "swarm/unlockkey", cancellationToken).ConfigureAwait(false);
         }
 
         async Task<string> ISwarmOperations.InitSwarmAsync(SwarmInitParameters parameters, CancellationToken cancellationToken)
         {
             var data = new JsonRequestContent<SwarmInitParameters>(parameters ?? throw new ArgumentNullException(nameof(parameters)), this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(
+            return await this._client.MakeRequestAsync<string>(
                 new ApiResponseErrorHandlingDelegate[]
                     {
                         (statusCode, responseBody) =>
@@ -63,22 +60,18 @@ namespace Docker.DotNet
                 null,
                 data,
                 cancellationToken).ConfigureAwait(false);
-
-            return response.Body;
         }
 
         async Task<SwarmService> ISwarmOperations.InspectServiceAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
 
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services/{id}", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<SwarmService>(response.Body);
+            return await this._client.MakeRequestAsync<SwarmService>(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services/{id}", cancellationToken).ConfigureAwait(false);
         }
 
         async Task<SwarmInspectResponse> ISwarmOperations.InspectSwarmAsync(CancellationToken cancellationToken)
         {
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, "swarm", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<SwarmInspectResponse>(response.Body);
+            return await this._client.MakeRequestAsync<SwarmInspectResponse>(new[] { SwarmResponseHandler }, HttpMethod.Get, "swarm", cancellationToken).ConfigureAwait(false);
         }
 
         async Task ISwarmOperations.JoinSwarmAsync(SwarmJoinParameters parameters, CancellationToken cancellationToken)
@@ -127,10 +120,9 @@ namespace Docker.DotNet
         async Task<IEnumerable<SwarmService>> ISwarmOperations.ListServicesAsync(ServicesListParameters parameters, CancellationToken cancellationToken)
         {
             var queryParameters = parameters != null ? new QueryString<ServicesListParameters>(parameters) : null;
-            var response = await this._client
-                .MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services", queryParameters, cancellationToken)
+            return await this._client
+                .MakeRequestAsync<SwarmService[]>(new[] { SwarmResponseHandler }, HttpMethod.Get, $"services", queryParameters, cancellationToken)
                 .ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<SwarmService[]>(response.Body);
         }
 
         async Task ISwarmOperations.RemoveServiceAsync(string id, CancellationToken cancellationToken)
@@ -153,8 +145,7 @@ namespace Docker.DotNet
 
             var query = new QueryString<ServiceUpdateParameters>(parameters);
             var body = new JsonRequestContent<ServiceSpec>(parameters.Service ?? throw new ArgumentNullException(nameof(parameters.Service)), this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Post, $"services/{id}/update", query, body, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<ServiceUpdateResponse>(response.Body);
+            return await this._client.MakeRequestAsync<ServiceUpdateResponse>(new[] { SwarmResponseHandler }, HttpMethod.Post, $"services/{id}/update", query, body, RegistryAuthHeaders(parameters.RegistryAuth), cancellationToken).ConfigureAwait(false);
         }
 
         public Task<Stream> GetServiceLogsAsync(string id, ServiceLogsParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
@@ -226,22 +217,20 @@ namespace Docker.DotNet
             {
                 {
                     "X-Registry-Auth",
-                    Convert.ToBase64String(Encoding.UTF8.GetBytes(this._client.JsonSerializer.SerializeObject(authConfig)))
+                    Convert.ToBase64String(this._client.JsonSerializer.SerializeObject(authConfig))
                 }
             };
         }
 
         async Task<IEnumerable<NodeListResponse>> ISwarmOperations.ListNodesAsync(CancellationToken cancellationToken)
         {
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"nodes", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<NodeListResponse[]>(response.Body);
+            return await this._client.MakeRequestAsync<NodeListResponse[]>(new[] { SwarmResponseHandler }, HttpMethod.Get, $"nodes", cancellationToken).ConfigureAwait(false);
         }
 
         async Task<NodeListResponse> ISwarmOperations.InspectNodeAsync(string id, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
-            var response = await this._client.MakeRequestAsync(new[] { SwarmResponseHandler }, HttpMethod.Get, $"nodes/{id}", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<NodeListResponse>(response.Body);
+            return await this._client.MakeRequestAsync<NodeListResponse>(new[] { SwarmResponseHandler }, HttpMethod.Get, $"nodes/{id}", cancellationToken).ConfigureAwait(false);
         }
 
         async Task ISwarmOperations.RemoveNodeAsync(string id, bool force, CancellationToken cancellationToken)

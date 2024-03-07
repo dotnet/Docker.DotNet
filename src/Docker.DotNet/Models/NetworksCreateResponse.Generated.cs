@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class NetworksCreateResponse // (types.NetworkCreateResponse)
     {
-        [DataMember(Name = "Id", EmitDefaultValue = false)]
+        [JsonPropertyName("Id")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Warning", EmitDefaultValue = false)]
+        [JsonPropertyName("Warning")]
         public string Warning { get; set; }
     }
 }

@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PidsStats // (types.PidsStats)
     {
-        [DataMember(Name = "current", EmitDefaultValue = false)]
+        [JsonPropertyName("current")]
         public ulong Current { get; set; }
 
-        [DataMember(Name = "limit", EmitDefaultValue = false)]
+        [JsonPropertyName("limit")]
         public ulong Limit { get; set; }
     }
 }

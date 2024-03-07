@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class SpreadOver // (swarm.SpreadOver)
     {
-        [DataMember(Name = "SpreadDescriptor", EmitDefaultValue = false)]
+        [JsonPropertyName("SpreadDescriptor")]
         public string SpreadDescriptor { get; set; }
     }
 }

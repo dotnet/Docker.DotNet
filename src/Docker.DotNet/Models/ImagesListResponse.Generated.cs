@@ -1,40 +1,39 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImagesListResponse // (types.ImageSummary)
     {
-        [DataMember(Name = "Containers", EmitDefaultValue = false)]
+        [JsonPropertyName("Containers")]
         public long Containers { get; set; }
 
-        [DataMember(Name = "Created", EmitDefaultValue = false)]
+        [JsonPropertyName("Created")]
         public DateTime Created { get; set; }
 
-        [DataMember(Name = "Id", EmitDefaultValue = false)]
+        [JsonPropertyName("Id")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Labels", EmitDefaultValue = false)]
+        [JsonPropertyName("Labels")]
         public IDictionary<string, string> Labels { get; set; }
 
-        [DataMember(Name = "ParentId", EmitDefaultValue = false)]
+        [JsonPropertyName("ParentId")]
         public string ParentID { get; set; }
 
-        [DataMember(Name = "RepoDigests", EmitDefaultValue = false)]
+        [JsonPropertyName("RepoDigests")]
         public IList<string> RepoDigests { get; set; }
 
-        [DataMember(Name = "RepoTags", EmitDefaultValue = false)]
+        [JsonPropertyName("RepoTags")]
         public IList<string> RepoTags { get; set; }
 
-        [DataMember(Name = "SharedSize", EmitDefaultValue = false)]
+        [JsonPropertyName("SharedSize")]
         public long SharedSize { get; set; }
 
-        [DataMember(Name = "Size", EmitDefaultValue = false)]
+        [JsonPropertyName("Size")]
         public long Size { get; set; }
 
-        [DataMember(Name = "VirtualSize", EmitDefaultValue = false)]
+        [JsonPropertyName("VirtualSize")]
         public long VirtualSize { get; set; }
     }
 }
