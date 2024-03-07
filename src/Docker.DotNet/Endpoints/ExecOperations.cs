@@ -37,8 +37,7 @@ namespace Docker.DotNet
             }
 
             var data = new JsonRequestContent<ContainerExecCreateParameters>(parameters, this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/exec", null, data, cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<ContainerExecCreateResponse>(response.Body);
+            return await this._client.MakeRequestAsync<ContainerExecCreateResponse>(new[] { NoSuchContainerHandler }, HttpMethod.Post, $"containers/{id}/exec", null, data, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<ContainerExecInspectResponse> InspectContainerExecAsync(string id, CancellationToken cancellationToken)
@@ -48,8 +47,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(id));
             }
 
-            var response = await this._client.MakeRequestAsync(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"exec/{id}/json", null, cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<ContainerExecInspectResponse>(response.Body);
+            return await this._client.MakeRequestAsync<ContainerExecInspectResponse>(new[] { NoSuchContainerHandler }, HttpMethod.Get, $"exec/{id}/json", null, cancellationToken).ConfigureAwait(false);
         }
 
         public Task ResizeContainerExecTtyAsync(string id, ContainerResizeParameters parameters, CancellationToken cancellationToken)

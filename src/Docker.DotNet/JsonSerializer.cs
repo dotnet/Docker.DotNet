@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Docker.DotNet
 {
@@ -63,7 +65,7 @@ namespace Docker.DotNet
             return false;
         }
 
-        public T DeserializeObject<T>(string json)
+        public T DeserializeObject<T>(byte[] json)
         {
             return System.Text.Json.JsonSerializer.Deserialize<T>(json, _options);
         }
@@ -76,6 +78,12 @@ namespace Docker.DotNet
         public JsonContent GetHttpContent<T>(T value)
         {
             return JsonContent.Create(value, options: _options);
+        }
+
+        public async Task<T> DeserializeAsync<T>(HttpContent content, CancellationToken token)
+        {
+            return await content.ReadFromJsonAsync<T>(_options, token)
+                .ConfigureAwait(false);
         }
     }
 }
