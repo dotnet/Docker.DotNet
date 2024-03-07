@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -307,9 +306,7 @@ namespace Docker.DotNet
             {
                 {
                     RegistryAuthHeaderKey,
-                    Convert.ToBase64String(
-                        Encoding.UTF8.GetBytes(
-                            this._client.JsonSerializer.SerializeObject(authConfig ?? new AuthConfig())))
+                    Convert.ToBase64String(this._client.JsonSerializer.SerializeObject(authConfig ?? new AuthConfig()))
                     .Replace("/", "_").Replace("+", "-") 
                     // This is not documented in Docker API but from source code (https://github.com/docker/docker-ce/blob/10e40bd1548f69354a803a15fde1b672cc024b91/components/cli/cli/command/registry.go#L47)
                     // and from multiple internet sources it has to be base64-url-safe. 
@@ -325,7 +322,7 @@ namespace Docker.DotNet
             {
                 {
                     RegistryConfigHeaderKey,
-                    Convert.ToBase64String(Encoding.UTF8.GetBytes(this._client.JsonSerializer.SerializeObject(configDictionary)))
+                    Convert.ToBase64String(this._client.JsonSerializer.SerializeObject(configDictionary))
                 }
             };
         }

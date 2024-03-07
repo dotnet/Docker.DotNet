@@ -4,7 +4,6 @@ namespace Docker.DotNet
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Threading;
     using Models;
@@ -226,7 +225,7 @@ namespace Docker.DotNet
             {
                 {
                     "X-Registry-Auth",
-                    Convert.ToBase64String(Encoding.UTF8.GetBytes(this._client.JsonSerializer.SerializeObject(authConfig)))
+                    Convert.ToBase64String(this._client.JsonSerializer.SerializeObject(authConfig))
                 }
             };
         }

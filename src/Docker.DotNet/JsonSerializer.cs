@@ -68,9 +68,9 @@ namespace Docker.DotNet
             return System.Text.Json.JsonSerializer.Deserialize<T>(json, _options);
         }
 
-        public string SerializeObject<T>(T value)
+        public byte[] SerializeObject<T>(T value)
         {
-            return System.Text.Json.JsonSerializer.Serialize(value, _options);
+            return System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(value, _options);
         }
 
         public JsonContent GetHttpContent<T>(T value)
