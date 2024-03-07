@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImagesSearchParameters // (main.ImagesSearchParameters)
     {
         [QueryStringParameter("term", false)]
@@ -15,7 +14,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
         public IDictionary<string, IDictionary<string, bool>> Filters { get; set; }
 
-        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
+        [JsonPropertyName("RegistryAuth")]
         public AuthConfig RegistryAuth { get; set; }
     }
 }

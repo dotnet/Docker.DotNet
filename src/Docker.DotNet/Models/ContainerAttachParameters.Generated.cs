@@ -1,8 +1,6 @@
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerAttachParameters // (main.ContainerAttachParameters)
     {
         [QueryStringParameter("stream", false, typeof(BoolQueryStringConverter))]

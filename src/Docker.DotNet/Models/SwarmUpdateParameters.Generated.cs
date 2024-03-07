@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class SwarmUpdateParameters // (main.SwarmUpdateParameters)
     {
-        [DataMember(Name = "Spec", EmitDefaultValue = false)]
+        [JsonPropertyName("Spec")]
         public Spec Spec { get; set; }
 
         [QueryStringParameter("version", true)]

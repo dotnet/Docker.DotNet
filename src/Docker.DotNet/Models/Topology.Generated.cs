@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class Topology // (swarm.Topology)
     {
-        [DataMember(Name = "Segments", EmitDefaultValue = false)]
+        [JsonPropertyName("Segments")]
         public IDictionary<string, string> Segments { get; set; }
     }
 }

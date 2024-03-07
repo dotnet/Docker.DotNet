@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class Version // (swarm.Version)
     {
-        [DataMember(Name = "Index", EmitDefaultValue = false)]
+        [JsonPropertyName("Index")]
         public ulong Index { get; set; }
     }
 }

@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class IPAMOptions // (swarm.IPAMOptions)
     {
-        [DataMember(Name = "Driver", EmitDefaultValue = false)]
+        [JsonPropertyName("Driver")]
         public SwarmDriver Driver { get; set; }
 
-        [DataMember(Name = "Configs", EmitDefaultValue = false)]
+        [JsonPropertyName("Configs")]
         public IList<SwarmIPAMConfig> Configs { get; set; }
     }
 }

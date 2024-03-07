@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class NetworksPruneResponse // (types.NetworksPruneReport)
     {
-        [DataMember(Name = "NetworksDeleted", EmitDefaultValue = false)]
+        [JsonPropertyName("NetworksDeleted")]
         public IList<string> NetworksDeleted { get; set; }
     }
 }

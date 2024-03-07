@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImageBuildParameters // (main.ImageBuildParameters)
     {
         [QueryStringParameter("t", false, typeof(EnumerableQueryStringConverter))]
@@ -78,7 +77,7 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("outputs", false)]
         public string Outputs { get; set; }
 
-        [DataMember(Name = "AuthConfigs", EmitDefaultValue = false)]
+        [JsonPropertyName("AuthConfigs")]
         public IDictionary<string, AuthConfig> AuthConfigs { get; set; }
     }
 }

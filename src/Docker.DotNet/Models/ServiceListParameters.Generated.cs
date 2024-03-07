@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ServiceListParameters // (main.ServiceListParameters)
     {
         [QueryStringParameter("filters", false, typeof(MapQueryStringConverter))]
