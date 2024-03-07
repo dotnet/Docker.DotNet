@@ -34,7 +34,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
@@ -44,12 +44,12 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{
 				Name:       "Interval",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
 			},
 			CSProperty{
 				Name:       "Timeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
 			},
 		},
 	},
@@ -67,7 +67,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
@@ -629,9 +629,8 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType) {
 				csProp.Attributes = append(csProp.Attributes, a)
 				csProp.DefaultValue = restTag.Default
 			} else {
-				a := CSAttribute{Type: CSType{"", "DataMember", false}}
-				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"Name", CSArgument{jsonName, CSInboxTypesMap[reflect.String]}})
-				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"EmitDefaultValue", CSArgument{strconv.FormatBool(false), CSInboxTypesMap[reflect.Bool]}})
+				a := CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonPropertyName", false}}
+				a.Arguments = append(a.Arguments, CSArgument{jsonName, CSInboxTypesMap[reflect.String]})
 				csProp.IsOpt = f.Type.Kind() == reflect.Ptr
 				csProp.Attributes = append(csProp.Attributes, a)
 			}
