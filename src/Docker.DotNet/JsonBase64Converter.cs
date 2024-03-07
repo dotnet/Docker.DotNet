@@ -1,31 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet
 {
-    internal class JsonBase64Converter : JsonConverter
+    internal class JsonBase64Converter : JsonConverter<IList<byte>>
     {
-        private static readonly Type _byteListType = typeof(IList<byte>);
-        public override bool CanRead => true;
-
-        public override bool CanWrite => false;
-
-        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        public override IList<byte> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            return reader.GetBytesFromBase64();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, IList<byte> value, JsonSerializerOptions options)
         {
-            var strVal = reader.Value as string;
-
-            return Convert.FromBase64String(strVal);
+            var bytes = GetBytes(value);
+            writer.WriteBase64StringValue(bytes);
         }
 
-        public override bool CanConvert(Type objectType)
+        private static ReadOnlySpan<byte> GetBytes(IList<byte> value)
         {
-            return objectType == _byteListType;
+#if !NETSTANDARD
+            if (value is List<byte> list)
+            {
+                return CollectionsMarshal.AsSpan(list);
+            }
+#endif
+            if (value is byte[] array)
+            {
+                return array;
+            }
+
+            return value.ToArray();
         }
     }
 }
