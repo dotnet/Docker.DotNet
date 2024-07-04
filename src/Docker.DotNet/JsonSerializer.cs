@@ -6,9 +6,9 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -21,9 +21,10 @@ namespace Docker.DotNet
         {
             Converters =
             {
+                new JsonEnumMemberConverter<TaskState>(),
+                new JsonEnumMemberConverter<RestartPolicyKind>(),
                 new JsonDateTimeConverter(),
                 new JsonNullableDateTimeConverter(),
-                new JsonStringEnumConverter(),
                 new JsonBase64Converter(),
             },
         };
