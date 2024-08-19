@@ -86,6 +86,7 @@ type ContainerRemoveParameters struct {
 type ContainerPathStatParameters struct {
 	Path                      string `rest:"query,path,required"`
 	AllowOverwriteDirWithFile bool   `rest:"query,noOverwriteDirNonDir"`
+	CopyUidAndGid bool   `rest:"query,copyUIDGID"`
 }
 
 // ContainerAttachParameters for POST /containers/(id)/attach
