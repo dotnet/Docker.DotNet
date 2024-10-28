@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PackageId>Docker.DotNet</PackageId>
+    <PackageId>Docker.DotNet.Enhanced</PackageId>
     <Description>Docker.DotNet is a library that allows you to interact with the Docker Remote API programmatically with fully asynchronous, non-blocking and object-oriented code in your .NET applications.</Description>
     <AssemblyName>Docker.DotNet</AssemblyName>
   </PropertyGroup>

@@ -10,36 +10,25 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 6.0.x
-      - name: Install SignClient tool
-        run: dotnet tool install --tool-path . SignClient
+          dotnet-version: 8.x
       - name: Install NBGV tool
         run: dotnet tool install --tool-path . nbgv
       - name: Set Version
         run: ./nbgv cloud
       - name: Create Packages
-        run: dotnet pack -c Release -o packages
-      - name: Sign Packages
-        run: |
-          echo $DNF_CODESIGN_CONFIG > ./packages/sign.json
-          ./SignClient sign --config "./packages/sign.json" --input "./packages/**/*.nupkg" --name "Docker.DotNet" --user "$DNF_CODESIGN_USER" --secret "$DNF_CODESIGN_SECRET" --Description "Docker.Net" --descriptionUrl "https://github.com/dotnet/Docker.DotNet"
-          rm packages/sign.json
-        env:
-          DNF_CODESIGN_CONFIG: ${{secrets.DNF_CODESIGN_CONFIG}}
-          DNF_CODESIGN_USER: ${{secrets.DNF_CODESIGN_USER}}
-          DNF_CODESIGN_SECRET: ${{secrets.DNF_CODESIGN_SECRET}}
+        run: dotnet pack -c Release -o packages -p:ContinuousIntegrationBuild=true
       - name: Push packages to NuGet.org
         run: dotnet nuget push ./packages/Docker.DotNet.*.nupkg --skip-duplicate -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
       - name: Create Release
-        uses: actions/github-script@v5
+        uses: actions/github-script@v7
         with:
           script: |
             github.rest.repos.createRelease({

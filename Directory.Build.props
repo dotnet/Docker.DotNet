@@ -1,6 +1,7 @@
 <Project>
   <!-- Strong-naming  -->
   <PropertyGroup Label="Signing">
+    <DebugType>embedded</DebugType>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)\Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

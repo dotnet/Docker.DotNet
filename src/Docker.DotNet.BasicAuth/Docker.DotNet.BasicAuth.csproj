@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>    
-    <PackageId>Docker.DotNet.BasicAuth</PackageId>
+  <PropertyGroup>
+    <PackageId>Docker.DotNet.Enhanced.BasicAuth</PackageId>
     <Description>Docker.DotNet.BasicAuth is a library that allows you to use basic authentication with a remote Docker engine programmatically in your .NET applications.</Description>
     <AssemblyName>Docker.DotNet.BasicAuth</AssemblyName>
   </PropertyGroup>

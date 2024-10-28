@@ -1,4 +1,9 @@
-﻿# .NET Client for Docker Remote API
+﻿> [!IMPORTANT]  
+> Unfortunately, there has been no further development or bug fixes in [Docker.DotNet](https://github.com/dotnet/Docker.DotNet/tree/aacf3c26131f582ca8acc34084663a4b79e28d38) for some time now, and the repository appears inactive. Reaching the current maintainer is challenging. I understand that priorities shift, and maintaining an open-source project is time-consuming and exhausting. As maintainers, we often cannot dedicate the necessary time. Over the past months—and even years—I have frequently offered my help.
+> 
+> Docker.DotNet is an important upstream dependency for Testcontainers for .NET and many other developers. It would be unfortunate for this valuable work not to continue. Therefore, I have decided to fork the repository to focus on essential fixes, improvements, and updates for the Docker Engine API. I am also accepting further contributions and remaining PRs from the upstream repository.
+
+# .NET Client for Docker Remote API
 
 This library allows you to interact with [Docker Remote API][docker-remote-api]  endpoints in your .NET applications.
 
