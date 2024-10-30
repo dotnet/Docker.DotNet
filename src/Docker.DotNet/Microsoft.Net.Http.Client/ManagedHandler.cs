@@ -332,7 +332,19 @@ namespace Microsoft.Net.Http.Client
                 var s = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
-                    await s.ConnectAsync(address, port).ConfigureAwait(false);
+#if (NETSTANDARD1_3 || NETSTANDARD1_6 || NETSTANDARD2_0)
+                    // TODO: This method can be replaced by native ConnectAsync when this functionality is available:
+                    // https://github.com/dotnet/runtime/pull/40750
+                    await s.ConnectAsync(address, port, cancellationToken).ConfigureAwait(false);
+#else
+                    await Task.Factory.FromAsync(
+                        s.BeginConnect,
+                        s.EndConnect,
+                        new IPEndPoint(address, port),
+                        null
+                    ).ConfigureAwait(false);
+#endif
+
                     connectedSocket = s;
                     break;
                 }
