@@ -10,5 +10,8 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("noOverwriteDirNonDir", false, typeof(BoolQueryStringConverter))]
         public bool? AllowOverwriteDirWithFile { get; set; }
+
+        [QueryStringParameter("copyUIDGID", false, typeof(BoolQueryStringConverter))]
+        public bool? CopyUidAndGid { get; set; }
     }
 }
