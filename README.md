@@ -16,6 +16,8 @@ or non-breaking feature additions.
 
 ## Installation
 
+[![NuGet latest release](https://img.shields.io/nuget/v/Docker.DotNet.svg)](https://www.nuget.org/packages/Docker.DotNet)
+
 You can add this library to your project using [NuGet][nuget].
 
 **Package Manager Console**
@@ -88,10 +90,10 @@ The code below pulls `fedora/memcached` image to your Docker instance using your
 anonymously download the image as well by passing `null` instead of AuthConfig object:
 
 ```csharp
-Stream stream  = await client.Images.CreateImageAsync(
+await client.Images.CreateImageAsync(
     new ImagesCreateParameters
     {
-        Parent = "fedora/memcached",
+        FromImage = "fedora/memcached",
         Tag = "alpha",
     },
     new AuthConfig
@@ -99,20 +101,35 @@ Stream stream  = await client.Images.CreateImageAsync(
         Email = "test@example.com",
         Username = "test",
         Password = "pa$$w0rd"
+    },
+    new Progress<JSONMessage>());
+```
+
+
+#### Example: Create a container
+
+The following code will create a new container of the previously fetched image.
+
+```csharp
+await client.Containers.CreateContainerAsync(new CreateContainerParameters()
+    {
+        Image = "fedora/memcached",
+        HostConfig = new HostConfig()
+        {
+            DNS = new[] { "8.8.8.8", "8.8.4.4" }
+        }
     });
 ```
 
 #### Example: Start a container
 
-The following code will start the created container with specified `HostConfig` object. This object is optional, therefore you can pass a null.
+The following code will start the created container.
 
 ```csharp
 await client.Containers.StartContainerAsync(
     "39e3317fd258",
-    new HostConfig
-    {
-	    DNS = new[] { "8.8.8.8", "8.8.4.4" }
-    });
+    new ContainerStartParameters()
+    );
 ```
 
 #### Example: Stop a container
@@ -183,7 +200,6 @@ The `CertFile` in the example above should be a .pfx file (PKCS12 format), if yo
 //
 
 // You can do this globally for all certificates:
-// (Note: This is not available on netstandard1.6)
 ServicePointManager.ServerCertificateValidationCallback += (o, c, ch, er) => true;
 
 // Or you can do this on a credential by credential basis:
@@ -231,16 +247,16 @@ Here are typical exceptions thrown from the client library:
 
 ## .NET Foundation
 
-Docker.DotNet is a [.NET Foundation](https://www.dotnetfoundation.org/projects) project.
+Docker.DotNet is a [.NET Foundation](https://www.dotnetfoundation.org) project.
 
 There are many .NET related projects on GitHub.
 
 - [.NET home repo](https://github.com/Microsoft/dotnet) - links to 100s of .NET projects, from Microsoft and the community.
-- [ASP.NET Core home](https://docs.microsoft.com/aspnet/core/?view=aspnetcore-3.1) - the best place to start learning about ASP.NET Core.
+- [ASP.NET Core home](https://docs.microsoft.com/aspnet/core) - the best place to start learning about ASP.NET Core.
 
 This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/) to clarify expected behavior in our community. For more information, see the [.NET Foundation Code of Conduct](http://www.dotnetfoundation.org/code-of-conduct).
 
-General .NET OSS discussions: [.NET Foundation forums](https://forums.dotnetfoundation.org)
+General .NET OSS discussions: [.NET Foundation Discord](https://dotnetfoundation.org/socialize/discord)
 
 ## Contributing
 

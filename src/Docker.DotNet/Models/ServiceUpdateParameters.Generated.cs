@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ServiceUpdateParameters // (main.ServiceUpdateParameters)
     {
-        [DataMember(Name = "Service", EmitDefaultValue = false)]
+        [JsonPropertyName("Service")]
         public ServiceSpec Service { get; set; }
 
         [QueryStringParameter("version", true)]
@@ -14,7 +13,10 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("registryauthfrom", false)]
         public string RegistryAuthFrom { get; set; }
 
-        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
+        [QueryStringParameter("rollback", false)]
+        public string Rollback { get; set; }
+
+        [JsonPropertyName("RegistryAuth")]
         public AuthConfig RegistryAuth { get; set; }
     }
 }

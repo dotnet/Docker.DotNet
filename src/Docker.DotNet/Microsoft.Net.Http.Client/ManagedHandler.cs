@@ -344,6 +344,7 @@ namespace Microsoft.Net.Http.Client
                         null
                     ).ConfigureAwait(false);
 #endif
+
                     connectedSocket = s;
                     break;
                 }

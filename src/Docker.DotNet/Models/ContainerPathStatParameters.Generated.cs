@@ -1,8 +1,6 @@
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerPathStatParameters // (main.ContainerPathStatParameters)
     {
         [QueryStringParameter("path", true)]
@@ -10,5 +8,8 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("noOverwriteDirNonDir", false, typeof(BoolQueryStringConverter))]
         public bool? AllowOverwriteDirWithFile { get; set; }
+
+        [QueryStringParameter("copyUIDGID", false, typeof(BoolQueryStringConverter))]
+        public bool? CopyUidAndGid { get; set; }
     }
 }

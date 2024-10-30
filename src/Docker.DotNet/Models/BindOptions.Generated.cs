@@ -1,14 +1,16 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class BindOptions // (mount.BindOptions)
     {
-        [DataMember(Name = "Propagation", EmitDefaultValue = false)]
+        [JsonPropertyName("Propagation")]
         public string Propagation { get; set; }
 
-        [DataMember(Name = "NonRecursive", EmitDefaultValue = false)]
+        [JsonPropertyName("NonRecursive")]
         public bool NonRecursive { get; set; }
+
+        [JsonPropertyName("CreateMountpoint")]
+        public bool CreateMountpoint { get; set; }
     }
 }

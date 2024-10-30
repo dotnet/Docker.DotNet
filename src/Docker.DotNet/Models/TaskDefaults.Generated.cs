@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class TaskDefaults // (swarm.TaskDefaults)
     {
-        [DataMember(Name = "LogDriver", EmitDefaultValue = false)]
+        [JsonPropertyName("LogDriver")]
         public SwarmDriver LogDriver { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -9,51 +10,29 @@ namespace Docker.DotNet.Models
 {
     internal static class StreamUtil
     {
-        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<string> progress)
+        internal static async Task MonitorStreamAsync(Task<Stream> streamTask, DockerClient client, CancellationToken cancellationToken, IProgress<string> progress)
         {
+            var tcs = new TaskCompletionSource<string>();
+
             using (var stream = await streamTask)
+            using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
+            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
             {
-                // ReadLineAsync must be cancelled by closing the whole stream.
-                using (cancel.Register(() => stream.Dispose()))
+                string line;
+                while ((line = await await Task.WhenAny(reader.ReadLineAsync(), tcs.Task)) != null)
                 {
-                    using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-                    {
-                        string line;
-                        while ((line = await reader.ReadLineAsync()) != null)
-                        {
-                            progress.Report(line);
-                        }
-                    }
+                    progress.Report(line);
                 }
             }
         }
 
-        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancel, IProgress<T> progress)
+        internal static async Task MonitorStreamForMessagesAsync<T>(Task<Stream> streamTask, DockerClient client, CancellationToken cancellationToken, IProgress<T> progress)
         {
             using (var stream = await streamTask)
             {
-                // ReadLineAsync must be cancelled by closing the whole stream.
-                using (cancel.Register(() => stream.Dispose()))
+                await foreach (var ev in client.JsonSerializer.Deserialize<T>(stream, cancellationToken))
                 {
-                    using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-                    {
-                        string line;
-                        try
-                        {
-                            while ((line = await reader.ReadLineAsync()) != null)
-                            {
-                                var prog = client.JsonSerializer.DeserializeObject<T>(line);
-                                if (prog == null) continue;
-
-                                progress.Report(prog);
-                            }
-                        }
-                        catch (ObjectDisposedException)
-                        {
-                            // The subsequent call to reader.ReadLineAsync() after cancellation
-                            // will fail because we disposed the stream. Just ignore here.
-                        }
-                    }
+                    progress.Report(ev);
                 }
             }
         }
@@ -62,34 +41,7 @@ namespace Docker.DotNet.Models
         {
             using (var response = await responseTask)
             {
-                await client.HandleIfErrorResponseAsync(response.StatusCode, response);
-
-                using (var stream = await response.Content.ReadAsStreamAsync())
-                {
-                    // ReadLineAsync must be cancelled by closing the whole stream.
-                    using (cancel.Register(() => stream.Dispose()))
-                    {
-                        using (var reader = new StreamReader(stream, new UTF8Encoding(false)))
-                        {
-                            string line;
-                            try
-                            {
-                                while ((line = await reader.ReadLineAsync()) != null)
-                                {
-                                    var prog = client.JsonSerializer.DeserializeObject<T>(line);
-                                    if (prog == null) continue;
-
-                                    progress.Report(prog);
-                                }
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // The subsequent call to reader.ReadLineAsync() after cancellation
-                                // will fail because we disposed the stream. Just ignore here.
-                            }
-                        }
-                    }
-                }
+                await MonitorStreamForMessagesAsync<T>(response.Content.ReadAsStreamAsync(), client, cancel, progress);
             }
         }
     }

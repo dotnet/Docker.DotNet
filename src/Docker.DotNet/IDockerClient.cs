@@ -20,6 +20,8 @@ namespace Docker.DotNet
 
         ISecretsOperations Secrets { get; }
 
+        IConfigOperations Configs { get; }
+
         ISwarmOperations Swarm { get; }
 
         ITasksOperations Tasks { get; }

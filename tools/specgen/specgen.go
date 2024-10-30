@@ -18,6 +18,7 @@ import (
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/api/types/swarm/runtime"
+	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/pkg/jsonmessage"
 )
 
@@ -33,22 +34,22 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerCreateCreatedBody{})): {Name: "CreateContainerResponse"},
+	typeToKey(reflect.TypeOf(container.CreateResponse{})): {Name: "CreateContainerResponse"},
 	typeToKey(reflect.TypeOf(container.HealthConfig{})): {
 		Properties: []CSProperty{
 			CSProperty{
 				Name:       "Interval",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
 			},
 			CSProperty{
 				Name:       "Timeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanNanosecondsConverter)"}}}},
 			},
 		},
 	},
@@ -66,22 +67,27 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{
 				Name:       "StopTimeout",
 				Type:       CSType{"System", "TimeSpan", true},
-				Attributes: []CSAttribute{CSAttribute{Type: CSType{"Newtonsoft.Json", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
+				Attributes: []CSAttribute{CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonConverter", false}, Arguments: []CSArgument{{Value: "typeof(TimeSpanSecondsConverter)"}}}},
 			},
 		},
 	},
-	typeToKey(reflect.TypeOf(network.Task{})): {Name: "NetworkTask"},
+	typeToKey(reflect.TypeOf(volume.Info{})):                 {Name: "VolumeInfo"},
+	typeToKey(reflect.TypeOf(volume.Topology{})):             {Name: "VolumeTopology"},
+	typeToKey(reflect.TypeOf(volume.Secret{})):               {Name: "VolumeSecret"},
+	typeToKey(reflect.TypeOf(network.Task{})):                {Name: "NetworkTask"},
 	typeToKey(reflect.TypeOf(registry.AuthenticateOKBody{})): {Name: "AuthResponse"},
 	typeToKey(reflect.TypeOf(registry.SearchResult{})):       {Name: "ImageSearchResponse"},
-	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})): {Name: "RuntimePluginPrivilege"},
+	typeToKey(reflect.TypeOf(runtime.PluginPrivilege{})):     {Name: "RuntimePluginPrivilege"},
+	typeToKey(reflect.TypeOf(swarm.ConfigSpec{})):            {Name: "SwarmConfigSpec"},
 	typeToKey(reflect.TypeOf(swarm.Driver{})):                {Name: "SwarmDriver"},
 	typeToKey(reflect.TypeOf(swarm.InitRequest{})):           {Name: "SwarmInitParameters"},
-	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
 	typeToKey(reflect.TypeOf(swarm.IPAMConfig{})):            {Name: "SwarmIPAMConfig"},
+	typeToKey(reflect.TypeOf(swarm.JoinRequest{})):           {Name: "SwarmJoinParameters"},
+	typeToKey(reflect.TypeOf(swarm.Limit{})):                 {Name: "SwarmLimit"},
 	typeToKey(reflect.TypeOf(swarm.Node{})):                  {Name: "NodeListResponse"},
 	typeToKey(reflect.TypeOf(swarm.NodeSpec{})):              {Name: "NodeUpdateParameters"},
-	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
 	typeToKey(reflect.TypeOf(swarm.Resources{})):             {Name: "SwarmResources"},
+	typeToKey(reflect.TypeOf(swarm.RestartPolicy{})):         {Name: "SwarmRestartPolicy"},
 	typeToKey(reflect.TypeOf(swarm.Service{})):               {Name: "SwarmService"},
 	typeToKey(reflect.TypeOf(swarm.Swarm{})):                 {Name: "SwarmInspectResponse"},
 	typeToKey(reflect.TypeOf(swarm.Task{})): {
@@ -95,15 +101,15 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{Name: "State", Type: CSType{"", "TaskState", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})): {Name: "SwarmUpdateConfig"},
-	typeToKey(reflect.TypeOf(swarm.ConfigReference{})): {Name: "SwarmConfigReference"},	
+	typeToKey(reflect.TypeOf(swarm.UpdateConfig{})):    {Name: "SwarmUpdateConfig"},
+	typeToKey(reflect.TypeOf(swarm.ConfigReference{})): {Name: "SwarmConfigReference"},
 	typeToKey(reflect.TypeOf(types.Container{})): {
 		Name: "ContainerListResponse",
 		Properties: []CSProperty{
 			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(container.ContainerChangeResponseItem {})): {
+	typeToKey(reflect.TypeOf(container.FilesystemChange{})): {
 		Name: "ContainerFileSystemChangeResponse",
 		Properties: []CSProperty{
 			CSProperty{Name: "Kind", Type: CSType{"", "FileSystemChangeKind", false}},
@@ -116,10 +122,10 @@ var typesToDisambiguate = map[string]*CSModelType{
 			CSProperty{Name: "Created", Type: CSType{"System", "DateTime", false}},
 		},
 	},
-	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):     {Name: "ContainerPathStatResponse"},
+	typeToKey(reflect.TypeOf(types.ContainerPathStat{})):       {Name: "ContainerPathStatResponse"},
 	typeToKey(reflect.TypeOf(container.ContainerTopOKBody{})):  {Name: "ContainerProcessesResponse"},
-	typeToKey(reflect.TypeOf(types.ContainersPruneReport{})): {Name: "ContainersPruneResponse"},
-	typeToKey(reflect.TypeOf(types.ImageDeleteResponseItem{})):           {Name: "ImageDeleteResponse"},
+	typeToKey(reflect.TypeOf(types.ContainersPruneReport{})):   {Name: "ContainersPruneResponse"},
+	typeToKey(reflect.TypeOf(types.ImageDeleteResponseItem{})): {Name: "ImageDeleteResponse"},
 	typeToKey(reflect.TypeOf(image.HistoryResponseItem{})): {
 		Name: "ImageHistoryResponse",
 		Properties: []CSProperty{
@@ -162,7 +168,7 @@ var typesToDisambiguate = map[string]*CSModelType{
 var dockerTypesToReflect = []reflect.Type{
 
 	// POST /auth
-	reflect.TypeOf(types.AuthConfig{}),
+	reflect.TypeOf(registry.AuthConfig{}),
 	reflect.TypeOf(registry.AuthenticateOKBody{}),
 
 	// POST /build
@@ -175,7 +181,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// POST /containers/create
 	reflect.TypeOf(CreateContainerParameters{}),
-	reflect.TypeOf(container.ContainerCreateCreatedBody{}),
+	reflect.TypeOf(container.CreateResponse{}),
 
 	// GET /containers/json
 	reflect.TypeOf(ContainersListParameters{}),
@@ -198,7 +204,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// POST /containers/(id)/attach/ws
 
 	// GET /containers/(id)/changes
-	reflect.TypeOf(container.ContainerChangeResponseItem {}),
+	reflect.TypeOf(container.FilesystemChange{}),
 
 	// OBSOLETE - POST /containers/(id)/copy
 
@@ -243,7 +249,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /containers/(id)/top
 	reflect.TypeOf(ContainerListProcessesParameters{}),
-	reflect.TypeOf(container.ContainerTopOKBody {}),
+	reflect.TypeOf(container.ContainerTopOKBody{}),
 
 	// POST /containers/(id)/unpause
 
@@ -262,6 +268,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /events
 	reflect.TypeOf(ContainerEventsParameters{}),
+	reflect.TypeOf(events.Actor{}),
 	reflect.TypeOf(events.Message{}),
 
 	// POST /images/create
@@ -307,6 +314,7 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// GET /info
 	reflect.TypeOf(types.Info{}),
+	reflect.TypeOf(registry.ServiceConfig{}),
 
 	// GET /networks
 	reflect.TypeOf(NetworksListParameters{}),
@@ -424,9 +432,27 @@ var dockerTypesToReflect = []reflect.Type{
 	// POST /secrets/create
 	reflect.TypeOf(SecretCreateResponse{}),
 
+	//
+	// Configs API (swarm)
+	//
+
+	// GET /configs
+	// GET /configs/(id)
+	reflect.TypeOf(SwarmConfig{}),
+	reflect.TypeOf(swarm.ConfigReference{}),
+
+	// POST /configs/create
+	reflect.TypeOf(SwarmCreateConfigParameters{}),
+	reflect.TypeOf(SwarmCreateConfigResponse{}),
+
+	// POST /configs/(id)/update
+	reflect.TypeOf(SwarmUpdateConfigParameters{}),
+	reflect.TypeOf(swarm.ConfigSpec{}),
+
 	// GET /services
 	// GET /services/(id)
 	reflect.TypeOf(swarm.Service{}),
+	reflect.TypeOf(ServiceListParameters{}),
 
 	// POST /services/create
 	reflect.TypeOf(ServiceCreateParameters{}),
@@ -438,6 +464,9 @@ var dockerTypesToReflect = []reflect.Type{
 
 	// DELETE /services/(id)
 
+	// GET /services/(id)/logs
+	reflect.TypeOf(ServiceLogsParameters{}),
+
 	// GET /tasks
 	reflect.TypeOf(TasksListParameters{}),
 	reflect.TypeOf(swarm.Task{}),
@@ -445,6 +474,7 @@ var dockerTypesToReflect = []reflect.Type{
 	// GET /nodes
 	// GET /nodes/(id)
 	reflect.TypeOf(swarm.Node{}),
+	reflect.TypeOf(swarm.TLSInfo{}),
 
 	// DELETE /nodes/(id)
 
@@ -599,9 +629,8 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType) {
 				csProp.Attributes = append(csProp.Attributes, a)
 				csProp.DefaultValue = restTag.Default
 			} else {
-				a := CSAttribute{Type: CSType{"", "DataMember", false}}
-				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"Name", CSArgument{jsonName, CSInboxTypesMap[reflect.String]}})
-				a.NamedArguments = append(a.NamedArguments, CSNamedArgument{"EmitDefaultValue", CSArgument{strconv.FormatBool(false), CSInboxTypesMap[reflect.Bool]}})
+				a := CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonPropertyName", false}}
+				a.Arguments = append(a.Arguments, CSArgument{jsonName, CSInboxTypesMap[reflect.String]})
 				csProp.IsOpt = f.Type.Kind() == reflect.Ptr
 				csProp.Attributes = append(csProp.Attributes, a)
 			}

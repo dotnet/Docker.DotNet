@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class JSONError // (jsonmessage.JSONError)
     {
-        [DataMember(Name = "code", EmitDefaultValue = false)]
+        [JsonPropertyName("code")]
         public long Code { get; set; }
 
-        [DataMember(Name = "message", EmitDefaultValue = false)]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
     }
 }

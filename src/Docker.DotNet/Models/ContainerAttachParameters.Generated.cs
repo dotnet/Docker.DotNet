@@ -1,8 +1,6 @@
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerAttachParameters // (main.ContainerAttachParameters)
     {
         [QueryStringParameter("stream", false, typeof(BoolQueryStringConverter))]
@@ -21,6 +19,6 @@ namespace Docker.DotNet.Models
         public string DetachKeys { get; set; }
 
         [QueryStringParameter("logs", false)]
-        public string Logs { get; set; }
+        public bool? Logs { get; set; }
     }
 }

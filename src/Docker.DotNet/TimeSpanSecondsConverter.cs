@@ -1,36 +1,29 @@
 ﻿using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet
 {
-    internal class TimeSpanSecondsConverter : JsonConverter
+    internal class TimeSpanSecondsConverter : JsonConverter<TimeSpan?>
     {
-        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
+        public override TimeSpan? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var timeSpan = value as TimeSpan?;
-            if (timeSpan == null)
-            {
-                return;
-            }
-
-            writer.WriteValue((long)timeSpan.Value.TotalSeconds);
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(TimeSpan) || objectType == typeof(TimeSpan?);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var valueInSeconds = (long?)reader.Value;
-            if(!valueInSeconds.HasValue)
+            if (reader.TokenType == JsonTokenType.Null)
             {
                 return null;
             }
 
-            return TimeSpan.FromSeconds(valueInSeconds.Value);
+            return TimeSpan.FromSeconds(reader.GetInt64());
+        }
+
+        public override void Write(Utf8JsonWriter writer, TimeSpan? value, JsonSerializerOptions options)
+        {
+            if (value == null)
+            {
+                return;
+            }
+
+            writer.WriteNumberValue((long)value.Value.TotalSeconds);
         }
     }
 }

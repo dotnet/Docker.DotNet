@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Net.Http.Client
 {
-    internal class ChunkedReadStream : Stream
+    internal class ChunkedReadStream : WriteClosableStream
     {
         private readonly BufferedReadStream _inner;
         private long _chunkBytesRemaining;
@@ -36,6 +36,11 @@ namespace Microsoft.Net.Http.Client
         public override bool CanWrite
         {
             get { return false; }
+        }
+
+        public override bool CanCloseWrite
+        {
+            get { return _inner.CanCloseWrite; }
         }
 
         public override long Length
@@ -79,7 +84,7 @@ namespace Microsoft.Net.Http.Client
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            return ReadAsync(buffer, offset, count, CancellationToken.None).Result;
+            return ReadAsync(buffer, offset, count, CancellationToken.None).GetAwaiter().GetResult();
         }
 
         public async override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
@@ -154,12 +159,12 @@ namespace Microsoft.Net.Http.Client
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            throw new NotSupportedException();
+            _inner.Write(buffer, offset, count);
         }
 
         public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            throw new NotSupportedException();
+            return _inner.WriteAsync(buffer, offset, count, cancellationToken);
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -174,7 +179,12 @@ namespace Microsoft.Net.Http.Client
 
         public override void Flush()
         {
-            throw new NotSupportedException();
+            _inner.Flush();
+        }
+
+        public override void CloseWrite()
+        {
+            _inner.CloseWrite();
         }
     }
 }

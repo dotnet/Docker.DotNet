@@ -3,10 +3,7 @@ using System.IO;
 using System.Text;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-
-#if !NETSTANDARD1_6
 using System.Security;
-#endif
 
 namespace Docker.DotNet.X509
 {
@@ -19,7 +16,6 @@ namespace Docker.DotNet.X509
             return new X509Certificate2(pfxFilePath, password);
         }
 
-#if !NETSTANDARD1_6
         public static X509Certificate2 GetCertFromPFXSecure(string pfxFilePath, SecureString password)
         {
             return new X509Certificate2(pfxFilePath, password);
@@ -31,7 +27,6 @@ namespace Docker.DotNet.X509
             cert.PrivateKey = RSAUtil.ReadFromPemFile(keyFilePath);
             return cert;
         }
-#endif
 
         private static RSACryptoServiceProvider ReadFromPemFile(string pemFilePath)
         {

@@ -1,14 +1,19 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ServiceMode // (swarm.ServiceMode)
     {
-        [DataMember(Name = "Replicated", EmitDefaultValue = false)]
+        [JsonPropertyName("Replicated")]
         public ReplicatedService Replicated { get; set; }
 
-        [DataMember(Name = "Global", EmitDefaultValue = false)]
+        [JsonPropertyName("Global")]
         public GlobalService Global { get; set; }
+
+        [JsonPropertyName("ReplicatedJob")]
+        public ReplicatedJob ReplicatedJob { get; set; }
+
+        [JsonPropertyName("GlobalJob")]
+        public GlobalJob GlobalJob { get; set; }
     }
 }

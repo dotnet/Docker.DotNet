@@ -93,6 +93,12 @@ namespace Microsoft.Net.Http.Client
             {
                 return 0;
             }
+
+            if (_bytesRemaining == 0)
+            {
+                return 0;
+            }
+
             int toRead = (int)Math.Min(count, _bytesRemaining);
             int read = _inner.Read(buffer, offset, toRead);
             UpdateBytesRemaining(read);
@@ -106,6 +112,12 @@ namespace Microsoft.Net.Http.Client
             {
                 return 0;
             }
+
+            if (_bytesRemaining == 0)
+            {
+                return 0;
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
             int toRead = (int)Math.Min(count, _bytesRemaining);
             int read = await _inner.ReadAsync(buffer, offset, toRead, cancellationToken);

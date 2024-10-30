@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImagesPruneResponse // (types.ImagesPruneReport)
     {
-        [DataMember(Name = "ImagesDeleted", EmitDefaultValue = false)]
+        [JsonPropertyName("ImagesDeleted")]
         public IList<ImageDeleteResponse> ImagesDeleted { get; set; }
 
-        [DataMember(Name = "SpaceReclaimed", EmitDefaultValue = false)]
+        [JsonPropertyName("SpaceReclaimed")]
         public ulong SpaceReclaimed { get; set; }
     }
 }

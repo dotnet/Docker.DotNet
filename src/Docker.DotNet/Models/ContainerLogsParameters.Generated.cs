@@ -1,8 +1,6 @@
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerLogsParameters // (main.ContainerLogsParameters)
     {
         [QueryStringParameter("stdout", false, typeof(BoolQueryStringConverter))]
@@ -13,6 +11,9 @@ namespace Docker.DotNet.Models
 
         [QueryStringParameter("since", false)]
         public string Since { get; set; }
+
+        [QueryStringParameter("until", false)]
+        public string Until { get; set; }
 
         [QueryStringParameter("timestamps", false, typeof(BoolQueryStringConverter))]
         public bool? Timestamps { get; set; }

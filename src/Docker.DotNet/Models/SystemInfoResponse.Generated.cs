@@ -1,195 +1,194 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class SystemInfoResponse // (types.Info)
     {
-        [DataMember(Name = "ID", EmitDefaultValue = false)]
+        [JsonPropertyName("ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Containers", EmitDefaultValue = false)]
+        [JsonPropertyName("Containers")]
         public long Containers { get; set; }
 
-        [DataMember(Name = "ContainersRunning", EmitDefaultValue = false)]
+        [JsonPropertyName("ContainersRunning")]
         public long ContainersRunning { get; set; }
 
-        [DataMember(Name = "ContainersPaused", EmitDefaultValue = false)]
+        [JsonPropertyName("ContainersPaused")]
         public long ContainersPaused { get; set; }
 
-        [DataMember(Name = "ContainersStopped", EmitDefaultValue = false)]
+        [JsonPropertyName("ContainersStopped")]
         public long ContainersStopped { get; set; }
 
-        [DataMember(Name = "Images", EmitDefaultValue = false)]
+        [JsonPropertyName("Images")]
         public long Images { get; set; }
 
-        [DataMember(Name = "Driver", EmitDefaultValue = false)]
+        [JsonPropertyName("Driver")]
         public string Driver { get; set; }
 
-        [DataMember(Name = "DriverStatus", EmitDefaultValue = false)]
+        [JsonPropertyName("DriverStatus")]
         public IList<string[]> DriverStatus { get; set; }
 
-        [DataMember(Name = "SystemStatus", EmitDefaultValue = false)]
+        [JsonPropertyName("SystemStatus")]
         public IList<string[]> SystemStatus { get; set; }
 
-        [DataMember(Name = "Plugins", EmitDefaultValue = false)]
+        [JsonPropertyName("Plugins")]
         public PluginsInfo Plugins { get; set; }
 
-        [DataMember(Name = "MemoryLimit", EmitDefaultValue = false)]
+        [JsonPropertyName("MemoryLimit")]
         public bool MemoryLimit { get; set; }
 
-        [DataMember(Name = "SwapLimit", EmitDefaultValue = false)]
+        [JsonPropertyName("SwapLimit")]
         public bool SwapLimit { get; set; }
 
-        [DataMember(Name = "KernelMemory", EmitDefaultValue = false)]
+        [JsonPropertyName("KernelMemory")]
         public bool KernelMemory { get; set; }
 
-        [DataMember(Name = "KernelMemoryTCP", EmitDefaultValue = false)]
+        [JsonPropertyName("KernelMemoryTCP")]
         public bool KernelMemoryTCP { get; set; }
 
-        [DataMember(Name = "CpuCfsPeriod", EmitDefaultValue = false)]
+        [JsonPropertyName("CpuCfsPeriod")]
         public bool CPUCfsPeriod { get; set; }
 
-        [DataMember(Name = "CpuCfsQuota", EmitDefaultValue = false)]
+        [JsonPropertyName("CpuCfsQuota")]
         public bool CPUCfsQuota { get; set; }
 
-        [DataMember(Name = "CPUShares", EmitDefaultValue = false)]
+        [JsonPropertyName("CPUShares")]
         public bool CPUShares { get; set; }
 
-        [DataMember(Name = "CPUSet", EmitDefaultValue = false)]
+        [JsonPropertyName("CPUSet")]
         public bool CPUSet { get; set; }
 
-        [DataMember(Name = "PidsLimit", EmitDefaultValue = false)]
+        [JsonPropertyName("PidsLimit")]
         public bool PidsLimit { get; set; }
 
-        [DataMember(Name = "IPv4Forwarding", EmitDefaultValue = false)]
+        [JsonPropertyName("IPv4Forwarding")]
         public bool IPv4Forwarding { get; set; }
 
-        [DataMember(Name = "BridgeNfIptables", EmitDefaultValue = false)]
+        [JsonPropertyName("BridgeNfIptables")]
         public bool BridgeNfIptables { get; set; }
 
-        [DataMember(Name = "BridgeNfIp6tables", EmitDefaultValue = false)]
+        [JsonPropertyName("BridgeNfIp6tables")]
         public bool BridgeNfIP6tables { get; set; }
 
-        [DataMember(Name = "Debug", EmitDefaultValue = false)]
+        [JsonPropertyName("Debug")]
         public bool Debug { get; set; }
 
-        [DataMember(Name = "NFd", EmitDefaultValue = false)]
+        [JsonPropertyName("NFd")]
         public long NFd { get; set; }
 
-        [DataMember(Name = "OomKillDisable", EmitDefaultValue = false)]
+        [JsonPropertyName("OomKillDisable")]
         public bool OomKillDisable { get; set; }
 
-        [DataMember(Name = "NGoroutines", EmitDefaultValue = false)]
+        [JsonPropertyName("NGoroutines")]
         public long NGoroutines { get; set; }
 
-        [DataMember(Name = "SystemTime", EmitDefaultValue = false)]
+        [JsonPropertyName("SystemTime")]
         public string SystemTime { get; set; }
 
-        [DataMember(Name = "LoggingDriver", EmitDefaultValue = false)]
+        [JsonPropertyName("LoggingDriver")]
         public string LoggingDriver { get; set; }
 
-        [DataMember(Name = "CgroupDriver", EmitDefaultValue = false)]
+        [JsonPropertyName("CgroupDriver")]
         public string CgroupDriver { get; set; }
 
-        [DataMember(Name = "NEventsListener", EmitDefaultValue = false)]
+        [JsonPropertyName("CgroupVersion")]
+        public string CgroupVersion { get; set; }
+
+        [JsonPropertyName("NEventsListener")]
         public long NEventsListener { get; set; }
 
-        [DataMember(Name = "KernelVersion", EmitDefaultValue = false)]
+        [JsonPropertyName("KernelVersion")]
         public string KernelVersion { get; set; }
 
-        [DataMember(Name = "OperatingSystem", EmitDefaultValue = false)]
+        [JsonPropertyName("OperatingSystem")]
         public string OperatingSystem { get; set; }
 
-        [DataMember(Name = "OSVersion", EmitDefaultValue = false)]
+        [JsonPropertyName("OSVersion")]
         public string OSVersion { get; set; }
 
-        [DataMember(Name = "OSType", EmitDefaultValue = false)]
+        [JsonPropertyName("OSType")]
         public string OSType { get; set; }
 
-        [DataMember(Name = "Architecture", EmitDefaultValue = false)]
+        [JsonPropertyName("Architecture")]
         public string Architecture { get; set; }
 
-        [DataMember(Name = "IndexServerAddress", EmitDefaultValue = false)]
+        [JsonPropertyName("IndexServerAddress")]
         public string IndexServerAddress { get; set; }
 
-        [DataMember(Name = "RegistryConfig", EmitDefaultValue = false)]
+        [JsonPropertyName("RegistryConfig")]
         public ServiceConfig RegistryConfig { get; set; }
 
-        [DataMember(Name = "NCPU", EmitDefaultValue = false)]
+        [JsonPropertyName("NCPU")]
         public long NCPU { get; set; }
 
-        [DataMember(Name = "MemTotal", EmitDefaultValue = false)]
+        [JsonPropertyName("MemTotal")]
         public long MemTotal { get; set; }
 
-        [DataMember(Name = "GenericResources", EmitDefaultValue = false)]
+        [JsonPropertyName("GenericResources")]
         public IList<GenericResource> GenericResources { get; set; }
 
-        [DataMember(Name = "DockerRootDir", EmitDefaultValue = false)]
+        [JsonPropertyName("DockerRootDir")]
         public string DockerRootDir { get; set; }
 
-        [DataMember(Name = "HttpProxy", EmitDefaultValue = false)]
+        [JsonPropertyName("HttpProxy")]
         public string HTTPProxy { get; set; }
 
-        [DataMember(Name = "HttpsProxy", EmitDefaultValue = false)]
+        [JsonPropertyName("HttpsProxy")]
         public string HTTPSProxy { get; set; }
 
-        [DataMember(Name = "NoProxy", EmitDefaultValue = false)]
+        [JsonPropertyName("NoProxy")]
         public string NoProxy { get; set; }
 
-        [DataMember(Name = "Name", EmitDefaultValue = false)]
+        [JsonPropertyName("Name")]
         public string Name { get; set; }
 
-        [DataMember(Name = "Labels", EmitDefaultValue = false)]
+        [JsonPropertyName("Labels")]
         public IList<string> Labels { get; set; }
 
-        [DataMember(Name = "ExperimentalBuild", EmitDefaultValue = false)]
+        [JsonPropertyName("ExperimentalBuild")]
         public bool ExperimentalBuild { get; set; }
 
-        [DataMember(Name = "ServerVersion", EmitDefaultValue = false)]
+        [JsonPropertyName("ServerVersion")]
         public string ServerVersion { get; set; }
 
-        [DataMember(Name = "ClusterStore", EmitDefaultValue = false)]
-        public string ClusterStore { get; set; }
-
-        [DataMember(Name = "ClusterAdvertise", EmitDefaultValue = false)]
-        public string ClusterAdvertise { get; set; }
-
-        [DataMember(Name = "Runtimes", EmitDefaultValue = false)]
+        [JsonPropertyName("Runtimes")]
         public IDictionary<string, Runtime> Runtimes { get; set; }
 
-        [DataMember(Name = "DefaultRuntime", EmitDefaultValue = false)]
+        [JsonPropertyName("DefaultRuntime")]
         public string DefaultRuntime { get; set; }
 
-        [DataMember(Name = "Swarm", EmitDefaultValue = false)]
+        [JsonPropertyName("Swarm")]
         public Info Swarm { get; set; }
 
-        [DataMember(Name = "LiveRestoreEnabled", EmitDefaultValue = false)]
+        [JsonPropertyName("LiveRestoreEnabled")]
         public bool LiveRestoreEnabled { get; set; }
 
-        [DataMember(Name = "Isolation", EmitDefaultValue = false)]
+        [JsonPropertyName("Isolation")]
         public string Isolation { get; set; }
 
-        [DataMember(Name = "InitBinary", EmitDefaultValue = false)]
+        [JsonPropertyName("InitBinary")]
         public string InitBinary { get; set; }
 
-        [DataMember(Name = "ContainerdCommit", EmitDefaultValue = false)]
+        [JsonPropertyName("ContainerdCommit")]
         public Commit ContainerdCommit { get; set; }
 
-        [DataMember(Name = "RuncCommit", EmitDefaultValue = false)]
+        [JsonPropertyName("RuncCommit")]
         public Commit RuncCommit { get; set; }
 
-        [DataMember(Name = "InitCommit", EmitDefaultValue = false)]
+        [JsonPropertyName("InitCommit")]
         public Commit InitCommit { get; set; }
 
-        [DataMember(Name = "SecurityOptions", EmitDefaultValue = false)]
+        [JsonPropertyName("SecurityOptions")]
         public IList<string> SecurityOptions { get; set; }
 
-        [DataMember(Name = "ProductLicense", EmitDefaultValue = false)]
+        [JsonPropertyName("ProductLicense")]
         public string ProductLicense { get; set; }
 
-        [DataMember(Name = "Warnings", EmitDefaultValue = false)]
+        [JsonPropertyName("DefaultAddressPools")]
+        public IList<NetworkAddressPool> DefaultAddressPools { get; set; }
+
+        [JsonPropertyName("Warnings")]
         public IList<string> Warnings { get; set; }
     }
 }

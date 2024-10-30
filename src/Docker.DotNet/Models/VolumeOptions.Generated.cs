@@ -1,18 +1,17 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class VolumeOptions // (mount.VolumeOptions)
     {
-        [DataMember(Name = "NoCopy", EmitDefaultValue = false)]
+        [JsonPropertyName("NoCopy")]
         public bool NoCopy { get; set; }
 
-        [DataMember(Name = "Labels", EmitDefaultValue = false)]
+        [JsonPropertyName("Labels")]
         public IDictionary<string, string> Labels { get; set; }
 
-        [DataMember(Name = "DriverConfig", EmitDefaultValue = false)]
+        [JsonPropertyName("DriverConfig")]
         public Driver DriverConfig { get; set; }
     }
 }
