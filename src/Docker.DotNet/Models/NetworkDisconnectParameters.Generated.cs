@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class NetworkDisconnectParameters // (types.NetworkDisconnect)
     {
-        [DataMember(Name = "Container", EmitDefaultValue = false)]
+        [JsonPropertyName("Container")]
         public string Container { get; set; }
 
-        [DataMember(Name = "Force", EmitDefaultValue = false)]
+        [JsonPropertyName("Force")]
         public bool Force { get; set; }
     }
 }

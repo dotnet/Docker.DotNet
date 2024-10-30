@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImagesListParameters // (main.ImagesListParameters)
     {
         [QueryStringParameter("all", false, typeof(BoolQueryStringConverter))]

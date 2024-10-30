@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Daemon;
 using Microsoft.Net.Http.Client;
 
 #if !NET45
@@ -18,6 +19,7 @@ namespace Docker.DotNet
         private int _remaining;
         private readonly byte[] _header = new byte[8];
         private readonly bool _multiplexed;
+        private MemoryStream _systemErrorMessage;
 
         const int BufferSize = 81920;
 
@@ -31,7 +33,8 @@ namespace Docker.DotNet
         {
             StandardIn = 0,
             StandardOut = 1,
-            StandardError = 2
+            StandardError = 2,
+            SystemError = 3
         }
 
         public struct ReadResult
@@ -99,6 +102,7 @@ namespace Docker.DotNet
                     case TargetStream.StandardIn:
                     case TargetStream.StandardOut:
                     case TargetStream.StandardError:
+                    case TargetStream.SystemError:
                         _target = (TargetStream)_header[0];
                         break;
 
@@ -204,6 +208,14 @@ namespace Docker.DotNet
                         case TargetStream.StandardError:
                             stream = stderr;
                             break;
+                        case TargetStream.SystemError:
+                        {
+                            WriteToSystemErrorBuffer(buffer, result.Count);
+                            if (_remaining != 0)
+                                continue;
+                            _systemErrorMessage.Seek(0, SeekOrigin.Begin);
+                            throw new DockerDaemonException(Encoding.UTF8.GetString(_systemErrorMessage.ToArray()));
+                        }
                         default:
                             throw new InvalidOperationException($"Unknown TargetStream: '{result.Target}'.");
                     }
@@ -222,6 +234,14 @@ namespace Docker.DotNet
         public void Dispose()
         {
             ((IDisposable)_stream).Dispose();
+            _systemErrorMessage?.Dispose();
+        }
+
+        private void WriteToSystemErrorBuffer(byte[] buffer, int length)
+        {
+            if (_systemErrorMessage == null)
+                _systemErrorMessage = new MemoryStream();
+            _systemErrorMessage.Write(buffer, 0, length);
         }
     }
 }

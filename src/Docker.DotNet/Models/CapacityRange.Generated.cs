@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class CapacityRange // (volume.CapacityRange)
     {
-        [DataMember(Name = "RequiredBytes", EmitDefaultValue = false)]
+        [JsonPropertyName("RequiredBytes")]
         public long RequiredBytes { get; set; }
 
-        [DataMember(Name = "LimitBytes", EmitDefaultValue = false)]
+        [JsonPropertyName("LimitBytes")]
         public long LimitBytes { get; set; }
     }
 }

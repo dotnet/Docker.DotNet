@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ReplicatedService // (swarm.ReplicatedService)
     {
-        [DataMember(Name = "Replicas", EmitDefaultValue = false)]
+        [JsonPropertyName("Replicas")]
         public ulong? Replicas { get; set; }
     }
 }

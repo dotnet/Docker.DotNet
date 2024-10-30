@@ -1,21 +1,20 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class Runtime // (types.Runtime)
     {
-        [DataMember(Name = "path", EmitDefaultValue = false)]
+        [JsonPropertyName("path")]
         public string Path { get; set; }
 
-        [DataMember(Name = "runtimeArgs", EmitDefaultValue = false)]
+        [JsonPropertyName("runtimeArgs")]
         public IList<string> Args { get; set; }
 
-        [DataMember(Name = "runtimeType", EmitDefaultValue = false)]
+        [JsonPropertyName("runtimeType")]
         public string Type { get; set; }
 
-        [DataMember(Name = "options", EmitDefaultValue = false)]
+        [JsonPropertyName("options")]
         public IDictionary<string, object> Options { get; set; }
     }
 }

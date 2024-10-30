@@ -1,9 +1,8 @@
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class SwarmConfig // (main.SwarmConfig)
     {
         public SwarmConfig()
@@ -20,19 +19,19 @@ namespace Docker.DotNet.Models
             }
         }
 
-        [DataMember(Name = "ID", EmitDefaultValue = false)]
+        [JsonPropertyName("ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Version", EmitDefaultValue = false)]
+        [JsonPropertyName("Version")]
         public Version Version { get; set; }
 
-        [DataMember(Name = "CreatedAt", EmitDefaultValue = false)]
+        [JsonPropertyName("CreatedAt")]
         public DateTime CreatedAt { get; set; }
 
-        [DataMember(Name = "UpdatedAt", EmitDefaultValue = false)]
+        [JsonPropertyName("UpdatedAt")]
         public DateTime UpdatedAt { get; set; }
 
-        [DataMember(Name = "Spec", EmitDefaultValue = false)]
+        [JsonPropertyName("Spec")]
         public SwarmConfigSpec Spec { get; set; }
     }
 }

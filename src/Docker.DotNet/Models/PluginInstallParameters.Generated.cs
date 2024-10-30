@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PluginInstallParameters // (main.PluginInstallParameters)
     {
         [QueryStringParameter("remote", true)]
@@ -12,10 +11,10 @@ namespace Docker.DotNet.Models
         [QueryStringParameter("name", false)]
         public string Name { get; set; }
 
-        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
+        [JsonPropertyName("RegistryAuth")]
         public AuthConfig RegistryAuth { get; set; }
 
-        [DataMember(Name = "Privileges", EmitDefaultValue = false)]
+        [JsonPropertyName("Privileges")]
         public IList<PluginPrivilege> Privileges { get; set; }
     }
 }

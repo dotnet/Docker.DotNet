@@ -1,18 +1,17 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PluginUpgradeParameters // (main.PluginUpgradeParameters)
     {
         [QueryStringParameter("remote", true)]
         public string Remote { get; set; }
 
-        [DataMember(Name = "RegistryAuth", EmitDefaultValue = false)]
+        [JsonPropertyName("RegistryAuth")]
         public AuthConfig RegistryAuth { get; set; }
 
-        [DataMember(Name = "Privileges", EmitDefaultValue = false)]
+        [JsonPropertyName("Privileges")]
         public IList<PluginPrivilege> Privileges { get; set; }
     }
 }

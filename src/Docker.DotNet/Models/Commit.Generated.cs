@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class Commit // (types.Commit)
     {
-        [DataMember(Name = "ID", EmitDefaultValue = false)]
+        [JsonPropertyName("ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Expected", EmitDefaultValue = false)]
+        [JsonPropertyName("Expected")]
         public string Expected { get; set; }
     }
 }

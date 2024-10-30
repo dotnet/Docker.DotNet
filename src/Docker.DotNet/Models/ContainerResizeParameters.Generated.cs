@@ -1,8 +1,6 @@
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerResizeParameters // (main.ContainerResizeParameters)
     {
         [QueryStringParameter("h", false)]

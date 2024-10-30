@@ -1,8 +1,6 @@
-using System.Runtime.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ContainerLogsParameters // (main.ContainerLogsParameters)
     {
         [QueryStringParameter("stdout", false, typeof(BoolQueryStringConverter))]

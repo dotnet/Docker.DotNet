@@ -1,60 +1,90 @@
-﻿using System.Threading;
+﻿using System.Buffers;
+using System.Collections.Generic;
+using System.IO;
+using System.IO.Pipelines;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
     /// <summary>
-    /// Facade for <see cref="JsonConvert"/>.
+    /// Facade for <see cref="System.Text.Json.JsonSerializer"/> serialization.
     /// </summary>
     internal class JsonSerializer
     {
-        private readonly Newtonsoft.Json.JsonSerializer _serializer;
-
-        private readonly JsonSerializerSettings _settings = new JsonSerializerSettings
+        private readonly JsonSerializerOptions _options = new()
         {
-            NullValueHandling = NullValueHandling.Ignore,
-            Converters = new JsonConverter[]
+            Converters =
             {
-                new JsonIso8601AndUnixEpochDateConverter(),
-                new JsonVersionConverter(),
-                new StringEnumConverter(),
-                new TimeSpanSecondsConverter(),
-                new TimeSpanNanosecondsConverter(),
-                new JsonBase64Converter()
-            }
+                new JsonEnumMemberConverter<TaskState>(),
+                new JsonEnumMemberConverter<RestartPolicyKind>(),
+                new JsonDateTimeConverter(),
+                new JsonNullableDateTimeConverter(),
+                new JsonBase64Converter(),
+            },
         };
 
-        public JsonSerializer()
+        // Adapted from https://github.com/dotnet/runtime/issues/33030#issuecomment-1524227075
+        public async IAsyncEnumerable<T> Deserialize<T>(Stream stream, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
-            _serializer = Newtonsoft.Json.JsonSerializer.CreateDefault(this._settings);
-        }
-
-        public Task<T> Deserialize<T>(JsonReader jsonReader, CancellationToken cancellationToken)
-        {
-            var tcs = new TaskCompletionSource<T>();
-            using (cancellationToken.Register(() => tcs.TrySetCanceled(cancellationToken)))
+            var reader = PipeReader.Create(stream);
+            while (true)
             {
-                Task.Factory.StartNew(
-                    () => tcs.TrySetResult(_serializer.Deserialize<T>(jsonReader)),
-                    cancellationToken,
-                    TaskCreationOptions.LongRunning,
-                    TaskScheduler.Default
-                );
+                var result = await reader.ReadAsync(cancellationToken);
+                var buffer = result.Buffer;
+                while (!buffer.IsEmpty && TryParseJson(ref buffer, out var jsonDocument))
+                {
+                    yield return jsonDocument.Deserialize<T>(_options);
+                }
 
-                return tcs.Task;
+                if (result.IsCompleted)
+                {
+                    break;
+                }
+
+                reader.AdvanceTo(buffer.Start, buffer.End);
             }
+
+            await reader.CompleteAsync();
         }
 
-        public T DeserializeObject<T>(string json)
+        private static bool TryParseJson(ref ReadOnlySequence<byte> buffer, out JsonDocument jsonDocument)
         {
-            return JsonConvert.DeserializeObject<T>(json, this._settings);
+            var reader = new Utf8JsonReader(buffer, isFinalBlock: false, default);
+
+            if (JsonDocument.TryParseValue(ref reader, out jsonDocument))
+            {
+                buffer = buffer.Slice(reader.BytesConsumed);
+                return true;
+            }
+
+            return false;
         }
 
-        public string SerializeObject<T>(T value)
+        public T DeserializeObject<T>(byte[] json)
         {
-            return JsonConvert.SerializeObject(value, this._settings);
+            return System.Text.Json.JsonSerializer.Deserialize<T>(json, _options);
+        }
+
+        public byte[] SerializeObject<T>(T value)
+        {
+            return System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(value, _options);
+        }
+
+        public JsonContent GetHttpContent<T>(T value)
+        {
+            return JsonContent.Create(value, options: _options);
+        }
+
+        public async Task<T> DeserializeAsync<T>(HttpContent content, CancellationToken token)
+        {
+            return await content.ReadFromJsonAsync<T>(_options, token)
+                .ConfigureAwait(false);
         }
     }
 }
