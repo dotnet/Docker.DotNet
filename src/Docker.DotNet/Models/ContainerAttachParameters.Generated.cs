@@ -19,6 +19,6 @@ namespace Docker.DotNet.Models
         public string DetachKeys { get; set; }
 
         [QueryStringParameter("logs", false)]
-        public string Logs { get; set; }
+        public bool? Logs { get; set; }
     }
 }
