@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class Peer // (swarm.Peer)
     {
-        [DataMember(Name = "NodeID", EmitDefaultValue = false)]
+        [JsonPropertyName("NodeID")]
         public string NodeID { get; set; }
 
-        [DataMember(Name = "Addr", EmitDefaultValue = false)]
+        [JsonPropertyName("Addr")]
         public string Addr { get; set; }
     }
 }

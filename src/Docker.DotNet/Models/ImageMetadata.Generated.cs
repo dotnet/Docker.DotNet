@@ -1,12 +1,11 @@
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ImageMetadata // (types.ImageMetadata)
     {
-        [DataMember(Name = "LastTagTime", EmitDefaultValue = false)]
+        [JsonPropertyName("LastTagTime")]
         public DateTime LastTagTime { get; set; }
     }
 }

@@ -29,8 +29,7 @@ namespace Docker.DotNet
 
         public async Task<VersionResponse> GetVersionAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "version", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<VersionResponse>(response.Body);
+            return await this._client.MakeRequestAsync<VersionResponse>(this._client.NoErrorHandlers, HttpMethod.Get, "version", cancellationToken).ConfigureAwait(false);
         }
 
         public Task PingAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -40,8 +39,7 @@ namespace Docker.DotNet
 
         public async Task<SystemInfoResponse> GetSystemInfoAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "info", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<SystemInfoResponse>(response.Body);
+            return await this._client.MakeRequestAsync<SystemInfoResponse>(this._client.NoErrorHandlers, HttpMethod.Get, "info", cancellationToken).ConfigureAwait(false);
         }
 
         public Task<Stream> MonitorEventsAsync(ContainerEventsParameters parameters, CancellationToken cancellationToken)

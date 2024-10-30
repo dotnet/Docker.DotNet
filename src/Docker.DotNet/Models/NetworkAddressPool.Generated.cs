@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class NetworkAddressPool // (types.NetworkAddressPool)
     {
-        [DataMember(Name = "Base", EmitDefaultValue = false)]
+        [JsonPropertyName("Base")]
         public string Base { get; set; }
 
-        [DataMember(Name = "Size", EmitDefaultValue = false)]
+        [JsonPropertyName("Size")]
         public long Size { get; set; }
     }
 }

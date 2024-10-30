@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PluginConfigNetwork // (types.PluginConfigNetwork)
     {
-        [DataMember(Name = "Type", EmitDefaultValue = false)]
+        [JsonPropertyName("Type")]
         public string Type { get; set; }
     }
 }

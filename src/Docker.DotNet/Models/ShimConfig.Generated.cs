@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ShimConfig // (types.ShimConfig)
     {
-        [DataMember(Name = "Binary", EmitDefaultValue = false)]
+        [JsonPropertyName("Binary")]
         public string Binary { get; set; }
 
-        [DataMember(Name = "Opts", EmitDefaultValue = false)]
+        [JsonPropertyName("Opts")]
         public object Opts { get; set; }
     }
 }

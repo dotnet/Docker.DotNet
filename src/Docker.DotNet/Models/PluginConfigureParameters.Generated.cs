@@ -1,12 +1,11 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PluginConfigureParameters // (main.PluginConfigureParameters)
     {
-        [DataMember(Name = "Args", EmitDefaultValue = false)]
+        [JsonPropertyName("Args")]
         public IList<string> Args { get; set; }
     }
 }

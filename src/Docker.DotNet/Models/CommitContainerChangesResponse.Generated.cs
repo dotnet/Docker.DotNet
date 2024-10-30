@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class CommitContainerChangesResponse // (main.CommitContainerChangesResponse)
     {
-        [DataMember(Name = "Id", EmitDefaultValue = false)]
+        [JsonPropertyName("Id")]
         public string ID { get; set; }
     }
 }

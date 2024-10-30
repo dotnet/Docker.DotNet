@@ -1,11 +1,10 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class ConfigReference // (network.ConfigReference)
     {
-        [DataMember(Name = "Network", EmitDefaultValue = false)]
+        [JsonPropertyName("Network")]
         public string Network { get; set; }
     }
 }

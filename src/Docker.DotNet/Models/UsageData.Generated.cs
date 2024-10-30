@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class UsageData // (volume.UsageData)
     {
-        [DataMember(Name = "RefCount", EmitDefaultValue = false)]
+        [JsonPropertyName("RefCount")]
         public long RefCount { get; set; }
 
-        [DataMember(Name = "Size", EmitDefaultValue = false)]
+        [JsonPropertyName("Size")]
         public long Size { get; set; }
     }
 }

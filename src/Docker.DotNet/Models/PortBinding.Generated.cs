@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PortBinding // (nat.PortBinding)
     {
-        [DataMember(Name = "HostIp", EmitDefaultValue = false)]
+        [JsonPropertyName("HostIp")]
         public string HostIP { get; set; }
 
-        [DataMember(Name = "HostPort", EmitDefaultValue = false)]
+        [JsonPropertyName("HostPort")]
         public string HostPort { get; set; }
     }
 }

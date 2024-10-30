@@ -1,14 +1,13 @@
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PeerInfo // (network.PeerInfo)
     {
-        [DataMember(Name = "Name", EmitDefaultValue = false)]
+        [JsonPropertyName("Name")]
         public string Name { get; set; }
 
-        [DataMember(Name = "IP", EmitDefaultValue = false)]
+        [JsonPropertyName("IP")]
         public string IP { get; set; }
     }
 }

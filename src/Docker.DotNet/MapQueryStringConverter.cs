@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
-using Newtonsoft.Json;
 
 namespace Docker.DotNet
 {
@@ -17,7 +16,7 @@ namespace Docker.DotNet
         {
             Debug.Assert(o != null);
 
-            return new[] { JsonConvert.SerializeObject(o) };
+            return new[] { System.Text.Json.JsonSerializer.Serialize(o) };
         }
     }
 }

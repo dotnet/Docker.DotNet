@@ -1,21 +1,20 @@
 using System.Collections.Generic;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Docker.DotNet.Models
 {
-    [DataContract]
     public class PluginsInfo // (types.PluginsInfo)
     {
-        [DataMember(Name = "Volume", EmitDefaultValue = false)]
+        [JsonPropertyName("Volume")]
         public IList<string> Volume { get; set; }
 
-        [DataMember(Name = "Network", EmitDefaultValue = false)]
+        [JsonPropertyName("Network")]
         public IList<string> Network { get; set; }
 
-        [DataMember(Name = "Authorization", EmitDefaultValue = false)]
+        [JsonPropertyName("Authorization")]
         public IList<string> Authorization { get; set; }
 
-        [DataMember(Name = "Log", EmitDefaultValue = false)]
+        [JsonPropertyName("Log")]
         public IList<string> Log { get; set; }
     }
 }

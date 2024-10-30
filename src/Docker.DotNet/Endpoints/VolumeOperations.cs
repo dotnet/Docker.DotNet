@@ -1,6 +1,5 @@
 using Docker.DotNet.Models;
 using System;
-using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,15 +17,13 @@ namespace Docker.DotNet
 
         async Task<VolumesListResponse> IVolumeOperations.ListAsync(CancellationToken cancellationToken)
         {
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "volumes", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<VolumesListResponse>(response.Body);
+            return await this._client.MakeRequestAsync<VolumesListResponse>(this._client.NoErrorHandlers, HttpMethod.Get, "volumes", cancellationToken).ConfigureAwait(false);
         }
 
         async Task<VolumesListResponse> IVolumeOperations.ListAsync(VolumesListParameters parameters, CancellationToken cancellationToken)
         {
             var queryParameters = parameters == null ? null : new QueryString<VolumesListParameters>(parameters);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, "volumes", queryParameters, null, cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<VolumesListResponse>(response.Body);
+            return await this._client.MakeRequestAsync<VolumesListResponse>(this._client.NoErrorHandlers, HttpMethod.Get, "volumes", queryParameters, null, cancellationToken).ConfigureAwait(false);
         }
 
         async Task<VolumeResponse> IVolumeOperations.CreateAsync(VolumesCreateParameters parameters, CancellationToken cancellationToken)
@@ -37,8 +34,7 @@ namespace Docker.DotNet
             }
 
             var data = new JsonRequestContent<VolumesCreateParameters>(parameters, this._client.JsonSerializer);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, "volumes/create", null, data, cancellationToken);
-            return this._client.JsonSerializer.DeserializeObject<VolumeResponse>(response.Body);
+            return await this._client.MakeRequestAsync<VolumeResponse>(this._client.NoErrorHandlers, HttpMethod.Post, "volumes/create", null, data, cancellationToken);
         }
 
         async Task<VolumeResponse> IVolumeOperations.InspectAsync(string name, CancellationToken cancellationToken)
@@ -48,8 +44,7 @@ namespace Docker.DotNet
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Get, $"volumes/{name}", cancellationToken).ConfigureAwait(false);
-            return this._client.JsonSerializer.DeserializeObject<VolumeResponse>(response.Body);
+            return await this._client.MakeRequestAsync<VolumeResponse>(this._client.NoErrorHandlers, HttpMethod.Get, $"volumes/{name}", cancellationToken).ConfigureAwait(false);
         }
 
         Task IVolumeOperations.RemoveAsync(string name, bool? force, CancellationToken cancellationToken)
@@ -65,8 +60,7 @@ namespace Docker.DotNet
         async Task<VolumesPruneResponse> IVolumeOperations.PruneAsync(VolumesPruneParameters parameters, CancellationToken cancellationToken)
         {
             var queryParameters = parameters == null ? null : new QueryString<VolumesPruneParameters>(parameters);
-            var response = await this._client.MakeRequestAsync(this._client.NoErrorHandlers, HttpMethod.Post, $"volumes/prune", queryParameters, cancellationToken);
-            return this._client.JsonSerializer.DeserializeObject<VolumesPruneResponse>(response.Body);
+            return await this._client.MakeRequestAsync<VolumesPruneResponse>(this._client.NoErrorHandlers, HttpMethod.Post, "volumes/prune", queryParameters, cancellationToken);
         }
     }
 }
