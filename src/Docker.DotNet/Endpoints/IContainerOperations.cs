@@ -306,8 +306,8 @@ namespace Docker.DotNet
         /// <param name="cancellationToken">When triggered, the operation will stop at the next available time, if possible.</param>
         /// <returns>A <see cref="Task{TResult}"/> that resolves to a <see cref="MultiplexedStream"/>, which contains the
         /// container's <c>stdout</c> and <c>stderr</c> content and which can be used to write to the container's <c>stdin</c>.</returns>
-        /// <remarks>The format of the stream various, in part by the <paramref name="tty"/> parameter's value. See the
-        /// <a href="https://docs.docker.com/engine/api/v1.41/#operations/ContainerAttach">Docker Engine API reference</a> for details on
+        /// <remarks>The format of the stream varies depending on the <paramref name="tty"/> parameter's value and some other factors.
+        /// See the<a href="https://docs.docker.com/engine/api/v1.41/#operations/ContainerAttach">Docker Engine API reference</a> for details on
         /// the format.</remarks>
         /// <remarks>The corresponding commands in the Docker CLI are <c>docker attach</c> and <c>docker container attach</c>.</remarks>
         /// <exception cref="DockerContainerNotFoundException">No such container was found.</exception>
