@@ -35,6 +35,11 @@ namespace Docker.DotNet.X509
             return handler;
         }
 
+        public override bool SupportsScheme(string scheme)
+        {
+            return scheme != "npipe";
+        }
+
         public override bool IsTlsCredentials()
         {
             return true;

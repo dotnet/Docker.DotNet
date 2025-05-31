@@ -32,15 +32,20 @@ namespace Docker.DotNet.BasicAuth
             _password = password;
         }
 
-        public override bool IsTlsCredentials()
-        {
-            return _isTls;
-        }
-
         public override void Dispose()
         {
             _username.Dispose();
             _password.Dispose();
+        }
+
+        public override bool SupportsScheme(string scheme)
+        {
+            return !(_isTls && scheme == "npipe");
+        }
+
+        public override bool IsTlsCredentials()
+        {
+            return _isTls;
         }
     }
 }

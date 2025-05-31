@@ -5,6 +5,8 @@ namespace Docker.DotNet
 {
     public abstract class Credentials : IDisposable
     {
+        public abstract bool SupportsScheme(string scheme);
+
         public abstract bool IsTlsCredentials();
 
         public abstract HttpMessageHandler GetHandler(HttpMessageHandler innerHandler);

@@ -106,6 +106,7 @@ namespace Microsoft.Net.Http.Client
         private HttpResponseMessage CreateResponseMessage(List<string> responseLines)
         {
             string responseLine = responseLines.First();
+
             // HTTP/1.1 200 OK
             string[] responseLineParts = responseLine.Split(new[] { ' ' }, 3);
             // TODO: Verify HTTP/1.0 or 1.1.
