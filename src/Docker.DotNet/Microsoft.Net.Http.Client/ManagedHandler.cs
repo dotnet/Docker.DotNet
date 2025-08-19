@@ -80,6 +80,7 @@ namespace Microsoft.Net.Http.Client
                 response = await ProcessRequestAsync(request, cancellationToken);
                 if (redirectCount < MaxAutomaticRedirects && IsAllowedRedirectResponse(request, response))
                 {
+                    response.Dispose();
                     redirectCount++;
                     retry = true;
                 }
