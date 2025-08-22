@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipelines;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -17,17 +16,10 @@ namespace Docker.DotNet
     /// </summary>
     internal class JsonSerializer
     {
-        private readonly JsonSerializerOptions _options = new()
+        public JsonSerializer()
         {
-            Converters =
-            {
-                new JsonEnumMemberConverter<TaskState>(),
-                new JsonEnumMemberConverter<RestartPolicyKind>(),
-                new JsonDateTimeConverter(),
-                new JsonNullableDateTimeConverter(),
-                new JsonBase64Converter(),
-            },
-        };
+            DockerDotnetJsonSerializerContext.PreserveReflection();
+        }
 
         // Adapted from https://github.com/dotnet/runtime/issues/33030#issuecomment-1524227075
         public async IAsyncEnumerable<T> Deserialize<T>(Stream stream, [EnumeratorCancellation] CancellationToken cancellationToken)
@@ -39,7 +31,8 @@ namespace Docker.DotNet
                 var buffer = result.Buffer;
                 while (!buffer.IsEmpty && TryParseJson(ref buffer, out var jsonDocument))
                 {
-                    yield return jsonDocument.Deserialize<T>(_options);
+                    var deserializedObj = jsonDocument.Deserialize(typeof(T), DockerDotnetJsonSerializerContext.Default);
+                    yield return (T) deserializedObj;
                 }
 
                 if (result.IsCompleted)
@@ -68,23 +61,28 @@ namespace Docker.DotNet
 
         public T DeserializeObject<T>(byte[] json)
         {
-            return System.Text.Json.JsonSerializer.Deserialize<T>(json, _options);
+            var deserializedObj = System.Text.Json.JsonSerializer.Deserialize(json, typeof(T), DockerDotnetJsonSerializerContext.Default);
+            return (T)deserializedObj;
         }
 
         public byte[] SerializeObject<T>(T value)
         {
-            return System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(value, _options);
+            var jsonString = System.Text.Json.JsonSerializer.Serialize(value, typeof(T), DockerDotnetJsonSerializerContext.Default);
+            return Encoding.UTF8.GetBytes(jsonString);
         }
 
-        public JsonContent GetHttpContent<T>(T value)
+        public HttpContent GetHttpContent<T>(T value)
         {
-            return JsonContent.Create(value, options: _options);
+            var jsonString = System.Text.Json.JsonSerializer.Serialize(value, typeof(T), DockerDotnetJsonSerializerContext.Default);
+            HttpContent httpContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
+            return httpContent;
         }
 
         public async Task<T> DeserializeAsync<T>(HttpContent content, CancellationToken token)
         {
-            return await content.ReadFromJsonAsync<T>(_options, token)
-                .ConfigureAwait(false);
+            var jsonString = await content.ReadAsStringAsync(token);
+            var deserializedObj = System.Text.Json.JsonSerializer.Deserialize(jsonString, typeof(T), DockerDotnetJsonSerializerContext.Default);
+            return (T)deserializedObj;
         }
     }
 }

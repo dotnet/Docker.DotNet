@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Docker.DotNet.Models;
 
 namespace Docker.DotNet
 {
@@ -9,19 +10,19 @@ namespace Docker.DotNet
 
         public IQueryStringConverter GetConverterInstance(Type t)
         {
-            return ConverterInstanceRegistry.GetOrAdd(
-                t,
-                InitializeConverter);
+            return ConverterInstanceRegistry.GetOrAdd(t, InitializeConverter);
         }
 
         private IQueryStringConverter InitializeConverter(Type t)
         {
-            var instance = Activator.CreateInstance(t) as IQueryStringConverter;
-            if (instance == null)
+            return t.Name switch
             {
-                throw new InvalidOperationException($"Could not get instance of {t.FullName}");
-            }
-            return instance;
+                nameof(BoolQueryStringConverter) => new BoolQueryStringConverter(),
+                nameof(EnumerableQueryStringConverter) => new EnumerableQueryStringConverter(),
+                nameof(MapQueryStringConverter) => new MapQueryStringConverter(),
+                nameof(TimeSpanSecondsQueryStringConverter) => new TimeSpanSecondsQueryStringConverter(),
+                _ => throw new InvalidOperationException($"Could not get instance of {t.FullName}")
+            };
         }
     }
 }

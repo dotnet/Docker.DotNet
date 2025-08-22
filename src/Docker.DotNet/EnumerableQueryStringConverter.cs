@@ -24,14 +24,13 @@ namespace Docker.DotNet
             var items = new List<string>();
             foreach (var e in ((IEnumerable) o))
             {
-                if (e is ValueType ||
-                    e is string)
+                if (e is ValueType || e is string)
                 {
                     items.Add(e.ToString());
                 }
                 else
                 {
-                    items.Add(System.Text.Json.JsonSerializer.Serialize(e));
+                    throw new NotImplementedException();
                 }
             }
 
