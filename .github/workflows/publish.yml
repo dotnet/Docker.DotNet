@@ -7,10 +7,13 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,8 +39,13 @@ jobs:
           DNF_CODESIGN_CONFIG: ${{secrets.DNF_CODESIGN_CONFIG}}
           DNF_CODESIGN_USER: ${{secrets.DNF_CODESIGN_USER}}
           DNF_CODESIGN_SECRET: ${{secrets.DNF_CODESIGN_SECRET}}
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: nuget-login
+        with:
+          user: ${{ secrets.NUGET_USER }}
       - name: Push packages to NuGet.org
-        run: dotnet nuget push ./packages/Docker.DotNet.*.nupkg --skip-duplicate -k ${{ secrets.NUGET_KEY }} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./packages/Docker.DotNet.*.nupkg --skip-duplicate -k ${{ steps.nuget-login.outputs.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
       - name: Create Release
         uses: actions/github-script@v5
         with:
