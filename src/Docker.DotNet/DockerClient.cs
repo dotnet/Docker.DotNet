@@ -114,6 +114,11 @@ namespace Docker.DotNet
                     uri = new UriBuilder("http", uri.Segments.Last()).Uri;
                     break;
 
+                case "ssh":
+                    throw new NotSupportedException(
+                        $"SSH endpoints are not supported by Docker.DotNet ({configuration.EndpointBaseUri}). " +
+                        "Use a tcp/https/unix/npipe endpoint, or set up an SSH tunnel and point DOCKER_HOST at the forwarded socket.");
+
                 default:
                     throw new Exception($"Unknown URL scheme {configuration.EndpointBaseUri.Scheme}");
             }
