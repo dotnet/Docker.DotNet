@@ -44,15 +44,13 @@ If you intend to use development builds of Docker.DotNet and don't want to compi
 
 ## Usage
 
-You can initialize the client like the following:
+### Default client (docker CLI–style resolution)
 
-```csharp
-using Docker.DotNet;
-DockerClient client = new DockerClientConfiguration(
-    new Uri("http://ubuntu-docker.cloudapp.net:4243"))
-     .CreateClient();
-```
-or to connect to your local [Docker for Windows](https://docs.docker.com/docker-for-windows/) daemon using named pipes or your local [Docker for Mac](https://docs.docker.com/docker-for-mac/) daemon using Unix sockets:
+The parameterless constructor resolves the Docker endpoint the same way the `docker` CLI does. This works on Linux, macOS, and Windows:
+
+1. **Environment variables** — `DOCKER_HOST` (with `DOCKER_TLS_VERIFY` upgrading `tcp://` to `https://`).
+2. **Docker context** — `DOCKER_CONTEXT`, or the `currentContext` field in `~/.docker/config.json` (`%USERPROFILE%\.docker\config.json` on Windows). The endpoint is read from `~/.docker/contexts/meta/<sha256(name)>/meta.json`. `DOCKER_CONFIG` is honored if set.
+3. **Platform default** — `unix:///var/run/docker.sock` on Linux/macOS, `npipe://./pipe/docker_engine` on Windows.
 
 ```csharp
 using Docker.DotNet;
@@ -60,20 +58,49 @@ DockerClient client = new DockerClientConfiguration()
      .CreateClient();
 ```
 
-For a custom endpoint, you can also pass a named pipe or a Unix socket to the `DockerClientConfiguration` constructor. For example:
+### Explicit endpoint
+
+Pass a `Uri` to target a specific endpoint:
 
 ```csharp
-// Default Docker Engine on Windows
 using Docker.DotNet;
+DockerClient client = new DockerClientConfiguration(
+    new Uri("http://ubuntu-docker.cloudapp.net:4243"))
+     .CreateClient();
+```
+
+```csharp
+// Docker Engine on Windows
 DockerClient client = new DockerClientConfiguration(
     new Uri("npipe://./pipe/docker_engine"))
      .CreateClient();
-// Default Docker Engine on Linux
-using Docker.DotNet;
+// Docker Engine on Linux/macOS
 DockerClient client = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock"))
      .CreateClient();
 ```
+
+### Specific Docker context by name
+
+Use `FromContext` to target a context by name (reads `~/.docker/contexts/meta/<sha256(name)>/meta.json`):
+
+```csharp
+using Docker.DotNet;
+DockerClient client = DockerClientConfiguration
+    .FromContext("desktop-linux")
+    .CreateClient();
+```
+
+You can combine it with credentials (TLS, basic auth, etc.) the same way as the regular constructor:
+
+```csharp
+var credentials = new CertificateCredentials(new X509Certificate2("cert.pfx", "password"));
+DockerClient client = DockerClientConfiguration
+    .FromContext("my-remote", credentials)
+    .CreateClient();
+```
+
+> **Note:** `ssh://` endpoints (from SSH-based Docker contexts) are not supported. To connect to a remote daemon over SSH, set up an SSH tunnel and point `DOCKER_HOST` (or a context) at the forwarded socket.
 
 #### Example: List containers
 
