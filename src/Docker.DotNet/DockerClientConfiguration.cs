@@ -1,19 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace Docker.DotNet
 {
     public class DockerClientConfiguration : IDisposable
     {
+        /// <summary>
+        /// Creates a configuration whose endpoint is resolved like the docker CLI:
+        /// the <c>DOCKER_HOST</c> environment variable first, then the active Docker
+        /// context (<c>DOCKER_CONTEXT</c> or <c>currentContext</c> in
+        /// <c>~/.docker/config.json</c>), then the platform default socket.
+        /// </summary>
         public DockerClientConfiguration(
             Credentials credentials = null,
             TimeSpan defaultTimeout = default,
             TimeSpan namedPipeConnectTimeout = default,
             IReadOnlyDictionary<string, string> defaultHttpRequestHeaders = null)
-            : this(GetLocalDockerEndpoint(), credentials, defaultTimeout, namedPipeConnectTimeout, defaultHttpRequestHeaders)
+            : this(DockerContextResolver.Resolve(), credentials, defaultTimeout, namedPipeConnectTimeout, defaultHttpRequestHeaders)
         {
+        }
+
+        /// <summary>
+        /// Creates a configuration that targets the named Docker context, reading
+        /// its endpoint from <c>~/.docker/contexts/meta/&lt;sha256(name)&gt;/meta.json</c>.
+        /// </summary>
+        public static DockerClientConfiguration FromContext(
+            string contextName,
+            Credentials credentials = null,
+            TimeSpan defaultTimeout = default,
+            TimeSpan namedPipeConnectTimeout = default,
+            IReadOnlyDictionary<string, string> defaultHttpRequestHeaders = null)
+        {
+            return new DockerClientConfiguration(
+                DockerContextResolver.ResolveForContext(contextName),
+                credentials,
+                defaultTimeout,
+                namedPipeConnectTimeout,
+                defaultHttpRequestHeaders);
         }
 
         public DockerClientConfiguration(
@@ -61,12 +85,6 @@ namespace Docker.DotNet
         public void Dispose()
         {
             Credentials.Dispose();
-        }
-
-        private static Uri GetLocalDockerEndpoint()
-        {
-            var isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-            return isWindows ? new Uri("npipe://./pipe/docker_engine") : new Uri("unix:/var/run/docker.sock");
         }
     }
 }
