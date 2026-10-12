@@ -17,7 +17,7 @@ namespace Docker.DotNet.Tests
                 }
             };
 
-            using var document = JsonDocument.Parse(JsonSerializer.Serialize(mount));
+            using var document = JsonDocument.Parse(System.Text.Json.JsonSerializer.Serialize(mount));
 
             Assert.Equal("data/logs", document.RootElement
                 .GetProperty("VolumeOptions")
