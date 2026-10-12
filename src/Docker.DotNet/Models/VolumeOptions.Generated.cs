@@ -11,6 +11,9 @@ namespace Docker.DotNet.Models
         [JsonPropertyName("Labels")]
         public IDictionary<string, string> Labels { get; set; }
 
+        [JsonPropertyName("Subpath")]
+        public string Subpath { get; set; }
+
         [JsonPropertyName("DriverConfig")]
         public Driver DriverConfig { get; set; }
     }
