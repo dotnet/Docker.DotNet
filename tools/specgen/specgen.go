@@ -14,6 +14,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/events"
 	"github.com/docker/docker/api/types/image"
+	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/api/types/swarm"
@@ -55,6 +56,9 @@ var typesToDisambiguate = map[string]*CSModelType{
 	},
 	typeToKey(reflect.TypeOf(container.RestartPolicy{})): {
 		Properties: []CSProperty{CSProperty{Name: "Name", Type: CSType{"", "RestartPolicyKind", false}}},
+	},
+	typeToKey(reflect.TypeOf(mount.VolumeOptions{})): {
+		Properties: []CSProperty{CSProperty{Name: "Subpath", Type: CSType{"", "string", false}}},
 	},
 	typeToKey(reflect.TypeOf(jsonmessage.JSONMessage{})): {
 		Properties: []CSProperty{
@@ -648,6 +652,28 @@ func reflectTypeMembers(t reflect.Type, m *CSModelType) {
 			}
 
 			// Lastly assign the property to our type.
+			m.Properties = append(m.Properties, csProp)
+		}
+	}
+
+	if typeCustomizations, ok := typesToDisambiguate[typeToKey(t)]; ok {
+		for _, p := range typeCustomizations.Properties {
+			reflected := false
+			for _, reflectedProperty := range m.Properties {
+				if reflectedProperty.Name == p.Name {
+					reflected = true
+					break
+				}
+			}
+			if reflected {
+				continue
+			}
+
+			csProp := CSProperty{Name: p.Name, Type: p.Type}
+			a := CSAttribute{Type: CSType{"System.Text.Json.Serialization", "JsonPropertyName", false}}
+			a.Arguments = append(a.Arguments, CSArgument{p.Name, CSInboxTypesMap[reflect.String]})
+			csProp.Attributes = append(csProp.Attributes, a)
+			csProp.Attributes = append(csProp.Attributes, p.Attributes...)
 			m.Properties = append(m.Properties, csProp)
 		}
 	}

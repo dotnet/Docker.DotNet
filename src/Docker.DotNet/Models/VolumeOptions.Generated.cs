@@ -13,5 +13,8 @@ namespace Docker.DotNet.Models
 
         [JsonPropertyName("DriverConfig")]
         public Driver DriverConfig { get; set; }
+
+        [JsonPropertyName("Subpath")]
+        public string Subpath { get; set; }
     }
 }
